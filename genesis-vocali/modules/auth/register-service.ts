@@ -1,15 +1,15 @@
 import supabase from '@/services/auth/auth-supabase.service';
 
-export async function loginUser(email, password) {
+export async function registerUser(email: string, password: string) {
   try {
-    const { user, error } = await supabase.auth.signIn({
+    const { user, error } = await supabase.auth.signUp({
       email,
       password,
     });
     if (error) throw error;
     return user;
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Registration error:', error);
     throw error;
   }
 }
