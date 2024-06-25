@@ -2,29 +2,28 @@
  * @jest-environment node
  */
 
+import { loginUser } from "./login-service";
 import { registerUser } from "./register-service";
 
 describe("registerService (Integration Test)", () => {
   const email = `newuser${Date.now()}@example.com`;
   const password = "another_strong_password";
 
-  afterEach(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+  beforeAll(async () => {
+    await registerUser(email, password);
   });
-
-  it("registers a user with valid email and password", async () => {
-    const result = await registerUser(email, password);
+  
+  it("logs in a registered user with valid email and password", async () => {
+    const result = await loginUser(email, password);
 
     expect(result).toHaveProperty('user');
     expect(result.user).toHaveProperty('id');
     expect(result.user).toHaveProperty('email', email);
     expect(result).toHaveProperty('token');
-    if (result.token) {
-      expect(typeof result.token).toBe('string');
-    }
+    expect(typeof result.token).toBe('string');
   });
 
-  it("throws an error when registration fails", async () => {
-    await expect(registerUser('invalid-email', password)).rejects.toThrow();
+  it("fails to log in with incorrect password", async () => {
+    await expect(loginUser(email, 'wrong_password')).rejects.toThrow();
   });
 });
