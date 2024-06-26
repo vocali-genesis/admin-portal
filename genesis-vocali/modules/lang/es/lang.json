@@ -1,0 +1,8 @@
+{
+  "common": {
+    "login": "Página de Inicio de Sesión",
+    "title": "¡Bienvenido a nuestro sitio web!",
+    "username": "Nombre de usuario",
+    "password": "Contraseña"
+  }
+}
