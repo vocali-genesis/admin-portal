@@ -1,0 +1,8 @@
+{
+  "common": {
+    "login": "Login Page",
+    "title": "Welcome to our website!",
+    "username": "Username",
+    "password": "Password"
+  }
+}
