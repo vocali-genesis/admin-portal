@@ -1,8 +1,13 @@
 {
   "common": {
-    "login": "Página de Inicio de Sesión",
-    "title": "¡Bienvenido a nuestro sitio web!",
-    "username": "Nombre de usuario",
-    "password": "Contraseña"
+    "Login": "Iniciar Sesión",
+    "Email": "Correo Electrónico",
+    "Password": "Aprobar",
+    "Already have an account?": "¿Ya tienes una cuenta?",
+    "Register": "Registrarse",
+    "with others": "con otro",
+    "Register with": "Registrar Con",
+    "Login with": "Iniciar Sesión Con",
+    "Dont have an account?": "¿No tienes una cuenta?"
   }
 }

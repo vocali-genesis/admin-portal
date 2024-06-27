@@ -4,8 +4,7 @@ import { Provider } from '@supabase/supabase-js';
 // Define the allowed provider names
 const validProviders: Provider[] = ['github', 'gitlab', 'google'];
 
-export async function oauthLogin(provider: string) {
-  // Validate and convert the string to Provider
+export async function oauth(provider: string) {
   if (!validProviders.includes(provider as Provider)) {
     throw new Error(`Invalid provider: ${provider}`);
   }
