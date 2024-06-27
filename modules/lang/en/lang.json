@@ -9,6 +9,14 @@
     "Register with": "Register with",
     "Login with": "Login with",
     "Dont have an account?": "Dont have an account?",
-    "Dashboard": "Dashboard"
+    "Dashboard": "Dashboard",
+    "Registration successful": "Registration successful",
+    "Login successful": "Login successful",
+    "Invalid email format": "Invalid email format",
+    "Email is required": "Email is required",
+    "Password must be at least 8 characters": "Password must be at least 8 characters",
+    "Password is required": "Password is required",
+    "Invalid login credentials": "Invalid login credentials",
+    "An unexpected error occurred": "An unexpected error occurred"
   }
 }

@@ -58,6 +58,8 @@
 
 .errorMessage {
   color: red;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
 }
 
 .submitButton {
@@ -160,4 +162,28 @@
 
 .facebookOAuthButton:before {
   background-image: url('/facebook.svg'); /* Add your Google icon */
+}
+
+.messageContainer {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.errorContainer {
+  background-color: #ffebee;
+  color: #c62828;
+  border-color: #c62828;
+}
+
+.successContainer {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-color: #2e7d32;
+}
+
+.messageText {
+  font-size: 14px;
 }
