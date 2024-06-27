@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { loginUser } from '@/modules/auth/register-service';
+import { loginUser } from '@/modules/auth/login-service';
 import { oauth } from '@/modules/auth/oauth-service';
 import form_style from '@/styles/forms/form.module.css';
 import auth_schema from '@/resources/form-schemas/auth-schema';
@@ -10,11 +10,11 @@ import { getStaticPropsWithTranslations } from '@/modules/lang/props';
 
 export const getStaticProps = getStaticPropsWithTranslations;
 
-interface RegisterFormProps {
-  onRegisterSuccess: (user: any, token: string) => void;
+interface LoginFormProps {
+  onLoginSuccess: (user: any, token: string) => void;
 }
 
-const LoginForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const t = useTranslations('common');
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(auth_schema)

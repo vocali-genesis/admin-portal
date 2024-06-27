@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useTranslations } from 'next-intl';
 import RegisterForm from '@/resources/inputs/register-form';
 import register_page_style from '@/styles/pages/register.module.css';
@@ -8,9 +9,13 @@ import { getStaticPropsWithTranslations } from '@/modules/lang/props';
 export const getStaticProps = getStaticPropsWithTranslations;
 
 const RegisterPage: React.FC = () => {
+  const router = useRouter();
   const t = useTranslations('common');
   const handleRegisterSuccess = (user: any, token: string) => {
     console.log('Registration successful:', user, token);
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    router.push('/auth/login');
   };
 
   return (
