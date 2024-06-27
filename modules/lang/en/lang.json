@@ -1,8 +1,13 @@
 {
   "common": {
-    "login": "Login Page",
-    "title": "Welcome to our website!",
-    "username": "Username",
-    "password": "Password"
+    "Login": "Login",
+    "Register": "Register",
+    "Email": "Email",
+    "Password": "Password",
+    "Already have an account?": "Already have an account?",
+    "with others": "with others",
+    "Register with": "Register with",
+    "Login with": "Login with",
+    "Dont have an account?": "Dont have an account?"
   }
 }
