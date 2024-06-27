@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useTranslations } from 'next-intl';
@@ -30,7 +31,12 @@ const RegisterPage: React.FC = () => {
           <Image src="/user.svg" alt="Login and Register" width={45} height={45} />
           <h1 className={register_page_style.title}>{t('Register')}</h1>
           <RegisterForm onRegisterSuccess={handleRegisterSuccess} />
-          <p className={register_page_style.login_text}>{t('Already have an account?')} <strong> {t('Login')} </strong></p>
+          <p className={register_page_style.login_text}>
+            {t('Already have an account?')}{' '}
+            <Link href="/auth/login" className={register_page_style.register_link}>
+              <strong>{t('Login')}</strong>
+            </Link>
+          </p>
         </div>
       </div>
     </div>

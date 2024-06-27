@@ -9,6 +9,14 @@
     "Register with": "Registrar Con",
     "Login with": "Iniciar Sesión Con",
     "Dont have an account?": "¿No tienes una cuenta?",
-    "Dashboard": "Tablero"
+    "Dashboard": "Tablero",
+    "Registration successful": "Registro exitoso",
+    "Login successful": "Inicio de sesión exitoso",
+    "Invalid email format": "Formato de correo electrónico inválido",
+    "Email is required": "Correo electrónico es requerido",
+    "Password must be at least 8 characters": "La contraseña debe tener al menos 8 caracteres",
+    "Password is required": "La contraseña es requerida",
+    "Invalid login credentials": "Credenciales de inicio de sesión inválidas",
+    "An unexpected error occurred": "Se produjo un error inesperado"
   }
 }

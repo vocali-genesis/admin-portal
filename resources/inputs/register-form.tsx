@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -20,19 +20,34 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
     resolver: yupResolver(auth_schema)
   });
 
+  const [message, setMessage] = useState<{ type: 'error' | 'success' | null; text: string | null }>({ type: null, text: null });
+
+  const setTemporaryMessage = (type: 'error' | 'success', text: string) => {
+    setMessage({ type, text });
+    setTimeout(() => {
+      setMessage({ type: null, text: null });
+    }, 5000);
+  };
+
   const onSubmit = async (data: any) => {
     try {
+      setMessage({ type: null, text: null });
       const { user, token } = await registerUser(data.email, data.password);
-      onRegisterSuccess(user, token);
+      setTemporaryMessage('success', t('Registration successful'));
+      onRegisterSuccess(user, (token) as string);
     } catch (error) {
       console.error('Registration failed:', error);
+      if (error instanceof Error) {
+        setTemporaryMessage('error', t(error.message));
+      } else {
+        setTemporaryMessage('error', t('An unexpected error occurred'));
+      }
     }
   };
 
   const handleOAuthClick = async (provider: string) => {
     try {
       const userData = await oauth(provider);
-      // Handle OAuth login success (e.g., redirect, store tokens)
       console.log('OAuth login success:', userData);
     } catch (error) {
       console.error('OAuth login failed:', error);
@@ -41,6 +56,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={form_style.formContainer}>
+      {message.text && (
+        <div className={`${form_style.messageContainer} ${message.type === 'error' ? form_style.errorContainer : form_style.successContainer}`}>
+          <span className={form_style.messageText}>{message.text}</span>
+        </div>
+      )}
       <div className={form_style.formInput}>
         <input 
           {...register('email', { required: 'Email is required' })} 
@@ -48,7 +68,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
           placeholder={t('Email')}
           className={`${form_style.formControl} ${form_style.inputEmailIcon}`} 
         />
-        {errors.email && <span className={form_style.errorMessage}>{errors.email.message}</span>}
+        {errors.email && <span className={form_style.errorMessage}>{t(errors.email.message)}</span>}
       </div>
       <div className={form_style.formInput}>
         <input 
@@ -57,7 +77,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
           placeholder={t('Password')}
           className={`${form_style.formControl} ${form_style.inputPasswordIcon}`} 
         />
-        {errors.password && <span className={form_style.errorMessage}>{errors.password.message}</span>}
+        {errors.password && <span className={form_style.errorMessage}>{t(errors.password.message)}</span>}
       </div>
       <div className={form_style.buttonWrapper}>
         <button type="submit" className={form_style.submitButton}>{t('Register')}</button>

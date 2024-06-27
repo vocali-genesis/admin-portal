@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslations } from 'next-intl';
 import LoginForm from '@/resources/inputs/login-form';
@@ -30,7 +31,12 @@ const LoginPage: React.FC = () => {
           <Image src="/user.svg" alt="Login and Register" width={45} height={45} />
           <h1 className={register_page_style.title}>{t('Login')}</h1>
           <LoginForm onLoginSuccess={handleLoginSuccess} />
-          <p className={register_page_style.login_text}>{t('Dont have an account?')} <strong> {t('Register')} </strong></p>
+          <p className={register_page_style.login_text}>
+            {t('Dont have an account?')}{' '}
+            <Link href="/auth/register" className={register_page_style.register_link}>
+              <strong>{t('Register')}</strong>
+            </Link>
+          </p>
         </div>
       </div>
     </div>
