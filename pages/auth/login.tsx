@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,14 +7,6 @@ import LoginForm from "@/resources/inputs/login-form";
 import register_page_style from "@/styles/pages/register.module.css";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
-=======
-import React from 'react';
-import Image from 'next/image';
-import { useTranslations } from 'next-intl';
-import RegisterForm from '@/resources/inputs/register-form';
-import register_page_style from '@/styles/pages/register.module.css';
-import { getStaticPropsWithTranslations } from '@/modules/lang/props';
->>>>>>> 73a9076 (Register and login page cosmetics done)
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
