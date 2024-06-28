@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
+import { Provider } from '@supabase/supabase-js';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginUser } from '@/modules/auth/login-service';
 import { oauth } from '@/modules/auth/oauth-service';
@@ -45,13 +46,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     }
   };
 
-  const handleOAuthClick = async (provider: string) => {
+  const handleOAuthClick = async (provider: Provider) => {
     try {
-      const userData = await oauth(provider);
-      // Handle OAuth login success (e.g., redirect, store tokens)
-      console.log('OAuth login success:', userData);
+      setMessage({ type: null, text: null });
+      const { url } = await oauth(provider);
+      if (url) {
+        window.location.href = url;
+      } else {
+        setTemporaryMessage('error', t('Failed to initiate OAuth login'));
+      }
     } catch (error) {
       console.error('OAuth login failed:', error);
+      if (error instanceof Error) {
+        setTemporaryMessage('error', t(error.message));
+      } else {
+        setTemporaryMessage('error', t('An unexpected error occurred during OAuth login'));
+      }
     }
   };
 

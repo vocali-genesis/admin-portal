@@ -17,6 +17,9 @@
     "Password must be at least 8 characters": "Password must be at least 8 characters",
     "Password is required": "Password is required",
     "Invalid login credentials": "Invalid login credentials",
-    "An unexpected error occurred": "An unexpected error occurred"
+    "An unexpected error occurred": "An unexpected error occurred",
+    "Email rate limit exceeded": "Email rate limit exceeded",
+    "An unexpected error occurred during OAuth login": "An unexpected error occurred during OAuth login",
+    "Failed to initiate OAuth login": "Failed to initiate OAuth login"
   }
 }
