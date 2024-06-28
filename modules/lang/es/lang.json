@@ -17,6 +17,9 @@
     "Password must be at least 8 characters": "La contraseña debe tener al menos 8 caracteres",
     "Password is required": "La contraseña es requerida",
     "Invalid login credentials": "Credenciales de inicio de sesión inválidas",
-    "An unexpected error occurred": "Se produjo un error inesperado"
+    "An unexpected error occurred": "Se produjo un error inesperado",
+    "Email rate limit exceeded": "Límite de velocidad de correo electrónico excedido",
+    "An unexpected error occurred during OAuth login": "Se produjo un error inesperado durante el inicio de sesión con OAuth",
+    "Failed to initiate OAuth login": "Fallo al iniciar sesión con OAuth"
   }
 }
