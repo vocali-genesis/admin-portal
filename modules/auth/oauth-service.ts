@@ -5,6 +5,9 @@ export async function oauth(provider: Provider) {
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: provider,
+      options: {
+        redirectTo: `${window.location.origin}/app/dashboard`
+      }
     });
     if (error) throw error;
 
