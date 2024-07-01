@@ -37,3 +37,6 @@ next-env.d.ts
 
 .replit
 replit.nix
+
+*.spec.ts
+package-lock.json
