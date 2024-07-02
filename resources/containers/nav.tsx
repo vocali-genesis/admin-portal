@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
         <button className={nav_styles.upgradeButton}>
           {t('Upgrade')}
         </button>
-        <Image src="/user.svg" alt="User" width={23} height={23} className={nav_styles.userIcon} />
+        <Image src="/Avatar.svg" alt="User" width={33} height={33} className={nav_styles.userIcon} />
       </div>
     </nav>
   );
