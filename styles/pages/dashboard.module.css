@@ -104,6 +104,15 @@
 
 .uploadArea .p {
   font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.h3 {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: black;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bold;
 }
 
 .small {
@@ -190,6 +199,14 @@
   .recordButton {
     width: 150px;
     height: 150px;
+  }
+
+  .h3 {
+    display: none;
+  }
+
+  .uploadArea {
+    display: none;
   }
 
   .uploadButton {

@@ -17,7 +17,8 @@
 }
 
 .dropdown {
-  border-color: rgb(0, 0, 0, 0.5)
+  border-color: rgb(0, 0, 0, 0.5);
+  font-size: 0.85rem;
 }
 
 .dropdown select {
@@ -53,6 +54,9 @@
   padding: 5px 20px 5px 20px;
   border-radius: 4px;
   cursor: pointer;
+
+  font-size: 0.75rem;
+  font-family: "Montserrat", sans-serif;
 }
 
 .userIcon {
