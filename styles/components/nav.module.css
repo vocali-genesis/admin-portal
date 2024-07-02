@@ -8,12 +8,20 @@
   z-index: 10;
 }
 
+.navbarMobileRight {
+  display: none;
+}
+
+.navbarMobileLeft {
+  display: none;
+}
+
 .dropdown {
   border-color: rgb(0, 0, 0, 0.5)
 }
 
 .dropdown select {
-  padding: 5px 20px 10px 20px;
+  padding: 7.5px 20px 5px 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
   color: black;
@@ -22,6 +30,8 @@
   background: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") no-repeat;
   background-position: right 10px top 50%;
   background-size: 20px;
+
+  font-family: "Montserrat", sans-serif;
 }
 
 .navbarRight {
@@ -29,6 +39,11 @@
   align-items: center;
   gap: 1rem;
   padding-right: 0.25rem;
+}
+
+.navbarLeft {
+  display: flex;
+  align-items: center;
 }
 
 .upgradeButton {
@@ -42,4 +57,50 @@
 
 .userIcon {
   cursor: pointer;
+}
+
+.menuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 500px) {
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #1e2640;
+    color: white;
+  }
+
+  .navbarMobileRight {
+    display: flex;
+    align-items: center;
+  }
+  .navbarMobileLeft {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbarLeft {
+    display: none;
+  }
+  
+  .navbarRight {
+    display: none;
+  }
+  
+  .menuButton {
+    display: block;
+  }
+
+  .dropdown {
+    display: none;
+  }
 }

@@ -30,6 +30,12 @@
     "Storage": "Storage",
     "Settings": "Settings",
     "Organization": "Organization",
-    "Upgrade": "Upgrade"
+    "Upgrade": "Upgrade",
+    "Record your consultation or upload an audio with the previously recorded consultation to generate a report": "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
+    "Activate the audio recorder": "Activate the audio recorder",
+    "Click To Start Recording": "Click To Start Recording",
+    "Drag, Drop Or Browse": "Drag, Drop Or Browse",
+    "Supported Formats: MP3": "Supported Formats: MP3",
+    "Upload Files": "Upload Files"
   }
 }

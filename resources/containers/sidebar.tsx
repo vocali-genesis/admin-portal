@@ -8,18 +8,21 @@ export const getStaticProps = getStaticPropsWithTranslations;
 
 interface sidebarProps {
   _activeTab: string;
+  isOpen: boolean;
+  closeSidebar: () => void;
   sideBarItems: {
     label: string;
     icon: string;
   }[]
 }
 
-const SideBar: React.FC<sidebarProps> = ({ _activeTab, sideBarItems }) => {
+const SideBar: React.FC<sidebarProps> = ({ _activeTab, isOpen, closeSidebar, sideBarItems }) => {
   const t = useTranslations('common');
   const [activeTab, setActiveTab] = useState(_activeTab);
 
   return (
-    <aside className={sidebar_styles.sidebar}>
+    <aside className={`${sidebar_styles.sidebar} ${isOpen ? sidebar_styles.open : ''}`}>
+      <button className={sidebar_styles.closeButton} onClick={closeSidebar}>×</button>
       <ul className={sidebar_styles.sidebarList}>
         {sideBarItems.map((item, index) => (
           <li
