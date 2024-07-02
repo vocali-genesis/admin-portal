@@ -5,11 +5,11 @@ import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "@/styles/forms/form.module.css";
-import auth_schema from "@/resources/form-schemas/auth-schema";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import auth_schema from "@/resources/inputs/form-schemas/auth-schema";
 import errorHandler from "@/core/error-handler";
+import { getStaticPropsWithTranslations } from '@/modules/lang/props';
 
-export const getStaticProps = getStaticPropsWithTranslations;
+const getStaticProps = getStaticPropsWithTranslations;
 
 interface LoginFormProps {
   onLoginSuccess: (user: any, token: string) => void;
@@ -30,7 +30,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       const response = await AuthService.loginUser(data.email, data.password);
       if (response) onLoginSuccess(response.user, response.token as string);
     } catch (error) {
-      console.error("Login failed:", error);
       if (error instanceof Error) {
         errorHandler(t(error.message));
       } else {
@@ -42,13 +41,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const handleOAuthClick = async (provider: Provider) => {
     try {
       const response = await AuthService.oauth(provider);
-      if (response && response.url) {
-        window.location.href = response.url;
-      } else {
-        errorHandler(t("Failed to initiate OAuth login"));
-      }
+      if (response && response.url) window.location.href = response.url;
     } catch (error) {
-      console.error("OAuth login failed:", error);
       if (error instanceof Error) {
         errorHandler(t(error.message));
       } else {
