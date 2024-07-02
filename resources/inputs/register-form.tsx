@@ -5,12 +5,11 @@ import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "@/styles/forms/form.module.css";
-import auth_schema from "@/resources/form-schemas/auth-schema";
+import auth_schema from "@/resources/inputs/form-schemas/auth-schema";
 import errorHandler from "@/core/error-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 
-export const getStaticProps = getStaticPropsWithTranslations;
-
+const getStaticProps = getStaticPropsWithTranslations;
 interface RegisterFormProps {
   onRegisterSuccess: (user: any, token: string) => void;
 }
@@ -45,11 +44,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   const handleOAuthClick = async (provider: Provider) => {
     try {
       const response = await AuthService.oauth(provider);
-      if (response && response.url) {
-        window.location.href = response.url;
-      } else {
-        errorHandler(t("Failed to initiate OAuth login"));
-      }
+      if (response && response.url) window.location.href = response.url;
     } catch (error) {
       if (error instanceof Error) {
         errorHandler(t(error.message));
