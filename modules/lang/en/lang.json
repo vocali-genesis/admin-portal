@@ -23,6 +23,12 @@
     "Failed to initiate OAuth login": "Failed to initiate OAuth login",
     "Recordings": "Recordings",
     "Historical": "Historical",
+    "Profile": "Profile",
+    "Templates": "Templates",
+    "Payments": "Payments",
+    "Organizations": "Organizations",
+    "Storage": "Storage",
+    "Settings": "Settings",
     "Organization": "Organization",
     "Upgrade": "Upgrade"
   }

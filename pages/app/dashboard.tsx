@@ -10,11 +10,16 @@ export const getStaticProps = getStaticPropsWithTranslations;
 const Dashboard: React.FC = () => {
   const t = useTranslations("common");
 
+  const sideBarItems = [
+    { icon: "/recordings.svg", label: "Recordings" },
+    { icon: "/history.svg", label: "Historical" },
+  ];
+
   return (
     <div className={dash_styles.container}>
       <Navbar />
       <div className={dash_styles.contentWrapper}>
-        <SideBar />
+        <SideBar _activeTab="Recordings" sideBarItems={sideBarItems}/>
         <main className={dash_styles.mainContent}>
           {/* Main content area */}
         </main>

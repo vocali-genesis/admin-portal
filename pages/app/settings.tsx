@@ -10,11 +10,19 @@ export const getStaticProps = getStaticPropsWithTranslations;
 const Settings: React.FC = () => {
   const t = useTranslations("common");
 
+  const sideBarItems = [
+    { icon: "/profile-avatar.svg", label: "Profile" },
+    { icon: "/template-avatar.svg", label: "Templates" },
+    { icon: "/profile-avatar.svg", label: "Payments" },
+    { icon: "/template-avatar.svg", label: "Organization" },
+    { icon: "/profile-avatar.svg", label: "Storage" },
+  ];
+
   return (
     <div className={dash_styles.container}>
       <Navbar />
       <div className={dash_styles.contentWrapper}>
-        <SideBar />
+        <SideBar _activeTab="Profile" sideBarItems={sideBarItems}/>
         <main className={dash_styles.mainContent}>
           {/* Main content area */}
         </main>

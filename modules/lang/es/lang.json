@@ -23,6 +23,11 @@
     "Failed to initiate OAuth login": "Fallo al iniciar sesión con OAuth",
     "Recordings": "Grabaciones",
     "Historical": "Histórico",
+    "Profile": "Perfil",
+    "Templates": "Plantillas",
+    "Payments": "Pagos",
+    "Organizations": "Organizaciones",
+    "Storage": "Almacenamiento",
     "Organization": "Organización",
     "Upgrade": "Actualizar"
   }
