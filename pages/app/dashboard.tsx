@@ -57,7 +57,7 @@ const Dashboard: React.FC = () => {
             <div className={dash_styles.divider}></div>
 
             <div className={dash_styles.uploadSection}>
-              <h3>{t("Upload")}</h3>
+              <h3 className={dash_styles.h3}>{t("Upload")}</h3>
               <div className={dash_styles.uploadArea}>
                 <Image
                   src="/cloud-avatar.svg"
@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
                   width={50}
                   height={50}
                 />
-                <p className={dash_styles.p}>{t("Drag, Drop Or Browse")}</p>
+                <p className={dash_styles.p}>{t("Drag & Drop Or Browse")}</p>
                 <small className={dash_styles.small}>
                   {t("Supported Formats: MP3")}
                 </small>
