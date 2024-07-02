@@ -1,7 +1,6 @@
 import "@/styles/globals.css";
 import { AppProps } from "next/app";
 import { NextIntlClientProvider } from "next-intl";
-import { Toaster } from 'react-hot-toast';
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";

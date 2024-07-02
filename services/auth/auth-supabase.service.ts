@@ -1,14 +1,8 @@
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
-<<<<<<< HEAD
 import { Provider } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import messageHandler from "@/core/message-handler";
 import { MODULE } from "@/core/constants";
-=======
-import { Provider } from '@supabase/supabase-js';
-import config from "@/resources/utils/config";
-import errorHandler from "@/core/error-handler";
->>>>>>> f4a2b5d (Updated auth service and register and login forms)
 
 class AuthService {
   private supabase: SupabaseClient;
