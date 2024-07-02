@@ -7,7 +7,7 @@ import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 
 export const getStaticProps = getStaticPropsWithTranslations;
 
-const Dashboard: React.FC = () => {
+const Settings: React.FC = () => {
   const t = useTranslations("common");
 
   return (
@@ -23,4 +23,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Settings;

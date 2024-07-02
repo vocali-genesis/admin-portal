@@ -20,6 +20,10 @@
     "An unexpected error occurred": "Se produjo un error inesperado",
     "Email rate limit exceeded": "Límite de velocidad de correo electrónico excedido",
     "An unexpected error occurred during OAuth login": "Se produjo un error inesperado durante el inicio de sesión con OAuth",
-    "Failed to initiate OAuth login": "Fallo al iniciar sesión con OAuth"
+    "Failed to initiate OAuth login": "Fallo al iniciar sesión con OAuth",
+    "Recordings": "Grabaciones",
+    "Historical": "Histórico",
+    "Organization": "Organización",
+    "Upgrade": "Actualizar"
   }
 }
