@@ -1,5 +1,6 @@
-import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
-import config from '@/resources/utils/config';
+import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
+import config from "@/resources/utils/config";
+import errorHandler from "@/core/error-handler";
 
 class AuthService {
   private supabase: SupabaseClient;
@@ -10,23 +11,34 @@ class AuthService {
     this.supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
 
-  async registerUser(email: string, password: string): Promise<{ user: User | null; token: string | undefined }> {
+  private handleError(error: any): { user: null; token: undefined } {
+    errorHandler(error.message);
+    return { user: null, token: undefined };
+  }
+
+  async registerUser(
+    email: string,
+    password: string,
+  ): Promise<{ user: User | null; token: string | undefined }> {
     const { data, error } = await this.supabase.auth.signUp({
       email,
       password,
     });
-    if (error) throw error;
-    
+    if (error) return this.handleError(error);
+
     return { user: data.user, token: data.session?.access_token };
   }
 
-  async loginUser(email: string, password: string): Promise<{ user: User | null; token: string | undefined }> {
+  async loginUser(
+    email: string,
+    password: string,
+  ): Promise<{ user: User | null; token: string | undefined }> {
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
       password,
     });
-    if (error) throw error;
-  
+    if (error) return this.handleError(error);
+
     return { user: data.user, token: data.session?.access_token };
   }
 
