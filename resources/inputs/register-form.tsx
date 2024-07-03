@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "@/styles/forms/form.module.css";
 import auth_schema from "@/resources/inputs/form-schemas/auth-schema";
-import errorHandler from "@/core/error-handler";
+import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 
 const getStaticProps = getStaticPropsWithTranslations;
@@ -30,13 +30,15 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
         data.email,
         data.password,
       );
-      if (response != null)
+      if (response != null) {
+        messageHandler.handleSuccess(t("Registration successful"));
         onRegisterSuccess(response.user, response.token as string);
+      }
     } catch (error) {
       if (error instanceof Error) {
-        errorHandler(t(error.message));
+        messageHandler.handleError(t(error.message));
       } else {
-        errorHandler(t("An unexpected error occurred"));
+        messageHandler.handleError(t("An unexpected error occurred"));
       }
     }
   };
@@ -47,9 +49,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
       if (response && response.url) window.location.href = response.url;
     } catch (error) {
       if (error instanceof Error) {
-        errorHandler(t(error.message));
+        messageHandler.handleError(t(error.message));
       } else {
-        errorHandler(t("An unexpected error occurred during OAuth login"));
+        messageHandler.handleError(
+          t("An unexpected error occurred during OAuth login"),
+        );
       }
     }
   };

@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "@/styles/forms/form.module.css";
 import auth_schema from "@/resources/inputs/form-schemas/auth-schema";
-import errorHandler from "@/core/error-handler";
+import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from '@/modules/lang/props';
 
 const getStaticProps = getStaticPropsWithTranslations;
@@ -28,12 +28,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const onSubmit = async (data: any) => {
     try {
       const response = await AuthService.loginUser(data.email, data.password);
-      if (response) onLoginSuccess(response.user, response.token as string);
+      if (response) {
+        messageHandler.handleSuccess(t("Login successful"));
+        onLoginSuccess(response.user, response.token as string);
+      }
     } catch (error) {
       if (error instanceof Error) {
-        errorHandler(t(error.message));
+        messageHandler.handleError(t(error.message));
       } else {
-        errorHandler(t("An unexpected error occurred"));
+        messageHandler.handleError(t("An unexpected error occurred"));
       }
     }
   };
@@ -44,9 +47,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       if (response && response.url) window.location.href = response.url;
     } catch (error) {
       if (error instanceof Error) {
-        errorHandler(t(error.message));
+        messageHandler.handleError(t(error.message));
       } else {
-        errorHandler(t("An unexpected error occurred during OAuth login"));
+        messageHandler.handleError(t("An unexpected error occurred during OAuth login"));
       }
     }
   };
