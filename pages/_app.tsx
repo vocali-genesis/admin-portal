@@ -3,11 +3,13 @@ import { AppProps } from "next/app";
 import { NextIntlClientProvider } from "next-intl";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
-// import { Toaster } from "@/resources/containers/translated-toaster";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import { setLocale } from "@/resources/utils/translate";
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  setLocale(router.locale || "en", pageProps.messages);
+
   return (
     <NextIntlClientProvider
       locale={router.locale || "en"}

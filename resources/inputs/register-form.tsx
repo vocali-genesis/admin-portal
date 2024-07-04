@@ -8,14 +8,15 @@ import form_style from "@/styles/forms/form.module.css";
 import auth_schema from "@/resources/inputs/form-schemas/auth-schema";
 import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import { GetStaticProps } from "next";
 
-const getStaticProps = getStaticPropsWithTranslations;
+export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 interface RegisterFormProps {
   onRegisterSuccess: (user: any, token: string) => void;
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
-  const t = useTranslations("common");
+  const t = useTranslations("");
   const {
     register,
     handleSubmit,

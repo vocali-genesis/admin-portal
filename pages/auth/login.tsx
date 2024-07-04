@@ -1,22 +1,23 @@
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useTranslations } from 'next-intl';
-import LoginForm from '@/resources/inputs/login-form';
-import register_page_style from '@/styles/pages/register.module.css';
-import { getStaticPropsWithTranslations } from '@/modules/lang/props';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useTranslations } from "next-intl";
+import LoginForm from "@/resources/inputs/login-form";
+import register_page_style from "@/styles/pages/register.module.css";
+import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import { GetStaticProps } from "next";
 
-export const getStaticProps = getStaticPropsWithTranslations;
+export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
-  const t = useTranslations('common');
+  const t = useTranslations("");
   const handleLoginSuccess = (user: any, token: string) => {
-    console.log('Login successful:', user, token);
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    router.push('/app/dashboard');
+    console.log("Login successful:", user, token);
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    router.push("/app/dashboard");
   };
 
   return (
@@ -33,13 +34,21 @@ const LoginPage: React.FC = () => {
       </div>
       <div className={register_page_style.rightColumn}>
         <div className={register_page_style.rightColumnContent}>
-          <Image src="/user.svg" alt="Login and Register" width={45} height={45} />
-          <h1 className={register_page_style.title}>{t('Login')}</h1>
+          <Image
+            src="/user.svg"
+            alt="Login and Register"
+            width={45}
+            height={45}
+          />
+          <h1 className={register_page_style.title}>{t("Login")}</h1>
           <LoginForm onLoginSuccess={handleLoginSuccess} />
           <p className={register_page_style.login_text}>
-            {t('Dont have an account?')}{' '}
-            <Link href="/auth/register" className={register_page_style.register_link}>
-              <strong>{t('Register')}</strong>
+            {t("Dont have an account?")}{" "}
+            <Link
+              href="/auth/register"
+              className={register_page_style.register_link}
+            >
+              <strong>{t("Register")}</strong>
             </Link>
           </p>
         </div>

@@ -7,16 +7,17 @@ import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "@/styles/forms/form.module.css";
 import auth_schema from "@/resources/inputs/form-schemas/auth-schema";
 import messageHandler from "@/core/message-handler";
-import { getStaticPropsWithTranslations } from '@/modules/lang/props';
+import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import { GetStaticProps } from "next";
 
-const getStaticProps = getStaticPropsWithTranslations;
+export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 interface LoginFormProps {
   onLoginSuccess: (user: any, token: string) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
-  const t = useTranslations("common");
+  const t = useTranslations("");
   const {
     register,
     handleSubmit,
@@ -49,7 +50,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       if (error instanceof Error) {
         messageHandler.handleError(t(error.message));
       } else {
-        messageHandler.handleError(t("An unexpected error occurred during OAuth login"));
+        messageHandler.handleError(
+          t("An unexpected error occurred during OAuth login"),
+        );
       }
     }
   };
