@@ -1,24 +1,22 @@
 import React from "react";
-import { Toaster, ToastOptions, resolveValue } from "react-hot-toast";
+import { Toaster as HotToaster, ToastPosition } from "react-hot-toast";
 import { useTranslations } from "next-intl";
 
-export function TranslatedToaster(props: ToastOptions) {
-  const t = useTranslations("common");
+interface ToasterProps {
+  position?: ToastPosition;
+}
+
+const Toaster: React.FC<ToasterProps> = ({ position = "top-right" }) => {
+  const t = useTranslations("Toaster");
+
   return (
-    <Toaster
-      {...props}
+    <HotToaster
+      position={position}
       toastOptions={{
-        ...props.toastOptions,
-        render: ({ message, ...rest }) => {
-          console.log(resolveValue(message, rest));
-          const translatedMessage = t(resolveValue(message, rest), {
-            defaultMessage: resolveValue(message, rest),
-          });
-          return typeof props.toastOptions?.render === "function"
-            ? props.toastOptions.render({ ...rest, message: translatedMessage })
-            : translatedMessage;
-        },
+        message: (message) => t(message as string),
       }}
     />
   );
-}
+};
+
+export default Toaster;
