@@ -1,6 +1,8 @@
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
+import { Provider } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
-import errorHandler from "@/core/error-handler";
+import messageHandler from "@/core/message-handler";
+import { MODULE } from "@/core/constants";
 
 class AuthService {
   private supabase: SupabaseClient;
@@ -11,20 +13,15 @@ class AuthService {
     this.supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
 
-  private handleError(error: any): { user: null; token: undefined } {
-    errorHandler(error.message);
-    return { user: null, token: undefined };
-  }
-
   async registerUser(
     email: string,
     password: string,
-  ): Promise<{ user: User | null; token: string | undefined }> {
+  ): Promise<{ user: User | null; token: string | undefined } | null> {
     const { data, error } = await this.supabase.auth.signUp({
       email,
       password,
     });
-    if (error) return this.handleError(error);
+    if (error) return messageHandler.handleError(error.message);
 
     return { user: data.user, token: data.session?.access_token };
   }
@@ -32,14 +29,28 @@ class AuthService {
   async loginUser(
     email: string,
     password: string,
-  ): Promise<{ user: User | null; token: string | undefined }> {
+  ): Promise<{ user: User | null; token: string | undefined } | null> {
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
       password,
     });
-    if (error) return this.handleError(error);
+    if (error) return messageHandler.handleError(error.message);
 
     return { user: data.user, token: data.session?.access_token };
+  }
+
+  async oauth(
+    provider: Provider,
+  ): Promise<{ provider: Provider; url: string } | null> {
+    const { data, error } = await this.supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: {
+        redirectTo: `${window.location.origin}/app/${MODULE.DASHBOARD}`,
+      },
+    });
+    if (error) return messageHandler.handleError(error.message);
+
+    return data;
   }
 
   getSupabaseClient(): SupabaseClient {
