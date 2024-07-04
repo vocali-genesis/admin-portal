@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import Navbar from "@/resources/containers/nav";
 import SideBar from "@/resources/containers/sidebar";
@@ -8,7 +8,8 @@ import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 export const getStaticProps = getStaticPropsWithTranslations;
 
 const Settings: React.FC = () => {
-  const t = useTranslations("common");
+  const t = useTranslations("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const sideBarItems = [
     { icon: "/profile-avatar.svg", label: "Profile" },
@@ -18,11 +19,20 @@ const Settings: React.FC = () => {
     { icon: "/profile-avatar.svg", label: "Storage" },
   ];
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <div className={dash_styles.container}>
-      <Navbar />
+      <Navbar toggleSidebar={toggleSidebar} />
       <div className={dash_styles.contentWrapper}>
-        <SideBar _activeTab="Profile" sideBarItems={sideBarItems}/>
+        <SideBar
+          _activeTab={"Profile"}
+          isOpen={sidebarOpen}
+          closeSidebar={() => setSidebarOpen(false)}
+          sideBarItems={sideBarItems}
+        />
         <main className={dash_styles.mainContent}>
           {/* Main content area */}
         </main>

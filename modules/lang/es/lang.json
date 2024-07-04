@@ -19,5 +19,22 @@
   "An unexpected error occurred": "Se produjo un error inesperado",
   "Email rate limit exceeded": "Límite de velocidad de correo electrónico excedido",
   "An unexpected error occurred during OAuth login": "Se produjo un error inesperado durante el inicio de sesión con OAuth",
-  "Failed to initiate OAuth login": "Fallo al iniciar sesión con OAuth"
+  "Failed to initiate OAuth login": "Fallo al iniciar sesión con OAuth",
+  "Recordings": "Grabaciones",
+  "Historical": "Histórico",
+  "Profile": "Perfil",
+  "Templates": "Plantillas",
+  "Payments": "Pagos",
+  "Organizations": "Organizaciones",
+  "Storage": "Almacenamiento",
+  "Organization": "Organización",
+  "Upgrade": "Actualizar",
+  "Record your consultation or upload an audio with the previously recorded consultation to generate a report": "Graba tu consulta o sube un audio con la consulta grabada previamente para generar un informe",
+  "Activate the audio recorder": "Activa la grabadora de audio",
+  "Click To Start Recording": "Haz clic para iniciar la grabación",
+  "Drag & Drop Or Browse": "Arrastrar & soltar o buscar",
+  "Supported Formats: MP3": "Formatos soportados: MP3",
+  "Upload Files": "Cargar Archivos",
+  "Upload": "Subir",
+  "Success": "Éxito"
 }

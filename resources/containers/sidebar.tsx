@@ -1,10 +1,11 @@
-import React, {useState} from "react";
-import Image from 'next/image';
-import { useTranslations } from 'next-intl';
-import { getStaticPropsWithTranslations } from '@/modules/lang/props';
-import sidebar_styles from '@/styles/components/sidebar.module.css';
+import React, { useState } from "react";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import sidebar_styles from "@/styles/components/sidebar.module.css";
+import { GetStaticProps } from "next";
 
-export const getStaticProps = getStaticPropsWithTranslations;
+export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 interface sidebarProps {
   _activeTab: string;
@@ -13,16 +14,25 @@ interface sidebarProps {
   sideBarItems: {
     label: string;
     icon: string;
-  }[]
+  }[];
 }
 
-const SideBar: React.FC<sidebarProps> = ({ _activeTab, isOpen, closeSidebar, sideBarItems }) => {
-  const t = useTranslations('common');
+const SideBar: React.FC<sidebarProps> = ({
+  _activeTab,
+  isOpen,
+  closeSidebar,
+  sideBarItems,
+}) => {
+  const t = useTranslations("");
   const [activeTab, setActiveTab] = useState(_activeTab);
 
   return (
-    <aside className={`${sidebar_styles.sidebar} ${isOpen ? sidebar_styles.open : ''}`}>
-      <button className={sidebar_styles.closeButton} onClick={closeSidebar}>×</button>
+    <aside
+      className={`${sidebar_styles.sidebar} ${isOpen ? sidebar_styles.open : ""}`}
+    >
+      <button className={sidebar_styles.closeButton} onClick={closeSidebar}>
+        ×
+      </button>
       <ul className={sidebar_styles.sidebarList}>
         {sideBarItems.map((item, index) => (
           <li
@@ -42,7 +52,7 @@ const SideBar: React.FC<sidebarProps> = ({ _activeTab, isOpen, closeSidebar, sid
         ))}
       </ul>
     </aside>
-    );
-  };
+  );
+};
 
 export default SideBar;

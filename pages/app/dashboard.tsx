@@ -9,7 +9,7 @@ import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 export const getStaticProps = getStaticPropsWithTranslations;
 
 const Dashboard: React.FC = () => {
-  const t = useTranslations("common");
+  const t = useTranslations("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const sideBarItems = [
