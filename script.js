@@ -1,0 +1,1 @@
+// This script reads the config json, and use FS to modify the content of the `import.ts`
