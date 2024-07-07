@@ -32,9 +32,13 @@
   "Record your consultation or upload an audio with the previously recorded consultation to generate a report": "Graba tu consulta o sube un audio con la consulta grabada previamente para generar un informe",
   "Activate the audio recorder": "Activa la grabadora de audio",
   "Click To Start Recording": "Haz clic para iniciar la grabación",
+  "Click To Stop Recording": "Haz clic para detener la grabación",
   "Drag & Drop Or Browse": "Arrastrar & soltar o buscar",
   "Supported Formats: MP3": "Formatos soportados: MP3",
   "Upload Files": "Cargar Archivos",
   "Upload": "Subir",
-  "Success": "Éxito"
+  "Success": "Éxito",
+  "Recording started": "Grabación iniciada",
+  "Recording stopped": "Grabación detenida",
+  "Submit": "Enviar"
 }

@@ -1,0 +1,156 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: white;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.mainContent {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+}
+
+.audioPlayerContainer {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6rem;
+}
+
+.instructions {
+  width: 100%;
+  color: black;
+  text-align: left;
+  margin-bottom: 40px;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+}
+
+.audioPlayer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.seekBar {
+  width: 100%;
+  margin-bottom: 10px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  background: #ddd;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity .2s;
+}
+
+.seekBar:hover {
+  opacity: 1;
+}
+
+.seekBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #59DBBC;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.seekBar::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #59DBBC;
+  cursor: pointer;
+  border-radius: 50%;
+  border: none;
+}
+
+/* For Firefox */
+/* .seekBar::-moz-range-progress {
+  background-color: #59DBBC;
+  height: 2px;
+} */
+
+/* For Chrome and others */
+/* .seekBar::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: var(--seek-before-width);
+  height: 2px;
+  background-color: #59DBBC;
+  cursor: pointer;
+  transform: translateY(-50%);
+} */
+
+.timeDisplay {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  color: black;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+}
+
+.controlsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.playPauseButton, .skipButton, .actionButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playPauseButton {
+  width: 40px;
+  height: 40px;
+  background-color: #59DBBC;
+  border-radius: 50%;
+}
+
+.submitButton {
+  background-color: #59DBBC;
+  color: white;
+  border: none;
+  margin-top: 2rem;
+  padding: 10px 40px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.7rem;
+  transition: background-color 0.3s ease;
+
+  font-family: "Montserrat", sans-serif;
+}
+
+.submitButton:hover {
+  background-color: #4DBCAA;
+}
