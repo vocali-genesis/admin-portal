@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -17,7 +17,10 @@ const Dashboard: React.FC = () => {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const sideBarItems = [
     { icon: "/recordings.svg", label: "Recordings" },
@@ -66,6 +69,65 @@ const Dashboard: React.FC = () => {
     };
   }, []);
 
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files.length) {
+      handleFileSelection(files[0]);
+    }
+  }, []);
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleFileSelection(files[0]);
+    }
+  };
+
+  const handleFileSelection = (file: File) => {
+    if (file.type.startsWith("audio/")) {
+      setSelectedFile(file);
+    } else {
+      messageHandler.handleError(t("Please select an audio file"));
+    }
+  };
+
+  const handleUpload = () => {
+    if (selectedFile) {
+      const audioUrl = URL.createObjectURL(selectedFile);
+      router.push({
+        pathname: "/app/recording",
+        query: { audioUrl: audioUrl },
+      });
+    } else {
+      messageHandler.handleError(t("Please select an audio file to upload"));
+    }
+  };
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className={dash_styles.container}>
       <Navbar toggleSidebar={toggleSidebar} />
@@ -110,19 +172,49 @@ const Dashboard: React.FC = () => {
 
             <div className={dash_styles.uploadSection}>
               <h3 className={dash_styles.h3}>{t("Upload")}</h3>
-              <div className={dash_styles.uploadArea}>
+              <div
+                className={`${dash_styles.uploadArea} ${isDragging ? dash_styles.dragging : ""}`}
+                onDragEnter={handleDragEnter}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
                 <Image
                   src="/cloud-avatar.svg"
                   alt="Upload"
                   width={50}
                   height={50}
                 />
-                <p className={dash_styles.p}>{t("Drag & Drop Or Browse")}</p>
+                <p className={dash_styles.p}>
+                  {t("Drag & Drop Or")}{" "}
+                  <span
+                    onClick={handleBrowseClick}
+                    className={dash_styles.browseLink}
+                  >
+                    {t("Browse")}
+                  </span>
+                </p>
                 <small className={dash_styles.small}>
                   {t("Supported Formats: MP3")}
                 </small>
+                {selectedFile && (
+                  <p className={dash_styles.selectedFile}>
+                    {selectedFile.name}
+                  </p>
+                )}
               </div>
-              <button className={dash_styles.uploadButton}>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileInput}
+                accept="audio/*"
+                style={{ display: "none" }}
+              />
+              <button
+                className={dash_styles.uploadButton}
+                onClick={handleUpload}
+                disabled={!selectedFile}
+              >
                 {t("Upload Files")}
               </button>
             </div>

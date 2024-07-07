@@ -105,6 +105,12 @@ const Recording: React.FC = () => {
     console.log("Recording submitted");
   };
 
+  const handleDelete = () => {
+    router.push({
+      pathname: "/app/dashboard",
+    });
+  };
+
   return (
     <div className={recording_styles.container}>
       <Navbar toggleSidebar={toggleSidebar} />
@@ -150,7 +156,7 @@ const Recording: React.FC = () => {
               <div className={recording_styles.controlsContainer}>
                 <button
                   onClick={() => {
-                    /* Handle delete */
+                    handleDelete;
                   }}
                   className={recording_styles.actionButton}
                 >

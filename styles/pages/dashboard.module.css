@@ -98,6 +98,10 @@
   text-align: center;
 
   background: #F8F8FF;
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
 }
 
 .uploadArea img {
@@ -111,6 +115,41 @@
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
+  width: 85%;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.selectedFile {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #666;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.7rem;
+}
+
+.uploadButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.uploadArea.dragging {
+  border-color: #59DBBC;
+  background-color: rgba(89, 219, 188, 0.1);
+}
+
+.browseLink {
+  color: #59DBBC;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.browseLink:hover {
+  color: #4DBCAA;
 }
 
 .h2 {
