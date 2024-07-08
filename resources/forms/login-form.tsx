@@ -5,10 +5,13 @@ import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "@/styles/forms/form.module.css";
-import auth_schema from "@/resources/inputs/form-schemas/auth-schema";
+import auth_schema from "@/resources/forms/schemas/auth-schema";
 import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
+import Input from "@/resources/inputs/input";
+import AuthButton from "@/resources/containers/auth-button";
+import OAuthButton from "@/resources/containers/oauth-button";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
@@ -44,63 +47,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       onSubmit={handleSubmit(onSubmit)}
       className={form_style.formContainer}
     >
-      <div className={form_style.formInput}>
-        <input
-          {...register("email", { required: "Email is required" })}
-          type="email"
-          placeholder={t("Email")}
-          className={`${form_style.formControl} ${form_style.inputEmailIcon}`}
-        />
-        {errors.email && (
-          <span className={form_style.errorMessage}>
-            {t(errors.email.message)}
-          </span>
-        )}
-      </div>
-      <div className={form_style.formInput}>
-        <input
-          {...register("password", { required: "Password is required" })}
-          type="password"
-          placeholder={t("Password")}
-          className={`${form_style.formControl} ${form_style.inputPasswordIcon}`}
-        />
-        {errors.password && (
-          <span className={form_style.errorMessage}>
-            {t(errors.password.message)}
-          </span>
-        )}
-      </div>
-      <div className={form_style.buttonWrapper}>
-        <button type="submit" className={form_style.submitButton}>
-          {t("Login")}
-        </button>
-      </div>
+      <Input register={register} errors={errors} />
+      <AuthButton action="login" />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
           <p className={form_style.oauthText}>
             <strong>{t("Login")}</strong> {t("with others")}:
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => handleOAuthClick("google")}
-          className={`${form_style.oauthButton} ${form_style.googleOAuthButton}`}
-        >
-          <p>
-            {" "}
-            {t("Login with")} <strong> google</strong>{" "}
-          </p>
-        </button>
-        <button
-          type="button"
-          onClick={() => handleOAuthClick("facebook")}
-          className={`${form_style.oauthButton} ${form_style.facebookOAuthButton}`}
-        >
-          <p>
-            {" "}
-            {t("Login with")} <strong> facebook</strong>{" "}
-          </p>
-        </button>
+        <OAuthButton
+          provider="google"
+          onClick={handleOAuthClick}
+          action="login"
+        />
+        <OAuthButton
+          provider="facebook"
+          onClick={handleOAuthClick}
+          action="login"
+        />
       </div>
     </form>
   );

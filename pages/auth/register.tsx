@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import RegisterForm from "@/resources/inputs/register-form";
+import RegisterForm from "@/resources/forms/register-form";
 import register_page_style from "@/styles/pages/register.module.css";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
