@@ -56,6 +56,11 @@ class AuthService {
   getSupabaseClient(): SupabaseClient {
     return this.supabase;
   }
+
+  async getUser(): Promise<User | null> {
+    const { data } = await this.supabase.auth.getUser();
+    return data.user;
+  }
 }
 
 export default new AuthService();
