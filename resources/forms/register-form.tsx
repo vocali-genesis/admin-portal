@@ -16,7 +16,7 @@ import OAuthButton from "@/resources/containers/oauth-button";
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 interface RegisterFormProps {
-  onRegisterSuccess: (user: any, token: string) => void;
+  onRegisterSuccess: () => void;
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
@@ -33,7 +33,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
     const response = await AuthService.registerUser(data.email, data.password);
     if (response != null) {
       messageHandler.handleSuccess(t("Registration successful"));
-      onRegisterSuccess(response.user, response.token as string);
+      onRegisterSuccess();
     }
   };
 

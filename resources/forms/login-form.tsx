@@ -16,7 +16,7 @@ import OAuthButton from "@/resources/containers/oauth-button";
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 interface LoginFormProps {
-  onLoginSuccess: (user: any, token: string) => void;
+  onLoginSuccess: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
@@ -33,7 +33,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     const response = await AuthService.loginUser(data.email, data.password);
     if (response) {
       messageHandler.handleSuccess(t("Login successful"));
-      onLoginSuccess(response.user, response.token as string);
+      onLoginSuccess();
     }
   };
 

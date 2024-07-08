@@ -13,10 +13,7 @@ export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 const RegisterPage: React.FC = () => {
   const router = useRouter();
   const t = useTranslations("");
-  const handleRegisterSuccess = (user: any, token: string) => {
-    console.log("Registration successful:", user, token);
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+  const handleRegisterSuccess = () => {
     router.push("/auth/login");
   };
 

@@ -13,10 +13,7 @@ export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 const LoginPage: React.FC = () => {
   const router = useRouter();
   const t = useTranslations("");
-  const handleLoginSuccess = (user: any, token: string) => {
-    console.log("Login successful:", user, token);
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+  const handleLoginSuccess = () => {
     router.push("/app/dashboard");
   };
 
