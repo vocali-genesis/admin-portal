@@ -3,6 +3,7 @@ import { Provider } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import messageHandler from "@/core/message-handler";
 import { MODULE } from "@/core/constants";
+import { getDefaultResultOrder } from "dns";
 
 class AuthService {
   private supabase: SupabaseClient;
@@ -55,6 +56,11 @@ class AuthService {
 
   getSupabaseClient(): SupabaseClient {
     return this.supabase;
+  }
+
+  async getUser(): Promise<User | null> {
+    const { data } = await this.supabase.auth.getUser();
+    return data.user;
   }
 }
 
