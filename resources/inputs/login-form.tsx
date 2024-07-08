@@ -27,34 +27,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   });
 
   const onSubmit = async (data: any) => {
-    try {
-      const response = await AuthService.loginUser(data.email, data.password);
-      if (response) {
-        messageHandler.handleSuccess(t("Login successful"));
-        onLoginSuccess(response.user, response.token as string);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        messageHandler.handleError(t(error.message));
-      } else {
-        messageHandler.handleError(t("An unexpected error occurred"));
-      }
+    const response = await AuthService.loginUser(data.email, data.password);
+    if (response) {
+      messageHandler.handleSuccess(t("Login successful"));
+      onLoginSuccess(response.user, response.token as string);
     }
   };
 
   const handleOAuthClick = async (provider: Provider) => {
-    try {
-      const response = await AuthService.oauth(provider);
-      if (response && response.url) window.location.href = response.url;
-    } catch (error) {
-      if (error instanceof Error) {
-        messageHandler.handleError(t(error.message));
-      } else {
-        messageHandler.handleError(
-          t("An unexpected error occurred during OAuth login"),
-        );
-      }
-    }
+    const response = await AuthService.oauth(provider);
+    if (response && response.url) window.location.href = response.url;
   };
 
   return (
