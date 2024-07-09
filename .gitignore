@@ -36,12 +36,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-<<<<<<< HEAD
 *.spec.ts
-package-lock.json
 .replit
 replit.nix
-=======
-.replit
-replit.nix
->>>>>>> 35c0e9f (Updated folder structure)
