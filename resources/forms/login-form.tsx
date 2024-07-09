@@ -60,11 +60,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           onClick={handleOAuthClick}
           action="login"
         />
-        <OAuthButton
+        {/* <OAuthButton
           provider="facebook"
           onClick={handleOAuthClick}
           action="login"
-        />
+        /> */}
       </div>
     </form>
   );

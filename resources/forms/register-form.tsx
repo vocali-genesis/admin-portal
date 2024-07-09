@@ -60,11 +60,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
           onClick={handleOAuthClick}
           action="register"
         />
-        <OAuthButton
+        {/* <OAuthButton
           provider="facebook"
           onClick={handleOAuthClick}
           action="register"
-        />
+        /> */}
       </div>
     </form>
   );
