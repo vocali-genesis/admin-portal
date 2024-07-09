@@ -1,4 +1,4 @@
-// AUTOmATICALLY GENARATED
+// AUTOMATICALY GENARATED
 
 import '@/core/module/module.manager'
 import './modules/auth/supabase'
