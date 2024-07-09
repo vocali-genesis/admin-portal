@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { setLocale } from "@/resources/utils/translate";
+import "@/import";
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();

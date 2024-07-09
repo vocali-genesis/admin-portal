@@ -4,10 +4,11 @@ import Navbar from "@/resources/containers/nav";
 import SideBar from "@/resources/containers/sidebar";
 import dash_styles from "@/styles/pages/dashboard.module.css";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import { GlobalCore } from "@/core/module/module.types";
 
 export const getStaticProps = getStaticPropsWithTranslations;
 
-const Settings: React.FC = () => {
+const Settings = () => {
   const t = useTranslations("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -41,4 +42,4 @@ const Settings: React.FC = () => {
   );
 };
 
-export default Settings;
+GlobalCore.manager.app('settings', Settings)

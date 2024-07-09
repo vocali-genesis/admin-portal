@@ -1,3 +1,4 @@
+import { GlobalCore } from "@/core/module/module.types";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -12,7 +13,7 @@ import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const t = useTranslations("");
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -225,4 +226,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+GlobalCore.manager.app('dashboard', Dashboard)

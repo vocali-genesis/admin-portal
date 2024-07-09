@@ -7,10 +7,11 @@ import SideBar from "@/resources/containers/sidebar";
 import recording_styles from "@/styles/pages/recording.module.css";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
+import { GlobalCore } from "@/core/module/module.types";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
-const Recording: React.FC = () => {
+const Recording = () => {
   const t = useTranslations("");
   const router = useRouter();
   const { audioUrl } = router.query;
@@ -227,4 +228,4 @@ const Recording: React.FC = () => {
   );
 };
 
-export default Recording;
+GlobalCore.manager.app('recording', Recording)
