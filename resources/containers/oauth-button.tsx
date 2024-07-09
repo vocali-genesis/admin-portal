@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslations } from "next-intl";
 import { Provider } from "@supabase/supabase-js";
-import form_style from "@/styles/forms/form.module.css";
+import oauth_style from "./styles/oauth-button.module.css";
 
 interface OAuthButtonProps {
   provider: Provider;
@@ -20,7 +20,7 @@ const OAuthButton: React.FC<OAuthButtonProps> = ({
     <button
       type="button"
       onClick={() => onClick(provider)}
-      className={`${form_style.oauthButton} ${form_style[`${provider}OAuthButton`]}`}
+      className={`${oauth_style.oauthButton} ${oauth_style[`${provider}OAuthButton`]}`}
     >
       <p>
         {action === "register" ? t("Register with") : t("Login with")}{" "}

@@ -1,7 +1,6 @@
-import React, { useState } from "react"
-import { useRouter } from 'next/router'
-import { ModuleManager } from "@/core/module/module.manager"
-import dash_styles from "@/styles/pages/dashboard.module.css";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/resources/containers/nav";
 import SideBar from "@/resources/containers/sidebar";
 
@@ -29,23 +28,21 @@ const Settings = () => {
   }
 
   return (
-    <div className={dash_styles.container}>
+    <div className="flex flex-col h-screen bg-white">
       <Navbar toggleSidebar={toggleSidebar} />
-      <div className={dash_styles.contentWrapper}>
+      <div className="flex flex-grow overflow-hidden">
         <SideBar
           _activeTab={slug}
           isOpen={sidebarOpen}
           closeSidebar={() => setSidebarOpen(false)}
           sideBarItems={sideBarItems}
         />
-        <main className={dash_styles.mainContent}>
+        <main className="flex-grow p-5 overflow-y-auto">
           <Component />
         </main>
       </div>
     </div>
   );
-}
+};
 
-export default Settings
-
-
+export default Settings;

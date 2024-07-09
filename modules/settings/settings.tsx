@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import Navbar from "@/resources/containers/nav";
 import SideBar from "@/resources/containers/sidebar";
-import dash_styles from "@/styles/pages/dashboard.module.css";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GlobalCore } from "@/core/module/module.types";
+import settings_styles from "./styles/settings.module.css";
 
 export const getStaticProps = getStaticPropsWithTranslations;
 
@@ -25,16 +25,16 @@ const Settings = () => {
   };
 
   return (
-    <div className={dash_styles.container}>
+    <div className={settings_styles.container}>
       <Navbar toggleSidebar={toggleSidebar} />
-      <div className={dash_styles.contentWrapper}>
+      <div className={settings_styles.contentWrapper}>
         <SideBar
           _activeTab={"Profile"}
           isOpen={sidebarOpen}
           closeSidebar={() => setSidebarOpen(false)}
           sideBarItems={sideBarItems}
         />
-        <main className={dash_styles.mainContent}>
+        <main className={settings_styles.mainContent}>
           {/* Main content area */}
         </main>
       </div>
@@ -42,4 +42,4 @@ const Settings = () => {
   );
 };
 
-GlobalCore.manager.settings('settings', Settings)
+GlobalCore.manager.settings("settings", Settings);

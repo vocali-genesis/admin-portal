@@ -123,47 +123,6 @@
   margin-top: 1rem;
 }
 
-.oauthButton {
-  width: 100%;
-  max-width: 400px; /* adjust as needed */
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  border-style: solid;
-  border-width: 0.5px;
-  border-color: rgb(0, 0, 0, 0.1);
-  cursor: pointer;
-  margin-bottom: 1rem;
-  color: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
-  background: white;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.8rem;
-}
-
-/* If you want to add icons, you can use :before pseudo-element */
-.facebookOAuthButton:before,
-.googleOAuthButton:before {
-  content: '';
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-.googleOAuthButton:before {
-  background-image: url('/google.svg'); /* Add your GitHub icon */
-}
-
-.facebookOAuthButton:before {
-  background-image: url('/facebook.svg'); /* Add your Google icon */
-}
-
 .messageContainer {
   padding: 10px;
   margin-bottom: 15px;

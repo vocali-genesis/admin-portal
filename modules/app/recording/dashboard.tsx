@@ -7,7 +7,7 @@ import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import messageHandler from "@/core/message-handler";
 import { AudioRecorder } from "@/modules/app/recording/libs/audio-recorder";
 import { GetStaticProps } from "next";
-import dash_styles from "@/styles/pages/dashboard.module.css";
+import dash_styles from "./styles/dashboard.module.css";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
@@ -121,7 +121,7 @@ const Dashboard = () => {
     <>
       <h2 className={dash_styles.h2}>
         {t(
-          "Record your consultation or upload an audio with the previously recorded consultation to generate a report"
+          "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
         )}
       </h2>
       <p className={`${dash_styles.p} ${dash_styles.top_p}`}>

@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import LoginForm from "@/resources/forms/login-form";
-import register_page_style from "@/styles/pages/register.module.css";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
+import auth_style from "./styles/auth.module.css";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
@@ -19,16 +19,13 @@ const Login = () => {
   };
 
   return (
-    <div className={register_page_style.rightColumnContent}>
+    <div className={auth_style.rightColumnContent}>
       <Image src="/user.svg" alt="Login and Register" width={45} height={45} />
-      <h1 className={register_page_style.title}>{t("Login")}</h1>
+      <h1 className={auth_style.title}>{t("Login")}</h1>
       <LoginForm onLoginSuccess={handleLoginSuccess} />
-      <p className={register_page_style.login_text}>
+      <p className={auth_style.login_text}>
         {t("Dont have an account?")}{" "}
-        <Link
-          href="/auth/register"
-          className={register_page_style.register_link}
-        >
+        <Link href="/auth/register" className={auth_style.register_link}>
           <strong>{t("Register")}</strong>
         </Link>
       </p>

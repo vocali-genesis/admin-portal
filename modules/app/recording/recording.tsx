@@ -2,10 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import recording_styles from "@/styles/pages/recording.module.css";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
+import recording_styles from "./styles/recording.module.css";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
