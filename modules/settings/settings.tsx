@@ -42,4 +42,4 @@ const Settings = () => {
   );
 };
 
-GlobalCore.manager.app('settings', Settings)
+GlobalCore.manager.settings('settings', Settings)

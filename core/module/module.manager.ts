@@ -16,6 +16,7 @@ export class ModuleManager {
     return this.instance;
   }
 
+  private auth: Record<string, CoreComponent> = {};
   private app: Record<string, CoreComponent> = {};
   private settings: Record<string, CoreComponent> = {};
   private menu: Record<string, MenuItem> = {};
@@ -23,6 +24,9 @@ export class ModuleManager {
 
   public get subscribe(): ModuleSubscriber {
     return {
+      auth: (key: string, component: CoreComponent) => {
+        this.auth[key] = component;
+      },
       app: (key: string, component: CoreComponent) => {
         this.app[key] = component;
       },
@@ -40,6 +44,7 @@ export class ModuleManager {
 
   public get components() {
     return {
+      auth: <T extends CoreComponent>(key: string) => this.auth[key] as T,
       app: <T extends CoreComponent>(key: string) => this.app[key] as T,
       settings: <T extends CoreComponent>(key: string) =>
         this.settings[key] as T,

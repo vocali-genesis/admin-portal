@@ -9,6 +9,7 @@ export type MenuItem<T = object> = {
 export type CoreComponent = () => React.ReactNode;
 
 export interface ModuleSubscriber {
+  auth: (key: string, component: CoreComponent) => void;
   app: (key: string, component: CoreComponent) => void;
   settings: (key: string, component: CoreComponent) => void;
   menu: (key: string, item: MenuItem) => void;
