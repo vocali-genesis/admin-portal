@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { setLocale } from "@/resources/utils/translate";
+import { GetStaticProps } from "next";
 import "@/import";
 
 function App({ Component, pageProps }: AppProps) {
@@ -25,4 +26,4 @@ function App({ Component, pageProps }: AppProps) {
 
 export default App;
 
-export const getStaticProps = getStaticPropsWithTranslations;
+export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;

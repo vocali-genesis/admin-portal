@@ -13,12 +13,7 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
   return (
     <nav className={nav_styles.navbar}>
       <div className={nav_styles.navbarMobileLeft}>
-        <Image
-          src="/login-register.svg"
-          alt="Genesis"
-          width={100}
-          height={30}
-        />
+        <Image src="/logo.svg" alt="Genesis" width={100} height={30} />
       </div>
       <div className={nav_styles.navbarLeft}>
         <div className={nav_styles.dropdown}>
@@ -29,14 +24,16 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
         </div>
       </div>
       <div className={nav_styles.navbarRight}>
-        <button className={nav_styles.upgradeButton}>{t("Upgrade")}</button>
-        <Image
-          src="/Avatar.svg"
-          alt="User"
-          width={33}
-          height={33}
-          className={nav_styles.userIcon}
-        />
+        <button
+          className={`${nav_styles.navRightButton} ${nav_styles.settingsButton}`}
+        >
+          {t("Settings")}
+        </button>
+        <button
+          className={`${nav_styles.navRightButton} ${nav_styles.logoutButton}`}
+        >
+          {t("Logout")}
+        </button>
       </div>
       <div className={nav_styles.navbarMobileRight}>
         <button className={nav_styles.menuButton} onClick={toggleSidebar}>

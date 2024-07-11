@@ -19,6 +19,9 @@ const config: Config = {
       flex: {
         "2": "2 2 0%",
       },
+      screens: {
+        custom: { max: "750px" },
+      },
     },
   },
   plugins: [],

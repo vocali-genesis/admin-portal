@@ -61,6 +61,11 @@ class AuthService {
     const { data } = await this.supabase.auth.getUser();
     return data.user;
   }
+
+  async logout(): Promise<null | undefined> {
+    let { error } = await this.supabase.auth.signOut();
+    if (error) return messageHandler.handleError(error.message);
+  }
 }
 
 export default new AuthService();
