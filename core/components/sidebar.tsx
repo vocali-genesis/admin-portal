@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import AuthService from "@/services/auth/auth-supabase.service";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
-import sidebar_styles from "@/styles/components/sidebar.module.css";
+import sidebar_styles from "./styles/sidebar.module.css";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;

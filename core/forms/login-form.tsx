@@ -4,8 +4,8 @@ import { useTranslations } from "next-intl";
 import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
-import form_style from "@/styles/forms/form.module.css";
-import auth_schema from "@/resources/forms/schemas/auth-schema";
+import form_style from "./styles/form.module.css";
+import auth_schema from "./schemas/auth-schema";
 import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
@@ -15,11 +15,11 @@ import OAuthButton from "@/resources/containers/oauth-button";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
-interface RegisterFormProps {
-  onRegisterSuccess: () => void;
+interface LoginFormProps {
+  onLoginSuccess: () => void;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const t = useTranslations("");
   const {
     register,
@@ -30,10 +30,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   });
 
   const onSubmit = async (data: any) => {
-    const response = await AuthService.registerUser(data.email, data.password);
-    if (response != null) {
-      messageHandler.handleSuccess(t("Registration successful"));
-      onRegisterSuccess();
+    const response = await AuthService.loginUser(data.email, data.password);
+    if (response) {
+      messageHandler.handleSuccess(t("Login successful"));
+      onLoginSuccess();
     }
   };
 
@@ -48,26 +48,26 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
       className={form_style.formContainer}
     >
       <Input register={register} errors={errors} />
-      <AuthButton action="register" />
+      <AuthButton action="login" />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
           <p className={form_style.oauthText}>
-            <strong>{t("Register")}</strong> {t("with others")}:
+            <strong>{t("Login")}</strong> {t("with others")}:
           </p>
         </div>
         <OAuthButton
           provider="google"
           onClick={handleOAuthClick}
-          action="register"
+          action="login"
         />
         {/* <OAuthButton
           provider="facebook"
           onClick={handleOAuthClick}
-          action="register"
+          action="login"
         /> */}
       </div>
     </form>
   );
 };
 
-export default RegisterForm;
+export default LoginForm;

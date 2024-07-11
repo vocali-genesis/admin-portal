@@ -1,10 +1,10 @@
 import React from "react";
-import { useRouter } from "next/router";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import AuthService from "@/services/auth/auth-supabase.service";
-import nav_styles from "@/styles/components/nav.module.css";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import nav_styles from "./styles/nav.module.css";
 import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;

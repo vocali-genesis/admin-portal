@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import AuthService from "@/services/auth/auth-supabase.service";
 import { ModuleManager } from "@/core/module/module.manager";
-import Navbar from "@/resources/containers/nav";
-import SideBar from "@/resources/containers/sidebar";
+import Navbar from "@/core/components/nav";
+import SideBar from "@/core/components/sidebar";
 // import dash_styles from "@/styles/pages/dashboard.module.css";
 
 const App = () => {

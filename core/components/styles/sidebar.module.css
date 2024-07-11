@@ -72,6 +72,7 @@
     position: fixed;
     padding-top: 3rem;
     top: 0;
+    left: -250px;
   }
 
   .bottomButtons {

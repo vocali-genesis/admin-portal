@@ -1,13 +1,13 @@
 import { GlobalCore } from "@/core/module/module.types";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/router";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import messageHandler from "@/core/message-handler";
+import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { AudioRecorder } from "@/modules/app/recording/libs/audio-recorder";
-import { GetStaticProps } from "next";
 import dash_styles from "./styles/dashboard.module.css";
+import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 

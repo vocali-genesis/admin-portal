@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
-import Navbar from "@/resources/containers/nav";
-import SideBar from "@/resources/containers/sidebar";
+import Navbar from "@/core/components/nav";
+import SideBar from "@/core/components/sidebar";
 
 const Settings = () => {
   const router = useRouter();
@@ -17,8 +17,11 @@ const Settings = () => {
   };
   // This need to load from the manager
   const sideBarItems = [
-    { icon: "/recordings.svg", label: "Recordings" },
-    { icon: "/history.svg", label: "Historical" },
+    { icon: "/profile-avatar.svg", label: "Profile" },
+    { icon: "/template-avatar.svg", label: "Templates" },
+    { icon: "/profile-avatar.svg", label: "Payments" },
+    { icon: "/template-avatar.svg", label: "Organization" },
+    { icon: "/profile-avatar.svg", label: "Storage" },
   ];
   // --- End of refactor
 

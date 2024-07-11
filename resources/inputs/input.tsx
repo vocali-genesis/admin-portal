@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslations } from "next-intl";
-import form_style from "@/styles/forms/form.module.css";
+import form_style from "./styles/input.module.css";
 
 interface AuthInputProps {
   register: any;
