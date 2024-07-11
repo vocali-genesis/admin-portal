@@ -1,0 +1,28 @@
+.rightColumnContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-family: Poppins;
+  font-weight: 700;
+  line-height: 45px;
+  color: #000000;
+  font-family: 'Poppins', sans-serif;
+}
+
+.login_text {
+  color: rgb(0, 0, 0, 0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+}
+
+.login_text strong {
+  color: black;
+}

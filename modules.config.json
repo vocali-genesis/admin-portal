@@ -1,0 +1,4 @@
+{
+  "modules": ["auth/supabase"],
+  "services": ["auth/supabase"]
+}

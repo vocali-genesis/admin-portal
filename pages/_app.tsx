@@ -1,6 +1,28 @@
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import { AppProps } from "next/app";
+import { NextIntlClientProvider } from "next-intl";
+import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
+import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import { setLocale } from "@/resources/utils/translate";
+import "@/import";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  setLocale(router.locale || "en", pageProps.messages);
+
+  return (
+    <NextIntlClientProvider
+      locale={router.locale || "en"}
+      timeZone="Europe/Vienna"
+      messages={pageProps.messages}
+    >
+      <Toaster />
+      <Component {...pageProps} />
+    </NextIntlClientProvider>
+  );
 }
+
+export default App;
+
+export const getStaticProps = getStaticPropsWithTranslations;

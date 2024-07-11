@@ -1,0 +1,148 @@
+.formContainer {
+  width: 350px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.formControl {
+  background: #E8EBED;
+  color: black;
+  width: 100%;
+  height: 42.5px;
+  padding-left: 3rem;
+  background-repeat: no-repeat;
+  background-position: 1rem center;
+  border-radius: 10px;
+
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+}
+
+.formControl::placeholder {
+  color: black;
+  opacity: 1;
+}
+
+/* For Internet Explorer */
+.formControl:-ms-input-placeholder {
+  color: black;
+}
+
+/* For Microsoft Edge */
+.formControl::-ms-input-placeholder {
+  color: black;
+}
+
+.inputEmailIcon {
+  background-image: url('/frame-1.svg');
+  background-size: 1.25rem;
+}
+
+.inputPasswordIcon {
+  background-image: url('/frame-2.svg');
+  background-size: 1.1rem;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.errorMessage {
+  color: red;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+}
+
+.submitButton {
+  background: #1C364B;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+}
+
+.oauth {
+  width: 400px;
+}
+
+.oauthTextContainer {
+  position: relative;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.oauthText {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  background-color: white;
+  padding: 0 5px;
+  color: black;
+  text-align: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-align: center;
+
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+}
+
+.oauthTextContainer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 60%;
+  height: 0.5px;
+  background-color: rgb(0, 0, 0, 0.1);
+  z-index: 0;
+  width: 105%;
+}
+
+.oauthContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.messageContainer {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.errorContainer {
+  background-color: #ffebee;
+  color: #c62828;
+  border-color: #c62828;
+}
+
+.successContainer {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-color: #2e7d32;
+}
+
+.messageText {
+  font-size: 14px;
+}
