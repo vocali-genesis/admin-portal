@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import AuthService from "@/services/auth/auth-supabase.service";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/resources/containers/nav";
 import SideBar from "@/resources/containers/sidebar";
@@ -15,6 +16,15 @@ const App = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user = await AuthService.getUser();
+      if (user === null) router.push("/auth/login");
+    };
+    checkAuth();
+  }, [router]);
+
   // This need to load from the manager
   const sideBarItems = [
     { icon: "/recordings.svg", label: "Recordings" },
