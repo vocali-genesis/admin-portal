@@ -1,6 +1,8 @@
 import React from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import AuthService from "@/services/auth/auth-supabase.service";
 import nav_styles from "@/styles/components/nav.module.css";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
@@ -9,6 +11,12 @@ export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
   const t = useTranslations("");
+  const router = useRouter();
+
+  const logout = () => {
+    AuthService.logout();
+    router.push("/auth/login");
+  };
 
   return (
     <nav className={nav_styles.navbar}>
@@ -31,6 +39,7 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
         </button>
         <button
           className={`${nav_styles.navRightButton} ${nav_styles.logoutButton}`}
+          onClick={logout}
         >
           {t("Logout")}
         </button>
