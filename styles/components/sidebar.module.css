@@ -7,6 +7,8 @@
   overflow-y: auto;
 
   transition: left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebarList {
@@ -43,6 +45,10 @@
   display: none;
 }
 
+.bottomButtons {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     z-index: 1000;
@@ -64,7 +70,42 @@
 @media (max-width: 500px) {
   .sidebar {
     position: fixed;
+    padding-top: 3rem;
     top: 0;
-    left: -250px;
+  }
+
+  .bottomButtons {
+    display: block;
+    margin-top: auto;
+  }
+
+  .logoutButton,
+  .settingsButton {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    background: none;
+    text-align: left;
+
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .settingsButton {
+    background-color: #59DBBC;
+    margin-top: 10px;
+  }
+
+  .logoutButton {
+    padding-left: 2rem;
+  }
+
+  .logoutButton:hover,
+  .settingsButton:hover {
+    opacity: 0.8;
   }
 }

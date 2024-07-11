@@ -51,6 +51,21 @@ const SideBar: React.FC<sidebarProps> = ({
           </li>
         ))}
       </ul>
+      <div className={sidebar_styles.bottomButtons}>
+        <button className={sidebar_styles.settingsButton}>
+          <Image
+            className={sidebar_styles.sidebarImageItem}
+            src="/settings.svg"
+            alt="Settings"
+            width={13}
+            height={13}
+          />
+          <span>{t("settings")}</span>
+        </button>
+        <button className={sidebar_styles.logoutButton}>
+          <span>{t("logout")}</span>
+        </button>
+      </div>
     </aside>
   );
 };
