@@ -89,6 +89,19 @@ const Recording = () => {
     updateSeekBarProgress();
   };
 
+  const handleSave = () => {
+    if (audioRef.current && audioUrl) {
+      const anchor = document.createElement("a");
+      anchor.href = audioUrl as string;
+
+      anchor.download = typeof audioUrl === "string" ? audioUrl : audioUrl[0];
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    }
+  };
+
   const handleSubmit = () => {
     // Handle submission logic here
     console.log("Recording submitted");
@@ -184,7 +197,7 @@ const Recording = () => {
               </button>
               <button
                 onClick={() => {
-                  /* Handle save */
+                  handleSave;
                 }}
                 className={recording_styles.actionButton}
               >
