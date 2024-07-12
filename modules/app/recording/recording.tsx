@@ -149,9 +149,7 @@ const Recording = () => {
             </div>
             <div className={recording_styles.controlsContainer}>
               <button
-                onClick={() => {
-                  handleDelete;
-                }}
+                onClick={handleDelete}
                 className={recording_styles.actionButton}
               >
                 <Image src="/delete.svg" alt="Delete" width={15} height={15} />
@@ -196,9 +194,7 @@ const Recording = () => {
                 />
               </button>
               <button
-                onClick={() => {
-                  handleSave;
-                }}
+                onClick={handleSave}
                 className={recording_styles.actionButton}
               >
                 <Image src="/save.svg" alt="Save" width={15} height={15} />
