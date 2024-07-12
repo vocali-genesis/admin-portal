@@ -96,7 +96,7 @@
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
-  width: 65%;
+  width: 20rem;
 
   font-family: "Montserrat", sans-serif;
   font-size: 0.8rem;
@@ -199,13 +199,13 @@
   }
 
   .recordButton {
-    width: 150px;
-    height: 150px;
+    margin-top: 3rem;
   }
 
   .h2 {
     font-size: 0.7rem;
     text-align: center;
+    margin-top: 2.5rem;
   }
 
   .p {

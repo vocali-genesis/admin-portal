@@ -162,6 +162,7 @@ const Dashboard = () => {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            onClick={handleBrowseClick}
           >
             <Image
               src="/cloud-avatar.svg"
@@ -179,7 +180,7 @@ const Dashboard = () => {
               </span>
             </p>
             <small className={dash_styles.small}>
-              {t("Supported Formats: MP3")}
+              {t("Supported Formats: MP3. Max File Size: 50MB")}
             </small>
             {selectedFile && (
               <p className={dash_styles.selectedFile}>{selectedFile.name}</p>

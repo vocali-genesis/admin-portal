@@ -154,9 +154,21 @@ const Recording = () => {
                 className={recording_styles.playPauseButton}
               >
                 {isPlaying ? (
-                  <Image src="/pause.png" alt="pause" width={20} height={20} />
+                  <Image
+                    src="/pause.png"
+                    alt="pause"
+                    width={20}
+                    height={20}
+                    style={{ filter: "brightness(0) invert(1)" }}
+                  />
                 ) : (
-                  <Image src="/play.svg" alt="play" width={10} height={10} />
+                  <Image
+                    src="/play.svg"
+                    alt="play"
+                    width={10}
+                    height={10}
+                    style={{ filter: "brightness(0) invert(1)" }}
+                  />
                 )}
               </button>
               <button

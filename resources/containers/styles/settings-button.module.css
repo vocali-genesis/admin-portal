@@ -1,0 +1,17 @@
+.settingsButton {
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background: none;
+  text-align: left;
+  font-family: "Montserrat", sans-serif;
+}
+.settingsButton {
+  display: flex;
+  background-color: #59DBBC;
+  margin-top: 10px;
+}

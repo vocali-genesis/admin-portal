@@ -1,0 +1,24 @@
+.logoutButton {
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background: none;
+  text-align: left;
+  font-family: "Montserrat", sans-serif;
+  display: none;
+  padding-left: 2rem;
+}
+
+.logoutButton:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 500px) {
+  .logoutButton {
+    display: flex;
+  }
+}

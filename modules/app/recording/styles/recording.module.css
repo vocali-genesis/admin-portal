@@ -141,14 +141,16 @@
   background-color: #59DBBC;
   color: white;
   border: none;
-  margin-top: 2rem;
-  padding: 10px 40px;
-  border-radius: 25px;
+  padding: 10px 20px;
+  margin-top: 5rem;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 0.7rem;
-  transition: background-color 0.3s ease;
+  width: 15rem;
 
   font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 .submitButton:hover {

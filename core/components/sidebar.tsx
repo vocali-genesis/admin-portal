@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import AuthService from "@/services/auth/auth-supabase.service";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import sidebar_styles from "./styles/sidebar.module.css";
 import { GetStaticProps } from "next";
+import SettingsButton from "@/resources/containers/settings-button";
+import LogoutButton from "@/resources/containers/logout-button";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
@@ -26,13 +26,7 @@ const SideBar: React.FC<sidebarProps> = ({
   sideBarItems,
 }) => {
   const t = useTranslations("");
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState(_activeTab);
-
-  const logout = () => {
-    AuthService.logout();
-    router.push("/auth/login");
-  };
 
   return (
     <aside
@@ -60,20 +54,8 @@ const SideBar: React.FC<sidebarProps> = ({
         ))}
       </ul>
       <div className={sidebar_styles.bottomButtons}>
-        <button className={sidebar_styles.settingsButton}>
-          <Image
-            className={sidebar_styles.sidebarImageItem}
-            src="/settings.svg"
-            alt="Settings"
-            width={13}
-            height={13}
-          />
-          <span>{t("settings")}</span>
-        </button>
-        <button className={sidebar_styles.logoutButton} onClick={logout}>
-          {" "}
-          <span>{t("logout")}</span>
-        </button>
+        <SettingsButton />
+        <LogoutButton />
       </div>
     </aside>
   );

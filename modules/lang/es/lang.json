@@ -35,7 +35,8 @@
   "Click To Stop Recording": "Haz clic para detener la grabación",
   "Drag & Drop Or": "Arrastrar & soltar o",
   "Browse": "Buscar",
-  "Supported Formats: MP3": "Formatos soportados: MP3",
+  "Supported Formats: MP3. Max File Size: 50MB": "Formatos soportados: MP3. Tamaño máximo de archivo: 50 MB",
+
   "Upload Files": "Cargar Archivos",
   "Upload": "Subir",
   "Success": "Éxito",

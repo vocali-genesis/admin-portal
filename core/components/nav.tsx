@@ -31,19 +31,12 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
           </select>
         </div>
       </div>
-      <div className={nav_styles.navbarRight}>
-        <button
-          className={`${nav_styles.navRightButton} ${nav_styles.settingsButton}`}
-        >
-          {t("Settings")}
-        </button>
-        <button
-          className={`${nav_styles.navRightButton} ${nav_styles.logoutButton}`}
-          onClick={logout}
-        >
-          {t("Logout")}
-        </button>
-      </div>
+      <button
+        className={`${nav_styles.navRightButton} ${nav_styles.logoutButton}`}
+        onClick={logout}
+      >
+        {t("Logout")}
+      </button>
       <div className={nav_styles.navbarMobileRight}>
         <button className={nav_styles.menuButton} onClick={toggleSidebar}>
           ☰
