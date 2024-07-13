@@ -1,0 +1,124 @@
+.reportContainer {
+  height: calc(100vh - 6rem); /* Adjust based on your header height */
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: black;
+
+  font-weight: bold;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.progressContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+.progressBar {
+  background-color: #f0f0f0;
+  height: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: relative;
+  flex: 1;
+  transform: translateY(100%);
+}
+
+.progressBar span {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+}
+
+.downloadButton {
+  align-self: flex-end;
+  margin-bottom: 10px;
+}
+
+.downloadButton button {
+  background-color: #7fe5c6;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 10px;
+  color: black;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  padding: 5px 15px;
+  cursor: pointer;
+}
+
+.activeTab {
+  border-bottom: 2px solid #7fe5c6 !important;
+}
+
+.editorContainer {
+  position: relative;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.visibleEditor, .hiddenEditor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: opacity 0.3s ease;
+}
+
+.visibleEditor {
+  opacity: 1;
+  z-index: 1;
+}
+
+.hiddenEditor {
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.saveButton, .newRecordingButton {
+  padding: 7.5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+
+  font-size: 0.8rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.saveButton {
+  background-color: #2c394b;
+  color: white;
+}
+
+.newRecordingButton {
+  background-color: #7fe5c6;
+}
