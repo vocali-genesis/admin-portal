@@ -20,6 +20,7 @@
     "react-hook-form": "^7.52.0",
     "react-hot-toast": "^2.4.1",
     "react-intl": "^6.6.8",
+    "react-quill": "^2.0.0",
     "yup": "^1.4.0"
   },
   "devDependencies": {
