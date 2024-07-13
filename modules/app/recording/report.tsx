@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 // import { useTranslations } from "next-intl";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
@@ -51,18 +52,40 @@ const Report = () => {
         </div>
       </div>
       <div className={report_styles.tabs}>
-        <button
-          className={`${report_styles.tabButton} ${activeTab === "report" ? report_styles.activeTab : ""}`}
-          onClick={() => handleTabChange("report")}
+        <div
+          className={`${activeTab === "report" ? report_styles.activeTab : ""} ${report_styles.tabContainer}`}
         >
-          Report
-        </button>
-        <button
-          className={`${report_styles.tabButton} ${activeTab === "transcription" ? report_styles.activeTab : ""}`}
-          onClick={() => handleTabChange("transcription")}
+          <Image
+            className={report_styles.tabImage}
+            src="/report.svg"
+            alt=""
+            width={13}
+            height={13}
+          />
+          <button
+            className={`${report_styles.tabButton}`}
+            onClick={() => handleTabChange("report")}
+          >
+            Report
+          </button>
+        </div>
+        <div
+          className={`${activeTab === "transcription" ? report_styles.activeTab : ""} ${report_styles.tabContainer}`}
         >
-          Transcription
-        </button>
+          <Image
+            className={report_styles.tabImage}
+            src="/transcription.svg"
+            alt=""
+            width={13}
+            height={13}
+          />
+          <button
+            className={`${report_styles.tabButton}`}
+            onClick={() => handleTabChange("transcription")}
+          >
+            Transcription
+          </button>
+        </div>
       </div>
       <div className={report_styles.editorContainer}>
         <div
