@@ -23,6 +23,9 @@
   gap: 10px;
   padding: 10px;
   cursor: pointer;
+
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
 }
 
 .sidebarImageItem {
@@ -50,37 +53,6 @@
   margin-top: auto;
 }
 
-.logoutButton,
-.settingsButton {
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  background: none;
-  text-align: left;
-
-  font-family: "Montserrat", sans-serif;
-}
-
-.settingsButton {
-  display: flex;
-  background-color: #59DBBC;
-  margin-top: 10px;
-}
-
-.logoutButton {
-  display: none;
-  padding-left: 2rem;
-}
-
-.logoutButton:hover,
-.settingsButton:hover {
-  opacity: 0.8;
-}
-
 @media (max-width: 768px) {
   .sidebar {
     z-index: 1000;
@@ -105,9 +77,5 @@
     padding-top: 3rem;
     top: 0;
     left: -250px;
-  }
-
-  .logoutButton {
-    display: flex;
   }
 }

@@ -118,7 +118,7 @@ const Dashboard = () => {
   };
 
   return (
-    <>
+    <div className="p-5">
       <h2 className={dash_styles.h2}>
         {t(
           "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
@@ -202,7 +202,7 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

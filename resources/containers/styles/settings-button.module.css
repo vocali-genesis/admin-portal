@@ -9,6 +9,7 @@
   background: none;
   text-align: left;
   font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
 }
 .settingsButton {
   display: flex;

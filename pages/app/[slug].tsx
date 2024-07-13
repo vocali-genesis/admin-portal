@@ -47,7 +47,7 @@ const App = () => {
           closeSidebar={() => setSidebarOpen(false)}
           sideBarItems={sideBarItems}
         />
-        <main className="flex-grow p-5 overflow-y-auto">
+        <main className="flex-grow overflow-y-auto">
           <Component />
         </main>
       </div>

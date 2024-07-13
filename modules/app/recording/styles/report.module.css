@@ -1,11 +1,12 @@
 .reportContainer {
-  height: calc(100vh - 6rem); /* Adjust based on your header height */
+  height: calc(100vh - 4rem); /* Adjust based on your header height */
   display: flex;
   flex-direction: column;
 }
 
 .title {
   font-size: 24px;
+  padding: 0.5rem 1rem;
   margin-bottom: 10px;
   color: black;
 
@@ -17,6 +18,7 @@
 .progressContainer {
   display: flex;
   gap: 1rem;
+  padding: 0.5rem 1.25rem;
 }
 
 .progressBar {
@@ -43,7 +45,7 @@
 }
 
 .downloadButton button {
-  background-color: #7fe5c6;
+  background-color: #59DBBC;
   border: none;
   padding: 5px 15px;
   border-radius: 5px;
@@ -52,29 +54,50 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+.tabContainer {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0 1rem;
+}
+
 .tabs {
   display: flex;
   margin-bottom: 10px;
   color: black;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.8rem;
+  gap: 1rem;
+
+  border-bottom: 1px solid #F5F5F5;
 }
 
 .tabs button {
   background: none;
   border: none;
-  padding: 5px 15px;
+  padding: 5px 0px;
+  margin-right: 0.5rem;
   cursor: pointer;
 }
 
 .activeTab {
-  border-bottom: 2px solid #7fe5c6 !important;
+  border-bottom: 2px solid #59DBBC !important;
+  color: #59DBBC;
+}
+
+.tabImage {
+  fill: #59DBBC;
 }
 
 .editorContainer {
   position: relative;
   flex-grow: 1;
   overflow: hidden;
+
+  margin: 0.5rem 1rem;
+}
+
+.tabImage {
+  flex: 1;
 }
 
 .visibleEditor, .hiddenEditor {
@@ -101,6 +124,7 @@
   display: flex;
   justify-content: flex-end;
   margin-top: 10px;
+  margin-right: 1.25rem;
 }
 
 .saveButton, .newRecordingButton {
@@ -120,5 +144,5 @@
 }
 
 .newRecordingButton {
-  background-color: #7fe5c6;
+  background-color: #59DBBC;
 }
