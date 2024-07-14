@@ -13,9 +13,12 @@ export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 const Report = () => {
   // const t = useTranslations();
   const router = useRouter();
+  const { report, transcription } = router.query;
   const [activeTab, setActiveTab] = useState("report");
-  const [reportContent, setReportContent] = useState("");
-  const [transcriptionContent, setTranscriptionContent] = useState("");
+  const [reportContent, setReportContent] = useState((report as string) || "");
+  const [transcriptionContent, setTranscriptionContent] = useState(
+    (transcription as string) || "",
+  );
 
   useEffect(() => {
     // Assuming the router query contains 'report' and 'transcription'

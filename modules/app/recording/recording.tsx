@@ -5,6 +5,9 @@ import { useTranslations } from "next-intl";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
+import Spinner from "@/resources/containers/spinner";
+import messageHandler from "@/core/message-handler";
+import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
 import recording_styles from "./styles/recording.module.css";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
@@ -13,6 +16,7 @@ const Recording = () => {
   const t = useTranslations("");
   const router = useRouter();
   const { audioUrl } = router.query;
+  const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -54,7 +58,6 @@ const Recording = () => {
 
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
-      console.log(audioRef.current.duration);
       setDuration(audioRef.current.duration);
     }
   };
@@ -102,9 +105,30 @@ const Recording = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Handle submission logic here
-    console.log("Recording submitted");
+  const handleSubmit = async () => {
+    setIsLoading(true);
+
+    if (audioRef.current && audioUrl) {
+      const response = await fetch(audioUrl as string);
+      const blob = await response.blob();
+      const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
+
+      const api_response =
+        await MedicalTranscriptionAPI.processAudioAndGenerateReport(file);
+
+      if (api_response) {
+        router.push({
+          pathname: "/app/report",
+          query: {
+            report: api_response.report,
+            transcription: api_response.transcription,
+          },
+        });
+      } else {
+        messageHandler.handleError("Failed to generate report");
+        setIsLoading(false);
+      }
+    }
   };
 
   const handleDelete = () => {
@@ -112,6 +136,8 @@ const Recording = () => {
       pathname: "/app/dashboard",
     });
   };
+
+  if (isLoading) return <Spinner />;
 
   return (
     <>
