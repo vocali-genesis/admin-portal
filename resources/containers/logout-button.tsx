@@ -14,7 +14,6 @@ const LogoutButton = () => {
 
   return (
     <button className={logout_btn_styles.logoutButton} onClick={logout}>
-      {" "}
       <span>{t("logout")}</span>
     </button>
   );
