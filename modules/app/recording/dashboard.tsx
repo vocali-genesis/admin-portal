@@ -116,17 +116,21 @@ const Dashboard = () => {
     e.stopPropagation();
     setIsDragging(false);
 
+    setIsUploading(true);
     const files = e.dataTransfer.files;
     if (files.length) {
       handleFileSelection(files[0]);
     }
+    setIsUploading(false);
   }, []);
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsUploading(true);
     const files = e.target.files;
     if (files && files.length > 0) {
       handleFileSelection(files[0]);
     }
+    setIsUploading(false);
   };
 
   const handleFileSelection = (file: File) => {
@@ -139,9 +143,7 @@ const Dashboard = () => {
 
   const handleUpload = () => {
     if (selectedFile) {
-      setIsUploading(true);
       const audioUrl = URL.createObjectURL(selectedFile);
-      setIsUploading(false);
       router.push({
         pathname: "/app/recording",
         query: { audioUrl: audioUrl },
