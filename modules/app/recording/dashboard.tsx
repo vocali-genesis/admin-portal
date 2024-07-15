@@ -15,6 +15,7 @@ const Dashboard = () => {
   const t = useTranslations("");
   const router = useRouter();
   const [isRecording, setIsRecording] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
@@ -76,16 +77,6 @@ const Dashboard = () => {
 
         // Restore the original getUserMedia method
         navigator.mediaDevices.getUserMedia = originalGetUserMedia;
-
-        // Set up audio analyser
-        // const stream = await navigator.mediaDevices.getUserMedia({
-        //   audio: { deviceId: { exact: selectedDevice } },
-        // });
-        // const audioContext = new AudioContext();
-        // const source = audioContext.createMediaStreamSource(stream);
-        // const analyser = audioContext.createAnalyser();
-        // source.connect(analyser);
-        // analyserRef.current = analyser;
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
@@ -145,7 +136,9 @@ const Dashboard = () => {
 
   const handleUpload = () => {
     if (selectedFile) {
+      setIsUploading(true);
       const audioUrl = URL.createObjectURL(selectedFile);
+      setIsUploading(false);
       router.push({
         pathname: "/app/recording",
         query: { audioUrl: audioUrl },
@@ -249,9 +242,16 @@ const Dashboard = () => {
           <button
             className={dash_styles.uploadButton}
             onClick={handleUpload}
-            disabled={!selectedFile}
+            disabled={!selectedFile || isUploading}
           >
-            {t("Upload Files")}
+            {isUploading ? (
+              <>
+                <span className={dash_styles.spinner}></span>
+                {t("Uploading...")}
+              </>
+            ) : (
+              t("Upload Files")
+            )}
           </button>
         </div>
       </div>
