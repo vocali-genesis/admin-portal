@@ -55,6 +55,7 @@
 
 .recordButton.recording {
   background-color: #FF6B6B;
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {

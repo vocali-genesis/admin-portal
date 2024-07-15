@@ -33,7 +33,7 @@ export class AudioRecorder {
 
         // Stop all tracks in the stream
         if (this.stream) {
-          this.stream.getTracks().forEach(track => track.stop());
+          this.stream.getTracks().forEach((track) => track.stop());
           this.stream = null;
         }
 
@@ -51,7 +51,7 @@ export class AudioRecorder {
 
   dispose(): void {
     if (this.stream) {
-      this.stream.getTracks().forEach(track => track.stop());
+      this.stream.getTracks().forEach((track) => track.stop());
       this.stream = null;
     }
     this.mediaRecorder = null;

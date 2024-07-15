@@ -22,29 +22,18 @@ const Dashboard = () => {
 
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string>("");
-  const [volume, setVolume] = useState<number>(0);
-  const analyserRef = useRef<AnalyserNode | null>(null);
 
   useEffect(() => {
-    navigator.mediaDevices.enumerateDevices()
-      .then(devices => {
-        const audioDevices = devices.filter(device => device.kind === 'audioinput');
-        setDevices(audioDevices);
-        if (audioDevices.length > 0) {
-          setSelectedDevice(audioDevices[0].deviceId);
-        }
-      });
+    navigator.mediaDevices.enumerateDevices().then((devices) => {
+      const audioDevices = devices.filter(
+        (device) => device.kind === "audioinput",
+      );
+      setDevices(audioDevices);
+      if (audioDevices.length > 0) {
+        setSelectedDevice(audioDevices[0].deviceId);
+      }
+    });
   }, []);
-
-  const updateVolume = () => {
-    if (analyserRef.current && isRecording) {
-      const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
-      analyserRef.current.getByteFrequencyData(dataArray);
-      const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-      setVolume(average);
-      requestAnimationFrame(updateVolume);
-    }
-  };
 
   const toggleRecording = async () => {
     if (!audioRecorderRef.current) {
@@ -66,20 +55,37 @@ const Dashboard = () => {
       }
     } else {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: { deviceId: selectedDevice ? { exact: selectedDevice } : undefined }
-        });
-        await audioRecorderRef.current.startRecording(stream);
+        // Override the getUserMedia method to use the selected device
+        const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
+        navigator.mediaDevices.getUserMedia = async (
+          constraints: MediaStreamConstraints,
+        ) => {
+          const updatedConstraints = {
+            ...constraints,
+            audio: { deviceId: { exact: selectedDevice } },
+          };
+          return originalGetUserMedia.call(
+            navigator.mediaDevices,
+            updatedConstraints,
+          );
+        };
+
+        await audioRecorderRef.current.startRecording();
         messageHandler.info(t("Recording started"));
         setIsRecording(true);
 
-        const audioContext = new AudioContext();
-        const source = audioContext.createMediaStreamSource(stream);
-        const analyser = audioContext.createAnalyser();
-        source.connect(analyser);
-        analyserRef.current = analyser;
+        // Restore the original getUserMedia method
+        navigator.mediaDevices.getUserMedia = originalGetUserMedia;
 
-        updateVolume();
+        // Set up audio analyser
+        // const stream = await navigator.mediaDevices.getUserMedia({
+        //   audio: { deviceId: { exact: selectedDevice } },
+        // });
+        // const audioContext = new AudioContext();
+        // const source = audioContext.createMediaStreamSource(stream);
+        // const analyser = audioContext.createAnalyser();
+        // source.connect(analyser);
+        // analyserRef.current = analyser;
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
@@ -166,26 +172,23 @@ const Dashboard = () => {
 
       <div className={dash_styles.contentColumns}>
         <div className={dash_styles.recordSection}>
-          <select 
-            value={selectedDevice} 
+          <select
+            value={selectedDevice}
             onChange={(e) => setSelectedDevice(e.target.value)}
             className={dash_styles.deviceSelect}
           >
-            {devices.map(device => (
+            {devices.map((device) => (
               <option key={device.deviceId} value={device.deviceId}>
                 {device.label || `Microphone ${device.deviceId.slice(0, 5)}`}
               </option>
             ))}
           </select>
-            <button
-              className={`${dash_styles.recordButton} ${
-                isRecording ? dash_styles.recording : ""
-              }`}
-              onClick={toggleRecording}
-              style={{
-                transform: isRecording ? `scale(${1 + volume / 512})` : 'scale(1)'
-              }}
-            >
+          <button
+            className={`${dash_styles.recordButton} ${
+              isRecording ? dash_styles.recording : ""
+            }`}
+            onClick={toggleRecording}
+          >
             <Image
               src="/recordings.svg"
               alt="Microphone"
