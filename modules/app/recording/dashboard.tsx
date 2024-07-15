@@ -20,6 +20,32 @@ const Dashboard = () => {
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<string>("");
+  const [volume, setVolume] = useState<number>(0);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices()
+      .then(devices => {
+        const audioDevices = devices.filter(device => device.kind === 'audioinput');
+        setDevices(audioDevices);
+        if (audioDevices.length > 0) {
+          setSelectedDevice(audioDevices[0].deviceId);
+        }
+      });
+  }, []);
+
+  const updateVolume = () => {
+    if (analyserRef.current && isRecording) {
+      const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+      analyserRef.current.getByteFrequencyData(dataArray);
+      const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+      setVolume(average);
+      requestAnimationFrame(updateVolume);
+    }
+  };
+
   const toggleRecording = async () => {
     if (!audioRecorderRef.current) {
       audioRecorderRef.current = new AudioRecorder();
@@ -28,7 +54,6 @@ const Dashboard = () => {
     if (isRecording) {
       try {
         const audioUrl = await audioRecorderRef.current.stopRecording();
-        console.log("Recording stopped, audio URL:", audioUrl);
         messageHandler.info(t("Recording stopped"));
         setIsRecording(false);
 
@@ -41,9 +66,20 @@ const Dashboard = () => {
       }
     } else {
       try {
-        await audioRecorderRef.current.startRecording();
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: { deviceId: selectedDevice ? { exact: selectedDevice } : undefined }
+        });
+        await audioRecorderRef.current.startRecording(stream);
         messageHandler.info(t("Recording started"));
         setIsRecording(true);
+
+        const audioContext = new AudioContext();
+        const source = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+        source.connect(analyser);
+        analyserRef.current = analyser;
+
+        updateVolume();
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
@@ -130,12 +166,26 @@ const Dashboard = () => {
 
       <div className={dash_styles.contentColumns}>
         <div className={dash_styles.recordSection}>
-          <button
-            className={`${dash_styles.recordButton} ${
-              isRecording ? dash_styles.recording : ""
-            }`}
-            onClick={toggleRecording}
+          <select 
+            value={selectedDevice} 
+            onChange={(e) => setSelectedDevice(e.target.value)}
+            className={dash_styles.deviceSelect}
           >
+            {devices.map(device => (
+              <option key={device.deviceId} value={device.deviceId}>
+                {device.label || `Microphone ${device.deviceId.slice(0, 5)}`}
+              </option>
+            ))}
+          </select>
+            <button
+              className={`${dash_styles.recordButton} ${
+                isRecording ? dash_styles.recording : ""
+              }`}
+              onClick={toggleRecording}
+              style={{
+                transform: isRecording ? `scale(${1 + volume / 512})` : 'scale(1)'
+              }}
+            >
             <Image
               src="/recordings.svg"
               alt="Microphone"
