@@ -16,6 +16,16 @@ import {
 import Modal from "react-modal";
 import Spinner from "@/resources/containers/spinner";
 import messageHandler from "@/core/message-handler";
+import {
+  FaCirclePlay,
+  FaCirclePause,
+  FaBackwardStep,
+  FaForwardStep,
+  FaTrash,
+  FaFloppyDisk,
+  FaCircleStop,
+} from "react-icons/fa6";
+import Modal from "react-modal";
 import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
 import recording_styles from "./styles/recording.module.css";
 
@@ -165,6 +175,7 @@ const Recording = () => {
   const cancelDelete = () => {
     setIsDeleteModalOpen(false);
   };
+
   if (isLoading) return <Spinner />;
 
   return (
