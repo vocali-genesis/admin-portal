@@ -20,6 +20,21 @@ const Dashboard = () => {
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<string>("");
+
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then((devices) => {
+      const audioDevices = devices.filter(
+        (device) => device.kind === "audioinput",
+      );
+      setDevices(audioDevices);
+      if (audioDevices.length > 0) {
+        setSelectedDevice(audioDevices[0].deviceId);
+      }
+    });
+  }, []);
+
   const toggleRecording = async () => {
     if (!audioRecorderRef.current) {
       audioRecorderRef.current = new AudioRecorder();
@@ -28,7 +43,6 @@ const Dashboard = () => {
     if (isRecording) {
       try {
         const audioUrl = await audioRecorderRef.current.stopRecording();
-        console.log("Recording stopped, audio URL:", audioUrl);
         messageHandler.info(t("Recording stopped"));
         setIsRecording(false);
 
@@ -41,9 +55,37 @@ const Dashboard = () => {
       }
     } else {
       try {
+        // Override the getUserMedia method to use the selected device
+        const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
+        navigator.mediaDevices.getUserMedia = async (
+          constraints: MediaStreamConstraints,
+        ) => {
+          const updatedConstraints = {
+            ...constraints,
+            audio: { deviceId: { exact: selectedDevice } },
+          };
+          return originalGetUserMedia.call(
+            navigator.mediaDevices,
+            updatedConstraints,
+          );
+        };
+
         await audioRecorderRef.current.startRecording();
         messageHandler.info(t("Recording started"));
         setIsRecording(true);
+
+        // Restore the original getUserMedia method
+        navigator.mediaDevices.getUserMedia = originalGetUserMedia;
+
+        // Set up audio analyser
+        // const stream = await navigator.mediaDevices.getUserMedia({
+        //   audio: { deviceId: { exact: selectedDevice } },
+        // });
+        // const audioContext = new AudioContext();
+        // const source = audioContext.createMediaStreamSource(stream);
+        // const analyser = audioContext.createAnalyser();
+        // source.connect(analyser);
+        // analyserRef.current = analyser;
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
@@ -118,7 +160,7 @@ const Dashboard = () => {
   };
 
   return (
-    <>
+    <div className="p-5">
       <h2 className={dash_styles.h2}>
         {t(
           "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
@@ -130,6 +172,17 @@ const Dashboard = () => {
 
       <div className={dash_styles.contentColumns}>
         <div className={dash_styles.recordSection}>
+          <select
+            value={selectedDevice}
+            onChange={(e) => setSelectedDevice(e.target.value)}
+            className={dash_styles.deviceSelect}
+          >
+            {devices.map((device) => (
+              <option key={device.deviceId} value={device.deviceId}>
+                {device.label || `Microphone ${device.deviceId.slice(0, 5)}`}
+              </option>
+            ))}
+          </select>
           <button
             className={`${dash_styles.recordButton} ${
               isRecording ? dash_styles.recording : ""
@@ -202,7 +255,7 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
