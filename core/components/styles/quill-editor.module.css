@@ -1,8 +1,7 @@
 .editor {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 15.5rem); /* Adjust based on your header/footer height */
-  max-height: 800px; /* Prevent excessive height on large screens */
+  height: 57.3vh;
 }
 
 .quill {

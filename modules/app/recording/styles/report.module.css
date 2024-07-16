@@ -1,11 +1,11 @@
 .reportContainer {
-  height: calc(100vh - 4rem); /* Adjust based on your header height */
+  height: calc(100vh - 15vh); /* Adjust based on your header height */
   display: flex;
   flex-direction: column;
 }
 
 .title {
-  font-size: 24px;
+  font-size: 40vh;
   padding: 0.5rem 0 0.75rem 1.75rem;
   color: black;
 
@@ -49,7 +49,7 @@
   padding: 5px 15px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 0.7rem;
+  font-size: 1.8vh;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -64,7 +64,7 @@
   margin-bottom: 10px;
   color: black;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.8rem;
+  font-size: 1.9vh;
 
   border-bottom: 1px solid #F5F5F5;
 }
@@ -123,7 +123,7 @@
   display: flex;
   justify-content: flex-end;
   margin-top: 10px;
-  margin-right: 1.25rem;
+  margin-right: 2.5vh;
 }
 
 .saveButton, .newRecordingButton {
@@ -133,7 +133,7 @@
   cursor: pointer;
   margin-left: 10px;
 
-  font-size: 0.8rem;
+  font-size: 1.8vh;
   font-family: 'Montserrat', sans-serif;
 }
 
