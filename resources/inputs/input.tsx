@@ -5,9 +5,10 @@ import form_style from "./styles/input.module.css";
 interface AuthInputProps {
   register: any;
   errors: any;
+  action: string;
 }
 
-const Input: React.FC<AuthInputProps> = ({ register, errors }) => {
+const Input: React.FC<AuthInputProps> = ({ register, errors, action }) => {
   const t = useTranslations("");
 
   return (
@@ -38,6 +39,23 @@ const Input: React.FC<AuthInputProps> = ({ register, errors }) => {
           </span>
         )}
       </div>
+      {action === "register" && (
+        <div className={form_style.formInput}>
+          <input
+            {...register("confirm_password", {
+              required: "Confirm Password is required",
+            })}
+            type="password"
+            placeholder={t("Confirm Password")}
+            className={`${form_style.formControl} ${form_style.inputPasswordIcon}`}
+          />
+          {errors.confirm_password && (
+            <span className={form_style.errorMessage}>
+              {t(errors.confirm_password.message)}
+            </span>
+          )}
+        </div>
+      )}
     </>
   );
 };
