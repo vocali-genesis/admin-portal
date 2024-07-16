@@ -5,7 +5,7 @@ import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./styles/form.module.css";
-import auth_schema from "./schemas/auth-schema";
+import { register_schema } from "./schemas/auth-schema";
 import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
@@ -26,7 +26,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(auth_schema),
+    resolver: yupResolver(register_schema),
   });
 
   const onSubmit = async (data: any) => {
@@ -47,7 +47,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
       onSubmit={handleSubmit(onSubmit)}
       className={form_style.formContainer}
     >
-      <Input register={register} errors={errors} />
+      <Input register={register} errors={errors} action="register" />
       <AuthButton action="register" />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
