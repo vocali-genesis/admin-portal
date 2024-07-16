@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
+import Spinner from "@/resources/containers/spinner";
 import Image from "next/image";
 
 const Auth = () => {
@@ -10,7 +11,7 @@ const Auth = () => {
 
   if (!Component) {
     // TODO: Redirect to 404
-    return <>Resource Not Found!</>;
+    return <Spinner />;
   }
 
   return (

@@ -22,6 +22,9 @@ const config: Config = {
       screens: {
         custom: { max: "750px" },
       },
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
     },
   },
   plugins: [],

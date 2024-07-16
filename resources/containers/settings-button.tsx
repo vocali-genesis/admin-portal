@@ -14,7 +14,7 @@ const SettingsButton = () => {
         width={13}
         height={13}
       />
-      <span>{t("settings")}</span>
+      <span>{t("Settings")}</span>
     </button>
   );
 };
