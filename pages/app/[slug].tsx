@@ -4,6 +4,7 @@ import AuthService from "@/services/auth/auth-supabase.service";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
+import Spinner from "@/resources/containers/spinner";
 // import dash_styles from "@/styles/pages/dashboard.module.css";
 
 const App = () => {
@@ -34,7 +35,7 @@ const App = () => {
 
   if (!Component) {
     // TODO: Redirect to 404
-    return <>Resource Not Found!</>;
+    return <Spinner />;
   }
 
   return (
@@ -47,7 +48,7 @@ const App = () => {
           closeSidebar={() => setSidebarOpen(false)}
           sideBarItems={sideBarItems}
         />
-        <main className="flex-grow overflow-y-auto">
+        <main className="flex-grow p-5 overflow-y-auto">
           <Component />
         </main>
       </div>

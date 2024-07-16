@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
+import Spinner from '@/resources/containers/spinner';
 
 const Settings = () => {
   const router = useRouter();
@@ -27,7 +28,7 @@ const Settings = () => {
 
   if (!Component) {
     // TODO: Redirect to 404
-    return <>Resource Not Found!</>;
+    return <Spinner />;
   }
 
   return (

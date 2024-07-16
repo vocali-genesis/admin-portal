@@ -41,7 +41,7 @@ const Recording = () => {
   }, [audioUrl]);
 
   const togglePlayPause = () => {
-    if (audioRef.current) {
+    if (audioUrl && audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {

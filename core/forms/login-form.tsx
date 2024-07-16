@@ -48,6 +48,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       className={form_style.formContainer}
     >
       <Input register={register} errors={errors} />
+      <p
+        style={{
+          color: "black",
+          fontSize: "1.75vh",
+          fontFamily: "Montserrat",
+        }}
+      >
+        Forgot password?
+      </p>
       <AuthButton action="login" />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
