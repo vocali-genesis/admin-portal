@@ -60,7 +60,9 @@ const inputConfig = {
     placeholder: "Confirm Password",
     validation: { required: "Confirm Password is required" },
   },
-};
+} as const;
+
+type InputConfigKey = keyof typeof inputConfig;
 
 const Input: React.FC<AuthInputProps> = ({ register, errors, action }) => {
   const fieldsToShow = {
@@ -71,7 +73,12 @@ const Input: React.FC<AuthInputProps> = ({ register, errors, action }) => {
 
   return (
     <>
-      {Object.entries(inputConfig).map(
+      {(
+        Object.entries(inputConfig) as [
+          InputConfigKey,
+          (typeof inputConfig)[InputConfigKey],
+        ][]
+      ).map(
         ([name, config]) =>
           fieldsToShow[name] && (
             <InputField
