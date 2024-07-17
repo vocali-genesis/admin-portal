@@ -48,7 +48,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
       className={form_style.formContainer}
     >
       <Input register={register} errors={errors} action="register" />
-      <AuthButton action="register" />
+      <AuthButton action="Register" />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
           <p className={form_style.oauthText}>

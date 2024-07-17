@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import form_style from "./styles/auth-button.module.css";
 
 interface AuthButtonProps {
-  action: "register" | "login";
+  action: string;
 }
 
 const AuthButton: React.FC<AuthButtonProps> = ({ action }) => {
@@ -12,7 +12,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ action }) => {
   return (
     <div>
       <button type="submit" className={form_style.submitButton}>
-        {action === "register" ? t("Register") : t("Login")}
+        {t(action)}
       </button>
     </div>
   );

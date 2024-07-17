@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Provider } from "@supabase/supabase-js";
@@ -21,6 +22,7 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const t = useTranslations("");
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -42,6 +44,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     if (response && response.url) window.location.href = response.url;
   };
 
+  const resetPassword = async () => {
+    router.push("/auth/reset_password");
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -53,11 +59,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           color: "black",
           fontSize: "1.75vh",
           fontFamily: "Montserrat",
+          cursor: "pointer",
         }}
+        onClick={resetPassword}
       >
         Forgot password?
       </p>
-      <AuthButton action="login" />
+      <AuthButton action="Login" />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
           <p className={form_style.oauthText}>
