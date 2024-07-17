@@ -16,14 +16,23 @@ const ConfirmResetPassword = () => {
   const t = useTranslations("");
 
   const onSuccess = () => {
+<<<<<<< HEAD
     router.push('/auth/login');
   }
+=======
+    router.push("/auth/login");
+  };
+>>>>>>> 068f680 (Updated reset password)
 
   return (
     <div className={auth_style.rightColumnContent}>
       <Image src="/user.svg" alt="Login and Register" width={45} height={45} />
       <h1 className={auth_style.title}>{t("New password")}</h1>
+<<<<<<< HEAD
       <ConfirmResetPasswordForm onSuccess={onSuccess}/>
+=======
+      <ConfirmResetPasswordForm onSuccess={onSuccess} />
+>>>>>>> 068f680 (Updated reset password)
       <p className={auth_style.login_text}>
         {t("Dont have an account?")}{" "}
         <Link href="/auth/register" className={auth_style.register_link}>
