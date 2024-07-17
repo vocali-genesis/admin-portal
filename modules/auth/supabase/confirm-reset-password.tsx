@@ -17,7 +17,7 @@ const ConfirmResetPassword = () => {
 
   const onSuccess = () => {
     router.push('/auth/login');
-  }
+  };
 
   return (
     <div className={auth_style.rightColumnContent}>
