@@ -15,8 +15,8 @@ const Dashboard = () => {
   const t = useTranslations("");
   const router = useRouter();
   const [isRecording, setIsRecording] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -25,15 +25,36 @@ const Dashboard = () => {
   const [selectedDevice, setSelectedDevice] = useState<string>("");
 
   useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      const audioDevices = devices.filter(
-        (device) => device.kind === "audioinput",
-      );
-      setDevices(audioDevices);
-      if (audioDevices.length > 0) {
-        setSelectedDevice(audioDevices[0].deviceId);
+    const getAudioDevices = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true }); // Request permission
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioInputDevices = devices.filter(
+          (device) => device.kind === "audioinput",
+        );
+        setDevices(audioInputDevices);
+        if (audioInputDevices.length > 0) {
+          setSelectedDevice(audioInputDevices[0].deviceId);
+        }
+      } catch (error) {
+        console.error("Error getting audio devices:", error);
+        messageHandler.handleError(
+          "Failed to get audio devices. Please ensure you've granted microphone permissions.",
+        );
       }
-    });
+    };
+
+    getAudioDevices();
+
+    // Set up device change listener
+    navigator.mediaDevices.addEventListener("devicechange", getAudioDevices);
+
+    return () => {
+      navigator.mediaDevices.removeEventListener(
+        "devicechange",
+        getAudioDevices,
+      );
+    };
   }, []);
 
   const toggleRecording = async () => {
@@ -56,27 +77,9 @@ const Dashboard = () => {
       }
     } else {
       try {
-        // Override the getUserMedia method to use the selected device
-        const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
-        navigator.mediaDevices.getUserMedia = async (
-          constraints: MediaStreamConstraints,
-        ) => {
-          const updatedConstraints = {
-            ...constraints,
-            audio: { deviceId: { exact: selectedDevice } },
-          };
-          return originalGetUserMedia.call(
-            navigator.mediaDevices,
-            updatedConstraints,
-          );
-        };
-
-        await audioRecorderRef.current.startRecording();
+        await audioRecorderRef.current.startRecording(selectedDevice);
         messageHandler.info(t("Recording started"));
         setIsRecording(true);
-
-        // Restore the original getUserMedia method
-        navigator.mediaDevices.getUserMedia = originalGetUserMedia;
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
