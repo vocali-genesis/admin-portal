@@ -7,6 +7,8 @@ import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
 import Editor from "@/core/components/text-editor";
 import report_styles from "./styles/report.module.css";
+import ViewContent from "@/resources/containers/view-content";
+import { FaRegNewspaper, FaRegMessage } from "react-icons/fa6";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
@@ -19,6 +21,7 @@ const Report = () => {
   const [transcriptionContent, setTranscriptionContent] = useState(
     (transcription as string) || "",
   );
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     // Assuming the router query contains 'report' and 'transcription'
@@ -42,6 +45,66 @@ const Report = () => {
     setTranscriptionContent(content);
   };
 
+  const toggleEditMode = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const renderContent = () => {
+    if (isEditing) {
+      return (
+        <div className={report_styles.editorContainer}>
+          <div
+            className={
+              activeTab === "report"
+                ? report_styles.visibleEditor
+                : report_styles.hiddenEditor
+            }
+          >
+            <Editor
+              content={reportContent}
+              onContentChange={handleReportChange}
+            />
+          </div>
+          <div
+            className={
+              activeTab === "transcription"
+                ? report_styles.visibleEditor
+                : report_styles.hiddenEditor
+            }
+          >
+            <Editor
+              content={transcriptionContent}
+              onContentChange={handleTranscriptionChange}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className={report_styles.viewContainer}>
+          <div
+            className={
+              activeTab === "report"
+                ? report_styles.visibleContent
+                : report_styles.hiddenContent
+            }
+          >
+            <ViewContent content={reportContent} />
+          </div>
+          <div
+            className={
+              activeTab === "transcription"
+                ? report_styles.visibleContent
+                : report_styles.hiddenContent
+            }
+          >
+            <ViewContent content={transcriptionContent} />
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className={report_styles.reportContainer}>
       <h1 className={report_styles.title}>ESTADISTICAS</h1>
@@ -58,12 +121,10 @@ const Report = () => {
         <div
           className={`${activeTab === "report" ? report_styles.activeTab : ""} ${report_styles.tabContainer}`}
         >
-          <Image
-            className={report_styles.tabImage}
-            src="/report.svg"
-            alt=""
-            width={13}
-            height={13}
+          <FaRegNewspaper
+            size={25}
+            style={{ paddingTop: "1.15vh" }}
+            className={`${activeTab === "report" ? report_styles.activeTabIcon : ""}`}
           />
           <button
             className={`${report_styles.tabButton}`}
@@ -75,12 +136,10 @@ const Report = () => {
         <div
           className={`${activeTab === "transcription" ? report_styles.activeTab : ""} ${report_styles.tabContainer}`}
         >
-          <Image
-            className={report_styles.tabImage}
-            src="/transcription.svg"
-            alt=""
-            width={13}
-            height={13}
+          <FaRegMessage
+            size={25}
+            style={{ paddingTop: "1.5vh" }}
+            className={`${activeTab === "transcription" ? report_styles.activeTabIcon : ""}`}
           />
           <button
             className={`${report_styles.tabButton}`}
@@ -90,34 +149,17 @@ const Report = () => {
           </button>
         </div>
       </div>
-      <div className={report_styles.editorContainer}>
-        <div
-          className={
-            activeTab === "report"
-              ? report_styles.visibleEditor
-              : report_styles.hiddenEditor
-          }
-        >
-          <Editor
-            content={reportContent}
-            onContentChange={handleReportChange}
-          />
-        </div>
-        <div
-          className={
-            activeTab === "transcription"
-              ? report_styles.visibleEditor
-              : report_styles.hiddenEditor
-          }
-        >
-          <Editor
-            content={transcriptionContent}
-            onContentChange={handleTranscriptionChange}
-          />
-        </div>
-      </div>
+      {renderContent()}
       <div className={report_styles.actionButtons}>
-        <button className={report_styles.saveButton}>SAVE</button>
+        {isEditing ? (
+          <button className={report_styles.saveButton} onClick={toggleEditMode}>
+            SAVE
+          </button>
+        ) : (
+          <button className={report_styles.editButton} onClick={toggleEditMode}>
+            EDIT
+          </button>
+        )}
         <button className={report_styles.newRecordingButton}>
           NEW RECORDING
         </button>
