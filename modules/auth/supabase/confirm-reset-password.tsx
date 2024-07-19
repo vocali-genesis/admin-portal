@@ -43,4 +43,4 @@ const ConfirmResetPassword = () => {
   );
 };
 
-GlobalCore.manager.auth("confirm_reset_password", ConfirmResetPassword);
+GlobalCore.manager.auth("confirm-reset-password", ConfirmResetPassword);

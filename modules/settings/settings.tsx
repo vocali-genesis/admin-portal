@@ -6,7 +6,7 @@ import { GlobalCore } from "@/core/module/module.types";
 import settings_styles from "./styles/settings.module.css";
 import messageHandler from "@/core/message-handler";
 import AuthService from "@/services/auth/auth-supabase.service";
-import { settings_schema } from "@/core/forms/schemas/auth-schema";
+import { settings_schema } from "./settings.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FaTrash } from "react-icons/fa6";
 import { GetStaticProps } from "next";

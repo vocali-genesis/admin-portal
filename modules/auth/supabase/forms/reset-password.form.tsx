@@ -27,12 +27,12 @@ const ResetPasswordForm = () => {
 
   const onSubmit = async (data: any) => {
     const response = await AuthService.resetPassword(data.email);
-    if (response) {
-      messageHandler.handleSuccess(
-        t("Password reset link has been sent to your email"),
-      );
-      router.push("/auth/login");
-    }
+    if (!response) return;
+
+    messageHandler.handleSuccess(
+      t("Password reset link has been sent to your email"),
+    );
+    router.push("/auth/login");
   };
 
   return (

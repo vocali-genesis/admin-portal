@@ -6,7 +6,7 @@ import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./styles/form.module.css";
-import { login_schema } from "./schemas/auth-schema";
+import { login_schema } from "./auth.schema";
 import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
@@ -45,7 +45,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   };
 
   const resetPassword = async () => {
-    router.push("/auth/reset_password");
+    router.push("/auth/reset-password");
   };
 
   return (
