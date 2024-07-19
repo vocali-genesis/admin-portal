@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-// import ReactQuill from "react-quill";
+import React from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import quill_styles from "./styles/quill-editor.module.css";
+import Spinner from "@/resources/containers/spinner";
 
 interface reportEditorProps {
   content?: string;
@@ -11,7 +11,7 @@ interface reportEditorProps {
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
-  loading: () => <p>Loading editor...</p>,
+  loading: () => <Spinner />,
 });
 
 const Editor: React.FC<reportEditorProps> = ({ content, onContentChange }) => {
