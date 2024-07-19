@@ -1,6 +1,6 @@
 export const MODULE = {
   DASHBOARD: "dashboard",
-  CONFIRM_RESET_PASSWORD: "confirm_reset_password",
+  CONFIRM_RESET_PASSWORD: "confirm-reset-password",
 };
 
 export const URLS = {

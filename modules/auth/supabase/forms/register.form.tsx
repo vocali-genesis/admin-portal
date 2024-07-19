@@ -5,7 +5,7 @@ import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./styles/form.module.css";
-import { register_schema } from "./schemas/auth-schema";
+import { register_schema } from "./auth.schema";
 import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";

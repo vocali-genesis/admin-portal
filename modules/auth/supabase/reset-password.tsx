@@ -30,4 +30,4 @@ const ResetPassword = () => {
   );
 };
 
-GlobalCore.manager.auth("reset_password", ResetPassword);
+GlobalCore.manager.auth("reset-password", ResetPassword);
