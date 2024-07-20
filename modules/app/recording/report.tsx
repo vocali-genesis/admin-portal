@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { useRouter } from "next/router";
 // import { useTranslations } from "next-intl";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
-import Editor from "@/core/components/text-editor";
+import Editor from "@/resources/inputs/text-editor";
 import report_styles from "./styles/report.module.css";
 import ViewContent from "@/resources/containers/view-content";
 import { FaRegNewspaper, FaRegMessage } from "react-icons/fa6";
@@ -24,13 +23,13 @@ const Report = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    // Assuming the router query contains 'report' and 'transcription'
-    if (router.query.report) {
-      setReportContent(router.query.report as string);
+    if (!(router.query.report) || !(router.query.transcription)) {
+      router.push('/app/dashboard');
+      return;
     }
-    if (router.query.transcription) {
-      setTranscriptionContent(router.query.transcription as string);
-    }
+    
+    setReportContent(router.query.report as string);
+    setTranscriptionContent(router.query.transcription as string);
   }, [router.query]);
 
   const handleTabChange = (tab: string) => {

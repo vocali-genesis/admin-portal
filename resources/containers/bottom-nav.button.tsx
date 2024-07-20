@@ -2,8 +2,13 @@ import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import AuthService from "@/services/auth/auth-supabase.service";
 import logout_btn_styles from "./styles/logout-button.module.css";
+import React from "react";
 
-const LogoutButton = () => {
+interface bottomNavButtonProps {
+  label: string;
+}
+
+const BottomNavButton: React.FC<bottomNavButtonProps> = ({ label }) => {
   const t = useTranslations();
   const router = useRouter();
 
@@ -14,9 +19,9 @@ const LogoutButton = () => {
 
   return (
     <button className={logout_btn_styles.logoutButton} onClick={logout}>
-      <span>{t("logout")}</span>
+      <span>{t(label)}</span>
     </button>
   );
 };
 
-export default LogoutButton;
+export default BottomNavButton;

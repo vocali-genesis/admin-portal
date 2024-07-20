@@ -4,8 +4,8 @@ import { useTranslations } from "next-intl";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import sidebar_styles from "./styles/sidebar.module.css";
 import { GetStaticProps } from "next";
-import SettingsButton from "@/resources/containers/settings-button";
-import LogoutButton from "@/resources/containers/logout-button";
+import HighlightNavButton from "@/resources/containers/highlight-nav.button";
+import BottomNavButton from "@/resources/containers/bottom-nav.button";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
@@ -54,8 +54,8 @@ const SideBar: React.FC<sidebarProps> = ({
         ))}
       </ul>
       <div className={sidebar_styles.bottomButtons}>
-        <SettingsButton />
-        <LogoutButton />
+        <HighlightNavButton label="Settings" />
+        <BottomNavButton label="logout" />
       </div>
     </aside>
   );
