@@ -1,14 +1,20 @@
 import Image from "next/image";
-import { useRouter } from 'next/router';
 import { useTranslations } from "next-intl";
 import settings_btn_styles from "./styles/settings-button.module.css";
 
-const SettingsButton = () => {
+interface highlightNavButtonProps {
+  label: string;
+  onClick: () => void;
+}
+
+const HighlightNavButton: React.FC<highlightNavButtonProps> = ({ label, onClick }) => {
   const t = useTranslations();
-  const router = useRouter();
 
   return (
-    <button className={settings_btn_styles.settingsButton} onClick={() => router.push('/settings/settings')}>
+    <button
+      className={settings_btn_styles.settingsButton}
+      onClick={onClick}
+    >
       <Image
         className={"pt-1"}
         src="/settings.svg"
@@ -16,9 +22,9 @@ const SettingsButton = () => {
         width={13}
         height={13}
       />
-      <span>{t("Settings")}</span>
+      <span>{t(label)}</span>
     </button>
   );
 };
 
-export default SettingsButton;
+export default HighlightNavButton;
