@@ -3,10 +3,9 @@ import { AppProps } from "next/app";
 import { NextIntlClientProvider } from "next-intl";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { setLocale } from "@/resources/utils/translate";
-import { GetStaticProps } from "next";
 import "@/import";
+import "@/core/i18n"
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -26,4 +25,3 @@ function App({ Component, pageProps }: AppProps) {
 
 export default App;
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;

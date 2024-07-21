@@ -2,31 +2,28 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useTranslations } from "next-intl";
 import RegisterForm from "./forms/register.form";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
-import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
-import auth_style from "./styles/auth.module.css";
+import auth_style from "./auth.module.css";
+import { useTranslation } from "react-i18next";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 const Register = () => {
   const router = useRouter();
-  const t = useTranslations("");
+  const { t } = useTranslation();
   const handleRegisterSuccess = () => {
     router.push("/auth/login");
   };
 
   return (
     <div className={auth_style.rightColumnContent}>
-      <Image src="/user.svg" alt="Login and Register" width={45} height={45} />
-      <h1 className={auth_style.title}>{t("Register")}</h1>
+      <Image src="/user.svg" alt={t('auth.login-register')} width={45} height={45} />
+      <h1 className={auth_style.title}>{t("auth.register")}</h1>
       <RegisterForm onRegisterSuccess={handleRegisterSuccess} />
       <p className={auth_style.login_text}>
-        {t("Already have an account?")}{" "}
+        {t("auth.no-account-question")}{" "}
         <Link href="/auth/login" className={auth_style.register_link}>
-          <strong>{t("Login")}</strong>
+          <strong>{t("auth.login")}</strong>
         </Link>
       </p>
     </div>

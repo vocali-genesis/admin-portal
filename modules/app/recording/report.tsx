@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/router";
-// import { useTranslations } from "next-intl";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
-import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
 import Editor from "@/resources/inputs/text-editor";
 import report_styles from "./styles/report.module.css";
 import ViewContent from "@/resources/containers/view-content";
 import { FaRegNewspaper, FaRegMessage } from "react-icons/fa6";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 const Report = () => {
-  // const t = useTranslations();
+  // const { t } = useTransition()
   const router = useRouter();
   const { report, transcription } = router.query;
   const [activeTab, setActiveTab] = useState("report");

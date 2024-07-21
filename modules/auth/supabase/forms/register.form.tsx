@@ -1,26 +1,23 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
-import form_style from "./styles/form.module.css";
+import form_style from "./form.module.css";
 import { register_schema } from "./auth.schema";
 import messageHandler from "@/core/message-handler";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
-import { GetStaticProps } from "next";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import OAuthButton from "@/resources/containers/oauth-button";
+import { useTranslation } from "react-i18next";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 interface RegisterFormProps {
   onRegisterSuccess: () => void;
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
-  const t = useTranslations("");
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -32,7 +29,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   const onSubmit = async (data: any) => {
     const response = await AuthService.registerUser(data.email, data.password);
     if (response != null) {
-      messageHandler.handleSuccess(t("Registration successful"));
+      messageHandler.handleSuccess(t("common.success"));
       onRegisterSuccess();
     }
   };
@@ -48,17 +45,17 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
       className={form_style.formContainer}
     >
       <Input register={register} errors={errors} action="register" />
-      <AuthButton action="Register" />
+      <AuthButton label={t("auth.register")} />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
           <p className={form_style.oauthText}>
-            <strong>{t("Register")}</strong> {t("with others")}:
+            <strong>{t("auth.register")}</strong> {t("auth.with-others")}:
           </p>
         </div>
         <OAuthButton
           provider="google"
           onClick={handleOAuthClick}
-          action="register"
+          label={t("auth.register-with")}
         />
         {/* <OAuthButton
           provider="facebook"

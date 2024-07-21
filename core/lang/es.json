@@ -1,0 +1,58 @@
+{
+  "resources": {
+    "confirm-delete": "Confirmar eliminación",
+    "are-you-sure": "¿Estás seguro de que deseas eliminarlo?"
+  },
+  "navbar": {
+    "upgrade": "Actualizar",
+    "organization": "Organización",
+    "logout": "Cerrar sesión",
+    "settings": "Configuración"
+  },
+  "common": {
+    "submit": "Enviar",
+    "success": "Éxito",
+    "upload": "Subir",
+    "required": "Requerido",
+    "delete": "Eliminar",
+    "cancel": "Cancelar"
+  },
+  "settings": {
+    "email": "Correo electrónico",
+    "new-password": "Nueva contraseña",
+    "confirm-password": "Confirmar contraseña",
+    "language": "Idioma",
+    "save": "GUARDAR",
+    "delete-account": "ELIMINAR MI CUENTA"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "no-account-question": "¿No tienes una cuenta?",
+    "register": "Registrarse",
+    "login-register": "Iniciar sesión y registrarse",
+    "logout": "Cerrar sesión",
+    "reset": "Restablecer contraseña",
+    "with-others": "Con otros",
+    "login-successful": "Inicio de sesión exitoso",
+    "reset-email-sent": "El enlace para restablecer la contraseña ha sido enviado a tu correo electrónico",
+    "login-with": "Iniciar sesión con",
+    "register-with": "Registrarse con"
+  },
+  "recording": {
+    "started": "Grabación iniciada",
+    "stopped": "Grabación detenida",
+    "record-title": "Graba tu consulta o sube un audio con la consulta previamente grabada para generar un informe",
+    "select-file": "Por favor, selecciona un archivo de audio",
+    "select-file-upload": "Por favor, selecciona un archivo de audio para subir",
+    "activate-audio": "Activar el grabador de audio",
+    "click-to-stop": "Haz clic para detener la grabación",
+    "click-to-start": "Haz clic para iniciar la grabación",
+    "upload": "Subir",
+    "drag-and-drop": "Arrastrar y soltar o",
+    "browse": "Navegar",
+    "supported-format": "Formatos soportados: MP3",
+    "upload-files": "Subir archivos",
+    "submit": "Enviar",
+    "uploading": "Subiendo..."
+  }
+}

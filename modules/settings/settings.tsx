@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GlobalCore } from "@/core/module/module.types";
 import settings_styles from "./styles/settings.module.css";
 import messageHandler from "@/core/message-handler";
@@ -9,18 +7,16 @@ import AuthService from "@/services/auth/auth-supabase.service";
 import { settings_schema } from "./settings.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FaTrash } from "react-icons/fa6";
-import { GetStaticProps } from "next";
+import { LANGUAGES } from "@/core/constants";
+import { useTranslation } from "react-i18next";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 const Settings = () => {
-  const t = useTranslations("");
-  const [language, setLanguage] = useState("en");
+  const { t, i18n } = useTranslation();
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(settings_schema),
@@ -48,7 +44,7 @@ const Settings = () => {
             <div className={settings_styles.mainFormGroup}>
               <div className={`${settings_styles.formGroup}`}>
                 <div className={settings_styles.inputContainer}>
-                  <label htmlFor="email">{t("Email")}:</label>
+                  <label htmlFor="email">{t("settings.email")}:</label>
                   <input type="email" id="email" {...register("email")} />
                 </div>
                 {errors.email && (
@@ -59,7 +55,7 @@ const Settings = () => {
               </div>
               <div className={`${settings_styles.formGroup}`}>
                 <div className={settings_styles.inputContainer}>
-                  <label htmlFor="password">{t("New Password")}:</label>
+                  <label htmlFor="password">{t("settings.new-password")}:</label>
                   <input
                     type="password"
                     id="password"
@@ -75,7 +71,7 @@ const Settings = () => {
               <div className={`${settings_styles.formGroup}`}>
                 <div className={settings_styles.inputContainer}>
                   <label htmlFor="confirm-password">
-                    {t("Confirm Password")}:
+                    {t("settings.confirm-password")}:
                   </label>
                   <input
                     type="password"
@@ -111,22 +107,24 @@ const Settings = () => {
             <div className={settings_styles.divider} />
 
             <div className={settings_styles.languageGroup}>
-              <label htmlFor="language">{t("Language")}:</label>
+              <label htmlFor="language">{t("settings.language")}:</label>
               <select
                 id="language"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                value={i18n.language}
+                onChange={(e) => i18n.changeLanguage(e.target.value)}
                 className={settings_styles.languageSelect}
               >
-                <option value="en">EN</option>
-                <option value="es">ES</option>
+                {LANGUAGES.map((lang, index) =>
+                  <option key={index} value={lang}>{lang.toUpperCase()}</option>
+                )}
+
               </select>
             </div>
 
             <div className={settings_styles.divider} />
 
             <button type="submit" className={settings_styles.saveButton}>
-              {t("SAVE")}
+              {t("settings.save")}
             </button>
 
             <div className={settings_styles.divider} />
@@ -136,7 +134,7 @@ const Settings = () => {
             className={settings_styles.deleteAccount}
           >
             <FaTrash size={16} style={{ color: "#DF4949" }} />
-            {t("DELETE MY ACCOUNT")}
+            {t("settings.delete-account")}
           </button>
         </main>
       </div>
