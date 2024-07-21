@@ -1,6 +1,7 @@
 import React from "react";
 import Modal from "react-modal";
 import modal_styles from "./styles/delete-confirmation.module.css";
+import { useTranslation } from "react-i18next";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
@@ -13,7 +14,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
   onRequestClose,
   onConfirm,
 }) => {
-  const t = useTranslations("");
+  const { t } = useTranslation();
 
   return (
     <Modal

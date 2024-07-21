@@ -1,7 +1,7 @@
 import React from "react";
-import { useTranslations } from "next-intl";
 import form_style from "./styles/input.module.css";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 type FormData = {
   email: string;
@@ -25,7 +25,7 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   validation,
 }) => {
-  const t = useTranslations("");
+  const { t } = useTranslation();
 
   return (
     <div className={form_style.formInput}>
@@ -37,7 +37,7 @@ const InputField: React.FC<InputFieldProps> = ({
       />
       {errors[name] && (
         <span className={form_style.errorMessage}>
-          {t(errors[name]?.message)}
+          {(errors[name]?.message)}
         </span>
       )}
     </div>
