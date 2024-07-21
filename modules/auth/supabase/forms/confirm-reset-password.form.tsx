@@ -4,10 +4,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./form.module.css";
 import { confirm_reset_password_schema } from "./auth.schema";
-import messageHandler from "@/core/message-handler";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import { useTranslation } from "react-i18next";
+import MessageHandler from "@/core/message-handler";
 
 
 interface confirmResetPasswordInterface {
@@ -32,7 +32,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
       data.password as string,
     );
     if (response) {
-      messageHandler.handleSuccess(t("common.success"));
+      MessageHandler.get().handleSuccess(t("common.success"));
       onSuccess();
     }
   };

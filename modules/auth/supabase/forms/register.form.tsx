@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./form.module.css";
 import { register_schema } from "./auth.schema";
-import messageHandler from "@/core/message-handler";
+import MessageHandler from "@/core/message-handler";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import OAuthButton from "@/resources/containers/oauth-button";
@@ -29,7 +29,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   const onSubmit = async (data: any) => {
     const response = await AuthService.registerUser(data.email, data.password);
     if (response != null) {
-      messageHandler.handleSuccess(t("common.success"));
+      MessageHandler.get().handleSuccess(t("common.success"));
       onRegisterSuccess();
     }
   };

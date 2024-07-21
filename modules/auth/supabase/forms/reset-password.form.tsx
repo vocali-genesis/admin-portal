@@ -5,10 +5,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./form.module.css";
 import { reset_password_schema } from "./auth.schema";
-import messageHandler from "@/core/message-handler";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import { useTranslation } from "react-i18next";
+import MessageHandler from "@/core/message-handler";
 
 
 const ResetPasswordForm = () => {
@@ -26,7 +26,7 @@ const ResetPasswordForm = () => {
     const response = await AuthService.resetPassword(data.email);
     if (!response) return;
 
-    messageHandler.handleSuccess(
+    MessageHandler.get().handleSuccess(
       t("auth.reset-email-sent"),
     );
     router.push("/auth/login");

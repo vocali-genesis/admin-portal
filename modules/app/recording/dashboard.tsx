@@ -2,11 +2,12 @@ import { GlobalCore } from "@/core/module/module.types";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import messageHandler from "@/core/message-handler";
+import MessageHandler from "@/core/message-handler";
 import { AudioRecorder } from "@/modules/app/recording/libs/audio-recorder";
 import dash_styles from "./styles/dashboard.module.css";
 import { useTranslation } from "react-i18next";
 
+const messageHandler = MessageHandler.get()
 
 const Dashboard = () => {
   const { t } = useTranslation();

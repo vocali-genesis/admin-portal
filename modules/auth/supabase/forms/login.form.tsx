@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./form.module.css";
 import { login_schema } from "./auth.schema";
-import messageHandler from "@/core/message-handler";
+import MessageHandler from "@/core/message-handler";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import OAuthButton from "@/resources/containers/oauth-button";
@@ -31,7 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const onSubmit = async (data: any) => {
     const response = await AuthService.loginUser(data.email, data.password);
     if (response) {
-      messageHandler.handleSuccess(t("auth.login-successful"));
+      MessageHandler.get().handleSuccess(t("auth.login-successful"));
       onLoginSuccess();
     }
   };

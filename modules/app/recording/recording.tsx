@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
 import Spinner from "@/resources/containers/spinner";
-import messageHandler from "@/core/message-handler";
+import MessageHandler from "@/core/message-handler";
 import {
   FaCirclePlay,
   FaCirclePause,
@@ -139,7 +139,7 @@ const Recording = () => {
         },
       });
     } else {
-      messageHandler.handleError("Failed to generate report");
+      MessageHandler.get().handleError("Failed to generate report");
       setIsLoading(false);
     }
   };
