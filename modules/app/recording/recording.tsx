@@ -4,6 +4,11 @@ import { useTranslations } from "next-intl";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
+import Spinner from "@/resources/containers/spinner";
+import messageHandler from "@/core/message-handler";
+import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
+import recording_styles from "./styles/recording.module.css";
+import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import {
   FaCirclePlay,
   FaCirclePause,
@@ -13,11 +18,6 @@ import {
   FaFloppyDisk,
   FaCircleStop,
 } from "react-icons/fa6";
-import Spinner from "@/resources/containers/spinner";
-import messageHandler from "@/core/message-handler";
-import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
-import recording_styles from "./styles/recording.module.css";
-import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
