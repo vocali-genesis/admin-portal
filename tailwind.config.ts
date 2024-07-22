@@ -23,11 +23,7 @@ const config: Config = {
         custom: { max: "750px" },
       },
       fontFamily: {
-<<<<<<< HEAD
-        montserrat: ['Montserrat', 'sans-serif'],
-=======
         montserrat: ["Montserrat", "sans-serif"],
->>>>>>> 6ca6a36 (Updated editor)
       },
     },
   },
