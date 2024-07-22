@@ -13,18 +13,8 @@ import {
   FaFloppyDisk,
   FaCircleStop,
 } from "react-icons/fa6";
-import Modal from "react-modal";
 import Spinner from "@/resources/containers/spinner";
 import messageHandler from "@/core/message-handler";
-import {
-  FaCirclePlay,
-  FaCirclePause,
-  FaBackwardStep,
-  FaForwardStep,
-  FaTrash,
-  FaFloppyDisk,
-  FaCircleStop,
-} from "react-icons/fa6";
 import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
 import recording_styles from "./styles/recording.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
