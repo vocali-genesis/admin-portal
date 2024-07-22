@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import ResetPasswordForm from "./forms/reset-password.form";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
@@ -12,7 +11,6 @@ import auth_style from "./styles/auth.module.css";
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 const ResetPassword = () => {
-  const router = useRouter();
   const t = useTranslations("");
 
   return (

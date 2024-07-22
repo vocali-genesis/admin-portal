@@ -8,6 +8,12 @@ type FormData = {
   password: string;
   confirm_password: string;
 };
+
+type FormData = {
+  email: string;
+  password: string;
+  confirm_password: string;
+};
 interface InputFieldProps {
   register: UseFormRegister<FormData>;
   errors: FieldErrors<FormData>;

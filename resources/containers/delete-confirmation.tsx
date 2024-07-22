@@ -29,7 +29,10 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
         <button onClick={onConfirm} className={modal_styles.deleteButton}>
           {t("Delete")}
         </button>
-        <button onClick={onRequestClose} className={modal_styles.cancelButton}>
+        <button
+          onClick={onRequestClose}
+          className={modal_styles.cancelButton}
+        >
           {t("Cancel")}
         </button>
       </div>

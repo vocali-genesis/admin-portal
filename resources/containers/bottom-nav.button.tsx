@@ -6,7 +6,10 @@ interface bottomNavButtonProps {
   onClick: () => void;
 }
 
-const BottomNavButton: React.FC<bottomNavButtonProps> = ({ label, onClick }) => {
+const BottomNavButton: React.FC<bottomNavButtonProps> = ({
+  label,
+  onClick,
+}) => {
   const t = useTranslations();
 
   return (

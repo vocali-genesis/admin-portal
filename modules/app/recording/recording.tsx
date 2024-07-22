@@ -6,6 +6,9 @@ import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
 import Spinner from "@/resources/containers/spinner";
 import messageHandler from "@/core/message-handler";
+import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
+import recording_styles from "./styles/recording.module.css";
+import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import {
   FaCirclePlay,
   FaCirclePause,
