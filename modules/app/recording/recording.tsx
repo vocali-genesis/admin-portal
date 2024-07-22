@@ -1,13 +1,24 @@
 import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
+import messageHandler from "@/core/message-handler";
+import {
+  FaCirclePlay,
+  FaCirclePause,
+  FaBackwardStep,
+  FaForwardStep,
+  FaTrash,
+  FaFloppyDisk,
+  FaCircleStop,
+} from "react-icons/fa6";
+import Modal from "react-modal";
 import recording_styles from "./styles/recording.module.css";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
+Modal.setAppElement("#__next");
 
 const Recording = () => {
   const t = useTranslations("");
@@ -16,6 +27,7 @@ const Recording = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -26,7 +38,7 @@ const Recording = () => {
   }, [audioUrl]);
 
   const togglePlayPause = () => {
-    if (audioRef.current) {
+    if (audioUrl && audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
@@ -54,7 +66,6 @@ const Recording = () => {
 
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
-      console.log(audioRef.current.duration);
       setDuration(audioRef.current.duration);
     }
   };
@@ -83,21 +94,52 @@ const Recording = () => {
     }
   };
 
+  const handleStop = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsPlaying(false);
+      updateSeekBarProgress();
+    }
+  };
+
   const handleEnded = () => {
     setIsPlaying(false);
     setCurrentTime(duration);
     updateSeekBarProgress();
   };
 
-  const handleSubmit = () => {
+  const handleSave = () => {
+    if (audioRef.current && audioUrl) {
+      const anchor = document.createElement("a");
+      anchor.href = audioUrl as string;
+
+      anchor.download = typeof audioUrl === "string" ? audioUrl : audioUrl[0];
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    }
+  };
+
+  const handleSubmit = async () => {
     // Handle submission logic here
     console.log("Recording submitted");
   };
 
   const handleDelete = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    setIsDeleteModalOpen(false);
     router.push({
       pathname: "/app/dashboard",
     });
+  };
+
+  const cancelDelete = () => {
+    setIsDeleteModalOpen(false);
   };
 
   return (
@@ -136,47 +178,74 @@ const Recording = () => {
             </div>
             <div className={recording_styles.controlsContainer}>
               <button
-                onClick={() => {
-                  handleDelete;
-                }}
+                onClick={handleDelete}
                 className={recording_styles.actionButton}
               >
-                <Image src="/delete.svg" alt="Delete" width={15} height={15} />
+                <FaTrash size={16} style={{ color: "#DF4949" }} />
               </button>
               <button
                 onClick={() => handleSkip(-30)}
                 className={recording_styles.skipButton}
               >
-                <Image src="/back.svg" alt="Backward" width={15} height={15} />
+                <FaBackwardStep size={16} style={{ color: "black" }} />
               </button>
-              <button
-                onClick={togglePlayPause}
-                className={recording_styles.playPauseButton}
-              >
+              <div className={recording_styles.playPauseContainer}>
                 {isPlaying ? (
-                  <Image src="/pause.png" alt="pause" width={20} height={20} />
+                  <>
+                    <button
+                      onClick={togglePlayPause}
+                      className={recording_styles.playPauseButton}
+                    >
+                      <FaCirclePause
+                        size={40}
+                        color="#59DBBC"
+                        style={{
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    </button>
+                    <button
+                      onClick={handleStop}
+                      className={recording_styles.playPauseButton}
+                    >
+                      <FaCircleStop
+                        size={40}
+                        color="#DF4949"
+                        style={{
+                          backgroundColor: "white",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    </button>
+                  </>
                 ) : (
-                  <Image src="/play.svg" alt="play" width={10} height={10} />
+                  <button
+                    onClick={togglePlayPause}
+                    className={recording_styles.playPauseButton}
+                  >
+                    <FaCirclePlay
+                      size={40}
+                      color="#59DBBC"
+                      style={{
+                        backgroundColor: "white",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  </button>
                 )}
-              </button>
+              </div>
               <button
                 onClick={() => handleSkip(30)}
                 className={recording_styles.skipButton}
               >
-                <Image
-                  src="/fast-forward.svg"
-                  alt="Forward"
-                  width={15}
-                  height={15}
-                />
+                <FaForwardStep size={16} style={{ color: "black" }} />
               </button>
               <button
-                onClick={() => {
-                  /* Handle save */
-                }}
+                onClick={handleSave}
                 className={recording_styles.actionButton}
               >
-                <Image src="/save.svg" alt="Save" width={15} height={15} />
+                <FaFloppyDisk size={16} style={{ color: "blue" }} />
               </button>
             </div>
           </div>
@@ -187,6 +256,29 @@ const Recording = () => {
             {t("Submit")}
           </button>
         </div>
+        <Modal
+          isOpen={isDeleteModalOpen}
+          onRequestClose={cancelDelete}
+          className={recording_styles.modal}
+          overlayClassName={recording_styles.overlay}
+        >
+          <h2>{t("Confirm Delete")}</h2>
+          <p>{t("Are you sure you want to delete this recording?")}</p>
+          <div className={recording_styles.modalButtons}>
+            <button
+              onClick={confirmDelete}
+              className={recording_styles.deleteButton}
+            >
+              {t("Delete")}
+            </button>
+            <button
+              onClick={cancelDelete}
+              className={recording_styles.cancelButton}
+            >
+              {t("Cancel")}
+            </button>
+          </div>
+        </Modal>
       </main>
     </>
   );

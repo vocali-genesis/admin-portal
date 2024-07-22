@@ -7,6 +7,8 @@
   overflow-y: auto;
 
   transition: left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebarList {
@@ -21,10 +23,9 @@
   gap: 10px;
   padding: 10px;
   cursor: pointer;
-}
 
-.sidebarImageItem {
-  padding-top: 3px;
+  font-size: 2.25vh;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .sidebarItem span {
@@ -43,6 +44,11 @@
   display: none;
 }
 
+.bottomButtons {
+  display: block;
+  margin-top: auto;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     z-index: 1000;
@@ -51,7 +57,7 @@
   .closeButton {
     display: block;
     position: absolute;
-    top: -10px;
+    top: 2.5rem;
     right: 10px;
     background: none;
     border: none;
@@ -64,6 +70,7 @@
 @media (max-width: 500px) {
   .sidebar {
     position: fixed;
+    padding-top: 3rem;
     top: 0;
     left: -250px;
   }

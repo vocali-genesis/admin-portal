@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
-import sidebar_styles from "@/styles/components/sidebar.module.css";
+import sidebar_styles from "./styles/sidebar.module.css";
 import { GetStaticProps } from "next";
+import SettingsButton from "@/resources/containers/settings-button";
+import LogoutButton from "@/resources/containers/logout-button";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
@@ -51,6 +53,10 @@ const SideBar: React.FC<sidebarProps> = ({
           </li>
         ))}
       </ul>
+      <div className={sidebar_styles.bottomButtons}>
+        <SettingsButton />
+        <LogoutButton />
+      </div>
     </aside>
   );
 };

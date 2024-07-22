@@ -4,8 +4,8 @@ import { useTranslations } from "next-intl";
 import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
-import form_style from "@/styles/forms/form.module.css";
-import auth_schema from "@/resources/forms/schemas/auth-schema";
+import form_style from "./styles/form.module.css";
+import { register_schema } from "./schemas/auth-schema";
 import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
@@ -15,25 +15,25 @@ import OAuthButton from "@/resources/containers/oauth-button";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
-interface LoginFormProps {
-  onLoginSuccess: () => void;
+interface RegisterFormProps {
+  onRegisterSuccess: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   const t = useTranslations("");
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(auth_schema),
+    resolver: yupResolver(register_schema),
   });
 
   const onSubmit = async (data: any) => {
-    const response = await AuthService.loginUser(data.email, data.password);
-    if (response) {
-      messageHandler.handleSuccess(t("Login successful"));
-      onLoginSuccess();
+    const response = await AuthService.registerUser(data.email, data.password);
+    if (response != null) {
+      messageHandler.handleSuccess(t("Registration successful"));
+      onRegisterSuccess();
     }
   };
 
@@ -47,27 +47,27 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       onSubmit={handleSubmit(onSubmit)}
       className={form_style.formContainer}
     >
-      <Input register={register} errors={errors} />
-      <AuthButton action="login" />
+      <Input register={register} errors={errors} action="register" />
+      <AuthButton action="Register" />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
           <p className={form_style.oauthText}>
-            <strong>{t("Login")}</strong> {t("with others")}:
+            <strong>{t("Register")}</strong> {t("with others")}:
           </p>
         </div>
         <OAuthButton
           provider="google"
           onClick={handleOAuthClick}
-          action="login"
+          action="register"
         />
         {/* <OAuthButton
           provider="facebook"
           onClick={handleOAuthClick}
-          action="login"
+          action="register"
         /> */}
       </div>
     </form>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

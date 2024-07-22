@@ -1,0 +1,55 @@
+.formInput {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.formControl {
+  background: #E8EBED;
+  color: black;
+  width: 100%;
+  height: 42.5px;
+  padding-left: 3rem;
+  background-repeat: no-repeat;
+  background-position: 1rem center;
+  border-radius: 10px;
+
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+}
+
+.formControl::placeholder {
+  color: black;
+  opacity: 1;
+}
+
+/* For Internet Explorer */
+.formControl:-ms-input-placeholder {
+  color: black;
+}
+
+/* For Microsoft Edge */
+.formControl::-ms-input-placeholder {
+  color: black;
+}
+
+.inputEmailIcon {
+  background-image: url('/frame-1.svg');
+  background-size: 1.25rem;
+}
+
+.inputPasswordIcon {
+  background-image: url('/frame-2.svg');
+  background-size: 1.1rem;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.errorMessage {
+  color: red;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+}

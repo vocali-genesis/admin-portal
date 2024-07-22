@@ -1,13 +1,13 @@
 import { GlobalCore } from "@/core/module/module.types";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/router";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useTranslations } from "next-intl";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import messageHandler from "@/core/message-handler";
+import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { AudioRecorder } from "@/modules/app/recording/libs/audio-recorder";
-import { GetStaticProps } from "next";
 import dash_styles from "./styles/dashboard.module.css";
+import { GetStaticProps } from "next";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
@@ -15,10 +15,47 @@ const Dashboard = () => {
   const t = useTranslations("");
   const router = useRouter();
   const [isRecording, setIsRecording] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<string>("");
+
+  useEffect(() => {
+    const getAudioDevices = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true }); // Request permission
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioInputDevices = devices.filter(
+          (device) => device.kind === "audioinput",
+        );
+        setDevices(audioInputDevices);
+        if (audioInputDevices.length > 0) {
+          setSelectedDevice(audioInputDevices[0].deviceId);
+        }
+      } catch (error) {
+        console.error("Error getting audio devices:", error);
+        messageHandler.handleError(
+          "Failed to get audio devices. Please ensure you've granted microphone permissions.",
+        );
+      }
+    };
+
+    getAudioDevices();
+
+    // Set up device change listener
+    navigator.mediaDevices.addEventListener("devicechange", getAudioDevices);
+
+    return () => {
+      navigator.mediaDevices.removeEventListener(
+        "devicechange",
+        getAudioDevices,
+      );
+    };
+  }, []);
 
   const toggleRecording = async () => {
     if (!audioRecorderRef.current) {
@@ -28,7 +65,6 @@ const Dashboard = () => {
     if (isRecording) {
       try {
         const audioUrl = await audioRecorderRef.current.stopRecording();
-        console.log("Recording stopped, audio URL:", audioUrl);
         messageHandler.info(t("Recording stopped"));
         setIsRecording(false);
 
@@ -41,7 +77,7 @@ const Dashboard = () => {
       }
     } else {
       try {
-        await audioRecorderRef.current.startRecording();
+        await audioRecorderRef.current.startRecording(selectedDevice);
         messageHandler.info(t("Recording started"));
         setIsRecording(true);
       } catch (error) {
@@ -103,7 +139,9 @@ const Dashboard = () => {
 
   const handleUpload = () => {
     if (selectedFile) {
+      setIsUploading(true);
       const audioUrl = URL.createObjectURL(selectedFile);
+      setIsUploading(false);
       router.push({
         pathname: "/app/recording",
         query: { audioUrl: audioUrl },
@@ -118,7 +156,7 @@ const Dashboard = () => {
   };
 
   return (
-    <>
+    <div className="p-5">
       <h2 className={dash_styles.h2}>
         {t(
           "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
@@ -130,6 +168,17 @@ const Dashboard = () => {
 
       <div className={dash_styles.contentColumns}>
         <div className={dash_styles.recordSection}>
+          <select
+            value={selectedDevice}
+            onChange={(e) => setSelectedDevice(e.target.value)}
+            className={dash_styles.deviceSelect}
+          >
+            {devices.map((device) => (
+              <option key={device.deviceId} value={device.deviceId}>
+                {device.label || `Microphone ${device.deviceId.slice(0, 5)}`}
+              </option>
+            ))}
+          </select>
           <button
             className={`${dash_styles.recordButton} ${
               isRecording ? dash_styles.recording : ""
@@ -162,6 +211,7 @@ const Dashboard = () => {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            onClick={handleBrowseClick}
           >
             <Image
               src="/cloud-avatar.svg"
@@ -179,7 +229,7 @@ const Dashboard = () => {
               </span>
             </p>
             <small className={dash_styles.small}>
-              {t("Supported Formats: MP3")}
+              {t("Supported Formats: MP3. Max File Size: 50MB")}
             </small>
             {selectedFile && (
               <p className={dash_styles.selectedFile}>{selectedFile.name}</p>
@@ -195,13 +245,20 @@ const Dashboard = () => {
           <button
             className={dash_styles.uploadButton}
             onClick={handleUpload}
-            disabled={!selectedFile}
+            disabled={!selectedFile || isUploading}
           >
-            {t("Upload Files")}
+            {isUploading ? (
+              <>
+                <span className={dash_styles.spinner}></span>
+                {t("Uploading...")}
+              </>
+            ) : (
+              t("Upload Files")
+            )}
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -61,6 +61,33 @@ class AuthService {
     const { data } = await this.supabase.auth.getUser();
     return data.user;
   }
+
+  async logout(): Promise<null | undefined> {
+    let { error } = await this.supabase.auth.signOut();
+    if (error) return messageHandler.handleError(error.message);
+  }
+
+  async resetPassword(email: string): Promise<{} | null> {
+    let { data, error } = await this.supabase.auth.resetPasswordForEmail(
+      email,
+      {
+        redirectTo: `${window.location.origin}/auth/${MODULE.CONFIRM_RESET_PASSWORD}`,
+      },
+    );
+    if (error) return messageHandler.handleError(error.message);
+
+    return data;
+  }
+
+  async updateUser(email?: string, password?: string): Promise<User | null> {
+    const { data, error } = await this.supabase.auth.updateUser({
+      email,
+      password,
+    });
+    if (error) return messageHandler.handleError(error.message);
+
+    return data.user;
+  }
 }
 
 export default new AuthService();
