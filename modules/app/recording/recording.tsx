@@ -18,9 +18,6 @@ import {
   FaFloppyDisk,
   FaCircleStop,
 } from "react-icons/fa6";
-import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
-import recording_styles from "./styles/recording.module.css";
-import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
