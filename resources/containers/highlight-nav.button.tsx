@@ -2,7 +2,11 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import settings_btn_styles from "./styles/settings-button.module.css";
 
-const SettingsButton = () => {
+interface highlightNavButtonProps {
+  label: string;
+}
+
+const HighlightNavButton: React.FC<highlightNavButtonProps> = ({ label }) => {
   const t = useTranslations();
 
   return (
@@ -14,9 +18,9 @@ const SettingsButton = () => {
         width={13}
         height={13}
       />
-      <span>{t("Settings")}</span>
+      <span>{t(label)}</span>
     </button>
   );
 };
 
-export default SettingsButton;
+export default HighlightNavButton;

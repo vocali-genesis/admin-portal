@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./styles/form.module.css";
-import { confirm_reset_password_schema } from "./schemas/auth-schema";
+import { confirm_reset_password_schema } from "./auth.schema";
 import messageHandler from "@/core/message-handler";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
@@ -29,7 +29,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
     resolver: yupResolver(confirm_reset_password_schema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: { password: string }) => {
     const response = await AuthService.updateUser(
       undefined,
       data.password as string,

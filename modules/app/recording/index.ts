@@ -1,2 +1,3 @@
-import './recording'
-import './dashboard'
+import "./recording";
+import "./dashboard";
+import "./report";
