@@ -4,30 +4,20 @@ import { useTranslations } from "next-intl";
 import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
-import {
-  FaCirclePlay,
-  FaCirclePause,
-  FaBackwardStep,
-  FaForwardStep,
-  FaTrash,
-  FaFloppyDisk,
-  FaCircleStop,
-} from "react-icons/fa6";
-import Modal from "react-modal";
 import Spinner from "@/resources/containers/spinner";
 import messageHandler from "@/core/message-handler";
-import {
-  FaCirclePlay,
-  FaCirclePause,
-  FaBackwardStep,
-  FaForwardStep,
-  FaTrash,
-  FaFloppyDisk,
-  FaCircleStop,
-} from "react-icons/fa6";
 import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
 import recording_styles from "./styles/recording.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
+import {
+  FaCirclePlay,
+  FaCirclePause,
+  FaBackwardStep,
+  FaForwardStep,
+  FaTrash,
+  FaFloppyDisk,
+  FaCircleStop,
+} from "react-icons/fa6";
 
 export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
