@@ -1,18 +1,15 @@
 import React from "react";
-import { useTranslations } from "next-intl";
 import form_style from "./styles/auth-button.module.css";
 
 interface AuthButtonProps {
-  action: string;
+  label: string;
 }
 
-const AuthButton: React.FC<AuthButtonProps> = ({ action }) => {
-  const t = useTranslations("");
-
+const AuthButton: React.FC<AuthButtonProps> = ({ label }) => {
   return (
     <div>
       <button type="submit" className={form_style.submitButton}>
-        {t(action)}
+        {label}
       </button>
     </div>
   );

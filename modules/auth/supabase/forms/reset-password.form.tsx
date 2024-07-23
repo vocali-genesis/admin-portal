@@ -1,21 +1,18 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
-import form_style from "./styles/form.module.css";
+import form_style from "./form.module.css";
 import { reset_password_schema } from "./auth.schema";
-import messageHandler from "@/core/message-handler";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
-import { GetStaticProps } from "next";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
+import { useTranslation } from "react-i18next";
+import MessageHandler from "@/core/message-handler";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 const ResetPasswordForm = () => {
-  const t = useTranslations("");
+  const { t } = useTranslation();
   const router = useRouter();
   const {
     register,
@@ -27,12 +24,12 @@ const ResetPasswordForm = () => {
 
   const onSubmit = async (data: any) => {
     const response = await AuthService.resetPassword(data.email);
-    if (response) {
-      messageHandler.handleSuccess(
-        t("Password reset link has been sent to your email"),
-      );
-      router.push("/auth/login");
-    }
+    if (!response) return;
+
+    MessageHandler.get().handleSuccess(
+      t("auth.reset-email-sent"),
+    );
+    router.push("/auth/login");
   };
 
   return (
@@ -41,8 +38,8 @@ const ResetPasswordForm = () => {
       className={form_style.formContainer}
     >
       <Input register={register} errors={errors} action="reset-password" />
-      <AuthButton action="Reset Password" />
-    </form>
+      <AuthButton label={t('auth.reset')} />
+    </form >
   );
 };
 

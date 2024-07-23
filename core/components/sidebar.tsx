@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
 import sidebar_styles from "./styles/sidebar.module.css";
 import AuthService from "@/services/auth/auth-supabase.service";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
 import HighlightNavButton from "@/resources/containers/highlight-nav.button";
 import BottomNavButton from "@/resources/containers/bottom-nav.button";
 import { useRouter } from "next/router";
-import { GetStaticProps } from "next";
+import { useTranslation } from "react-i18next";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 interface sidebarProps {
   _activeTab: string;
@@ -27,7 +24,7 @@ const SideBar: React.FC<sidebarProps> = ({
   closeSidebar,
   sideBarItems,
 }) => {
-  const t = useTranslations("");
+  const { t } = useTranslation()
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(_activeTab);
 
@@ -57,13 +54,13 @@ const SideBar: React.FC<sidebarProps> = ({
               width={13}
               height={13}
             />
-            <span>{t(item.label)}</span>
+            <span>{item.label}</span>
           </li>
         ))}
       </ul>
       <div className={sidebar_styles.bottomButtons}>
-        <HighlightNavButton label="Settings" onClick={() => router.push("/settings/settings")} />
-        <BottomNavButton label="logout" onClick={logout} />
+        <HighlightNavButton label={t("navbar.settings")} onClick={() => router.push("/settings/settings")} />
+        <BottomNavButton label={t('navbar.logout')} onClick={logout} />
       </div>
     </aside>
   );

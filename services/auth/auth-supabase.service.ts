@@ -1,9 +1,10 @@
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
 import { Provider } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
-import messageHandler from "@/core/message-handler";
+import MessageHandler from "@/core/message-handler";
 import { MODULE } from "@/core/constants";
 
+const messageHandler = MessageHandler.get()
 class AuthService {
   private supabase: SupabaseClient;
 

@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { useTranslations } from "next-intl";
 import settings_btn_styles from "./styles/settings-button.module.css";
+import { useTranslation } from "react-i18next";
 
 interface highlightNavButtonProps {
   label: string;
@@ -8,7 +8,7 @@ interface highlightNavButtonProps {
 }
 
 const HighlightNavButton: React.FC<highlightNavButtonProps> = ({ label, onClick }) => {
-  const t = useTranslations();
+  const { t } = useTranslation();
 
   return (
     <button

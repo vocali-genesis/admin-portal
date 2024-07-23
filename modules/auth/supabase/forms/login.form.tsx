@@ -1,27 +1,24 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
-import form_style from "./styles/form.module.css";
+import form_style from "./form.module.css";
 import { login_schema } from "./auth.schema";
-import messageHandler from "@/core/message-handler";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
-import { GetStaticProps } from "next";
+import MessageHandler from "@/core/message-handler";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import OAuthButton from "@/resources/containers/oauth-button";
+import { useTranslation } from "react-i18next";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 interface LoginFormProps {
   onLoginSuccess: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
-  const t = useTranslations("");
+  const { t } = useTranslation();
   const router = useRouter();
   const {
     register,
@@ -34,7 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const onSubmit = async (data: any) => {
     const response = await AuthService.loginUser(data.email, data.password);
     if (response) {
-      messageHandler.handleSuccess(t("Login successful"));
+      MessageHandler.get().handleSuccess(t("auth.login-successful"));
       onLoginSuccess();
     }
   };
@@ -45,7 +42,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   };
 
   const resetPassword = async () => {
-    router.push("/auth/reset_password");
+    router.push("/auth/reset-password");
   };
 
   return (
@@ -65,17 +62,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       >
         Forgot password?
       </p>
-      <AuthButton action="Login" />
+      <AuthButton label={t('auth.login')} />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
           <p className={form_style.oauthText}>
-            <strong>{t("Login")}</strong> {t("with others")}:
+            <strong>{t('auth.login')}</strong> {t('auth.with-others')}:
           </p>
         </div>
         <OAuthButton
           provider="google"
           onClick={handleOAuthClick}
-          action="login"
+          label={t("auth.login-with")}
         />
         {/* <OAuthButton
           provider="facebook"
@@ -83,7 +80,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           action="login"
         /> */}
       </div>
-    </form>
+    </form >
   );
 };
 

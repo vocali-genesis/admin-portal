@@ -1,14 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useTranslations } from "next-intl";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
-import { GetStaticProps } from "next";
 import { GlobalCore } from "@/core/module/module.types";
 import Spinner from "@/resources/containers/spinner";
-import messageHandler from "@/core/message-handler";
-import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
-import recording_styles from "./styles/recording.module.css";
-import DeleteConfirmation from "@/resources/containers/delete-confirmation";
+import MessageHandler from "@/core/message-handler";
 import {
   FaCirclePlay,
   FaCirclePause,
@@ -18,11 +12,14 @@ import {
   FaFloppyDisk,
   FaCircleStop,
 } from "react-icons/fa6";
+import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
+import recording_styles from "./styles/recording.module.css";
+import DeleteConfirmation from "@/resources/containers/delete-confirmation";
+import { useTranslation } from "react-i18next";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 const Recording = () => {
-  const t = useTranslations("");
+  const { t } = useTranslation();
   const router = useRouter();
   const { audioUrl } = router.query;
   const [isLoading, setIsLoading] = useState(false);
@@ -142,7 +139,7 @@ const Recording = () => {
         },
       });
     } else {
-      messageHandler.handleError("Failed to generate report");
+      MessageHandler.get().handleError("Failed to generate report");
       setIsLoading(false);
     }
   };
@@ -169,11 +166,9 @@ const Recording = () => {
       <main className={recording_styles.mainContent}>
         <div className={recording_styles.instructions}>
           <h2>
-            {t(
-              "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
-            )}
+            {t("recording.record-title")}
           </h2>
-          <p>{t("Activate the audio recorder")}</p>
+          {t("recording.activate")}
         </div>
         <div className={recording_styles.audioPlayerContainer}>
           <div className={recording_styles.audioPlayer}>
@@ -275,7 +270,7 @@ const Recording = () => {
             onClick={handleSubmit}
             className={recording_styles.submitButton}
           >
-            {t("Submit")}
+            {t("recording.submit")}
           </button>
         </div>
       </main>

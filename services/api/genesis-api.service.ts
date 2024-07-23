@@ -1,5 +1,7 @@
-import messageHandler from "@/core/message-handler";
+import MessageHandler from "@/core/message-handler";
 import config from "@/resources/utils/config";
+
+const messageHandler = MessageHandler.get()
 
 class MedicalTranscriptionAPI {
   private baseUrl: string = config.MEDICAL_TRANSCRIPTION_API_URL as string;

@@ -2,17 +2,15 @@ import { GlobalCore } from "@/core/module/module.types";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useTranslations } from "next-intl";
-import messageHandler from "@/core/message-handler";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
+import MessageHandler from "@/core/message-handler";
 import { AudioRecorder } from "@/modules/app/recording/libs/audio-recorder";
 import dash_styles from "./styles/dashboard.module.css";
-import { GetStaticProps } from "next";
+import { useTranslation } from "react-i18next";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
+const messageHandler = MessageHandler.get()
 
 const Dashboard = () => {
-  const t = useTranslations("");
+  const { t } = useTranslation();
   const router = useRouter();
   const [isRecording, setIsRecording] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -65,7 +63,7 @@ const Dashboard = () => {
     if (isRecording) {
       try {
         const audioUrl = await audioRecorderRef.current.stopRecording();
-        messageHandler.info(t("Recording stopped"));
+        messageHandler.info(t("recording.stopped"));
         setIsRecording(false);
 
         router.push({
@@ -77,8 +75,8 @@ const Dashboard = () => {
       }
     } else {
       try {
-        await audioRecorderRef.current.startRecording(selectedDevice);
-        messageHandler.info(t("Recording started"));
+        await audioRecorderRef.current.startRecording();
+        messageHandler.info(t("recording.started"));
         setIsRecording(true);
       } catch (error) {
         messageHandler.handleError((error as Error).message);
@@ -137,7 +135,7 @@ const Dashboard = () => {
     if (file.type.startsWith("audio/")) {
       setSelectedFile(file);
     } else {
-      messageHandler.handleError(t("Please select an audio file"));
+      messageHandler.handleError(t("recording.select-file"));
     }
   };
 
@@ -149,7 +147,7 @@ const Dashboard = () => {
         query: { audioUrl: audioUrl },
       });
     } else {
-      messageHandler.handleError(t("Please select an audio file to upload"));
+      messageHandler.handleError(t("recording.select-file-upload"));
     }
   };
 
@@ -161,11 +159,11 @@ const Dashboard = () => {
     <div className="p-5">
       <h2 className={dash_styles.h2}>
         {t(
-          "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
+          "recording.record-title"
         )}
       </h2>
       <p className={`${dash_styles.p} ${dash_styles.top_p}`}>
-        {t("Activate the audio recorder")}
+        {t("recording.activate-audio")}
       </p>
 
       <div className={dash_styles.contentColumns}>
@@ -182,9 +180,8 @@ const Dashboard = () => {
             ))}
           </select>
           <button
-            className={`${dash_styles.recordButton} ${
-              isRecording ? dash_styles.recording : ""
-            }`}
+            className={`${dash_styles.recordButton} ${isRecording ? dash_styles.recording : ""
+              }`}
             onClick={toggleRecording}
           >
             <Image
@@ -196,19 +193,18 @@ const Dashboard = () => {
           </button>
           <p className={dash_styles.p}>
             {isRecording
-              ? t("Click To Stop Recording")
-              : t("Click To Start Recording")}
+              ? t("recording.click-to-stop")
+              : t("recording.click-to-start")}
           </p>
         </div>
 
         <div className={dash_styles.divider}></div>
 
         <div className={dash_styles.uploadSection}>
-          <h3 className={dash_styles.h3}>{t("Upload")}</h3>
+          <h3 className={dash_styles.h3}>{t("recording.upload")}</h3>
           <div
-            className={`${dash_styles.uploadArea} ${
-              isDragging ? dash_styles.dragging : ""
-            }`}
+            className={`${dash_styles.uploadArea} ${isDragging ? dash_styles.dragging : ""
+              }`}
             onDragEnter={handleDragEnter}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -217,26 +213,26 @@ const Dashboard = () => {
           >
             <Image
               src="/cloud-avatar.svg"
-              alt="Upload"
+              alt={t("recording.upload")}
               width={50}
               height={50}
             />
             <p className={dash_styles.p}>
-              {t("Drag & Drop Or")}{" "}
+              {t("recording.drag-and-drop")}{" "}
               <span
                 onClick={handleBrowseClick}
                 className={dash_styles.browseLink}
               >
-                {t("Browse")}
+                {t("recording.browse")}
               </span>
             </p>
             <small className={dash_styles.small}>
-              {t("Supported Formats: MP3. Max File Size: 50MB")}
-            </small>
+              {t("recording.supported-format")}
+            </small >
             {selectedFile && (
               <p className={dash_styles.selectedFile}>{selectedFile.name}</p>
             )}
-          </div>
+          </div >
           <input
             type="file"
             ref={fileInputRef}
@@ -249,18 +245,12 @@ const Dashboard = () => {
             onClick={handleUpload}
             disabled={!selectedFile || isUploading}
           >
-            {isUploading ? (
-              <>
-                <span className={dash_styles.spinner}></span>
-                {t("Uploading...")}
-              </>
-            ) : (
-              t("Upload Files")
-            )}
-          </button>
-        </div>
-      </div>
-    </div>
+            {isUploading ? <span className={dash_styles.spinner}></span> : null}
+            {t(isUploading ? "recording.uploading" : "recording.upload-files")}
+          </button >
+        </div >
+      </div >
+    </div >
   );
 };
 

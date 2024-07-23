@@ -1,17 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthService from "@/services/auth/auth-supabase.service";
-import form_style from "./styles/form.module.css";
+import form_style from "./form.module.css";
 import { confirm_reset_password_schema } from "./auth.schema";
-import messageHandler from "@/core/message-handler";
-import { getStaticPropsWithTranslations } from "@/modules/lang/props";
-import { GetStaticProps } from "next";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
+import { useTranslation } from "react-i18next";
+import MessageHandler from "@/core/message-handler";
 
-export const getStaticProps: GetStaticProps = getStaticPropsWithTranslations;
 
 interface confirmResetPasswordInterface {
   onSuccess: () => void;
@@ -20,7 +17,7 @@ interface confirmResetPasswordInterface {
 const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
   onSuccess,
 }) => {
-  const t = useTranslations("");
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -35,7 +32,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
       data.password as string,
     );
     if (response) {
-      messageHandler.handleSuccess(t("Successfully updated password"));
+      MessageHandler.get().handleSuccess(t("common.success"));
       onSuccess();
     }
   };
@@ -50,7 +47,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
         errors={errors}
         action="confirm-reset-password"
       />
-      <AuthButton action="Reset Password" />
+      <AuthButton label={t('auth.reset')} />
     </form>
   );
 };
