@@ -196,7 +196,10 @@ const Report = () => {
             EDIT
           </button>
         )}
-        <button className={report_styles.newRecordingButton}>
+        <button
+          className={report_styles.newRecordingButton}
+          onClick={() => router.push("/app/dashboard")}
+        >
           NEW RECORDING
         </button>
       </div>
