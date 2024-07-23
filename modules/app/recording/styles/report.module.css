@@ -168,10 +168,6 @@
   z-index: 1;
   color: black;
   font-size: 2vh;
-
-  border-style: solid;
-  border-color: rgb(0,0,0,0.2);
-  border-width: 1px;
 }
 
 .hiddenContent {

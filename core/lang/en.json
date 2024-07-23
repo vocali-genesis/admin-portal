@@ -48,12 +48,20 @@
     "activate-audio": "Activate the audio recorder",
     "click-to-stop": "Click To Stop Recording",
     "click-to-start": "Click To Start Recording",
+    "click-to-pause": "Click To Pause Recording",
+    "click-to-resume": "Click To Resume Recording",
+    "permission-required": "Please allow microphone permissions before recording",
+    "stop": "Stop recording",
+    "stopped": "Recording stopped",
+    "paused": "Recording paused",
+    "resumed": "Recording resumed",
     "upload": "Upload",
     "drag-and-drop": "Drag & Drop Or",
     "browse": "Browse",
     "supported-format": "Supported Formats: MP3",
     "upload-files": "Upload Files",
     "submit": "Submit",
-    "uploading": "Uploading..."
+    "uploading": "Uploading...",
+    "allow-permissions": "Click to allow permissions"
   }
 }
