@@ -39,7 +39,7 @@ const ResetPasswordForm = () => {
     >
       <Input register={register} errors={errors} action="reset-password" />
       <AuthButton label={t('auth.reset')} />
-    </form>
+    </form >
   );
 };
 

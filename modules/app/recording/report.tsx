@@ -23,7 +23,6 @@ const Report = () => {
       router.push('/app/dashboard');
       return;
     }
-
     setReportContent(router.query.report as string);
     setTranscriptionContent(router.query.transcription as string);
   }, [router.query]);

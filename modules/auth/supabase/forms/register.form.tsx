@@ -63,7 +63,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
           action="register"
         /> */}
       </div>
-    </form>
+    </form >
   );
 };
 

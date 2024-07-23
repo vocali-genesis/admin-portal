@@ -80,7 +80,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           action="login"
         /> */}
       </div>
-    </form>
+    </form >
   );
 };
 
