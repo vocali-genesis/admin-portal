@@ -36,7 +36,7 @@ class MedicalTranscriptionAPI {
   }
 
   async generateReport(
-    transcription: string[],
+    transcription: string,
     template?: string,
     language?: string,
   ): Promise<string> {
@@ -68,7 +68,7 @@ class MedicalTranscriptionAPI {
     time: { transcription: number; report: number };
   } | null> {
     const transcriptionStart = Date.now();
-    const transcription: string[] = await this.transcribeAudio(audioFile);
+    const transcription: string = await this.transcribeAudio(audioFile);
     const transcriptionTime = Date.now() - transcriptionStart;
 
     if (!transcription) return null;
