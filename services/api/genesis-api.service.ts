@@ -20,7 +20,7 @@ class MedicalTranscriptionAPI {
     return await response.text();
   }
 
-  async transcribeAudio(audioFile: File): Promise<string> {
+  async transcribeAudio(audioFile: File): Promise<string[]> {
     const formData = new FormData();
     formData.append("audio_file", audioFile);
 
@@ -36,7 +36,7 @@ class MedicalTranscriptionAPI {
   }
 
   async generateReport(
-    transcription: string,
+    transcription: string[],
     template?: string,
     language?: string,
   ): Promise<string> {
@@ -62,9 +62,9 @@ class MedicalTranscriptionAPI {
     audioFile: File,
     template?: string,
     language?: string,
-  ): Promise<{ report: string; transcription: string; time: { transcription: number; report: number } } | null> {
+  ): Promise<{ report: string; transcription: string[]; time: { transcription: number; report: number } } | null> {
     const transcriptionStart = Date.now();
-    const transcription: string = await this.transcribeAudio(audioFile);
+    const transcription: string[] = await this.transcribeAudio(audioFile);
     const transcriptionTime = Date.now() - transcriptionStart;
 
     if (!transcription) return null;

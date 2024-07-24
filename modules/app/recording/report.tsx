@@ -4,16 +4,20 @@ import { GlobalCore } from "@/core/module/module.types";
 import Editor from "@/resources/inputs/text-editor";
 import report_styles from "./styles/report.module.css";
 import ViewContent from "@/resources/containers/view-content";
+import MessageHandler from "@/core/message-handler";
 import { FaRegNewspaper, FaRegMessage, FaPlay, FaPause } from "react-icons/fa6";
+
+const messageHandler = MessageHandler.get();
 
 const Report = () => {
   const router = useRouter();
   const { report, transcription, audioUrl } = router.query;
   const [activeTab, setActiveTab] = useState("report");
   const [reportContent, setReportContent] = useState((report as string) || "");
-  const [transcriptionContent, setTranscriptionContent] = useState(
-    (transcription as string) || "",
+  const [transcriptionContent, setTranscriptionContent] = useState<string[]>(
+    [],
   );
+
   const [isEditing, setIsEditing] = useState(false);
   const [time, setTime] = useState({ transcription: 0, report: 0 });
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
@@ -32,7 +36,7 @@ const Report = () => {
     }
 
     setReportContent(router.query.report as string);
-    setTranscriptionContent(router.query.transcription as string);
+    setTranscriptionContent(JSON.parse(router.query.transcription as string));
     setTime(JSON.parse(router.query.time as string));
   }, [router.query]);
 
@@ -45,7 +49,7 @@ const Report = () => {
   };
 
   const handleTranscriptionChange = (content: string) => {
-    setTranscriptionContent(content);
+    setTranscriptionContent(content.split("\n"));
   };
 
   const toggleEditMode = () => {
@@ -115,7 +119,7 @@ const Report = () => {
             }
           >
             <Editor
-              content={transcriptionContent}
+              content={transcriptionContent.join("\n")}
               onContentChange={handleTranscriptionChange}
             />
           </div>
@@ -160,7 +164,7 @@ const Report = () => {
         filename = "report.txt";
         break;
       case "transcription":
-        content = transcriptionContent;
+        content = transcriptionContent.join("\n");
         filename = "transcription.txt";
         break;
     }
