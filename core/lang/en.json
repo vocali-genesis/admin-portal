@@ -52,7 +52,6 @@
     "click-to-resume": "Click To Resume Recording",
     "permission-required": "Please allow microphone permissions before recording",
     "stop": "Stop recording",
-    "stopped": "Recording stopped",
     "paused": "Recording paused",
     "resumed": "Recording resumed",
     "upload": "Upload",
@@ -63,5 +62,30 @@
     "submit": "Submit",
     "uploading": "Uploading...",
     "allow-permissions": "Click to allow permissions"
+  },
+  "subscriptions": {
+    "title": "Find the pricing plan for your business",
+    "sub-title": "Select the perfect plan for your business to grow",
+    "price-1": {
+      "title": "Free",
+      "currency": "€",
+      "amount": "0",
+      "interval": "/month",
+      "features": {
+        "feature-1": "Benefit 1"
+      },
+      "btn-text": "Try it now"
+    },
+    "price-2": {
+      "title": "Pro",
+      "currency": "€",
+      "amount": "100",
+      "interval": "/month",
+      "features": {
+        "feature-1": "Benefit 1",
+        "feature-2": "Benefit 2"
+      },
+      "btn-text": "Subscribe now"
+    }
   }
 }

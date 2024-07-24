@@ -4,26 +4,26 @@ import MessageHandler from "@/core/message-handler";
 
 const messageHandler = MessageHandler.get();
 
-class SubscriptionService {
-  private static instance?: SubscriptionService;
+class SupabaseSubscriptionService {
+  private static instance?: SupabaseSubscriptionService;
   private supabase: SupabaseClient;
 
   private constructor() {
-    if (SubscriptionService.instance) {
-      throw new Error("SubscriptionService instance already exists!");
+    if (SupabaseSubscriptionService.instance) {
+      throw new Error("SupabaseSubscriptionService instance already exists!");
     }
-    SubscriptionService.instance = this;
+    SupabaseSubscriptionService.instance = this;
     // TODO: Once we fix the auth singleton we will remove this and use a single instance of supabase arcross the application
     const supabaseUrl = config.SUPABASE_URL as string;
     const supabaseAnonKey = config.SUPABASE_API_KEY as string;
     this.supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
 
-  public static getInstance(): SubscriptionService {
-    if (!SubscriptionService.instance) {
-      new SubscriptionService();
+  public static getInstance(): SupabaseSubscriptionService {
+    if (!SupabaseSubscriptionService.instance) {
+      new SupabaseSubscriptionService();
     }
-    return SubscriptionService.instance!;
+    return SupabaseSubscriptionService.instance!;
   }
 
   /**
@@ -41,4 +41,4 @@ class SubscriptionService {
   }
 }
 
-export default SubscriptionService.getInstance();
+export default SupabaseSubscriptionService.getInstance();
