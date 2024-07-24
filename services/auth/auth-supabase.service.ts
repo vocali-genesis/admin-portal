@@ -85,8 +85,6 @@ class AuthService {
 
     return data.user;
   }
-
-  async deleteUser(email: string)
 }
 
 export default new AuthService();
