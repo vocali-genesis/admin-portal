@@ -1,7 +1,7 @@
 import MessageHandler from "@/core/message-handler";
 import config from "@/resources/utils/config";
 
-const messageHandler = MessageHandler.get()
+const messageHandler = MessageHandler.get();
 
 class MedicalTranscriptionAPI {
   private baseUrl: string = config.MEDICAL_TRANSCRIPTION_API_URL as string;
@@ -20,7 +20,7 @@ class MedicalTranscriptionAPI {
     return await response.text();
   }
 
-  async transcribeAudio(audioFile: File): Promise<string[]> {
+  async transcribeAudio(audioFile: File): Promise<string> {
     const formData = new FormData();
     formData.append("audio_file", audioFile);
 
@@ -62,7 +62,11 @@ class MedicalTranscriptionAPI {
     audioFile: File,
     template?: string,
     language?: string,
-  ): Promise<{ report: string; transcription: string; time: { transcription: number; report: number } } | null> {
+  ): Promise<{
+    report: string;
+    transcription: string;
+    time: { transcription: number; report: number };
+  } | null> {
     const transcriptionStart = Date.now();
     const transcription: string[] = await this.transcribeAudio(audioFile);
     const transcriptionTime = Date.now() - transcriptionStart;
@@ -77,13 +81,13 @@ class MedicalTranscriptionAPI {
     );
     const reportTime = Date.now() - reportStart;
 
-    return { 
-      report, 
-      transcription, 
+    return {
+      report,
+      transcription,
       time: {
         transcription: transcriptionTime,
-        report: reportTime
-      }
+        report: reportTime,
+      },
     };
   }
 }
