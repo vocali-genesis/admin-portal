@@ -47,12 +47,20 @@
     "activate-audio": "Activar el grabador de audio",
     "click-to-stop": "Haz clic para detener la grabación",
     "click-to-start": "Haz clic para iniciar la grabación",
+    "click-to-pause": "Haz clic para pausa la grabación",
+    "click-to-resume": "Haz clic para reanudar la grabación",
+    "permission-required": "Por favor, permita los permisos del micrófono antes de grabar",
+    "stop": "para de grabar",
     "upload": "Subir",
+    "stopped": "Grabación Detenida",
+    "paused": "Grabación Pausada",
+    "resumed": "Recording resumed",
     "drag-and-drop": "Arrastrar y soltar o",
     "browse": "Navegar",
     "supported-format": "Formatos soportados: MP3",
     "upload-files": "Subir archivos",
     "submit": "Enviar",
-    "uploading": "Subiendo..."
+    "uploading": "Subiendo...",
+    "allow-permissions": "permite los permisos de audio para la aplicación"
   }
 }

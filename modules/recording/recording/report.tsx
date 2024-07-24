@@ -6,7 +6,6 @@ import report_styles from "./styles/report.module.css";
 import ViewContent from "@/resources/containers/view-content";
 import { FaRegNewspaper, FaRegMessage } from "react-icons/fa6";
 
-
 const Report = () => {
   // const { t } = useTransition()
   const router = useRouter();
@@ -17,14 +16,20 @@ const Report = () => {
     (transcription as string) || "",
   );
   const [isEditing, setIsEditing] = useState(false);
+  const [time, setTime] = useState({ transcription: 0, report: 0 });
 
   useEffect(() => {
-    if (!(router.query.report) || !(router.query.transcription)) {
-      router.push('/app/dashboard');
+    if (
+      !router.query.report ||
+      !router.query.transcription ||
+      !router.query.time
+    ) {
+      router.push("/app/dashboard");
       return;
     }
     setReportContent(router.query.report as string);
     setTranscriptionContent(router.query.transcription as string);
+    setTime(JSON.parse(router.query.time as string));
   }, [router.query]);
 
   const handleTabChange = (tab: string) => {
@@ -41,6 +46,45 @@ const Report = () => {
 
   const toggleEditMode = () => {
     setIsEditing(!isEditing);
+  };
+
+  const renderProgressBar = () => {
+    const totalTime = time.transcription + time.report;
+    const transcriptionWidth = (time.transcription / totalTime) * 100;
+    const reportWidth = (time.report / totalTime) * 100;
+
+    return (
+      <div className={report_styles.progressBarContainer}>
+        <div className={report_styles.progressBar}>
+          <div
+            className={report_styles.progressSegment}
+            style={{
+              width: `${transcriptionWidth}%`,
+              backgroundColor: "#FF6B6B",
+              borderTopLeftRadius: "20px",
+              borderBottomLeftRadius: "20px",
+            }}
+          >
+            <span className={report_styles.timeLabel}>
+              {Math.round(time.transcription / 1000)}s
+            </span>
+          </div>
+          <div
+            className={report_styles.progressSegment}
+            style={{
+              width: `${reportWidth}%`,
+              backgroundColor: "#4ECDC4",
+              borderTopRightRadius: "20px",
+              borderBottomRightRadius: "20px",
+            }}
+          >
+            <span className={report_styles.timeLabel}>
+              {Math.round(time.report / 1000)}s
+            </span>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const renderContent = () => {
@@ -103,12 +147,9 @@ const Report = () => {
     <div className={report_styles.reportContainer}>
       <h1 className={report_styles.title}>ESTADISTICAS</h1>
       <div className={report_styles.progressContainer}>
-        <div className={report_styles.progressBar}>
-          <span>Consulta Realizada En 30S</span>
-          {/* Add progress bar implementation here */}
-        </div>
+        {renderProgressBar()}
         <div className={report_styles.downloadButton}>
-          <button>DOWNLOAD ▼</button>
+          <button>DOWNLOAD▼</button>
         </div>
       </div>
       <div className={report_styles.tabs}>
@@ -154,7 +195,10 @@ const Report = () => {
             EDIT
           </button>
         )}
-        <button className={report_styles.newRecordingButton}>
+        <button
+          className={report_styles.newRecordingButton}
+          onClick={() => router.push("/app/dashboard")}
+        >
           NEW RECORDING
         </button>
       </div>

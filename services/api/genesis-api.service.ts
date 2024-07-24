@@ -64,16 +64,29 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
     audioFile: File,
     template?: string,
     language?: string,
-  ): Promise<{ report: string; transcription: string } | null> {
+  ): Promise<{ report: string; transcription: string; time: { transcription: number; report: number } } | null> {
+    const transcriptionStart = Date.now();
     const transcription: string = await this.transcribeAudio(audioFile);
+    const transcriptionTime = Date.now() - transcriptionStart;
+
     if (!transcription) return null;
 
+    const reportStart = Date.now();
     const report: string = await this.generateReport(
       transcription,
       template,
       language,
     );
-    return { report, transcription };
+    const reportTime = Date.now() - reportStart;
+
+    return { 
+      report, 
+      transcription, 
+      time: {
+        transcription: transcriptionTime,
+        report: reportTime
+      }
+    };
   }
 }
 

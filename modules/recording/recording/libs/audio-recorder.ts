@@ -4,25 +4,33 @@ export class AudioRecorder {
   private stream: MediaStream | null = null;
 
   async startRecording(deviceId?: string): Promise<void> {
+    if (this.mediaRecorder && this.mediaRecorder.state === "paused") {
+      this.mediaRecorder.resume();
+      return;
+    }
+
     try {
       const constraints: MediaStreamConstraints = {
         audio: deviceId ? { deviceId: { exact: deviceId } } : true,
       };
-
       this.stream = await navigator.mediaDevices.getUserMedia(constraints);
       this.mediaRecorder = new MediaRecorder(this.stream);
       this.audioChunks = [];
-
       this.mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           this.audioChunks.push(event.data);
         }
       };
-
       this.mediaRecorder.start();
     } catch (error) {
       console.error("Error starting recording:", error);
       throw new Error(`Failed to start recording: ${(error as Error).message}`);
+    }
+  }
+
+  pauseRecording(): void {
+    if (this.mediaRecorder && this.mediaRecorder.state === "recording") {
+      this.mediaRecorder.pause();
     }
   }
 
@@ -32,7 +40,6 @@ export class AudioRecorder {
         reject(new Error("No ongoing recording"));
         return;
       }
-
       this.mediaRecorder.onstop = () => {
         const audioBlob = new Blob(this.audioChunks, { type: "audio/wav" });
         const audioUrl = URL.createObjectURL(audioBlob);
@@ -40,15 +47,12 @@ export class AudioRecorder {
         this.dispose();
         resolve(audioUrl);
       };
-
       this.mediaRecorder.stop();
     });
   }
 
-  isRecording(): boolean {
-    return (
-      this.mediaRecorder !== null && this.mediaRecorder.state === "recording"
-    );
+  getRecordingState(): "inactive" | "recording" | "paused" {
+    return this.mediaRecorder ? this.mediaRecorder.state : "inactive";
   }
 
   dispose(): void {

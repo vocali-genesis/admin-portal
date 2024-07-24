@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import Service from "@/core/module/service.factory";
 
-const messageHandler = MessageHandler.get()
+const messageHandler = MessageHandler.get();
 
 
 const Settings = () => {
@@ -57,7 +57,9 @@ const Settings = () => {
               </div>
               <div className={`${settings_styles.formGroup}`}>
                 <div className={settings_styles.inputContainer}>
-                  <label htmlFor="password">{t("settings.new-password")}:</label>
+                  <label htmlFor="password">
+                    {t("settings.new-password")}:
+                  </label>
                   <input
                     type="password"
                     id="password"
@@ -116,10 +118,11 @@ const Settings = () => {
                 onChange={(e) => i18n.changeLanguage(e.target.value)}
                 className={settings_styles.languageSelect}
               >
-                {LANGUAGES.map((lang, index) =>
-                  <option key={index} value={lang}>{lang.toUpperCase()}</option>
-                )}
-
+                {LANGUAGES.map((lang, index) => (
+                  <option key={index} value={lang}>
+                    {lang.toUpperCase()}
+                  </option>
+                ))}
               </select>
             </div>
 

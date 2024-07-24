@@ -3,16 +3,19 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import MessageHandler from "@/core/message-handler";
-import { AudioRecorder } from "@/modules/recording/recording/libs/audio-recorder";
+import { AudioRecorder } from "./libs/audio-recorder";
+import { FaMicrophone, FaPause, FaStop, FaPlay } from "react-icons/fa6";
 import dash_styles from "./styles/dashboard.module.css";
 import { useTranslation } from "react-i18next";
 
-const messageHandler = MessageHandler.get()
+const messageHandler = MessageHandler.get();
 
 const Dashboard = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [isRecording, setIsRecording] = useState(false);
+  const [recordingState, setRecordingState] = useState<
+    "inactive" | "recording" | "paused"
+  >("inactive");
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -21,63 +24,83 @@ const Dashboard = () => {
 
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string>("");
+  const [permissionGranted, setPermissionGranted] = useState(false);
+
+  const requestPermissions = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      setPermissionGranted(true);
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const audioInputDevices = devices.filter(
+        (device) => device.kind === "audioinput",
+      );
+      setDevices(audioInputDevices);
+      if (audioInputDevices.length > 0) {
+        setSelectedDevice(audioInputDevices[0].deviceId);
+      }
+    } catch (error) {
+      console.error("Error getting audio devices:", error);
+      messageHandler.handleError(
+        "Failed to get audio devices. Please ensure you've granted microphone permissions.",
+      );
+    }
+  };
 
   useEffect(() => {
-    const getAudioDevices = async () => {
-      try {
-        await navigator.mediaDevices.getUserMedia({ audio: true }); // Request permission
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioInputDevices = devices.filter(
-          (device) => device.kind === "audioinput",
-        );
-        setDevices(audioInputDevices);
-        if (audioInputDevices.length > 0) {
-          setSelectedDevice(audioInputDevices[0].deviceId);
-        }
-      } catch (error) {
-        console.error("Error getting audio devices:", error);
-        messageHandler.handleError(
-          "Failed to get audio devices. Please ensure you've granted microphone permissions.",
-        );
-      }
-    };
-
-    getAudioDevices();
-
-    // Set up device change listener
-    navigator.mediaDevices.addEventListener("devicechange", getAudioDevices);
-
-    return () => {
-      navigator.mediaDevices.removeEventListener(
+    if (permissionGranted) {
+      navigator.mediaDevices.addEventListener(
         "devicechange",
-        getAudioDevices,
+        requestPermissions,
       );
-    };
-  }, []);
+      return () => {
+        navigator.mediaDevices.removeEventListener(
+          "devicechange",
+          requestPermissions,
+        );
+      };
+    }
+  }, [permissionGranted]);
 
   const toggleRecording = async () => {
+    if (!permissionGranted) {
+      messageHandler.handleError(t("recording.permission-required"));
+      return;
+    }
+
     if (!audioRecorderRef.current) {
       audioRecorderRef.current = new AudioRecorder();
     }
 
-    if (isRecording) {
+    if (recordingState === "inactive") {
+      try {
+        await audioRecorderRef.current.startRecording(selectedDevice);
+        messageHandler.info(t("recording.started"));
+        setRecordingState("recording");
+      } catch (error) {
+        messageHandler.handleError((error as Error).message);
+      }
+    } else if (recordingState === "recording") {
+      audioRecorderRef.current.pauseRecording();
+      messageHandler.info(t("recording.paused"));
+      setRecordingState("paused");
+    } else if (recordingState === "paused") {
+      await audioRecorderRef.current.startRecording(selectedDevice);
+      messageHandler.info(t("recording.resumed"));
+      setRecordingState("recording");
+    }
+  };
+
+  const stopRecording = async () => {
+    if (audioRecorderRef.current && recordingState !== "inactive") {
       try {
         const audioUrl = await audioRecorderRef.current.stopRecording();
         messageHandler.info(t("recording.stopped"));
-        setIsRecording(false);
+        setRecordingState("inactive");
 
         router.push({
           pathname: "/app/recording",
           query: { audioUrl: audioUrl },
         });
-      } catch (error) {
-        messageHandler.handleError((error as Error).message);
-      }
-    } else {
-      try {
-        await audioRecorderRef.current.startRecording();
-        messageHandler.info(t("recording.started"));
-        setIsRecording(true);
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
@@ -157,45 +180,63 @@ const Dashboard = () => {
 
   return (
     <div className="p-5">
-      <h2 className={dash_styles.h2}>
-        {t(
-          "recording.record-title"
-        )}
-      </h2>
+      <h2 className={dash_styles.h2}>{t("recording.record-title")}</h2>
       <p className={`${dash_styles.p} ${dash_styles.top_p}`}>
         {t("recording.activate-audio")}
       </p>
 
       <div className={dash_styles.contentColumns}>
         <div className={dash_styles.recordSection}>
-          <select
-            value={selectedDevice}
-            onChange={(e) => setSelectedDevice(e.target.value)}
-            className={dash_styles.deviceSelect}
-          >
-            {devices.map((device) => (
-              <option key={device.deviceId} value={device.deviceId}>
-                {device.label || `Microphone ${device.deviceId.slice(0, 5)}`}
-              </option>
-            ))}
-          </select>
+          {!permissionGranted ? (
+            <button
+              className={dash_styles.permissionButton}
+              onClick={requestPermissions}
+            >
+              {t("recording.allow-permissions")}
+            </button>
+          ) : (
+            <select
+              value={selectedDevice}
+              onChange={(e) => setSelectedDevice(e.target.value)}
+              className={dash_styles.deviceSelect}
+            >
+              {devices.map((device) => (
+                <option key={device.deviceId} value={device.deviceId}>
+                  {device.label || `Microphone ${device.deviceId.slice(0, 5)}`}
+                </option>
+              ))}
+            </select>
+          )}
           <button
-            className={`${dash_styles.recordButton} ${isRecording ? dash_styles.recording : ""
+            className={`${dash_styles.recordButton} ${recordingState === "recording"
+              ? dash_styles.recording
+              : recordingState === "paused"
+                ? dash_styles.paused
+                : ""
               }`}
             onClick={toggleRecording}
           >
-            <Image
-              src="/recordings.svg"
-              alt="Microphone"
-              width={60}
-              height={60}
-            />
+            {recordingState === "recording" ? (
+              <FaPause size={40} />
+            ) : recordingState === "paused" ? (
+              <FaPlay size={40} />
+            ) : (
+              <FaMicrophone size={40} />
+            )}
           </button>
           <p className={dash_styles.p}>
-            {isRecording
-              ? t("recording.click-to-stop")
-              : t("recording.click-to-start")}
+            {recordingState === "recording"
+              ? t("recording.click-to-pause")
+              : recordingState === "paused"
+                ? t("recording.click-to-resume")
+                : t("recording.click-to-start")}
           </p>
+          {recordingState !== "inactive" && (
+            <button className={dash_styles.stopButton} onClick={stopRecording}>
+              <FaStop size={20} style={{ marginRight: "10px" }} />
+              {t("recording.stop")}
+            </button>
+          )}
         </div>
 
         <div className={dash_styles.divider}></div>
@@ -228,11 +269,11 @@ const Dashboard = () => {
             </p>
             <small className={dash_styles.small}>
               {t("recording.supported-format")}
-            </small >
+            </small>
             {selectedFile && (
               <p className={dash_styles.selectedFile}>{selectedFile.name}</p>
             )}
-          </div >
+          </div>
           <input
             type="file"
             ref={fileInputRef}
@@ -247,10 +288,10 @@ const Dashboard = () => {
           >
             {isUploading ? <span className={dash_styles.spinner}></span> : null}
             {t(isUploading ? "recording.uploading" : "recording.upload-files")}
-          </button >
-        </div >
-      </div >
-    </div >
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

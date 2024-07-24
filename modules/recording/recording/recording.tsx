@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next";
 import Service from "@/core/module/service.factory";
 
 
-
 const Recording = () => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -48,6 +47,7 @@ const Recording = () => {
     if (!audioRef.current) return;
 
     setCurrentTime(audioRef.current.currentTime);
+    setDuration(audioRef.current.duration);
     updateSeekBarProgress();
   };
 
@@ -65,6 +65,7 @@ const Recording = () => {
     if (!audioRef.current) return;
 
     setDuration(audioRef.current.duration);
+    setCurrentTime(0);
   };
 
   const formatTime = (time: number) => {
@@ -101,8 +102,10 @@ const Recording = () => {
   };
 
   const handleEnded = () => {
+    if (!audioRef.current) return;
+
     setIsPlaying(false);
-    setCurrentTime(duration);
+    setCurrentTime(audioRef.current.duration);
     updateSeekBarProgress();
   };
 
@@ -137,6 +140,7 @@ const Recording = () => {
         query: {
           report: api_response.report,
           transcription: api_response.transcription,
+          time: JSON.stringify(api_response.time),
         },
       });
     } else {
@@ -160,15 +164,13 @@ const Recording = () => {
     setIsDeleteModalOpen(false);
   };
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <Spinner style={{ overflowY: "hidden" }} />;
 
   return (
     <>
       <main className={recording_styles.mainContent}>
         <div className={recording_styles.instructions}>
-          <h2>
-            {t("recording.record-title")}
-          </h2>
+          <h2>{t("recording.record-title")}</h2>
           {t("recording.activate")}
         </div>
         <div className={recording_styles.audioPlayerContainer}>
@@ -178,7 +180,9 @@ const Recording = () => {
               src={audioUrl as string}
               onTimeUpdate={handleTimeUpdate}
               onLoadedData={handleLoadedMetadata}
-              onDurationChange={handleLoadedMetadata}
+              onDurationChange={() => {
+                if (audioRef.current) setDuration(audioRef.current.duration);
+              }}
               onEnded={handleEnded}
               preload="metadata"
             />
@@ -192,7 +196,11 @@ const Recording = () => {
             />
             <div className={recording_styles.timeDisplay}>
               <span>{formatTime(currentTime)}</span>
-              <span>{formatTime(duration)}</span>
+              <span>
+                {formatTime(duration) !== "Infinity:NaN"
+                  ? formatTime(duration)
+                  : ""}
+              </span>
             </div>
             <div className={recording_styles.controlsContainer}>
               <button
