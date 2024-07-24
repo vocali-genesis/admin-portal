@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import AuthService from "@/services/auth/auth-supabase.service";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
-// import dash_styles from "@/styles/pages/dashboard.module.css";
+import Service from "@/core/module/service.factory";
 
 const App = () => {
   const router = useRouter();
@@ -20,7 +19,7 @@ const App = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const user = await AuthService.getUser();
+      const user = await Service.get('oauth').getLoggedUser();
       if (user === null) router.push("/auth/login");
     };
     checkAuth();

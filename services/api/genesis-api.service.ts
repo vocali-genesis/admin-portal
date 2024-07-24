@@ -1,9 +1,11 @@
 import MessageHandler from "@/core/message-handler";
+import { GlobalCore } from "@/core/module/module.types";
+import { MedicalTranscription } from "@/core/module/services.types";
 import config from "@/resources/utils/config";
 
 const messageHandler = MessageHandler.get()
 
-class MedicalTranscriptionAPI {
+class MedicalTranscriptionAPI implements MedicalTranscription {
   private baseUrl: string = config.MEDICAL_TRANSCRIPTION_API_URL as string;
 
   private handleError(error: unknown): void {
@@ -75,4 +77,4 @@ class MedicalTranscriptionAPI {
   }
 }
 
-export default new MedicalTranscriptionAPI();
+GlobalCore.manager.service("medical-api", new MedicalTranscriptionAPI());

@@ -2,15 +2,16 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { GlobalCore } from "@/core/module/module.types";
 import settings_styles from "./styles/settings.module.css";
-import AuthService from "@/services/auth/auth-supabase.service";
 import { settings_schema } from "./settings.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FaTrash } from "react-icons/fa6";
 import { LANGUAGES } from "@/core/constants";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
+import Service from "@/core/module/service.factory";
 
 const messageHandler = MessageHandler.get()
+
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
@@ -24,7 +25,7 @@ const Settings = () => {
   });
 
   const onSubmit = async (data: any) => {
-    const updatedUser = await AuthService.updateUser(data.email, data.password);
+    const updatedUser = await Service.get('oauth').updateUser(data.email, data.password);
 
     if (updatedUser)
       messageHandler.handleSuccess("Profile updated successfully");

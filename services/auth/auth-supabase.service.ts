@@ -1,11 +1,13 @@
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
-import { Provider } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
 import { MODULE } from "@/core/constants";
-
+import { GenesisOauthProvider, GenesisUser } from "@/core/module/core.types";
+import { GlobalCore } from "@/core/module/module.types";
+import { AuthService } from "@/core/module/services.types";
+  
 const messageHandler = MessageHandler.get()
-class AuthService {
+class SupabaseAuthService implements AuthService {
   private supabase: SupabaseClient;
 
   constructor() {
@@ -39,10 +41,11 @@ class AuthService {
 
     return { user: data.user, token: data.session?.access_token };
   }
+ 
 
-  async oauth(
-    provider: Provider,
-  ): Promise<{ provider: Provider; url: string } | null> {
+ public async oauth(
+    provider: GenesisOauthProvider,
+  ): Promise<string | null> {
     const { data, error } = await this.supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
@@ -51,14 +54,10 @@ class AuthService {
     });
     if (error) return messageHandler.handleError(error.message);
 
-    return data;
+    return data.url;
   }
 
-  getSupabaseClient(): SupabaseClient {
-    return this.supabase;
-  }
-
-  async getUser(): Promise<User | null> {
+  async getLoggedUser(): Promise<GenesisUser | null> {
     const { data } = await this.supabase.auth.getUser();
     return data.user;
   }
@@ -91,4 +90,4 @@ class AuthService {
   }
 }
 
-export default new AuthService();
+GlobalCore.manager.service("oauth", new SupabaseAuthService());

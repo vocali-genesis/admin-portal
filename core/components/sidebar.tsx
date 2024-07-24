@@ -1,11 +1,11 @@
 import React, { useState, useTransition } from "react";
 import Image from "next/image";
 import sidebar_styles from "./styles/sidebar.module.css";
-import AuthService from "@/services/auth/auth-supabase.service";
 import HighlightNavButton from "@/resources/containers/highlight-nav.button";
 import BottomNavButton from "@/resources/containers/bottom-nav.button";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+import Service from "../module/service.factory";
 
 
 interface sidebarProps {
@@ -18,6 +18,7 @@ interface sidebarProps {
   }[];
 }
 
+
 const SideBar: React.FC<sidebarProps> = ({
   _activeTab,
   isOpen,
@@ -29,7 +30,7 @@ const SideBar: React.FC<sidebarProps> = ({
   const [activeTab, setActiveTab] = useState(_activeTab);
 
   const logout = () => {
-    AuthService.logout();
+    Service.get('oauth').logout();
     router.push("/auth/login");
   };
 

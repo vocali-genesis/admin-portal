@@ -1,4 +1,4 @@
 {
-  "modules": ["auth/supabase"],
-  "services": ["auth/supabase"]
+  "modules": ["auth/saas", "recording/recording"],
+  "services": ["auth/auth-supabase.service", "api/genesis-api.service"]
 }

@@ -4,6 +4,7 @@ import type {
   MenuItem,
   ModuleSubscriber,
 } from "./module.types";
+import { ServiceInterface, ServiceName } from "./services.types";
 
 export class ModuleManager {
   private static instance: ModuleManager;
@@ -21,8 +22,10 @@ export class ModuleManager {
   private settings: Record<string, CoreComponent> = {};
   private menu: Record<string, MenuItem> = {};
   private menuSettings: Record<string, MenuItem> = {};
+  private services: Record< ServiceName, ServiceInterface<ServiceName> | undefined> = {} as  Record< ServiceName, undefined>;
 
   public get subscribe(): ModuleSubscriber {
+    console.log("SUbscribed called")
     return {
       auth: (key: string, component: CoreComponent) => {
         this.auth[key] = component;
@@ -39,6 +42,9 @@ export class ModuleManager {
       menuSettings: (key: string, item: MenuItem) => {
         this.menuSettings[key] = item;
       },
+      service: <T extends ServiceName> (serviceName: T, service: ServiceInterface<T>) => {
+        this.services[serviceName] = service;
+      },
     };
   }
 
@@ -50,6 +56,7 @@ export class ModuleManager {
         this.settings[key] as T,
       menu: (key: string) => this.menu[key],
       menuSettings: (key: string) => this.menuSettings[key],
+      services: (name: ServiceName) => this.services[name]
     };
   }
 }

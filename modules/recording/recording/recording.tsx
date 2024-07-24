@@ -12,10 +12,11 @@ import {
   FaFloppyDisk,
   FaCircleStop,
 } from "react-icons/fa6";
-import MedicalTranscriptionAPI from "@/services/api/genesis-api.service";
 import recording_styles from "./styles/recording.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import { useTranslation } from "react-i18next";
+import Service from "@/core/module/service.factory";
+
 
 
 const Recording = () => {
@@ -128,7 +129,7 @@ const Recording = () => {
     const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
 
     const api_response =
-      await MedicalTranscriptionAPI.processAudioAndGenerateReport(file);
+      await Service.get('medical-api').processAudioAndGenerateReport(file);
 
     if (api_response) {
       router.push({

@@ -1,13 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./form.module.css";
 import { confirm_reset_password_schema } from "./auth.schema";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
+import Service from "@/core/module/service.factory";
+
 
 
 interface confirmResetPasswordInterface {
@@ -27,7 +28,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
   });
 
   const onSubmit = async (data: { password: string }) => {
-    const response = await AuthService.updateUser(
+    const response = await Service.get('oauth').updateUser(
       undefined,
       data.password as string,
     );
