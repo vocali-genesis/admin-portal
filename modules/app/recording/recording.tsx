@@ -163,7 +163,7 @@ const Recording = () => {
     setIsDeleteModalOpen(false);
   };
 
-  if (isLoading) return <Spinner style={{ overflowY: "hidden" }} />;
+  if (isLoading) return <Spinner />;
 
   return (
     <>
