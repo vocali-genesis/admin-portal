@@ -62,7 +62,7 @@ class MedicalTranscriptionAPI {
     audioFile: File,
     template?: string,
     language?: string,
-  ): Promise<{ report: string; transcription: string[]; time: { transcription: number; report: number } } | null> {
+  ): Promise<{ report: string; transcription: string; time: { transcription: number; report: number } } | null> {
     const transcriptionStart = Date.now();
     const transcription: string[] = await this.transcribeAudio(audioFile);
     const transcriptionTime = Date.now() - transcriptionStart;
