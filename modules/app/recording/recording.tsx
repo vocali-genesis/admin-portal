@@ -137,6 +137,7 @@ const Recording = () => {
       router.push({
         pathname: "/app/report",
         query: {
+          audioUrl: audioUrl as string,
           report: api_response.report,
           transcription: api_response.transcription,
           time: JSON.stringify(api_response.time),

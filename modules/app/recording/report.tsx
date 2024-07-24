@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useTransition } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
 import Editor from "@/resources/inputs/text-editor";
 import report_styles from "./styles/report.module.css";
 import ViewContent from "@/resources/containers/view-content";
-import { FaRegNewspaper, FaRegMessage } from "react-icons/fa6";
+import { FaRegNewspaper, FaRegMessage, FaPlay, FaPause } from "react-icons/fa6";
 
 const Report = () => {
-  // const { t } = useTransition()
   const router = useRouter();
-  const { report, transcription } = router.query;
+  const { report, transcription, audioUrl } = router.query;
   const [activeTab, setActiveTab] = useState("report");
   const [reportContent, setReportContent] = useState((report as string) || "");
   const [transcriptionContent, setTranscriptionContent] = useState(
@@ -17,12 +16,16 @@ const Report = () => {
   );
   const [isEditing, setIsEditing] = useState(false);
   const [time, setTime] = useState({ transcription: 0, report: 0 });
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
   useEffect(() => {
     if (
       !router.query.report ||
       !router.query.transcription ||
-      !router.query.time
+      !router.query.time ||
+      !router.query.audioUrl
     ) {
       router.push("/app/dashboard");
       return;
@@ -144,13 +147,67 @@ const Report = () => {
     }
   };
 
+  const handleDownload = (type: string) => {
+    let content = "";
+    let filename = "";
+
+    switch (type) {
+      case "audio":
+        window.open(audioUrl as string, "_blank");
+        return;
+      case "report":
+        content = reportContent;
+        filename = "report.txt";
+        break;
+      case "transcription":
+        content = transcriptionContent;
+        filename = "transcription.txt";
+        break;
+    }
+
+    const element = document.createElement("a");
+    const file = new Blob([content], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = filename;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  const handleReplayAudio = () => {
+    if (audioRef.current) {
+      if (isAudioPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsAudioPlaying(!isAudioPlaying);
+    }
+  };
+
   return (
     <div className={report_styles.reportContainer}>
       <h1 className={report_styles.title}>ESTADISTICAS</h1>
       <div className={report_styles.progressContainer}>
         {renderProgressBar()}
         <div className={report_styles.downloadButton}>
-          <button>DOWNLOAD▼</button>
+          <button onClick={() => setIsDownloadOpen(!isDownloadOpen)}>
+            <span>DOWNLOAD</span>
+            <span className={report_styles.dropdownArrow}>▼</span>
+          </button>
+          {isDownloadOpen && (
+            <div className={report_styles.downloadDropdown}>
+              <button onClick={() => handleDownload("audio")}>
+                Download Audio
+              </button>
+              <button onClick={() => handleDownload("report")}>
+                Download Report
+              </button>
+              <button onClick={() => handleDownload("transcription")}>
+                Download Transcription
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <div className={report_styles.tabs}>
@@ -187,22 +244,45 @@ const Report = () => {
       </div>
       {renderContent()}
       <div className={report_styles.actionButtons}>
-        {isEditing ? (
-          <button className={report_styles.saveButton} onClick={toggleEditMode}>
-            SAVE
-          </button>
-        ) : (
-          <button className={report_styles.editButton} onClick={toggleEditMode}>
-            EDIT
-          </button>
-        )}
         <button
-          className={report_styles.newRecordingButton}
-          onClick={() => router.push("/app/dashboard")}
+          className={`${report_styles.replayButton} ${isAudioPlaying ? report_styles.playing : ""}`}
+          onClick={handleReplayAudio}
         >
-          NEW RECORDING
+          {isAudioPlaying ? <FaPause /> : <FaPlay />}
+          {isAudioPlaying ? "Pause Audio" : "Replay Audio"}
         </button>
+        <div>
+          {isEditing ? (
+            <button
+              className={report_styles.saveButton}
+              onClick={toggleEditMode}
+            >
+              SAVE
+            </button>
+          ) : (
+            <button
+              className={report_styles.editButton}
+              onClick={toggleEditMode}
+            >
+              EDIT
+            </button>
+          )}
+          <button
+            className={report_styles.newRecordingButton}
+            onClick={() => router.push("/app/dashboard")}
+          >
+            NEW RECORDING
+          </button>
+        </div>
       </div>
+      <audio
+        ref={audioRef}
+        src={audioUrl as string}
+        style={{ display: "none" }}
+        onEnded={() => setIsAudioPlaying(false)}
+        onPause={() => setIsAudioPlaying(false)}
+        onPlay={() => setIsAudioPlaying(true)}
+      />
     </div>
   );
 };

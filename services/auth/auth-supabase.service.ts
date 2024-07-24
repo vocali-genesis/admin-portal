@@ -4,7 +4,7 @@ import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
 import { MODULE } from "@/core/constants";
 
-const messageHandler = MessageHandler.get()
+const messageHandler = MessageHandler.get();
 class AuthService {
   private supabase: SupabaseClient;
 
@@ -54,10 +54,6 @@ class AuthService {
     return data;
   }
 
-  getSupabaseClient(): SupabaseClient {
-    return this.supabase;
-  }
-
   async getUser(): Promise<User | null> {
     const { data } = await this.supabase.auth.getUser();
     return data.user;
@@ -89,6 +85,8 @@ class AuthService {
 
     return data.user;
   }
+
+  async deleteUser(email: string)
 }
 
 export default new AuthService();
