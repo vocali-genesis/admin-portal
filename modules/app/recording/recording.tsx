@@ -125,7 +125,7 @@ const Recording = () => {
     if (!(audioUrl && audioRef.current)) return;
 
     setIsLoading(true);
-
+    console.log({ audioUrl })
     const response = await fetch(audioUrl as string);
     const blob = await response.blob();
     const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
