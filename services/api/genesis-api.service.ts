@@ -4,8 +4,13 @@ import config from "@/resources/utils/config";
 const messageHandler = MessageHandler.get();
 
 class MedicalTranscriptionAPI {
-  private baseUrl: string = config.MEDICAL_TRANSCRIPTION_API_URL as string;
+  private baseUrl: string = config.TRANSCRIPTION_API as string;
 
+  constructor() {
+     if(!this.baseUrl) {
+      throw new Error("NEXT_PUBLIC_TRANSCRIPTION_API not configured properly")
+    }
+  }
   private handleError(error: unknown): void {
     const errorMessage = error instanceof Error ? error.message : String(error);
     messageHandler.handleError(errorMessage);

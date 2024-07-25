@@ -1,7 +1,8 @@
 {
   "resources": {
     "confirm-delete": "Confirm Delete",
-    "are-you-sure": "Are you sure you want to delete it?"
+    "are-you-sure": "Are you sure you want to delete it?",
+    "microphone-error": "Failed to get audio devices. Please ensure you've granted microphone permissions."
   },
   "navbar": {
     "upgrade": "Upgrade",
@@ -15,9 +16,11 @@
     "upload": "Upload",
     "required": "Required",
     "delete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "home": "home"
   },
   "settings": {
+    "menu": "Settings",
     "email": "Email",
     "new-password": "New Password",
     "confirm-password": "Confirm Password",
@@ -40,6 +43,7 @@
     "register-with": "Register with"
   },
   "recording": {
+    "menu": "Recording",
     "started": "Recording started",
     "stopped": "Recording stopped",
     "record-title": "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
@@ -52,7 +56,6 @@
     "click-to-resume": "Click To Resume Recording",
     "permission-required": "Please allow microphone permissions before recording",
     "stop": "Stop recording",
-    "stopped": "Recording stopped",
     "paused": "Recording paused",
     "resumed": "Recording resumed",
     "upload": "Upload",

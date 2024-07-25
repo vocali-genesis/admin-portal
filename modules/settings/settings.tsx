@@ -147,3 +147,4 @@ const Settings = () => {
 };
 
 GlobalCore.manager.settings("settings", Settings);
+GlobalCore.manager.menuSettings({ 'label': 'settings.menu', icon: '/profile-avatar.svg', url: 'settings', order: 0 })

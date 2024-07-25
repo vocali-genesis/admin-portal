@@ -217,34 +217,21 @@ const Recording = () => {
               </button>
               <div className={recording_styles.playPauseContainer}>
                 {isPlaying ? (
-                  <>
-                    <button
-                      onClick={togglePlayPause}
-                      className={recording_styles.playPauseButton}
-                    >
-                      <FaCirclePause
-                        size={40}
-                        color="#59DBBC"
-                        style={{
-                          backgroundColor: "white",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    </button>
-                    <button
-                      onClick={handleStop}
-                      className={recording_styles.playPauseButton}
-                    >
-                      <FaCircleStop
-                        size={40}
-                        color="#DF4949"
-                        style={{
-                          backgroundColor: "white",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    </button>
-                  </>
+
+                  <button
+                    onClick={togglePlayPause}
+                    className={recording_styles.playPauseButton}
+                  >
+                    <FaCirclePause
+                      size={40}
+                      color="#59DBBC"
+                      style={{
+                        backgroundColor: "white",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  </button>
+
                 ) : (
                   <button
                     onClick={togglePlayPause}
