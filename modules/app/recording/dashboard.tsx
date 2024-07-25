@@ -83,7 +83,7 @@ const Dashboard = () => {
 
 
 
-  const handleUpload = (selectedFile) => {
+  const handleUpload = (selectedFile: File) => {
     if (selectedFile) {
       const audioUrl = URL.createObjectURL(selectedFile);
       router.push({
