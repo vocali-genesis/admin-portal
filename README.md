@@ -8,7 +8,7 @@ NEXT_PUBLIC_SUPABASE_URL=<your supabase project url>
 NEXT_PUBLIC_SUPABASE_KEY=<your supabase api key>
 ```
 
-Then, run the development server:
+Then run the development server:
 
 ```bash
 pnpm dev
