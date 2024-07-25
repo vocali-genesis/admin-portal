@@ -8,8 +8,6 @@ import { ServiceInterface, ServiceName } from "./services.types";
 
 export default class Service {
     public static get <S extends ServiceName>(name: S): ServiceInterface<S> {
-        console.log("REQUESTED ",name)
-
         const service = ModuleManager.get().components.services(name)
         if(!service) {
             throw new Error(`Service ${name} not init, have you imported in the config.json? Have you 'pnpm load' the config.json?`)

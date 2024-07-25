@@ -14,7 +14,7 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   T extends "templates"
   ? never
   : T extends "subscriptions"
-  ? never
+  ? SubscriptionService
   : never;
 
 export interface MedicalTranscription {
@@ -45,4 +45,8 @@ export interface AuthService {
   logout(): Promise<null | undefined>;
   resetPassword(email: string): Promise<{} | null>;
   updateUser(email?: string, password?: string): Promise<GenesisUser | null>;
+}
+
+export interface SubscriptionService  {
+  getSubscriptionLink(): Promise<{url: string | null}>
 }

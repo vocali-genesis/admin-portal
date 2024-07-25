@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
@@ -26,10 +26,14 @@ const Settings = () => {
   ];
   // --- End of refactor
 
-  if (!Component) {
-    // TODO: Redirect to 404
-    return <Spinner />;
-  }
+  useEffect(() => {
+    if (!router.isReady) {
+      return
+    }
+    if (!Component) {
+      router.replace('errors/not-found')
+    }
+  }, [Component, router])
 
   return (
     <div className="flex flex-col h-screen bg-white">

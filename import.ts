@@ -3,6 +3,8 @@ import '@/core/module/module.manager'
 // Modules
 import '@/modules/auth/saas'
 import '@/modules/recording/recording'
+import '@/modules/subscriptions/subscriptions'
 // Services
 import '@/services/auth/auth-supabase.service'
-import '@/services/api/genesis-api.service'
+import '@/services/genesis/transcription.service'
+import '@/services/subscriptions/subscriptions-supabase.service'

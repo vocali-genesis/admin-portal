@@ -32,11 +32,20 @@ const App = () => {
   ];
   // --- End of refactor
 
-  if (!Component) {
-    // TODO: Redirect to 404
+  useEffect(() => {
+    if (!router.isReady) {
+      return
+    }
+    if (!Component) {
+      router.replace('/errors/not-found')
+    }
+  }, [Component, router])
+  if (!router.isReady) {
     return <Spinner />;
   }
-
+  if (!Component) {
+    return null
+  }
   return (
     <div className="flex flex-col h-screen bg-white">
       <Navbar toggleSidebar={toggleSidebar} />
