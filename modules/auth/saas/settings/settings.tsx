@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LANGUAGES } from "@/core/constants";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
-import Service from "@/core/module/service.factory";
+import Service, { useService } from "@/core/module/service.factory";
 
 const messageHandler = MessageHandler.get();
 
@@ -15,6 +15,7 @@ const Divider = () => <div className={settings_styles.divider} />
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
+  const authService = useService('oauth')
 
   const {
     register,
@@ -25,14 +26,10 @@ const Settings = () => {
   });
 
   const onSubmit = async (data: any) => {
-    const updatedUser = await Service.get('oauth').updateUser(data.email, data.password);
+    const updatedUser = await authService.updateUser(data.email, data.password);
 
     if (updatedUser)
       messageHandler.handleSuccess("Profile updated successfully");
-  };
-
-  const handleDeleteAccount = () => {
-    console.log("Delete account requested");
   };
 
   return (
@@ -102,7 +99,7 @@ const Settings = () => {
           <Divider />
 
           <div className={settings_styles.socialLogins}>
-            <button
+            {/*  <button
               type="button"
               className={`${settings_styles.oauthButton} ${settings_styles.googleOAuthButton}`}
             >
@@ -111,12 +108,12 @@ const Settings = () => {
                 <strong> Google</strong>
               </p>
             </button>
-            {/* <button type="button" className={settings_styles.facebookLogin}>
+          <button type="button" className={settings_styles.facebookLogin}>
                 {t("Sign in with Facebook")}
               </button> */}
           </div>
 
-          <Divider />
+          {/* <Divider /> */}
 
           <div className={settings_styles.languageGroup}>
             <label htmlFor="language">{t("settings.language")}:</label>

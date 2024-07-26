@@ -90,4 +90,5 @@ class SupabaseAuthService implements AuthService {
   }
 }
 
+
 GlobalCore.manager.service("oauth", new SupabaseAuthService());

@@ -25,8 +25,7 @@ export class ModuleManager {
   private services: Record< ServiceName, ServiceInterface<ServiceName> | undefined> = {} as  Record< ServiceName, undefined>;
 
   public get subscribe(): ModuleSubscriber {
-    console.log("SUbscribed called")
-    return {
+     return {
       auth: (key: string, component: CoreComponent) => {
         this.auth[key] = component;
       },
