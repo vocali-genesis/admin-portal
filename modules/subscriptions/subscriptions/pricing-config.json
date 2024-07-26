@@ -4,10 +4,8 @@
     "currency": "subscriptions.price-1.currency",
     "amount": "subscriptions.price-1.amount",
     "interval": "subscriptions.price-1.interval",
-    "features": [
-      "subscriptions.price-1.features.feature-1"
-    ],
-    "bttonText": "subscriptions.price-1.btn-text" 
+    "features": ["subscriptions.price-1.features.feature-1"],
+    "bttonText": "subscriptions.price-1.btn-text"
   },
   {
     "title": "subscriptions.price-2.title",
@@ -18,6 +16,6 @@
       "subscriptions.price-2.features.feature-1",
       "subscriptions.price-2.features.feature-2"
     ],
-    "bttonText": "subscriptions.price-2.btn-text" 
+    "bttonText": "subscriptions.price-2.btn-text"
   }
 ]
