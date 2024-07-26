@@ -1,7 +1,8 @@
 {
   "resources": {
     "confirm-delete": "Confirm Delete",
-    "are-you-sure": "Are you sure you want to delete it?"
+    "are-you-sure": "Are you sure you want to delete it?",
+    "microphone-error": "Failed to get audio devices. Please ensure you've granted microphone permissions."
   },
   "navbar": {
     "upgrade": "Upgrade",
@@ -15,15 +16,20 @@
     "upload": "Upload",
     "required": "Required",
     "delete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "home": "home",
+    "save": "Save",
+    "edit": "Edit"
   },
   "settings": {
+    "menu": "Settings",
     "email": "Email",
     "new-password": "New Password",
     "confirm-password": "Confirm Password",
     "language": "Language",
     "save": "SAVE",
-    "delete-account": "DELETE MY ACCOUNT"
+    "delete-account": "DELETE MY ACCOUNT",
+    "revoke": "Revoke"
   },
 
   "auth": {
@@ -40,6 +46,7 @@
     "register-with": "Register with"
   },
   "recording": {
+    "menu": "Recording",
     "started": "Recording started",
     "stopped": "Recording stopped",
     "record-title": "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
@@ -52,7 +59,6 @@
     "click-to-resume": "Click To Resume Recording",
     "permission-required": "Please allow microphone permissions before recording",
     "stop": "Stop recording",
-    "stopped": "Recording stopped",
     "paused": "Recording paused",
     "resumed": "Recording resumed",
     "upload": "Upload",
@@ -62,6 +68,14 @@
     "upload-files": "Upload Files",
     "submit": "Submit",
     "uploading": "Uploading...",
-    "allow-permissions": "Click to allow permissions"
+    "allow-permissions": "Click to allow permissions",
+    "transcription": "Transcription",
+    "report": "Report",
+    "download": "Download",
+    "download-audio": "Download Audio",
+    "download-report": "Download Report",
+    "download-transcription": "Download Transcription",
+    "statistics": "Statistics",
+    "new-recording": "New Recording"
   }
 }

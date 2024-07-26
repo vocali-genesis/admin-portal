@@ -28,7 +28,12 @@ export interface MedicalTranscription {
     audioFile: File,
     template?: string,
     language?: string
-  ): Promise<{ report: string; transcription: string } | null>;
+  ): Promise<{
+    report: string; transcription: string, time: {
+      transcription: number,
+      report: number,
+    }
+  } | null>;
 }
 
 export interface AuthService {
@@ -47,6 +52,6 @@ export interface AuthService {
   updateUser(email?: string, password?: string): Promise<GenesisUser | null>;
 }
 
-export interface SubscriptionService  {
-  getSubscriptionLink(): Promise<{url: string | null}>
+export interface SubscriptionService {
+  getSubscriptionLink(): Promise<{ url: string | null }>
 }

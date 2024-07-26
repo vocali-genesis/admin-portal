@@ -126,7 +126,6 @@ const Recording = () => {
     if (!(audioUrl && audioRef.current)) return;
 
     setIsLoading(true);
-
     const response = await fetch(audioUrl as string);
     const blob = await response.blob();
     const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
@@ -134,19 +133,21 @@ const Recording = () => {
     const api_response =
       await Service.get('medical-api').processAudioAndGenerateReport(file);
 
-    if (api_response) {
-      router.push({
-        pathname: "/app/report",
-        query: {
-          report: api_response.report,
-          transcription: api_response.transcription,
-          time: JSON.stringify(api_response.time),
-        },
-      });
-    } else {
+    if (!api_response) {
       MessageHandler.get().handleError("Failed to generate report");
-      setIsLoading(false);
+      return
     }
+    console.log({ api_response })
+    // TODO: FInd a better way than teh query parameter
+    router.push({
+      pathname: "/app/report",
+      query: {
+        audioUrl: audioUrl as string,
+        report: encodeURIComponent(api_response.report),
+        transcription: (api_response.transcription),
+        time: JSON.stringify(api_response.time),
+      },
+    });
   };
 
   const handleDelete = () => {
@@ -217,34 +218,21 @@ const Recording = () => {
               </button>
               <div className={recording_styles.playPauseContainer}>
                 {isPlaying ? (
-                  <>
-                    <button
-                      onClick={togglePlayPause}
-                      className={recording_styles.playPauseButton}
-                    >
-                      <FaCirclePause
-                        size={40}
-                        color="#59DBBC"
-                        style={{
-                          backgroundColor: "white",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    </button>
-                    <button
-                      onClick={handleStop}
-                      className={recording_styles.playPauseButton}
-                    >
-                      <FaCircleStop
-                        size={40}
-                        color="#DF4949"
-                        style={{
-                          backgroundColor: "white",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    </button>
-                  </>
+
+                  <button
+                    onClick={togglePlayPause}
+                    className={recording_styles.playPauseButton}
+                  >
+                    <FaCirclePause
+                      size={40}
+                      color="#59DBBC"
+                      style={{
+                        backgroundColor: "white",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  </button>
+
                 ) : (
                   <button
                     onClick={togglePlayPause}

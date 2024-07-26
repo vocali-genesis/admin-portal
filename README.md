@@ -54,3 +54,4 @@ For production we need to push a tag `tag -a 1.0.0 -m "Changes"` that will fire 
 - [React Icons](https://react-icons.github.io/react-icons/icons/fa6/)
 - [i18n](https://react.i18next.com/)
 - [Tailwind CSS](https://tailwindcss.com/docs/installation)
+- [Style](https://github.com/styled-components/styled-components) Use this Extension for Visual Code    [styled-components.vscode-styled-components]( https://marketplace.cursorapi.com/items?itemName=styled-components.vscode-styled-components)

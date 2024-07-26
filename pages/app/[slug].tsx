@@ -8,8 +8,9 @@ import Service from "@/core/module/service.factory";
 
 const App = () => {
   const router = useRouter();
+  const loader = ModuleManager.get().components
   const { slug } = router.query as { slug: string };
-  const Component = ModuleManager.get().components.app(slug);
+  const Component = loader.app(slug)
   // --- This logic needs to be refactor
   // This shall go in the reducer
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -25,13 +26,6 @@ const App = () => {
     checkAuth();
   }, [router]);
 
-  // This need to load from the manager
-  const sideBarItems = [
-    { icon: "/recordings.svg", label: "Recordings" },
-    { icon: "/history.svg", label: "Historical" },
-  ];
-  // --- End of refactor
-
   useEffect(() => {
     if (!router.isReady) {
       return
@@ -46,15 +40,21 @@ const App = () => {
   if (!Component) {
     return null
   }
+  if (!Component) {
+    // TODO: Redirect to 404
+    return <Spinner />;
+  }
+
+  const menu = ModuleManager.get().components.menus
+
   return (
     <div className="flex flex-col h-screen bg-white">
       <Navbar toggleSidebar={toggleSidebar} />
       <div className="flex flex-grow overflow-hidden">
         <SideBar
-          _activeTab={slug}
           isOpen={sidebarOpen}
           closeSidebar={() => setSidebarOpen(false)}
-          sideBarItems={sideBarItems}
+          menu={menu}
         />
         <main className="flex-grow p-5 overflow-y-auto">
           <Component />
