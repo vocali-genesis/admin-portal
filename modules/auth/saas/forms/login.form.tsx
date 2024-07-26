@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
-import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./form.module.css";
 import { login_schema } from "./auth.schema";
 import MessageHandler from "@/core/message-handler";
@@ -11,6 +10,8 @@ import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import OAuthButton from "@/resources/containers/oauth-button";
 import { useTranslation } from "react-i18next";
+import Service, { useService } from "@/core/module/service.factory";
+import { GenesisOauthProvider } from "@/core/module/core.types";
 
 
 interface LoginFormProps {
@@ -19,6 +20,8 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const { t } = useTranslation();
+  const authService = useService('oauth')
+
   const router = useRouter();
   const {
     register,
@@ -29,16 +32,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   });
 
   const onSubmit = async (data: any) => {
-    const response = await AuthService.loginUser(data.email, data.password);
+    const response = await authService.loginUser(data.email, data.password);
     if (response) {
       MessageHandler.get().handleSuccess(t("auth.login-successful"));
       onLoginSuccess();
     }
   };
 
-  const handleOAuthClick = async (provider: Provider) => {
-    const response = await AuthService.oauth(provider);
-    if (response && response.url) window.location.href = response.url;
+  const handleOAuthClick = async (provider: GenesisOauthProvider) => {
+    const url = await Service.get('oauth').oauth(provider);
+    if (url) window.location.href = url;
   };
 
   const resetPassword = async () => {
@@ -80,7 +83,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           action="login"
         /> */}
       </div>
-    </form>
+    </form >
   );
 };
 

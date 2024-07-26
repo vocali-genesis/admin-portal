@@ -2,13 +2,13 @@ import React from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./form.module.css";
 import { reset_password_schema } from "./auth.schema";
 import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
+import Service from "@/core/module/service.factory";
 
 
 const ResetPasswordForm = () => {
@@ -23,7 +23,7 @@ const ResetPasswordForm = () => {
   });
 
   const onSubmit = async (data: any) => {
-    const response = await AuthService.resetPassword(data.email);
+    const response = await Service.get('oauth').resetPassword(data.email);
     if (!response) return;
 
     MessageHandler.get().handleSuccess(
@@ -39,7 +39,7 @@ const ResetPasswordForm = () => {
     >
       <Input register={register} errors={errors} action="reset-password" />
       <AuthButton label={t('auth.reset')} />
-    </form>
+    </form >
   );
 };
 

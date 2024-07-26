@@ -1,11 +1,18 @@
 import MessageHandler from "@/core/message-handler";
+import { GlobalCore } from "@/core/module/module.types";
+import { MedicalTranscription } from "@/core/module/services.types";
 import config from "@/resources/utils/config";
 
-const messageHandler = MessageHandler.get()
+const messageHandler = MessageHandler.get();
 
-class MedicalTranscriptionAPI {
-  private baseUrl: string = config.MEDICAL_TRANSCRIPTION_API_URL as string;
+class MedicalTranscriptionAPI implements MedicalTranscription {
+  private baseUrl: string = config.TRANSCRIPTION_API as string;
 
+  constructor() {
+     if(!this.baseUrl) {
+      throw new Error("NEXT_PUBLIC_TRANSCRIPTION_API not configured properly")
+    }
+  }
   private handleError(error: unknown): void {
     const errorMessage = error instanceof Error ? error.message : String(error);
     messageHandler.handleError(errorMessage);
@@ -62,7 +69,11 @@ class MedicalTranscriptionAPI {
     audioFile: File,
     template?: string,
     language?: string,
-  ): Promise<{ report: string; transcription: string; time: { transcription: number; report: number } } | null> {
+  ): Promise<{
+    report: string;
+    transcription: string;
+    time: { transcription: number; report: number };
+  } | null> {
     const transcriptionStart = Date.now();
     const transcription: string = await this.transcribeAudio(audioFile);
     const transcriptionTime = Date.now() - transcriptionStart;
@@ -77,15 +88,15 @@ class MedicalTranscriptionAPI {
     );
     const reportTime = Date.now() - reportStart;
 
-    return { 
-      report, 
-      transcription, 
+    return {
+      report,
+      transcription,
       time: {
         transcription: transcriptionTime,
-        report: reportTime
-      }
+        report: reportTime,
+      },
     };
   }
 }
 
-export default new MedicalTranscriptionAPI();
+GlobalCore.manager.service("medical-api", new MedicalTranscriptionAPI());

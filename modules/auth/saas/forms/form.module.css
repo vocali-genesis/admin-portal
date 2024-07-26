@@ -28,12 +28,12 @@
   padding-right: 1rem;
   text-align: center;
 
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 0.8rem;
 }
 
 .oauthTextContainer::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   right: 0;

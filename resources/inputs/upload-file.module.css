@@ -1,117 +1,4 @@
-.contentColumns {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 5vh;
-}
-
-.recordSection {
-  margin-top: 6vh;
-}
-
-.recordSection, .uploadSection {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.recordSection .p {
-  margin-top: 3vh;
-  font-size: 3vh;
-  font-weight: bold;
-  color: black;
-}
-
-.deviceSelect {
-  margin-bottom: 2vh;
-  padding: 1vh;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  color: black;
-  font-family: "Montserrat", sans-serif;
-  font-size: 2vh;
-  width: 45vh;
-}
-
-.recordButton {
-  width: 175px;
-  height: 175px;
-  background-color: #59DBBC;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  margin-top: 5vh;
-  margin-bottom: 10px;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.recordButton:hover {
-  background-color: #4BC1A4;
-}
-
-.recordButton.recording {
-  background-color: #FF6B6B;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-.recordButton.paused {
-  background-color: #59DBBC;
-}
-
-.stopButton {
-  background-color: #FF6B6B;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: "Montserrat", sans-serif;
-  font-size: 1.9vh;
-  margin-top: 2vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stopButton:hover {
-  background-color: #FF5252;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.permissionButton {
-  background-color: #59DBBC;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: "Montserrat", sans-serif;
-  font-size: 1.9vh;
-  margin-bottom: 2vh;
-}
-
-.divider {
-  width: 0.1%;
-  min-width: 1px;
-  max-width: 3px; 
-  background-color: #ccc;
-  margin: 0 1%;
-}
+/* TODO:  Refactor and remove this CSS */
 
 .uploadArea {
   width: 50vh;
@@ -127,7 +14,7 @@
   justify-content: center;
   text-align: center;
 
-  background: #F8F8FF;
+  background: #f8f8ff;
   border: 2px dashed #ccc;
   padding: 20px;
   text-align: center;
@@ -139,7 +26,7 @@
 }
 
 .uploadButton {
-  background-color: #59DBBC;
+  background-color: #59dbbc;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -151,23 +38,6 @@
   font-size: 1.9vh;
   opacity: 1;
   transition: opacity 0.3s ease;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.spinner {
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #59DBBC;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-  display: inline-block;
-  margin-right: 10px;
-  vertical-align: middle;
 }
 
 .selectedFile {
@@ -184,18 +54,18 @@
 }
 
 .uploadArea.dragging {
-  border-color: #59DBBC;
+  border-color: #59dbbc;
   background-color: rgba(89, 219, 188, 0.1);
 }
 
 .browseLink {
-  color: #59DBBC;
+  color: #59dbbc;
   cursor: pointer;
   text-decoration: none;
 }
 
 .browseLink:hover {
-  color: #4DBCAA;
+  color: #4dbcaa;
 }
 
 .h2 {
@@ -237,7 +107,8 @@
     align-items: center;
   }
 
-  .recordSection, .uploadSection {
+  .recordSection,
+  .uploadSection {
     width: 100%;
     max-width: 300px;
   }

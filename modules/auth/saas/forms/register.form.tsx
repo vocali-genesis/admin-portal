@@ -2,7 +2,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
-import AuthService from "@/services/auth/auth-supabase.service";
 import form_style from "./form.module.css";
 import { register_schema } from "./auth.schema";
 import MessageHandler from "@/core/message-handler";
@@ -10,11 +9,15 @@ import Input from "@/resources/inputs/input";
 import AuthButton from "@/resources/containers/auth-button";
 import OAuthButton from "@/resources/containers/oauth-button";
 import { useTranslation } from "react-i18next";
+import Service from "@/core/module/service.factory";
+import { GenesisOauthProvider } from "@/core/module/core.types";
 
 
 interface RegisterFormProps {
   onRegisterSuccess: () => void;
 }
+
+
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   const { t } = useTranslation();
@@ -27,16 +30,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   });
 
   const onSubmit = async (data: any) => {
-    const response = await AuthService.registerUser(data.email, data.password);
+    const response = await Service.get('oauth').registerUser(data.email, data.password);
     if (response != null) {
       MessageHandler.get().handleSuccess(t("common.success"));
       onRegisterSuccess();
     }
   };
 
-  const handleOAuthClick = async (provider: Provider) => {
-    const response = await AuthService.oauth(provider);
-    if (response && response.url) window.location.href = response.url;
+  const handleOAuthClick = async (provider: GenesisOauthProvider) => {
+    const url = await Service.get('oauth').oauth(provider);
+    if (url) window.location.href = url;
   };
 
   return (
@@ -63,7 +66,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
           action="register"
         /> */}
       </div>
-    </form>
+    </form >
   );
 };
 
