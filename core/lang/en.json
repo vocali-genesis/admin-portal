@@ -17,7 +17,9 @@
     "required": "Required",
     "delete": "Delete",
     "cancel": "Cancel",
-    "home": "home"
+    "home": "home",
+    "save": "Save",
+    "edit": "Edit"
   },
   "settings": {
     "menu": "Settings",
@@ -26,7 +28,8 @@
     "confirm-password": "Confirm Password",
     "language": "Language",
     "save": "SAVE",
-    "delete-account": "DELETE MY ACCOUNT"
+    "delete-account": "DELETE MY ACCOUNT",
+    "revoke": "Revoke"
   },
 
   "auth": {
@@ -65,6 +68,14 @@
     "upload-files": "Upload Files",
     "submit": "Submit",
     "uploading": "Uploading...",
-    "allow-permissions": "Click to allow permissions"
+    "allow-permissions": "Click to allow permissions",
+    "transcription": "Transcription",
+    "report": "Report",
+    "download": "Download",
+    "download-audio": "Download Audio",
+    "download-report": "Download Report",
+    "download-transcription": "Download Transcription",
+    "statistics": "Statistics",
+    "new-recording": "New Recording"
   }
 }

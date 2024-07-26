@@ -125,28 +125,29 @@ const Recording = () => {
     if (!(audioUrl && audioRef.current)) return;
 
     setIsLoading(true);
-    console.log({ audioUrl })
     const response = await fetch(audioUrl as string);
     const blob = await response.blob();
     const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
 
     const api_response =
       await MedicalTranscriptionAPI.processAudioAndGenerateReport(file);
+    setIsLoading(false);
 
-    if (api_response) {
-      router.push({
-        pathname: "/app/report",
-        query: {
-          audioUrl: audioUrl as string,
-          report: api_response.report,
-          transcription: api_response.transcription,
-          time: JSON.stringify(api_response.time),
-        },
-      });
-    } else {
+    if (!api_response) {
       MessageHandler.get().handleError("Failed to generate report");
-      setIsLoading(false);
+      return
     }
+    console.log({ api_response })
+    // TODO: FInd a better way than teh query parameter
+    router.push({
+      pathname: "/app/report",
+      query: {
+        audioUrl: audioUrl as string,
+        report: encodeURIComponent(api_response.report),
+        transcription: (api_response.transcription),
+        time: JSON.stringify(api_response.time),
+      },
+    });
   };
 
   const handleDelete = () => {

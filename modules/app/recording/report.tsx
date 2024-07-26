@@ -6,11 +6,13 @@ import report_styles from "./styles/report.module.css";
 import ViewContent from "@/resources/containers/view-content";
 import MessageHandler from "@/core/message-handler";
 import { FaRegNewspaper, FaRegMessage, FaPlay, FaPause } from "react-icons/fa6";
+import { useTranslation } from "react-i18next";
 
 const messageHandler = MessageHandler.get();
 
 const Report = () => {
   const router = useRouter();
+  const { t } = useTranslation()
   const { report, transcription, audioUrl } = router.query;
   const [activeTab, setActiveTab] = useState("report");
   const [reportContent, setReportContent] = useState((report as string) || "");
@@ -35,10 +37,10 @@ const Report = () => {
       return;
     }
 
-    setReportContent(router.query.report as string);
+    setReportContent(decodeURIComponent(router.query.report as string));
     setTranscriptionContent(JSON.parse(router.query.transcription as string));
     setTime(JSON.parse(router.query.time as string));
-  }, [router.query]);
+  }, [router]);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -46,10 +48,6 @@ const Report = () => {
 
   const handleReportChange = (content: string) => {
     setReportContent(content);
-  };
-
-  const handleTranscriptionChange = (content: string) => {
-    setTranscriptionContent(content.split("\n"));
   };
 
   const toggleEditMode = () => {
@@ -74,7 +72,7 @@ const Report = () => {
             }}
           >
             <span className={report_styles.timeLabel}>
-              {Math.round(time.transcription / 1000)}s
+              {Math.round(time.transcription / 1000)} s
             </span>
           </div>
           <div
@@ -87,7 +85,7 @@ const Report = () => {
             }}
           >
             <span className={report_styles.timeLabel}>
-              {Math.round(time.report / 1000)}s
+              {Math.round(time.report / 1000)}{" "}s
             </span>
           </div>
         </div>
@@ -96,59 +94,35 @@ const Report = () => {
   };
 
   const renderContent = () => {
-    if (isEditing) {
-      return (
-        <div className={report_styles.editorContainer}>
-          <div
-            className={
-              activeTab === "report"
-                ? report_styles.visibleEditor
-                : report_styles.hiddenEditor
-            }
-          >
+    return (
+      <div className={report_styles.viewContainer}>
+        <div
+          className={
+            activeTab === "report"
+              ? report_styles.visibleContent
+              : report_styles.hiddenContent
+          }
+        >
+          {isEditing ?
             <Editor
               content={reportContent}
               onContentChange={handleReportChange}
-            />
-          </div>
-          <div
-            className={
-              activeTab === "transcription"
-                ? report_styles.visibleEditor
-                : report_styles.hiddenEditor
-            }
-          >
-            <Editor
-              content={transcriptionContent.join("\n")}
-              onContentChange={handleTranscriptionChange}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={report_styles.viewContainer}>
-          <div
-            className={
-              activeTab === "report"
-                ? report_styles.visibleContent
-                : report_styles.hiddenContent
-            }
-          >
+            /> :
             <ViewContent content={reportContent} />
-          </div>
-          <div
-            className={
-              activeTab === "transcription"
-                ? report_styles.visibleContent
-                : report_styles.hiddenContent
-            }
-          >
-            <ViewContent content={transcriptionContent} />
-          </div>
+          }
         </div>
-      );
-    }
+        <div
+          className={
+            activeTab === "transcription"
+              ? report_styles.visibleContent
+              : report_styles.hiddenContent
+          }
+        >
+          <ViewContent content={transcriptionContent} />
+        </div>
+      </div>
+    );
+
   };
 
   const handleDownload = (type: string) => {
@@ -191,24 +165,26 @@ const Report = () => {
 
   return (
     <div className={report_styles.reportContainer}>
-      <h1 className={report_styles.title}>ESTADISTICAS</h1>
+      <h1 className={report_styles.title}> {t('recording.statistics')}</h1>
       <div className={report_styles.progressContainer}>
         {renderProgressBar()}
         <div className={report_styles.downloadButton}>
           <button onClick={() => setIsDownloadOpen(!isDownloadOpen)}>
-            <span>DOWNLOAD</span>
+            <span>
+              {t('recording.download')}
+            </span>
             <span className={report_styles.dropdownArrow}>▼</span>
           </button>
           {isDownloadOpen && (
             <div className={report_styles.downloadDropdown}>
               <button onClick={() => handleDownload("audio")}>
-                Download Audio
+                {t('recording.download-audio')}
               </button>
               <button onClick={() => handleDownload("report")}>
-                Download Report
+                {t('recording.download-audio')}
               </button>
               <button onClick={() => handleDownload("transcription")}>
-                Download Transcription
+                {t('recording.download-transcription')}
               </button>
             </div>
           )}
@@ -227,7 +203,7 @@ const Report = () => {
             className={`${report_styles.tabButton}`}
             onClick={() => handleTabChange("report")}
           >
-            Report
+            {t('recording.report')}
           </button>
         </div>
         <div
@@ -242,7 +218,7 @@ const Report = () => {
             className={`${report_styles.tabButton}`}
             onClick={() => handleTabChange("transcription")}
           >
-            Transcription
+            {t('recording.transcription')}
           </button>
         </div>
       </div>
@@ -256,26 +232,19 @@ const Report = () => {
           {isAudioPlaying ? "Pause Audio" : "Replay Audio"}
         </button>
         <div>
-          {isEditing ? (
+          {activeTab === "report" && (
             <button
-              className={report_styles.saveButton}
+              className={isEditing ? report_styles.editButton : report_styles.saveButton}
               onClick={toggleEditMode}
             >
-              SAVE
-            </button>
-          ) : (
-            <button
-              className={report_styles.editButton}
-              onClick={toggleEditMode}
-            >
-              EDIT
+              {isEditing ? t('common.save') : t('common.edit')}
             </button>
           )}
           <button
             className={report_styles.newRecordingButton}
             onClick={() => router.push("/app/dashboard")}
           >
-            NEW RECORDING
+            {t('recording.new-recording')}
           </button>
         </div>
       </div>

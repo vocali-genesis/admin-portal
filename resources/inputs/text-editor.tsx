@@ -1,7 +1,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
-import quill_styles from "./styles/quill-editor.module.css";
+import quill_styles from "./text-editor.module.css";
 import Spinner from "@/resources/containers/spinner";
 
 interface reportEditorProps {

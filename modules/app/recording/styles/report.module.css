@@ -11,7 +11,7 @@
 
   font-weight: bold;
   font-size: 0.8rem;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .progressContainer {
@@ -44,13 +44,13 @@
 }
 
 .downloadButton button {
-  background-color: #59DBBC;
+  background-color: #59dbbc;
   border: none;
   padding: 5px 15px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1.8vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .tabContainer {
@@ -63,10 +63,10 @@
   display: flex;
   margin-bottom: 10px;
   color: black;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 1.9vh;
 
-  border-bottom: 1px solid #F5F5F5;
+  border-bottom: 1px solid #f5f5f5;
 }
 
 .tabs button {
@@ -78,13 +78,13 @@
 }
 
 .activeTab {
-  border-bottom: 2px solid #59DBBC !important;
-  color: #59DBBC;
+  border-bottom: 2px solid #59dbbc !important;
+  color: #59dbbc;
   font-weight: bold;
 }
 
 .activeTabIcon {
-  color: #59DBBC;
+  color: #59dbbc;
 }
 
 .editorContainer {
@@ -99,7 +99,8 @@
   flex: 1;
 }
 
-.visibleEditor, .hiddenEditor {
+.visibleEditor,
+.hiddenEditor {
   position: absolute;
   top: 0;
   left: 0;
@@ -126,7 +127,8 @@
   margin-right: 2.5vh;
 }
 
-.saveButton, .newRecordingButton {
+.saveButton,
+.newRecordingButton {
   padding: 7.5px 20px;
   border: none;
   border-radius: 5px;
@@ -134,7 +136,7 @@
   margin-left: 10px;
 
   font-size: 1.8vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .saveButton {
@@ -143,7 +145,7 @@
 }
 
 .newRecordingButton {
-  background-color: #59DBBC;
+  background-color: #59dbbc;
 }
 
 .viewContainer {
@@ -153,7 +155,8 @@
   margin: 0.5rem 1rem;
 }
 
-.visibleContent, .hiddenContent {
+.visibleContent,
+.hiddenContent {
   position: absolute;
   top: 0;
   left: 0;
@@ -182,7 +185,7 @@
   cursor: pointer;
   margin-left: 10px;
   font-size: 1.8vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   background-color: #2c394b;
 }
 
@@ -193,17 +196,19 @@
 .downloadButton button {
   display: flex;
   align-items: center;
-  background-color: #59DBBC;
+  background-color: #59dbbc;
   border: none;
   padding: 5px 15px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1.8vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .dropdownArrow {
-  margin-left: 5px;
+  font-size: 10px;
+  margin-left: 8px;
+  margin-top: 1px;
 }
 
 .downloadDropdown {
@@ -243,14 +248,14 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 1.8vh;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #59DBBC;
+  font-family: "Montserrat", sans-serif;
+  background-color: #59dbbc;
   color: white;
   transition: background-color 0.3s ease;
 }
 
 .replayButton.playing {
-  background-color: #FF6B6B;
+  background-color: #ff6b6b;
 }
 
 .replayButton svg {
@@ -264,7 +269,7 @@
   font-size: 12px;
   color: black;
   white-space: nowrap;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .actionButtons {

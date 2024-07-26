@@ -12,6 +12,8 @@ import MessageHandler from "@/core/message-handler";
 
 const messageHandler = MessageHandler.get();
 
+const Divider = () => <div className={settings_styles.divider} />
+
 const Settings = () => {
   const { t, i18n } = useTranslation();
 
@@ -88,58 +90,59 @@ const Settings = () => {
                   </span>
                 )}
               </div>
+
+
             </div>
+          </form>
+          <button type="submit" className={settings_styles.saveButton}>
+            {t("settings.save")}
+          </button>
 
-            <div className={settings_styles.divider} />
+          <Divider />
 
-            <div className={settings_styles.socialLogins}>
-              <button
-                type="button"
-                className={`${settings_styles.oauthButton} ${settings_styles.googleOAuthButton}`}
-              >
-                <p>
-                  Revoke
-                  <strong> google</strong>
-                </p>
-              </button>
-              {/* <button type="button" className={settings_styles.facebookLogin}>
+          <div className={settings_styles.socialLogins}>
+            <button
+              type="button"
+              className={`${settings_styles.oauthButton} ${settings_styles.googleOAuthButton}`}
+            >
+              <p>
+                {t('settings.revoke')}
+                <strong> Google</strong>
+              </p>
+            </button>
+            {/* <button type="button" className={settings_styles.facebookLogin}>
                 {t("Sign in with Facebook")}
               </button> */}
-            </div>
+          </div>
 
-            <div className={settings_styles.divider} />
+          <Divider />
 
-            <div className={settings_styles.languageGroup}>
-              <label htmlFor="language">{t("settings.language")}:</label>
-              <select
-                id="language"
-                value={i18n.language}
-                onChange={(e) => i18n.changeLanguage(e.target.value)}
-                className={settings_styles.languageSelect}
-              >
-                {LANGUAGES.map((lang, index) => (
-                  <option key={index} value={lang}>
-                    {lang.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className={settings_styles.languageGroup}>
+            <label htmlFor="language">{t("settings.language")}:</label>
+            <select
+              id="language"
+              value={i18n.language}
+              onChange={(e) => i18n.changeLanguage(e.target.value)}
+              className={settings_styles.languageSelect}
+            >
+              {LANGUAGES.map((lang, index) => (
+                <option key={index} value={lang}>
+                  {lang.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            <div className={settings_styles.divider} />
 
-            <button type="submit" className={settings_styles.saveButton}>
-              {t("settings.save")}
-            </button>
-
-            <div className={settings_styles.divider} />
-          </form>
+          {/*
+          // UPCOMMING FEATURE
           <button
             onClick={handleDeleteAccount}
             className={settings_styles.deleteAccount}
           >
-            <FaTrash size={16} style={{ color: "#DF4949" }} />
+            <FaTrash size={16} style={{ color: "#DF4949", marginTop: 4 }} />
             {t("settings.delete-account")}
-          </button>
+          </button> */}
         </main>
       </div>
     </div>
