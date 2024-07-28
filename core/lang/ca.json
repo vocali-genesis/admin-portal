@@ -23,7 +23,13 @@
     "confirm-password": "Confirmar contrasenya",
     "language": "Idioma",
     "save": "DESAR",
-    "delete-account": "ELIMINAR EL MEU COMPTE"
+    "delete-account": "ELIMINAR EL MEU COMPTE",
+    "subscriptions": {
+      "menu": "Subscripcions",
+      "exp-label": "Caduca el:",
+      "cancel-sub-btn": "Cancel·la la subscripció",
+      "payment-history": "Historial de pagaments"
+    }
   },
   "auth": {
     "login": "Iniciar sessió",

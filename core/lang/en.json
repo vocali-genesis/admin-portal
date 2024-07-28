@@ -29,7 +29,13 @@
     "language": "Language",
     "save": "SAVE",
     "delete-account": "DELETE MY ACCOUNT",
-    "revoke": "Revoke"
+    "revoke": "Revoke",
+    "subscriptions": {
+      "menu": "Subscriptions",
+      "exp-label": "Expires on:",
+      "cancel-sub-btn": "Cancel Subscription",
+      "payment-history": "Payment History"
+    }
   },
 
   "auth": {

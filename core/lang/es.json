@@ -23,7 +23,13 @@
     "confirm-password": "Confirmar contraseña",
     "language": "Idioma",
     "save": "GUARDAR",
-    "delete-account": "ELIMINAR MI CUENTA"
+    "delete-account": "ELIMINAR MI CUENTA",
+    "subscriptions": {
+      "menu": "Suscripciones",
+      "exp-label": "Expira el:",
+      "cancel-sub-btn": "Cancelar suscripción",
+      "payment-history": "Historial de pagos"
+    }
   },
   "auth": {
     "login": "Iniciar sesión",
