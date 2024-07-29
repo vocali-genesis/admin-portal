@@ -1,0 +1,19 @@
+{
+  "recording": {
+    "started": "Gravação iniciada",
+    "stopped": "Gravação parada",
+    "record-title": "Grave sua consulta ou carregue um áudio com a consulta previamente gravada para gerar um relatório",
+    "select-file": "Por favor, selecione um arquivo de áudio",
+    "select-file-upload": "Por favor, selecione um arquivo de áudio para carregar",
+    "activate-audio": "Ativar o gravador de áudio",
+    "click-to-stop": "Clique para parar a gravação",
+    "click-to-start": "Clique para iniciar a gravação",
+    "upload": "Carregar",
+    "drag-and-drop": "Arrastar e Soltar ou",
+    "browse": "Navegar",
+    "supported-format": "Formatos Suportados: MP3",
+    "upload-files": "Carregar Arquivos",
+    "submit": "Enviar",
+    "uploading": "Carregando..."
+  }
+}

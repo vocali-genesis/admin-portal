@@ -4,7 +4,7 @@ import type {
   MenuItem,
   ModuleSubscriber,
 } from "./module.types";
-import { ServiceInterface, ServiceName } from "./services.types";
+import { ComponentName, ServiceInterface, ServiceName } from "./services.types";
 
 export class ModuleManager {
   private static instance: ModuleManager;
@@ -22,6 +22,7 @@ export class ModuleManager {
   private settings: Record<string, CoreComponent> = {};
   private menu: MenuItem[] = [];
   private menuSettings: MenuItem[] = [];
+  private langs: Record<ComponentName, Record<string, object>> = {} as Record<ComponentName, Record<string, object>> ;  // Name of the modules to lang object
   private services: Record< ServiceName, ServiceInterface<ServiceName> | undefined> = {} as  Record< ServiceName, undefined>;
 
   public get subscribe(): ModuleSubscriber {
@@ -44,6 +45,9 @@ export class ModuleManager {
       service: <T extends ServiceName> (serviceName: T, service: ServiceInterface<T>) => {
         this.services[serviceName] = service;
       },
+      langs:  (module: ComponentName, langs: object) => {
+        this.langs[module] = langs;
+      },
     };
   }
 
@@ -58,6 +62,7 @@ export class ModuleManager {
       services: (name: ServiceName) => this.services[name],
       menus:[... this.menu].sort(( a, b)  => a.order - b.order),
       menuSettings: [...this.menuSettings].sort(( a, b)  => a.order - b.order),
+      langs: Object.values(this.langs)
     };
   }
 }

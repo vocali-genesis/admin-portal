@@ -1,0 +1,23 @@
+{
+  "settings": {
+    "email": "Email",
+    "new-password": "Nova Senha",
+    "confirm-password": "Confirmar Senha",
+    "language": "Idioma",
+    "save": "SALVAR",
+    "delete-account": "EXCLUIR MINHA CONTA"
+  },
+  "auth": {
+    "login": "Entrar",
+    "no-account-question": "Não tem uma conta?",
+    "register": "Registrar",
+    "login-register": "Entrar e Registrar",
+    "logout": "Sair",
+    "reset": "Redefinir Senha",
+    "with-others": "Com Outros",
+    "login-successful": "Login bem-sucedido",
+    "reset-email-sent": "O link para redefinir a senha foi enviado para o seu email",
+    "login-with": "Entrar com",
+    "register-with": "Registrar com"
+  }
+}

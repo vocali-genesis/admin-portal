@@ -1,0 +1,20 @@
+{
+  "resources": {
+    "confirm-delete": "Confirmar exclusão",
+    "are-you-sure": "Você tem certeza de que deseja excluir?"
+  },
+  "navbar": {
+    "upgrade": "Atualizar",
+    "organization": "Organização",
+    "logout": "Sair",
+    "settings": "Configurações"
+  },
+  "common": {
+    "submit": "Enviar",
+    "success": "Sucesso",
+    "upload": "Carregar",
+    "required": "Obrigatório",
+    "delete": "Excluir",
+    "cancel": "Cancelar"
+  }
+}

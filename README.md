@@ -53,5 +53,5 @@ For production we need to push a tag `tag -a 1.0.0 -m "Changes"` that will fire 
 - [Supabase API docs](https://supabase.com/dashboard/project/kxchqnumsodkzillsjhx/api)
 - [React Icons](https://react-icons.github.io/react-icons/icons/fa6/)
 - [i18n](https://react.i18next.com/)
-- [Tailwind CSS](https://tailwindcss.com/docs/installation)
+- [Tailwind CSS](https://tailwindcss.com/docs/installation) and [Tailwind CSS Components](https://tailwindui.com/components)
 - [Style](https://github.com/styled-components/styled-components) Use this Extension for Visual Code    [styled-components.vscode-styled-components]( https://marketplace.cursorapi.com/items?itemName=styled-components.vscode-styled-components)
