@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GlobalCore } from "@/core/module/module.types";
-import subscriptiosService from "@/services/app/subscriptios.service";
 import prices from "./pricing-config.json";
 import styles from "./styles/subscriptions.module.css";
 import Service from "@/core/module/service.factory";

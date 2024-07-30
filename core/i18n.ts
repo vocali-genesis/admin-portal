@@ -16,7 +16,6 @@ const finalLangs = ModuleManager.get().components.langs.reduce((lang, item) => {
 }, { en: coreEn, es: coreEs, ca: coreCa, pt: corePT } as Record<string, Record<string, object>>)
 
  
-console.log({final: finalLangs.en})
 const resources = Object.keys(finalLangs).reduce((lang, langCode) => ({ ...lang, [langCode]: { translation: finalLangs[langCode] } }), {})
 
 

@@ -45,7 +45,7 @@ export class ModuleManager {
       service: <T extends ServiceName> (serviceName: T, service: ServiceInterface<T>) => {
         this.services[serviceName] = service;
       },
-      langs:  (module: ComponentName, langs: object) => {
+      langs:  (module: ComponentName, langs:  Record<string, object>) => {
         this.langs[module] = langs;
       },
     };

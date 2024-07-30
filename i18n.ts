@@ -124,7 +124,7 @@ async function compareLangFiles(modulesPath: string) {
   // Collect all missing keys in English
   const inputData = generateSourceTranslation({ missingKeys, enData });
   if (!Object.keys(inputData).length) {
-    console.log(`[${modulesPath}]: Nothing to translate`);
+    console.info(`[${modulesPath}]: Nothing to translate`);
     return;
   }
   /**
@@ -179,7 +179,7 @@ async function updateLangFiles({
     const updatedLangData = JSON.stringify(langData, null, 2);
     const file = `${langFolder}/${language}.json`;
     fs.writeFile(file, updatedLangData, "utf8");
-    console.log(`Updated ${file}`);
+    console.info(`Updated ${file}`);
   } catch (err) {
     
     console.error(`Error reading ${language}.json: ${err}`);
@@ -234,11 +234,11 @@ async function translateKeys({
     const result = JSON.parse(resultJSON) as Record<string, Translation>;
     return result;
   } catch (err) {
-    console.log({ prompt, response: translation.text });
+    console.info({ prompt, response: translation.text });
     console.error(err);
     return {};
   } finally {
-    console.log({ usage: translation.detail.usage });
+    console.info({ usage: translation.detail.usage });
     console.timeEnd("gpt");
   }
 }
