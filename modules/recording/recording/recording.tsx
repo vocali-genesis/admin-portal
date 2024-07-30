@@ -144,7 +144,7 @@ const Recording = () => {
       pathname: "/app/report",
       query: {
         audioUrl: audioUrl as string,
-        report: encodeURIComponent(api_response.report),
+        report: JSON.stringify(api_response.report),
         transcription: api_response.transcription,
         time: JSON.stringify(api_response.time),
       },

@@ -6,6 +6,8 @@
 
 .viewContent h1, .viewContent h2, .viewContent h3 {
   margin-bottom: 0.5rem;
+  font-size: 2.5vh;
+  font-weight: bold;
 }
 
 .viewContent p {

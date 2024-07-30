@@ -8,16 +8,15 @@ import MessageHandler from "@/core/message-handler";
 import { FaRegNewspaper, FaRegMessage, FaPlay, FaPause } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import Button from "@/resources/containers/button";
-import IconButton from "@/resources/containers/icon-button";
 
 const messageHandler = MessageHandler.get();
 
 const Report = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const { report, transcription, audioUrl } = router.query;
+  const { audioUrl } = router.query;
   const [activeTab, setActiveTab] = useState("report");
-  const [reportContent, setReportContent] = useState((report as string) || "");
+  const [reportContent, setReportContent] = useState({});
   const [transcriptionContent, setTranscriptionContent] = useState<string[]>(
     [],
   );
@@ -40,9 +39,13 @@ const Report = () => {
       return;
     }
 
-    setReportContent(decodeURIComponent(router.query.report as string));
-    setTranscriptionContent(JSON.parse(router.query.transcription as string));
+    setReportContent(JSON.parse(router.query.report as string));
+    setTranscriptionContent(router.query.transcription as string[]);
     setTime(JSON.parse(router.query.time as string));
+
+    Object.entries(JSON.parse(router.query.report as string)).map(([key, value], index) => {
+      console.log(key, value);
+    });
 
     if (audioRef.current) {
       audioRef.current.onloadedmetadata = () => {
@@ -55,7 +58,7 @@ const Report = () => {
     setActiveTab(tab);
   };
 
-  const handleReportChange = (content: string) => {
+  const handleReportChange = (content: any) => {
     setReportContent(content);
   };
 
@@ -82,7 +85,7 @@ const Report = () => {
             }}
           >
             <span className={report_styles.timeLabel}>
-              Audio: {Math.round(audioLength)} s
+              {Math.round(audioLength)} s
             </span>
           </div>
           <div
@@ -93,7 +96,7 @@ const Report = () => {
             }}
           >
             <span className={report_styles.timeLabel}>
-              Transcription: {Math.round(time.transcription / 1000)} s
+              {Math.round(time.transcription / 1000)} s
             </span>
           </div>
           <div
@@ -106,7 +109,7 @@ const Report = () => {
             }}
           >
             <span className={report_styles.timeLabel}>
-              Report: {Math.round(time.report / 1000)} s
+              {Math.round(time.report / 1000)} s
             </span>
           </div>
         </div>
