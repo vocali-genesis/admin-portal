@@ -7,44 +7,53 @@ import Service from "@/core/module/service.factory";
 import { useRouter } from "next/router";
 import moment from "moment";
 
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+
 const Subscriptions = () => {
-  const router = useRouter()
+  const router = useRouter();
   const { t, i18n } = useTranslation();
-  const [isLoading, setIsLoading] = useState(true)
-  const [subscription, setSubscription] = useState<Record<string, string|number>>()
+  const [isLoading, setIsLoading] = useState(true);
+  const [subscription, setSubscription] =
+    useState<Record<string, string | number>>();
 
   useEffect(() => {
     (async () => {
-      const data = await Service.get(
-        "subscriptions"
-      ).getActiveSubscription();
+      const data = await Service.get("subscriptions").getActiveSubscription();
       setIsLoading(false);
-      if(!data.status || data.status !== 'active') {
-        return router.push('/app/subscriptions')
+      if (!data.status || data.status !== "active") {
+        return router.push("/app/subscriptions");
       }
-      setSubscription(data)
+      setSubscription(data);
     })();
-  }, [])
+  }, []);
 
-  if(isLoading) {
-    return <Spinner />
+  if (isLoading) {
+    return <Spinner />;
   }
 
-  const validUntil = moment(subscription?.current_period_end || '').format('DD MMM, YYYY')
-  console.log(GlobalCore.manager.settings)
+  const validUntil = moment(subscription?.current_period_end || "").format(
+    "DD MMM, YYYY"
+  );
+  console.log(GlobalCore.manager.settings);
   return (
     <div className={styles.container}>
       <main className={styles.contentWrapper}>
         <div className={styles.head}>
           <div className={styles.left}>
-            <span>{t('settings.subscriptions.exp-label')} {validUntil}</span>
+            <span>
+              {t("settings.subscriptions.exp-label")} {validUntil}
+            </span>
           </div>
           <div className={styles.right}>
-            <button className={styles.cancelBtn}>{t('settings.subscriptions.cancel-sub-btn')}</button>
+            <button className={styles.cancelBtn}>
+              {t("settings.subscriptions.cancel-sub-btn")}
+            </button>
           </div>
         </div>
         <div className={styles.content}>
-          <h2 className={styles.title}>{t('settings.subscriptions.payment-history')}</h2>
+          <h2 className={styles.title}>
+            {t("settings.subscriptions.payment-history")}
+          </h2>
         </div>
       </main>
     </div>
@@ -52,4 +61,9 @@ const Subscriptions = () => {
 };
 
 GlobalCore.manager.settings("subscriptions", Subscriptions);
-GlobalCore.manager.menuSettings({ 'label': 'settings.subscriptions.menu', icon: '/profile-avatar.svg', url: 'subscriptions', order: 1 })
+GlobalCore.manager.menuSettings({
+  label: "settings.subscriptions.menu",
+  icon: FaMoneyBillTransfer,
+  url: "subscriptions",
+  order: 1,
+});
