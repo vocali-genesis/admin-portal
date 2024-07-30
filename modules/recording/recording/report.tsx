@@ -43,9 +43,11 @@ const Report = () => {
     setTranscriptionContent(router.query.transcription as string[]);
     setTime(JSON.parse(router.query.time as string));
 
-    Object.entries(JSON.parse(router.query.report as string)).map(([key, value], index) => {
-      console.log(key, value);
-    });
+    Object.entries(JSON.parse(router.query.report as string)).map(
+      ([key, value], index) => {
+        console.log(key, value);
+      },
+    );
 
     if (audioRef.current) {
       audioRef.current.onloadedmetadata = () => {
@@ -83,6 +85,7 @@ const Report = () => {
               borderTopLeftRadius: "20px",
               borderBottomLeftRadius: "20px",
             }}
+            title={`Audio Length: ${Math.round(audioLength)} seconds`}
           >
             <span className={report_styles.timeLabel}>
               {Math.round(audioLength)} s
@@ -94,6 +97,7 @@ const Report = () => {
               width: `${transcriptionWidth}%`,
               backgroundColor: "#FF6B6B",
             }}
+            title={`Transcription Time: ${Math.round(time.transcription / 1000)} seconds`}
           >
             <span className={report_styles.timeLabel}>
               {Math.round(time.transcription / 1000)} s
@@ -107,6 +111,7 @@ const Report = () => {
               borderTopRightRadius: "20px",
               borderBottomRightRadius: "20px",
             }}
+            title={`Report Generation Time: ${Math.round(time.report / 1000)} seconds`}
           >
             <span className={report_styles.timeLabel}>
               {Math.round(time.report / 1000)} s
