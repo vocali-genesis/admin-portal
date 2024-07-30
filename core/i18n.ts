@@ -1,10 +1,10 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
-import coreEn from '@/core/lang/en.json'
-import coreEs from '@/core/lang/es.json'
-import coreCa from '@/core/lang/ca.json'
-import corePT from '@/core/lang/pt.json'
+import coreEn from '@/core/langs/en.json'
+import coreEs from '@/core/langs/es.json'
+import coreCa from '@/core/langs/ca.json'
+import corePT from '@/core/langs/pt.json'
 import { ModuleManager } from "./module/module.manager";
 
 /**
