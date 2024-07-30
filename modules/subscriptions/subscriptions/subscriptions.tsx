@@ -10,7 +10,7 @@ type Price = typeof prices[0]
 const PriceCard = (props: { item: Price }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const { title, currency, amount, interval, features, bttonText } = props.item;
+  const { title, currency, amount, interval, features, bttonText, buttonAction } = props.item;
   const handleSubscribe = async () => {
     setIsLoading(true)
     const { url } = await Service.get('subscriptions').getSubscriptionLink();
@@ -19,6 +19,11 @@ const PriceCard = (props: { item: Price }) => {
     }
     setIsLoading(false);
   };
+  const customAction = () => {
+    if(!buttonAction) return
+    setIsLoading(true)
+    window.location.href = buttonAction;
+  }
   return (
     <>
       <div className={styles.pricingCard}>
@@ -35,7 +40,9 @@ const PriceCard = (props: { item: Price }) => {
           ))}
         </ul>
         <button
-          onClick={handleSubscribe}
+          onClick={() => {
+            buttonAction ? customAction() : handleSubscribe()
+          }}
           disabled={isLoading}
           className={styles.priceButton}
         >
