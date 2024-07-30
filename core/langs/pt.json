@@ -1,7 +1,8 @@
 {
   "resources": {
     "confirm-delete": "Confirmar exclusão",
-    "are-you-sure": "Você tem certeza de que deseja excluir?"
+    "are-you-sure": "Você tem certeza de que deseja excluir?",
+    "microphone-error": "Falha ao obter dispositivos de áudio. Certifique-se de ter concedido permissões ao microfone."
   },
   "navbar": {
     "upgrade": "Atualizar",
@@ -15,6 +16,9 @@
     "upload": "Carregar",
     "required": "Obrigatório",
     "delete": "Excluir",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "home": "Inicio",
+    "save": "Salvar",
+    "edit": "Editar"
   }
 }

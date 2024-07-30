@@ -5,7 +5,9 @@
     "confirm-password": "Confirmar Senha",
     "language": "Idioma",
     "save": "SALVAR",
-    "delete-account": "EXCLUIR MINHA CONTA"
+    "delete-account": "EXCLUIR MINHA CONTA",
+    "menu": "Configurações",
+    "revoke": "Revogar"
   },
   "auth": {
     "login": "Entrar",
@@ -18,6 +20,7 @@
     "login-successful": "Login bem-sucedido",
     "reset-email-sent": "O link para redefinir a senha foi enviado para o seu email",
     "login-with": "Entrar com",
-    "register-with": "Registrar com"
+    "register-with": "Registrar com",
+    "reset-email-sent ": "O link para redefinir a senha foi enviado para o seu e-mail"
   }
 }

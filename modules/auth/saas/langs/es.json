@@ -5,7 +5,9 @@
     "confirm-password": "Confirmar contraseña",
     "language": "Idioma",
     "save": "GUARDAR",
-    "delete-account": "ELIMINAR MI CUENTA"
+    "delete-account": "ELIMINAR MI CUENTA",
+    "menu": "Ajustes",
+    "revoke": "Revocar"
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -18,6 +20,7 @@
     "login-successful": "Inicio de sesión exitoso",
     "reset-email-sent": "El enlace para restablecer la contraseña ha sido enviado a tu correo electrónico",
     "login-with": "Iniciar sesión con",
-    "register-with": "Registrarse con"
+    "register-with": "Registrarse con",
+    "reset-email-sent ": "Se ha enviado el enlace de restablecimiento de contraseña a tu correo electrónico"
   }
 }

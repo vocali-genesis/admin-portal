@@ -5,7 +5,9 @@
     "confirm-password": "Confirmar contrasenya",
     "language": "Idioma",
     "save": "DESAR",
-    "delete-account": "ELIMINAR EL MEU COMPTE"
+    "delete-account": "ELIMINAR EL MEU COMPTE",
+    "menu": "Configuració",
+    "revoke": "Revocar"
   },
   "auth": {
     "login": "Iniciar sessió",
@@ -18,6 +20,7 @@
     "login-successful": "Inici de sessió reeixit",
     "reset-email-sent": "L'enllaç per restablir la contrasenya s'ha enviat al teu correu electrònic",
     "login-with": "Iniciar sessió amb",
-    "register-with": "Registrar-se amb"
+    "register-with": "Registrar-se amb",
+    "reset-email-sent ": "S'ha enviat l'enllaç de restabliment de contrasenya al teu correu electrònic"
   }
 }

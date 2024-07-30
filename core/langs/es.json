@@ -1,7 +1,8 @@
 {
   "resources": {
     "confirm-delete": "Confirmar eliminación",
-    "are-you-sure": "¿Estás seguro de que deseas eliminarlo?"
+    "are-you-sure": "¿Estás seguro de que deseas eliminarlo?",
+    "microphone-error": "Error al obtener los dispositivos de audio. Asegúrate de haber concedido permisos al micrófono."
   },
   "navbar": {
     "upgrade": "Actualizar",
@@ -15,6 +16,9 @@
     "upload": "Subir",
     "required": "Requerido",
     "delete": "Eliminar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "home": "Inicio",
+    "save": "Guardar",
+    "edit": "Editar"
   }
 }

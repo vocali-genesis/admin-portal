@@ -14,6 +14,22 @@
     "supported-format": "Formats admesos: MP3",
     "upload-files": "Pujar fitxers",
     "submit": "Enviar",
-    "uploading": "Pujant..."
+    "uploading": "Pujant...",
+    "menu": "Enregistrament",
+    "click-to-pause": "Feu clic per pausar l'enregistrament",
+    "click-to-resume": "Feu clic per reprendre l'enregistrament",
+    "permission-required": "Si us plau, concediu els permisos de micròfon abans d'enregistrar",
+    "stop": "Atura l'enregistrament",
+    "paused": "Enregistrament en pausa",
+    "resumed": "Enregistrament reprès",
+    "allow-permissions": "Feu clic per permetre els permisos",
+    "transcription": "Transcripció",
+    "report": "Informe",
+    "download": "Descarregar",
+    "download-audio": "Descarregar àudio",
+    "download-report": "Descarregar informe",
+    "download-transcription": "Descarregar transcripció",
+    "statistics": "Estadístiques",
+    "new-recording": "Nou enregistrament"
   }
 }

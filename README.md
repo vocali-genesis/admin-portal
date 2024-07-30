@@ -43,6 +43,14 @@ Stable staging is `main` when merging or pushing into main, netlify will deploy 
 
 For production we need to push a tag `tag -a 1.0.0 -m "Changes"` that will fire teh CD/CI to deploy in the target repository.
 
+## Internationalization
+
+Each module contains his own internationalization in the `lang` folder.
+We only need to update the `english` version, rest the AI will take care of it.
+
+You will need the Chat GPT key for this
+`yarn trans`
+
 ## More resources:
 
 - [Architecture](https://whimsical.com/frontend-arquitecture-NfUQur2e1WpvWmeH9d1mXU)

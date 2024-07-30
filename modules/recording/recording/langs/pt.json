@@ -14,6 +14,22 @@
     "supported-format": "Formatos Suportados: MP3",
     "upload-files": "Carregar Arquivos",
     "submit": "Enviar",
-    "uploading": "Carregando..."
+    "uploading": "Carregando...",
+    "menu": "Gravação",
+    "click-to-pause": "Clique para pausar a gravação",
+    "click-to-resume": "Clique para retomar a gravação",
+    "permission-required": "Por favor, permita as permissões do microfone antes de gravar",
+    "stop": "Parar gravação",
+    "paused": "Gravação em pausa",
+    "resumed": "Gravação retomada",
+    "allow-permissions": "Clique para permitir permissões",
+    "transcription": "Transcrição",
+    "report": "Relatório",
+    "download": "Baixar",
+    "download-audio": "Baixar áudio",
+    "download-transcription": "Baixar transcrição",
+    "statistics": "Estatísticas",
+    "new-recording": "Nova gravação",
+    "download-report": "Baixar relatório"
   }
 }
