@@ -46,6 +46,9 @@ export class ModuleManager {
         this.services[serviceName] = service;
       },
       langs:  (module: ComponentName, langs:  Record<string, object>) => {
+        if(!!this.langs[module]) {
+          throw new Error(`Transation for module ${module} is already loaded`)
+        }
         this.langs[module] = langs;
       },
     };

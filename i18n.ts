@@ -231,6 +231,7 @@ async function translateKeys({
     const resultJSON = translation.text
       .replace(`\`\`\`json`, "")
       .replace(`\`\`\``, "");
+      
     const result = JSON.parse(resultJSON) as Record<string, Translation>;
     return result;
   } catch (err) {

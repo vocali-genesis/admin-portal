@@ -5,4 +5,4 @@ import es from './es.json'
 import pt from './pt.json'
 
 
-GlobalCore.manager.langs('recording', { en, ca, es, pt })
+GlobalCore.manager.langs('auth', { en, ca, es, pt })

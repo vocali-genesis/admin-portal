@@ -5,4 +5,4 @@ import es from './es.json'
 import pt from './pt.json'
 
 
-GlobalCore.manager.langs('auth', { en, ca, es, pt })
+GlobalCore.manager.langs('subscriptions', { en, ca, es, pt })

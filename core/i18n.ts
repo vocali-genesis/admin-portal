@@ -12,13 +12,12 @@ import { ModuleManager } from "./module/module.manager";
  */
 const finalLangs = ModuleManager.get().components.langs.reduce((lang, item) => {
   Object.keys(lang).forEach(langCode => lang[langCode] = ({ ...lang[langCode], ...item[langCode] }))
-  return item;
+  return lang;
 }, { en: coreEn, es: coreEs, ca: coreCa, pt: corePT } as Record<string, Record<string, object>>)
 
  
 const resources = Object.keys(finalLangs).reduce((lang, langCode) => ({ ...lang, [langCode]: { translation: finalLangs[langCode] } }), {})
-
-
+ 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .use(LanguageDetector)
