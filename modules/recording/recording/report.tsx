@@ -163,7 +163,7 @@ const Report = () => {
         window.open(audioUrl as string, "_blank");
         return;
       case "report":
-        content = reportContent;
+        content = JSON.stringify(reportContent, null, 2);
         filename = "report.txt";
         break;
       case "transcription":
@@ -208,7 +208,7 @@ const Report = () => {
                 {t("recording.download-audio")}
               </button>
               <button onClick={() => handleDownload("report")}>
-                {t("recording.download-audio")}
+                {t("recording.download-report")}
               </button>
               <button onClick={() => handleDownload("transcription")}>
                 {t("recording.download-transcription")}
