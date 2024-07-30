@@ -6,8 +6,53 @@ import Spinner from "@/resources/containers/spinner";
 import Service from "@/core/module/service.factory";
 import { useRouter } from "next/router";
 import moment from "moment";
+import Table from '@/resources/table'
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
+
+const PaymentHistory: React.FC = () => {
+  const data: TableDataModel[] = [
+    {
+      id: "Invoice 1",
+      date: new Date().toLocaleDateString(),
+      plan: "Basic",
+      amount: "€ 200",
+    },
+    {
+      id: "Invoice 2",
+      date: new Date().toLocaleDateString(),
+      plan: "Basic",
+      amount: "€ 150",
+    },
+  ];
+
+  const columns: ColumnConfig<TableDataModel>[] = [
+    { title: "Invoice ID", dataIndex: "id", sorter: true },
+    {
+      title: "Date",
+      render: (item) => <span>{item.date}</span>,
+    },
+    {
+      title: "Plan",
+      render: (item) => <span>{item.plan}</span>,
+    },
+    { title: "Amount", dataIndex: "amount" },
+    {
+      title: "Actions",
+      render: () => (
+        <>
+          <a href="#">Download</a> | <a href="#">View</a>
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <div className="container mx-auto">
+      <Table data={data} columns={columns} isPagination={true} />
+    </div>
+  );
+};
 
 const Subscriptions = () => {
   const router = useRouter();
@@ -51,9 +96,10 @@ const Subscriptions = () => {
           </div>
         </div>
         <div className={styles.content}>
-          <h2 className={styles.title}>
+          <h2 className={`${styles.title} mb-5`}>
             {t("settings.subscriptions.payment-history")}
           </h2>
+          <PaymentHistory />
         </div>
       </main>
     </div>
