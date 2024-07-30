@@ -1,6 +1,5 @@
 import { GlobalCore } from "@/core/module/module.types";
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import Image from "next/image";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import MessageHandler from "@/core/message-handler";
 import { AudioRecorder } from "./libs/audio-recorder";
@@ -18,9 +17,11 @@ const Dashboard = () => {
   const [recordingState, setRecordingState] = useState<
     "inactive" | "recording" | "paused"
   >("inactive");
-  const [microphone, setMicrophone] = useState('')
+  const [microphone, setMicrophone] = useState("");
+  const [audioLevel, setAudioLevel] = useState(0);
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
-
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
 
   const toggleRecording = async () => {
     if (!microphone) {
@@ -37,22 +38,20 @@ const Dashboard = () => {
         await audioRecorderRef.current.startRecording(microphone);
         messageHandler.info(t("recording.started"));
         setRecordingState("recording");
+        startVisualization();
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
-      return
-    }
-    if (recordingState === "recording") {
+    } else if (recordingState === "recording") {
       audioRecorderRef.current.pauseRecording();
       messageHandler.info(t("recording.paused"));
       setRecordingState("paused");
-      return
-    }
-    if (recordingState === "paused") {
+      stopVisualization();
+    } else if (recordingState === "paused") {
       await audioRecorderRef.current.startRecording(microphone);
       messageHandler.info(t("recording.resumed"));
       setRecordingState("recording");
-      return
+      startVisualization();
     }
   };
 
@@ -62,6 +61,7 @@ const Dashboard = () => {
         const audioUrl = await audioRecorderRef.current.stopRecording();
         messageHandler.info(t("recording.stopped"));
         setRecordingState("inactive");
+        stopVisualization();
 
         router.push({
           pathname: "/app/recording",
@@ -73,15 +73,49 @@ const Dashboard = () => {
     }
   };
 
+  const startVisualization = () => {
+    if (!analyserRef.current && audioRecorderRef.current) {
+      const audioContext = audioRecorderRef.current.getAudioContext();
+      const sourceNode = audioRecorderRef.current.getSourceNode();
+
+      if (audioContext && sourceNode) {
+        analyserRef.current = audioContext.createAnalyser();
+        if (analyserRef.current) {
+          analyserRef.current.fftSize = 256;
+          sourceNode.connect(analyserRef.current);
+        }
+      }
+    }
+
+    const updateVisualization = () => {
+      if (analyserRef.current) {
+        const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+        analyserRef.current.getByteFrequencyData(dataArray);
+        const average =
+          dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
+        setAudioLevel(average / 255);
+      }
+      animationFrameRef.current = requestAnimationFrame(updateVisualization);
+    };
+
+    updateVisualization();
+  };
+
+  const stopVisualization = () => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    setAudioLevel(0);
+  };
+
   useEffect(() => {
     return () => {
       if (audioRecorderRef.current) {
         audioRecorderRef.current.dispose();
       }
+      stopVisualization();
     };
   }, []);
-
-
 
   const handleUpload = (selectedFile: File) => {
     if (selectedFile) {
@@ -94,24 +128,28 @@ const Dashboard = () => {
       messageHandler.handleError(t("recording.select-file-upload"));
     }
   };
+
   return (
     <div className="p-5">
       <h2 className={dash_styles.h2}>{t("recording.record-title")}</h2>
-      <p className={`${dash_styles.p} ${dash_styles.top_p}`}>
-        {t("recording.activate-audio")}
-      </p>
+      <p className={dash_styles.p}>{t("recording.activate-audio")}</p>
 
       <div className={dash_styles.contentColumns}>
         <div className={dash_styles.recordSection}>
           <MicrophoneSelect value={microphone} onChange={setMicrophone} />
           <button
-            className={`${dash_styles.recordButton} ${recordingState === "recording"
-              ? dash_styles.recording
-              : recordingState === "paused"
-                ? dash_styles.paused
-                : ""
-              }`}
+            className={`${dash_styles.recordButton} ${
+              recordingState === "recording"
+                ? dash_styles.recording
+                : recordingState === "paused"
+                  ? dash_styles.paused
+                  : ""
+            }`}
             onClick={toggleRecording}
+            style={{
+              transform: `scale(${1 + audioLevel * 0.4})`,
+              transition: "transform 0s ease-in-out",
+            }}
           >
             {recordingState === "recording" ? (
               <FaPause size={40} />
@@ -141,11 +179,16 @@ const Dashboard = () => {
         <div className={dash_styles.uploadSection}>
           <h3 className={dash_styles.h3}>{t("recording.upload")}</h3>
           <UploadFile onFile={(file) => handleUpload(file)} />
-        </div >
-      </div >
-    </div >
+        </div>
+      </div>
+    </div>
   );
 };
 
 GlobalCore.manager.app("dashboard", Dashboard);
-GlobalCore.manager.menu({ 'label': 'recording.menu', icon: '/recordings.svg', url: 'dashboard', order: 0 })
+GlobalCore.manager.menu({
+  label: "recording.menu",
+  icon: "/recordings.svg",
+  url: "dashboard",
+  order: 0,
+});

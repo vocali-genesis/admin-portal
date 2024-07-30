@@ -1,0 +1,29 @@
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.small {
+  width: 2.5vh;
+  height: 2.5vh;
+}
+
+.medium {
+  width: 6vh;
+  height: 6vh;
+}
+
+.large {
+  width: 60px;
+  height: 60px;
+}
+
+.iconButton svg {
+  width: 100%;
+  height: 100%;
+}
