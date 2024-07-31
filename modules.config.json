@@ -1,4 +1,12 @@
 {
-  "modules": ["auth/supabase"],
-  "services": ["auth/supabase"]
+  "modules": [
+    "auth/saas",
+    "recording/recording",
+    "subscriptions/subscriptions"
+  ],
+  "services": [
+    "auth/auth-supabase.service",
+    "genesis/transcription.service",
+    "subscriptions/subscriptions-supabase.service"
+  ]
 }
