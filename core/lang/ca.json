@@ -23,7 +23,13 @@
     "confirm-password": "Confirmar contrasenya",
     "language": "Idioma",
     "save": "DESAR",
-    "delete-account": "ELIMINAR EL MEU COMPTE"
+    "delete-account": "ELIMINAR EL MEU COMPTE",
+    "subscriptions": {
+      "menu": "Subscripcions",
+      "exp-label": "Caduca el:",
+      "cancel-sub-btn": "Cancel·la la subscripció",
+      "payment-history": "Historial de pagaments"
+    }
   },
   "auth": {
     "login": "Iniciar sessió",
@@ -54,5 +60,30 @@
     "upload-files": "Pujar fitxers",
     "submit": "Enviar",
     "uploading": "Pujant..."
+  },
+  "subscriptions": {
+    "title": "Troba el pla de preus per a la teva empresa",
+    "sub-title": "Seleccioneu el pla perfecte perquè el vostre negoci creixi",
+    "price-1": {
+      "title": "Gratis",
+      "currency": "€",
+      "amount": "0",
+      "interval": "/mes",
+      "features": {
+        "feature-1": "Benefici 1"
+      },
+      "btn-text": "Contacte"
+    },
+    "price-2": {
+      "title": "Pro",
+      "currency": "€",
+      "amount": "100",
+      "interval": "/mes",
+      "features": {
+        "feature-1": "Benefici 1",
+        "feature-2": "Benefici 2"
+      },
+      "btn-text": "Subscriu-te ara"
+    }
   }
 }
