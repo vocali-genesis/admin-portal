@@ -6,26 +6,37 @@ import Spinner from "@/resources/containers/spinner";
 import Service from "@/core/module/service.factory";
 import { useRouter } from "next/router";
 import moment from "moment";
-import Table from '@/resources/table'
+import Table from "@/resources/table";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 
-const PaymentHistory: React.FC = () => {
-  const data: TableDataModel[] = [
-    {
-      id: "Invoice 1",
-      date: new Date().toLocaleDateString(),
-      plan: "Basic",
-      amount: "€ 200",
-    },
-    {
-      id: "Invoice 2",
+const data: TableDataModel[] = [
+  {
+    id: "Invoice 1",
+    date: new Date().toLocaleDateString(),
+    plan: "Basic",
+    amount: "€ 200",
+  },
+  {
+    id: "Invoice 2",
+    date: new Date().toLocaleDateString(),
+    plan: "Basic",
+    amount: "€ 150",
+  },
+];
+
+[3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].forEach(
+  (i) => {
+    data.push({
+      id: `Invoice ${i}`,
       date: new Date().toLocaleDateString(),
       plan: "Basic",
       amount: "€ 150",
-    },
-  ];
+    });
+  }
+);
 
+const PaymentHistory: React.FC = () => {
   const columns: ColumnConfig<TableDataModel>[] = [
     { title: "Invoice ID", dataIndex: "id", sorter: true },
     {
@@ -35,6 +46,7 @@ const PaymentHistory: React.FC = () => {
     {
       title: "Plan",
       render: (item) => <span>{item.plan}</span>,
+      sorter: true,
     },
     { title: "Amount", dataIndex: "amount" },
     {
@@ -47,16 +59,50 @@ const PaymentHistory: React.FC = () => {
     },
   ];
 
+  const itemsPerPage = 5;
+  const totalRecords = data.length;
+  const totalPages = Math.ceil(totalRecords / itemsPerPage);
+  const [currentPage, setCurrentPage] = useState(1);
+  const intialData = data.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const [paginatedData, setPaginatedData] =
+    useState<TableDataModel[]>(intialData);
+
+  useEffect(() => {
+    setPaginatedData(() => {
+      return data.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
+    });
+  }, [currentPage]);
+
+  const handleSort = (key: string, column: string) => {
+    console.log({ key, column });
+  };
+
   return (
     <div className="container mx-auto">
-      <Table data={data} columns={columns} isPagination={true} />
+      <Table
+        data={paginatedData}
+        columns={columns}
+        onSort={handleSort}
+        pagination={{
+          currentPage,
+          totalPages,
+          totalRecords,
+          onPageChange: setCurrentPage,
+        }}
+      />
     </div>
   );
 };
 
 const Subscriptions = () => {
   const router = useRouter();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [subscription, setSubscription] =
     useState<Record<string, string | number>>();

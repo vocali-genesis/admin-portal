@@ -1,34 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import InternalTable from "./table";
 import Pagination from "./pagination";
+import { PaginationProps } from "./pagination";
 
 interface Props {
   columns: ColumnConfig<TableDataModel>[]
-  data: TableDataModel
-  isPagination?: boolean
+  data: TableDataModel[]
+  pagination?: PaginationProps
+  onSort?: (key: string, column: string) => void
+  isLoading?: boolean
 }
 
-const Table: React.FC<Props> = ({ columns, data, isPagination = false,  }) => {
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const totalRecords = data.length;
-  const totalPages = Math.ceil(totalRecords / itemsPerPage);
-
-  const paginatedData = !isPagination ? data : data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
+const Table: React.FC<Props> = (props) => {
+  const { pagination, columns, data, onSort, isLoading } = props
   return (
     <div className="container mx-auto">
-      <InternalTable data={paginatedData} columns={columns} />
-      {isPagination && <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalRecords={totalRecords}
-        onPageChange={setCurrentPage}
-      />}
+      <InternalTable data={data} columns={columns} isLoading={isLoading} onSort={(key, column) => {
+        onSort && onSort(key, column)
+      }} />
+      {pagination && <Pagination {...pagination} />}
     </div>
   );
 };
