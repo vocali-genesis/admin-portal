@@ -30,38 +30,41 @@ export class AudioRecorder {
   }
 
   pauseRecording() {
-    if (this.mediaRecorder && this.mediaRecorder.state === "recording") {
-      this.mediaRecorder.pause();
-    } else {
+    if (!this.mediaRecorder || this.mediaRecorder.state !== "recording") {
       messageHandler.handleError(
         "Cannot pause recording: MediaRecorder is not in recording state",
       );
+      return;
     }
+    
+    this.mediaRecorder.pause();
   }
 
   resumeRecording() {
-    if (this.mediaRecorder && this.mediaRecorder.state === "paused") {
-      this.mediaRecorder.resume();
-    } else {
+    if (!this.mediaRecorder || this.mediaRecorder.state !== "paused") {
       messageHandler.handleError(
         "Cannot resume recording: MediaRecorder is not in paused state",
       );
+      return;
     }
+    
+    this.mediaRecorder.resume();
   }
 
   async stopRecording(): Promise<string> {
     return new Promise((resolve) => {
-      if (this.mediaRecorder) {
-        this.mediaRecorder.onstop = () => {
-          const audioBlob = new Blob(this.audioChunks, { type: "audio/wav" });
-          const audioUrl = URL.createObjectURL(audioBlob);
-          resolve(audioUrl);
-        };
-        this.mediaRecorder.stop();
-      } else {
+      if (!this.mediaRecorder) {
         messageHandler.handleError("MediaRecorder not initialized");
         resolve("");
+        return;
       }
+
+      this.mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(this.audioChunks, { type: "audio/wav" });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        resolve(audioUrl);
+      };
+      this.mediaRecorder.stop();
     });
   }
 
