@@ -43,7 +43,6 @@ const Dashboard = () => {
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
-
       return;
     }
 
@@ -52,16 +51,14 @@ const Dashboard = () => {
       messageHandler.info(t("recording.paused"));
       setRecordingState("paused");
       stopVisualization();
-
       return;
     }
 
     if (recordingState === "paused") {
-      await audioRecorderRef.current.startRecording(microphone);
+      audioRecorderRef.current.resumeRecording();
       messageHandler.info(t("recording.resumed"));
       setRecordingState("recording");
       startVisualization();
-
       return;
     }
   };
@@ -85,7 +82,11 @@ const Dashboard = () => {
   };
 
   const startVisualization = () => {
-    if (analyserRef.current || !audioRecorderRef.current) return;
+    if (analyserRef.current) {
+      analyserRef.current.disconnect();
+    }
+
+    if (!audioRecorderRef.current) return;
 
     const audioContext = audioRecorderRef.current.getAudioContext();
     const sourceNode = audioRecorderRef.current.getSourceNode();

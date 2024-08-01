@@ -74,16 +74,26 @@ const Report = () => {
           <div
             className={report_styles.progressSegment}
             style={{
-              width: `${audioWidth}%`,
+              width: `7.5px`,
               backgroundColor: "#59DBBC",
               borderTopLeftRadius: "20px",
               borderBottomLeftRadius: "20px",
             }}
             title={`Audio Length: ${Math.round(audioLength)} seconds`}
+          ></div>
+          <div
+            className={report_styles.progressSegment}
+            style={{
+              width: `${audioWidth}%`,
+              backgroundColor: "#59DBBC",
+            }}
+            title={`Audio Length: ${Math.round(audioLength)} seconds`}
           >
-            <span className={report_styles.timeLabel}>
-              {Math.round(audioLength)} s
-            </span>
+            {audioLength !== Infinity && (
+              <span className={report_styles.timeLabel}>
+                {Math.round(audioLength)} s
+              </span>
+            )}
           </div>
           <div
             className={report_styles.progressSegment}

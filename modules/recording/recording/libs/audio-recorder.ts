@@ -1,3 +1,7 @@
+import MessageHandler from "@/core/message-handler";
+
+const messageHandler = MessageHandler.get();
+
 export class AudioRecorder {
   private mediaRecorder: MediaRecorder | null = null;
   private audioChunks: Blob[] = [];
@@ -9,33 +13,44 @@ export class AudioRecorder {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: { deviceId: deviceId ? { exact: deviceId } : undefined },
       });
-
       this.audioContext = new (window.AudioContext ||
         (window as any).webkitAudioContext)();
       this.sourceNode = this.audioContext.createMediaStreamSource(stream);
-
       this.mediaRecorder = new MediaRecorder(stream);
       this.audioChunks = [];
-
       this.mediaRecorder.ondataavailable = (event) => {
         this.audioChunks.push(event.data);
       };
-
       this.mediaRecorder.start();
     } catch (error) {
-      console.error("Error starting recording:", error);
-      throw error;
+      messageHandler.handleError(
+        `Error starting recording: ${(error as Error).message}`,
+      );
     }
   }
 
   pauseRecording() {
     if (this.mediaRecorder && this.mediaRecorder.state === "recording") {
       this.mediaRecorder.pause();
+    } else {
+      messageHandler.handleError(
+        "Cannot pause recording: MediaRecorder is not in recording state",
+      );
+    }
+  }
+
+  resumeRecording() {
+    if (this.mediaRecorder && this.mediaRecorder.state === "paused") {
+      this.mediaRecorder.resume();
+    } else {
+      messageHandler.handleError(
+        "Cannot resume recording: MediaRecorder is not in paused state",
+      );
     }
   }
 
   async stopRecording(): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.mediaRecorder) {
         this.mediaRecorder.onstop = () => {
           const audioBlob = new Blob(this.audioChunks, { type: "audio/wav" });
@@ -44,7 +59,8 @@ export class AudioRecorder {
         };
         this.mediaRecorder.stop();
       } else {
-        reject(new Error("MediaRecorder not initialized"));
+        messageHandler.handleError("MediaRecorder not initialized");
+        resolve("");
       }
     });
   }
@@ -61,7 +77,11 @@ export class AudioRecorder {
       this.sourceNode = null;
     }
     if (this.audioContext) {
-      this.audioContext.close();
+      this.audioContext.close().catch((error) => {
+        messageHandler.handleError(
+          `Error closing AudioContext: ${error.message}`,
+        );
+      });
       this.audioContext = null;
     }
   }
