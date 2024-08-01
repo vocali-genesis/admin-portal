@@ -23,7 +23,13 @@
     "confirm-password": "Confirmar Senha",
     "language": "Idioma",
     "save": "SALVAR",
-    "delete-account": "EXCLUIR MINHA CONTA"
+    "delete-account": "EXCLUIR MINHA CONTA",
+    "subscriptions": {
+      "menu": "Assinaturas",
+      "exp-label": "Expira em:",
+      "cancel-sub-btn": "Cancelar subscrição",
+      "payment-history": "Histórico de pagamentos"
+    }
   },
   "auth": {
     "login": "Entrar",
@@ -54,5 +60,30 @@
     "upload-files": "Carregar Arquivos",
     "submit": "Enviar",
     "uploading": "Carregando..."
+  },
+  "subscriptions": {
+    "title": "Encontre o plano de preços para o seu negócio",
+    "sub-title": "Selecione o plano perfeito para o crescimento do seu negócio",
+    "price-1": {
+      "title": "Grátis",
+      "currency": "€",
+      "amount": "0",
+      "interval": "/mês",
+      "features": {
+        "feature-1": "Benefício 1"
+      },
+      "btn-text": "Contacto"
+    },
+    "price-2": {
+      "title": "Pró",
+      "currency": "€",
+      "amount": "100",
+      "interval": "/mês",
+      "features": {
+        "feature-1": "Benefício 1",
+        "feature-2": "Benefício 2"
+      },
+      "btn-text": "Inscreva-se já"
+    }
   }
 }

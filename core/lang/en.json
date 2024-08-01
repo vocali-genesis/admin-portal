@@ -29,7 +29,13 @@
     "language": "Language",
     "save": "SAVE",
     "delete-account": "DELETE MY ACCOUNT",
-    "revoke": "Revoke"
+    "revoke": "Revoke",
+    "subscriptions": {
+      "menu": "Subscriptions",
+      "exp-label": "Expires on:",
+      "cancel-sub-btn": "Cancel Subscription",
+      "payment-history": "Payment History"
+    }
   },
 
   "auth": {
@@ -77,5 +83,30 @@
     "download-transcription": "Download Transcription",
     "statistics": "Statistics",
     "new-recording": "New Recording"
+  },
+  "subscriptions": {
+    "title": "Find the pricing plan for your business",
+    "sub-title": "Select the perfect plan for your business to grow",
+    "price-1": {
+      "title": "Free",
+      "currency": "€",
+      "amount": "0",
+      "interval": "/month",
+      "features": {
+        "feature-1": "Benefit 1"
+      },
+      "btn-text": "Contact us"
+    },
+    "price-2": {
+      "title": "Pro",
+      "currency": "€",
+      "amount": "100",
+      "interval": "/month",
+      "features": {
+        "feature-1": "Benefit 1",
+        "feature-2": "Benefit 2"
+      },
+      "btn-text": "Subscribe now"
+    }
   }
 }
