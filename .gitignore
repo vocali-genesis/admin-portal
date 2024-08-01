@@ -39,3 +39,6 @@ next-env.d.ts
 *.spec.ts
 .replit
 replit.nix
+
+# Sentry Config File
+.env.sentry-build-plugin

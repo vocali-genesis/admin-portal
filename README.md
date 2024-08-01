@@ -27,3 +27,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [React Icons](https://react-icons.github.io/react-icons/icons/fa6/)
 - [i18n](https://react.i18next.com/)
 - [Tailwind CSS](https://tailwindcss.com/docs/installation)
+
+## Sentry
+
+This project uses [Sentry](https://genesis-4s.sentry.io/) for monitoring.
+To Test an error you can access to the rout `/sentry`  (TODO: Hide it in production?)
