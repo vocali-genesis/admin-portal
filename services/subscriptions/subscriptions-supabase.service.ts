@@ -52,13 +52,14 @@ class SubscriptionSupabase implements SubscriptionService {
   /**
    * Retruns the payment invoices of the loggedin user
    */
-  public async getInvoices(): Promise<[Record<string, string | number>] | []> {
-    const { data: invoices, error } = await this.supabase.from("invoices").select("*");
+  public async getInvoices(from: number, to: number): Promise<{invoices: [Record<string, string | number>] | [], count: number}> {
+    const { data: invoices, error } = await this.supabase.from("invoices").select("*").range(from, to)
     if (error) {
       messageHandler.handleError(error.message);
-      return [];
+      return { invoices: [], count: 0 };
     }
-    return invoices as [Record<string, string | number>];
+    const { count = 0 } = await this.supabase.from("invoices").select("*", { count: "exact", head: true });
+    return { invoices, count } as { invoices: [Record<string, string | number>], count: number};
   }
 }
 

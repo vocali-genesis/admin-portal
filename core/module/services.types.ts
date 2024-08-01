@@ -55,5 +55,5 @@ export interface AuthService {
 export interface SubscriptionService {
   getSubscriptionLink(): Promise<{ url: string | null }>
   getActiveSubscription(): Promise<Record<string, string|number>>
-  getInvoices(): Promise<[Record<string, string | number>] | []>
+  getInvoices(from: number, to: number): Promise<{ invoices: [Record<string, string | number>] | [], count: number}>
 }
