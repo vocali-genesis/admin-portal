@@ -2,6 +2,10 @@ import MessageHandler from "@/core/message-handler";
 
 const messageHandler = MessageHandler.get();
 
+interface WindowWithWebkitAudioContext extends Window {
+  webkitAudioContext?: typeof AudioContext;
+}
+
 export class AudioRecorder {
   private mediaRecorder: MediaRecorder | null = null;
   private audioChunks: Blob[] = [];
@@ -14,7 +18,8 @@ export class AudioRecorder {
         audio: { deviceId: deviceId ? { exact: deviceId } : undefined },
       });
       this.audioContext = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
+        (window as WindowWithWebkitAudioContext).webkitAudioContext ||
+        null)();
       this.sourceNode = this.audioContext.createMediaStreamSource(stream);
       this.mediaRecorder = new MediaRecorder(stream);
       this.audioChunks = [];
@@ -36,7 +41,7 @@ export class AudioRecorder {
       );
       return;
     }
-    
+
     this.mediaRecorder.pause();
   }
 
@@ -47,7 +52,7 @@ export class AudioRecorder {
       );
       return;
     }
-    
+
     this.mediaRecorder.resume();
   }
 
