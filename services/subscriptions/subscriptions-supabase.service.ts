@@ -48,6 +48,18 @@ class SubscriptionSupabase implements SubscriptionService {
     }
     return { ...data[0] };
   }
+
+  /**
+   * Retruns the payment invoices of the loggedin user
+   */
+  public async getInvoices(): Promise<[Record<string, string | number>] | []> {
+    const { data: invoices, error } = await this.supabase.from("invoices").select("*");
+    if (error) {
+      messageHandler.handleError(error.message);
+      return [];
+    }
+    return invoices as [Record<string, string | number>];
+  }
 }
 
 GlobalCore.manager.service("subscriptions", new SubscriptionSupabase());
