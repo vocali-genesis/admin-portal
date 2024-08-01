@@ -16,6 +16,7 @@ export default function Page() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: "#333"
         }}
       >
         <h1 style={{ fontSize: "4rem", margin: "14px 0" }}>
