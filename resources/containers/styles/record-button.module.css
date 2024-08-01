@@ -1,0 +1,33 @@
+.recordButton {
+  width: 175px;
+  height: 175px;
+  background-color: #59dbbc;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 5vh;
+  margin-bottom: 10px;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.1s ease-in-out;
+}
+
+.recordButton:hover {
+  background-color: #4bc1a4;
+}
+
+.recordButton.recording {
+  background-color: #ff6b6b;
+}
+
+.recordButton.paused {
+  background-color: #59dbbc;
+}
+
+.p {
+  margin-top: 3vh;
+  font-size: 3vh;
+  font-weight: bold;
+  color: black;
+}

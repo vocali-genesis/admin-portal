@@ -43,12 +43,6 @@ const Report = () => {
     setTranscriptionContent(router.query.transcription as string[]);
     setTime(JSON.parse(router.query.time as string));
 
-    Object.entries(JSON.parse(router.query.report as string)).map(
-      ([key, value], index) => {
-        console.log(key, value);
-      },
-    );
-
     if (audioRef.current) {
       audioRef.current.onloadedmetadata = () => {
         setAudioLength(audioRef.current!.duration);

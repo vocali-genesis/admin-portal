@@ -8,6 +8,7 @@ import dash_styles from "./styles/dashboard.module.css";
 import { useTranslation } from "react-i18next";
 import { MicrophoneSelect } from "../../../resources/inputs/microphones.select";
 import { UploadFile } from "@/resources/inputs/upload-file.input";
+import RecordButton from "@/resources/containers/record-button";
 
 const messageHandler = MessageHandler.get();
 
@@ -42,59 +43,70 @@ const Dashboard = () => {
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
-    } else if (recordingState === "recording") {
+
+      return;
+    }
+
+    if (recordingState === "recording") {
       audioRecorderRef.current.pauseRecording();
       messageHandler.info(t("recording.paused"));
       setRecordingState("paused");
       stopVisualization();
-    } else if (recordingState === "paused") {
+
+      return;
+    }
+
+    if (recordingState === "paused") {
       await audioRecorderRef.current.startRecording(microphone);
       messageHandler.info(t("recording.resumed"));
       setRecordingState("recording");
       startVisualization();
+
+      return;
     }
   };
 
   const stopRecording = async () => {
-    if (audioRecorderRef.current && recordingState !== "inactive") {
-      try {
-        const audioUrl = await audioRecorderRef.current.stopRecording();
-        messageHandler.info(t("recording.stopped"));
-        setRecordingState("inactive");
-        stopVisualization();
+    if (!(audioRecorderRef.current && recordingState !== "inactive")) return;
 
-        router.push({
-          pathname: "/app/recording",
-          query: { audioUrl: audioUrl },
-        });
-      } catch (error) {
-        messageHandler.handleError((error as Error).message);
-      }
+    try {
+      const audioUrl = await audioRecorderRef.current.stopRecording();
+      messageHandler.info(t("recording.stopped"));
+      setRecordingState("inactive");
+      stopVisualization();
+
+      router.push({
+        pathname: "/app/recording",
+        query: { audioUrl: audioUrl },
+      });
+    } catch (error) {
+      messageHandler.handleError((error as Error).message);
     }
   };
 
   const startVisualization = () => {
-    if (!analyserRef.current && audioRecorderRef.current) {
-      const audioContext = audioRecorderRef.current.getAudioContext();
-      const sourceNode = audioRecorderRef.current.getSourceNode();
+    if (analyserRef.current || !audioRecorderRef.current) return;
 
-      if (audioContext && sourceNode) {
-        analyserRef.current = audioContext.createAnalyser();
-        if (analyserRef.current) {
-          analyserRef.current.fftSize = 256;
-          sourceNode.connect(analyserRef.current);
-        }
+    const audioContext = audioRecorderRef.current.getAudioContext();
+    const sourceNode = audioRecorderRef.current.getSourceNode();
+
+    if (audioContext && sourceNode) {
+      analyserRef.current = audioContext.createAnalyser();
+      if (analyserRef.current) {
+        analyserRef.current.fftSize = 256;
+        sourceNode.connect(analyserRef.current);
       }
     }
 
     const updateVisualization = () => {
-      if (analyserRef.current) {
-        const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
-        analyserRef.current.getByteFrequencyData(dataArray);
-        const average =
-          dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
-        setAudioLevel(average / 255);
-      }
+      if (!analyserRef.current) return;
+
+      const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+      analyserRef.current.getByteFrequencyData(dataArray);
+      const average =
+        dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
+      setAudioLevel(average / 255);
+
       animationFrameRef.current = requestAnimationFrame(updateVisualization);
     };
 
@@ -102,9 +114,9 @@ const Dashboard = () => {
   };
 
   const stopVisualization = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
+    if (!animationFrameRef.current) return;
+
+    cancelAnimationFrame(animationFrameRef.current);
     setAudioLevel(0);
   };
 
@@ -118,14 +130,23 @@ const Dashboard = () => {
   }, []);
 
   const handleUpload = (selectedFile: File) => {
-    if (selectedFile) {
-      const audioUrl = URL.createObjectURL(selectedFile);
-      router.push({
-        pathname: "/app/recording",
-        query: { audioUrl: audioUrl },
-      });
-    } else {
+    if (!selectedFile)
       messageHandler.handleError(t("recording.select-file-upload"));
+
+    const audioUrl = URL.createObjectURL(selectedFile);
+    router.push({
+      pathname: "/app/recording",
+      query: { audioUrl: audioUrl },
+    });
+  };
+
+  const getStatusMessage = () => {
+    if (recordingState === "recording") {
+      return t("recording.click-to-pause");
+    } else if (recordingState === "paused") {
+      return t("recording.click-to-resume");
+    } else {
+      return t("recording.click-to-start");
     }
   };
 
@@ -137,35 +158,12 @@ const Dashboard = () => {
       <div className={dash_styles.contentColumns}>
         <div className={dash_styles.recordSection}>
           <MicrophoneSelect value={microphone} onChange={setMicrophone} />
-          <button
-            className={`${dash_styles.recordButton} ${
-              recordingState === "recording"
-                ? dash_styles.recording
-                : recordingState === "paused"
-                  ? dash_styles.paused
-                  : ""
-            }`}
+          <RecordButton
+            recordingState={recordingState}
+            audioLevel={audioLevel}
             onClick={toggleRecording}
-            style={{
-              transform: `scale(${1 + audioLevel * 0.4})`,
-              transition: "transform 0s ease-in-out",
-            }}
-          >
-            {recordingState === "recording" ? (
-              <FaPause size={40} />
-            ) : recordingState === "paused" ? (
-              <FaPlay size={40} />
-            ) : (
-              <FaMicrophone size={40} />
-            )}
-          </button>
-          <p className={dash_styles.p}>
-            {recordingState === "recording"
-              ? t("recording.click-to-pause")
-              : recordingState === "paused"
-                ? t("recording.click-to-resume")
-                : t("recording.click-to-start")}
-          </p>
+            statusMessage={getStatusMessage()}
+          />
           {recordingState !== "inactive" && (
             <button className={dash_styles.stopButton} onClick={stopRecording}>
               <FaStop size={20} style={{ marginRight: "10px" }} />
