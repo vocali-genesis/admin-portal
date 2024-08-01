@@ -23,7 +23,13 @@
     "confirm-password": "Confirmar contraseña",
     "language": "Idioma",
     "save": "GUARDAR",
-    "delete-account": "ELIMINAR MI CUENTA"
+    "delete-account": "ELIMINAR MI CUENTA",
+    "subscriptions": {
+      "menu": "Suscripciones",
+      "exp-label": "Expira el:",
+      "cancel-sub-btn": "Cancelar suscripción",
+      "payment-history": "Historial de pagos"
+    }
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -47,12 +53,44 @@
     "activate-audio": "Activar el grabador de audio",
     "click-to-stop": "Haz clic para detener la grabación",
     "click-to-start": "Haz clic para iniciar la grabación",
+    "click-to-pause": "Haz clic para pausa la grabación",
+    "click-to-resume": "Haz clic para reanudar la grabación",
+    "permission-required": "Por favor, permita los permisos del micrófono antes de grabar",
+    "stop": "para de grabar",
     "upload": "Subir",
+    "paused": "Grabación Pausada",
+    "resumed": "Recording resumed",
     "drag-and-drop": "Arrastrar y soltar o",
     "browse": "Navegar",
     "supported-format": "Formatos soportados: MP3",
     "upload-files": "Subir archivos",
     "submit": "Enviar",
-    "uploading": "Subiendo..."
+    "uploading": "Subiendo...",
+    "allow-permissions": "permite los permisos de audio para la aplicación"
+  },
+  "subscriptions": {
+    "title": "Encuentra el plan de precios para tu negocio",
+    "sub-title": "Selecciona el plan perfecto para que tu negocio crezca",
+    "price-1": {
+      "title": "Gratis",
+      "currency": "€",
+      "amount": "0",
+      "interval": "/mes",
+      "features": {
+        "feature-1": "Beneficio 1"
+      },
+      "btn-text": "Contacto"
+    },
+    "price-2": {
+      "title": "Pro",
+      "currency": "€",
+      "amount": "100",
+      "interval": "/mes",
+      "features": {
+        "feature-1": "Beneficio 1",
+        "feature-2": "Beneficio 2"
+      },
+      "btn-text": "Suscríbase ahora"
+    }
   }
 }

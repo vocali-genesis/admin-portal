@@ -42,3 +42,5 @@ replit.nix
 
 # Sentry Config File
 .env.sentry-build-plugin
+## Dynamic files
+import.ts
