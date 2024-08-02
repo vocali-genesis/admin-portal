@@ -55,3 +55,8 @@ For production we need to push a tag `tag -a 1.0.0 -m "Changes"` that will fire 
 - [i18n](https://react.i18next.com/)
 - [Tailwind CSS](https://tailwindcss.com/docs/installation)
 - [Style](https://github.com/styled-components/styled-components) Use this Extension for Visual Code    [styled-components.vscode-styled-components]( https://marketplace.cursorapi.com/items?itemName=styled-components.vscode-styled-components)
+
+## Sentry
+
+This project uses [Sentry](https://genesis-4s.sentry.io/) for monitoring.
+To Test an error you can access to the rout `/sentry`  (TODO: Hide it in production?)
