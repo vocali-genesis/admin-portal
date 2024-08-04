@@ -12,15 +12,14 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 
 const PaymentHistory: React.FC = () => {
   const columns: ColumnConfig<TableDataModel>[] = [
-    { title: "Invoice ID", dataIndex: "id", sorter: true },
+    { title: "Invoice ID", dataIndex: "invoice_id", sorter: false },
     {
       title: "Date",
       render: (item) => <>{moment(item.created_at).format("DD MMM, YYYY")}</>,
     },
     {
       title: "Plan",
-      render: (item) => <>Basic</>,
-      sorter: false,
+      render: () => <>Basic</>,
     },
     {
       title: "Amount",
@@ -30,7 +29,7 @@ const PaymentHistory: React.FC = () => {
       title: "Actions",
       render: (item) => (
         <>
-          <a href={item.invoice_url} target="__blank">
+          <a href={item.invoice_url} className="text-blue-500" target="__blank">
             View Receipt
           </a>
         </>
@@ -51,7 +50,6 @@ const PaymentHistory: React.FC = () => {
   const loadData = () => {
     (async () => {
       setIsLoading(true);
-      await new Promise((r) => setTimeout(r, 1500));
       const { invoices, count } = await Service.get(
         "subscriptions"
       ).getInvoices(fromRange, toRange);
