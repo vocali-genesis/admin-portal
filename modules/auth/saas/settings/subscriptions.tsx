@@ -18,14 +18,14 @@ const Subscriptions = () => {
 
   useEffect(() => {
     (async () => {
-      const data = await Service.get("subscriptions").getActiveSubscription();
-      setIsLoading(false);
-      if (!data.status || data.status !== "active") {
+      const data = await Service.get("subscriptions")?.getActiveSubscription();
+      setIsLoading(false); 
+      if (!data || !data.status || data.status !== "active") {
         return router.push("/app/subscriptions");
       }
       setSubscription(data);
     })();
-  }, []);
+  }, [router]);
 
   if (isLoading) {
     return <Spinner />;
