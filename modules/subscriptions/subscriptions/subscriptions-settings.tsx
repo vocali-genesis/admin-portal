@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GlobalCore } from "@/core/module/module.types";
-import styles from "./styles/subscriptions.module.css";
+import styles from "./styles/subscriptions-settings.module.css";
 import { useTranslation } from "react-i18next";
 import Spinner from "@/resources/containers/spinner";
 import Service from "@/core/module/service.factory";
@@ -110,7 +110,7 @@ const Subscriptions = () => {
   const validUntil = moment(subscription?.current_period_end || "").format(
     "DD MMM, YYYY"
   );
-  console.log(GlobalCore.manager.settings);
+  console.log('===== styles ======', styles)
   return (
     <div className={styles.container}>
       <main className={styles.contentWrapper}>

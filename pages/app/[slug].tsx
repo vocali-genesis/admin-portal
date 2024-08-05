@@ -45,7 +45,7 @@ const App = () => {
 
   const isSpinner = !router.isReady || isLoading
 
-  // remove this line after the i18nfix
+  // remove this lines after the i18nfix
   if(isSpinner) {
     return <Spinner />
   }
