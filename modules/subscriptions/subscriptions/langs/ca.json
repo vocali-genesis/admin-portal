@@ -22,6 +22,12 @@
         "feature-2": "Benefici 2"
       },
       "btn-text": "Subscriu-te ara"
+    },
+    "subscription-settings": {
+      "menu": "Subscripcions",
+      "exp-label": "Caduca el:",
+      "cancel-sub-btn": "Cancel·la la subscripció",
+      "payment-history": "Historial de pagaments"
     }
   }
 }

@@ -127,6 +127,7 @@ async function compareLangFiles(modulesPath: string) {
     console.info(`[${modulesPath}]: Nothing to translate`);
     return;
   }
+
   /**
    * Translate them with chat GPT (magic here)
    */
@@ -181,9 +182,8 @@ async function updateLangFiles({
     fs.writeFile(file, updatedLangData, "utf8");
     console.info(`Updated ${file}`);
   } catch (err) {
-    
     console.error(`Error reading ${language}.json: ${err}`);
-    console.error(err)
+    console.error(err);
   }
 }
 
@@ -218,7 +218,7 @@ async function translateKeys({
   languages: string[];
 }) {
   const inputJSON = JSON.stringify(inputData);
-  const prompt = `I give you a JSON file in the language ${DEFAULT_LANG}, you need to translate them in the languages ${languages}. Return a JSON object don\`t add extra words. The json is \n${inputJSON}`;
+  const prompt = `I give you a JSON file in the language ${DEFAULT_LANG}, you need to translate them in the languages ${languages}. Return a JSON object where the first key is the language and inside is the translation for each language, don\`t add extra words. The json is \n${inputJSON}`;
   console.time("gpt");
 
   // TODO: If the code is too big, we need to do a call per language
@@ -226,12 +226,13 @@ async function translateKeys({
     text: string;
     detail: { usage: object };
   };
+
   try {
     // Remove the header and footer
     const resultJSON = translation.text
       .replace(`\`\`\`json`, "")
       .replace(`\`\`\``, "");
-      
+
     const result = JSON.parse(resultJSON) as Record<string, Translation>;
     return result;
   } catch (err) {

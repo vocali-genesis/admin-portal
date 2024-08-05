@@ -22,6 +22,12 @@
         "feature-2": "Benefício 2"
       },
       "btn-text": "Inscreva-se já"
+    },
+    "subscription-settings": {
+      "menu": "Assinaturas",
+      "exp-label": "Expira em:",
+      "cancel-sub-btn": "Cancelar assinatura",
+      "payment-history": "Histórico de pagamentos"
     }
   }
 }

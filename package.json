@@ -5,7 +5,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "load": "npx node loader.js --file",
-    "trans": "npx ts-node i18n.ts --file",
+    "translate": "npx ts-node i18n.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
