@@ -22,12 +22,12 @@
         "feature-2": "Beneficio 2"
       },
       "btn-text": "Suscríbase ahora"
-    },
-    "subscription-settings": {
-      "menu": "Suscripciones",
-      "exp-label": "Caduca en:",
-      "cancel-sub-btn": "Cancelar suscripción",
-      "payment-history": "Historial de pagos"
     }
+  },
+  "subscription-settings": {
+    "menu": "Suscripciones",
+    "exp-label": "Caduca en:",
+    "cancel-sub-btn": "Cancelar suscripción",
+    "payment-history": "Historial de pagos"
   }
 }
