@@ -7,19 +7,25 @@ import { ServiceInterface, ServiceName } from "./services.types";
  */
 
 export default class Service {
-    public static get <S extends ServiceName>(name: S): ServiceInterface<S> {
-        const service = ModuleManager.get().components.services(name)
-        if(!service) {
-            throw new Error(`Service ${name} not init, have you imported in the config.json? Have you 'pnpm load' the config.json?`)
-        }
-        return service  as ServiceInterface<S>
+  public static get<S extends ServiceName>(
+    name: S
+  ): ServiceInterface<S> | undefined {
+    const service = ModuleManager.get().components.services(name);
+    if (!service) {
+      throw new Error(
+        `Service ${name} not init, have you imported in the config.json? Have you 'pnpm load' the config.json?`
+      );
     }
+    return service as ServiceInterface<S>;
+  }
 }
 
 /**
- * Hook 
+ * Hook
  */
-export const useService = <S extends ServiceName>(serviceName: S): ServiceInterface<S> => {
-    const [service] = useState(Service.get(serviceName))
-    return service;
-}
+export const useService = <S extends ServiceName>(
+  serviceName: S
+): ServiceInterface<S> => {
+  const [service] = useState(Service.get(serviceName));
+  return service;
+};

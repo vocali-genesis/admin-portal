@@ -1,66 +1,104 @@
+import MessageHandler from "@/core/message-handler";
+
+const messageHandler = MessageHandler.get();
+
+interface WindowWithWebkitAudioContext extends Window {
+  webkitAudioContext?: typeof AudioContext;
+}
+
 export class AudioRecorder {
   private mediaRecorder: MediaRecorder | null = null;
   private audioChunks: Blob[] = [];
-  private stream: MediaStream | null = null;
+  private audioContext: AudioContext | null = null;
+  private sourceNode: MediaStreamAudioSourceNode | null = null;
 
-  async startRecording(deviceId?: string): Promise<void> {
-    if (this.mediaRecorder && this.mediaRecorder.state === "paused") {
-      this.mediaRecorder.resume();
-      return;
-    }
-
+  async startRecording(deviceId: string) {
     try {
-      const constraints: MediaStreamConstraints = {
-        audio: deviceId ? { deviceId: { exact: deviceId } } : true,
-      };
-      this.stream = await navigator.mediaDevices.getUserMedia(constraints);
-      this.mediaRecorder = new MediaRecorder(this.stream);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { deviceId: deviceId ? { exact: deviceId } : undefined },
+      });
+      this.audioContext = new (window.AudioContext ||
+        (window as WindowWithWebkitAudioContext).webkitAudioContext ||
+        null)();
+      this.sourceNode = this.audioContext.createMediaStreamSource(stream);
+      this.mediaRecorder = new MediaRecorder(stream);
       this.audioChunks = [];
       this.mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          this.audioChunks.push(event.data);
-        }
+        this.audioChunks.push(event.data);
       };
       this.mediaRecorder.start();
     } catch (error) {
-      console.error("Error starting recording:", error);
-      throw new Error(`Failed to start recording: ${(error as Error).message}`);
+      messageHandler.handleError(
+        `Error starting recording: ${(error as Error).message}`,
+      );
     }
   }
 
-  pauseRecording(): void {
-    if (this.mediaRecorder && this.mediaRecorder.state === "recording") {
-      this.mediaRecorder.pause();
+  pauseRecording() {
+    if (!this.mediaRecorder || this.mediaRecorder.state !== "recording") {
+      messageHandler.handleError(
+        "Cannot pause recording: MediaRecorder is not in recording state",
+      );
+      return;
     }
+
+    this.mediaRecorder.pause();
+  }
+
+  resumeRecording() {
+    if (!this.mediaRecorder || this.mediaRecorder.state !== "paused") {
+      messageHandler.handleError(
+        "Cannot resume recording: MediaRecorder is not in paused state",
+      );
+      return;
+    }
+
+    this.mediaRecorder.resume();
   }
 
   async stopRecording(): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (!this.mediaRecorder) {
-        reject(new Error("No ongoing recording"));
+        messageHandler.handleError("MediaRecorder not initialized");
+        resolve("");
         return;
       }
+
       this.mediaRecorder.onstop = () => {
         const audioBlob = new Blob(this.audioChunks, { type: "audio/wav" });
         const audioUrl = URL.createObjectURL(audioBlob);
-        this.audioChunks = [];
-        this.dispose();
         resolve(audioUrl);
       };
       this.mediaRecorder.stop();
     });
   }
 
-  getRecordingState(): "inactive" | "recording" | "paused" {
-    return this.mediaRecorder ? this.mediaRecorder.state : "inactive";
+  dispose() {
+    if (this.mediaRecorder) {
+      if (this.mediaRecorder.state === "recording") {
+        this.mediaRecorder.stop();
+      }
+      this.mediaRecorder = null;
+    }
+    if (this.sourceNode) {
+      this.sourceNode.disconnect();
+      this.sourceNode = null;
+    }
+    if (this.audioContext) {
+      this.audioContext.close().catch((error) => {
+        messageHandler.handleError(
+          `Error closing AudioContext: ${error.message}`,
+        );
+      });
+      this.audioContext = null;
+    }
   }
 
-  dispose(): void {
-    if (this.stream) {
-      this.stream.getTracks().forEach((track) => track.stop());
-      this.stream = null;
-    }
-    this.mediaRecorder = null;
-    this.audioChunks = [];
+  getAudioContext(): AudioContext | null {
+    return this.audioContext;
+  }
+
+  getSourceNode(): MediaStreamAudioSourceNode | null {
+    return this.sourceNode;
   }
 }
