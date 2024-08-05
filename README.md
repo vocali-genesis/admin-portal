@@ -43,6 +43,14 @@ Stable staging is `main` when merging or pushing into main, netlify will deploy 
 
 For production we need to push a tag `tag -a 1.0.0 -m "Changes"` that will fire teh CD/CI to deploy in the target repository.
 
+## Internationalization
+
+Each module contains his own internationalization in the `lang` folder.
+We only need to update the `english` version, rest the AI will take care of it.
+
+You will need the Chat GPT key for this
+`yarn trans`
+
 ## More resources:
 
 - [Architecture](https://whimsical.com/frontend-arquitecture-NfUQur2e1WpvWmeH9d1mXU)
@@ -53,7 +61,7 @@ For production we need to push a tag `tag -a 1.0.0 -m "Changes"` that will fire 
 - [Supabase API docs](https://supabase.com/dashboard/project/kxchqnumsodkzillsjhx/api)
 - [React Icons](https://react-icons.github.io/react-icons/icons/fa6/)
 - [i18n](https://react.i18next.com/)
-- [Tailwind CSS](https://tailwindcss.com/docs/installation)
+- [Tailwind CSS](https://tailwindcss.com/docs/installation) and [Tailwind CSS Components](https://tailwindui.com/components)
 - [Style](https://github.com/styled-components/styled-components) Use this Extension for Visual Code    [styled-components.vscode-styled-components]( https://marketplace.cursorapi.com/items?itemName=styled-components.vscode-styled-components)
 
 ## Sentry

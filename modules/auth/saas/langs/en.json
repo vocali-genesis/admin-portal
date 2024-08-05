@@ -1,0 +1,26 @@
+{
+  "settings": {
+    "menu": "Settings",
+    "email": "Email",
+    "new-password": "New Password",
+    "confirm-password": "Confirm Password",
+    "language": "Language",
+    "save": "SAVE",
+    "delete-account": "DELETE MY ACCOUNT",
+    "revoke": "Revoke"
+  },
+
+  "auth": {
+    "login": "Login",
+    "no-account-question": "Dont have an account?",
+    "register": "Register",
+    "login-register": "Login and Register",
+    "logout": "Logout",
+    "reset": "Reset Password",
+    "with-others": "With Others",
+    "login-successful": "Login successful",
+    "reset-email-sent ": "Password reset link has been sent to your email",
+    "login-with": "Login with",
+    "register-with": "Register with"
+  }
+}

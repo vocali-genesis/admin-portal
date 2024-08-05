@@ -1,0 +1,24 @@
+{
+  "resources": {
+    "confirm-delete": "Confirmar eliminació",
+    "are-you-sure": "Estàs segur que vols eliminar-ho?",
+    "microphone-error": "Error al obtenir els dispositius d'àudio. Assegureu-vos que heu concedit permisos al micròfon."
+  },
+  "navbar": {
+    "upgrade": "Actualitzar",
+    "organization": "Organització",
+    "logout": "Tancar sessió",
+    "settings": "Configuració"
+  },
+  "common": {
+    "submit": "Enviar",
+    "success": "Èxit",
+    "upload": "Pujar",
+    "required": "Requerit",
+    "delete": "Eliminar",
+    "cancel": "Cancel·lar",
+    "home": "Inici",
+    "save": "Desar",
+    "edit": "Editar"
+  }
+}

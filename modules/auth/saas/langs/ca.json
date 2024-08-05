@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "email": "Correu electrònic",
+    "new-password": "Nova contrasenya",
+    "confirm-password": "Confirmar contrasenya",
+    "language": "Idioma",
+    "save": "DESAR",
+    "delete-account": "ELIMINAR EL MEU COMPTE",
+    "menu": "Configuració",
+    "revoke": "Revocar"
+  },
+  "auth": {
+    "login": "Iniciar sessió",
+    "no-account-question": "No tens un compte?",
+    "register": "Registrar-se",
+    "login-register": "Iniciar sessió i registrar-se",
+    "logout": "Tancar sessió",
+    "reset": "Restablir contrasenya",
+    "with-others": "Amb altres",
+    "login-successful": "Inici de sessió reeixit",
+    "reset-email-sent": "L'enllaç per restablir la contrasenya s'ha enviat al teu correu electrònic",
+    "login-with": "Iniciar sessió amb",
+    "register-with": "Registrar-se amb",
+    "reset-email-sent ": "S'ha enviat l'enllaç de restabliment de contrasenya al teu correu electrònic"
+    
+  }
+}
