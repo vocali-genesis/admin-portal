@@ -132,18 +132,18 @@ const Subscriptions = () => {
         <div className={styles.head}>
           <div className={styles.left}>
             <span>
-              {t("settings.subscriptions.exp-label")} {validUntil}
+              {t("subscription-settings.exp-label")} {validUntil}
             </span>
           </div>
           <div className={styles.right}>
             <button className={styles.cancelBtn}>
-              {t("settings.subscriptions.cancel-sub-btn")}
+              {t("subscription-settings.cancel-sub-btn")}
             </button>
           </div>
         </div>
         <div className={styles.content}>
-          <h2 className={`${styles.title} mb-5`}>
-            {t("settings.subscriptions.payment-history")}
+          <h2 className={styles.title}>
+            {t("subscription-settings.payment-history")}
           </h2>
           <PaymentHistory />
         </div>
@@ -154,7 +154,7 @@ const Subscriptions = () => {
 
 GlobalCore.manager.settings("subscriptions", Subscriptions);
 GlobalCore.manager.menuSettings({
-  label: "settings.subscriptions.menu",
+  label: "subscription-settings.menu",
   icon: FaMoneyBillTransfer,
   url: "subscriptions",
   order: 1,

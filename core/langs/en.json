@@ -1,0 +1,24 @@
+{
+  "resources": {
+    "confirm-delete": "Confirm Delete",
+    "are-you-sure": "Are you sure you want to delete it?",
+    "microphone-error": "Failed to get audio devices. Please ensure you've granted microphone permissions."
+  },
+  "navbar": {
+    "upgrade": "Upgrade",
+    "organization": "Organization",
+    "logout": "Logout",
+    "settings": "Settings"
+  },
+  "common": {
+    "submit": "Submit",
+    "success": "Success",
+    "upload": "Upload",
+    "required": "Required",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "home": "home",
+    "save": "Save",
+    "edit": "Edit"
+  }
+}

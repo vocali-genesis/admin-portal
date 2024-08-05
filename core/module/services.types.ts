@@ -1,5 +1,6 @@
 import { GenesisOauthProvider, GenesisUser } from "./core.types";
 
+export type ComponentName = 'subscriptions' | 'recording' | 'auth' | 'templates'
 export type ServiceName =
   | "oauth"
   | "medical-api"

@@ -1,0 +1,24 @@
+{
+  "resources": {
+    "confirm-delete": "Confirmar eliminación",
+    "are-you-sure": "¿Estás seguro de que deseas eliminarlo?",
+    "microphone-error": "Error al obtener los dispositivos de audio. Asegúrate de haber concedido permisos al micrófono."
+  },
+  "navbar": {
+    "upgrade": "Actualizar",
+    "organization": "Organización",
+    "logout": "Cerrar sesión",
+    "settings": "Configuración"
+  },
+  "common": {
+    "submit": "Enviar",
+    "success": "Éxito",
+    "upload": "Subir",
+    "required": "Requerido",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "home": "Inicio",
+    "save": "Guardar",
+    "edit": "Editar"
+  }
+}
