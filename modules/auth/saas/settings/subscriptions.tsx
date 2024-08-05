@@ -10,73 +10,57 @@ import Table from "@/resources/table";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 
-const data: TableDataModel[] = [
-  {
-    id: "Invoice 1",
-    date: new Date().toLocaleDateString(),
-    plan: "Basic",
-    amount: "€ 200",
-  },
-  {
-    id: "Invoice 2",
-    date: new Date().toLocaleDateString(),
-    plan: "Basic",
-    amount: "€ 150",
-  },
-];
-
-[3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].forEach(
-  (i) => {
-    data.push({
-      id: `Invoice ${i}`,
-      date: new Date().toLocaleDateString(),
-      plan: "Basic",
-      amount: "€ 150",
-    });
-  }
-);
-
 const PaymentHistory: React.FC = () => {
   const columns: ColumnConfig<TableDataModel>[] = [
-    { title: "Invoice ID", dataIndex: "id", sorter: true },
+    { title: "Invoice ID", dataIndex: "invoice_id", sorter: false },
     {
       title: "Date",
-      render: (item) => <span>{item.date}</span>,
+      render: (item) => <>{moment(item.created_at).format("DD MMM, YYYY")}</>,
     },
     {
       title: "Plan",
-      render: (item) => <span>{item.plan}</span>,
-      sorter: true,
+      render: () => <>Basic</>,
     },
-    { title: "Amount", dataIndex: "amount" },
+    {
+      title: "Amount",
+      render: (item) => <span>€ {(item.amount / 100).toFixed(2)}</span>,
+    },
     {
       title: "Actions",
-      render: () => (
+      render: (item) => (
         <>
-          <a href="#">Download</a> | <a href="#">View</a>
+          <a href={item.invoice_url} className="text-blue-500" target="__blank">
+            View Receipt
+          </a>
         </>
       ),
     },
   ];
 
-  const itemsPerPage = 5;
-  const totalRecords = data.length;
-  const totalPages = Math.ceil(totalRecords / itemsPerPage);
+  const [data, setData] = useState<[Record<string, string | number>] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const intialData = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-  const [paginatedData, setPaginatedData] =
-    useState<TableDataModel[]>(intialData);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const itemsPerPage = 5;
+  const fromRange = (currentPage * itemsPerPage) - itemsPerPage;
+  const toRange = fromRange + itemsPerPage - 1;
+  const totalPages = Math.ceil(totalRecords / itemsPerPage);
+
+  const loadData = () => {
+    (async () => {
+      setIsLoading(true);
+      const { invoices, count } = await Service.get(
+        "subscriptions"
+      ).getInvoices(fromRange, toRange);
+      setTotalRecords(count);
+      setData(invoices);
+      setIsLoading(false);
+    })();
+  };
 
   useEffect(() => {
-    setPaginatedData(() => {
-      return data.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      );
-    });
+    loadData();
   }, [currentPage]);
 
   const handleSort = (key: string, column: string) => {
@@ -86,9 +70,10 @@ const PaymentHistory: React.FC = () => {
   return (
     <div className="container mx-auto">
       <Table
-        data={paginatedData}
+        data={data}
         columns={columns}
         onSort={handleSort}
+        isLoading={isLoading}
         pagination={{
           currentPage,
           totalPages,

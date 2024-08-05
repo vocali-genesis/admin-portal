@@ -69,7 +69,7 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
               {columns.map((column, colIndex) => (
                 <td
                   key={colIndex}
-                  className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                  className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700"
                 >
                   {column.render
                     ? column.render(item)
