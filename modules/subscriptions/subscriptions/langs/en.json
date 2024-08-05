@@ -10,7 +10,7 @@
       "features": {
         "feature-1": "Benefit 1"
       },
-      "btn-text": "Try it now"
+      "btn-text": "Contact"
     },
     "price-2": {
       "title": "Pro",
@@ -22,6 +22,12 @@
         "feature-2": "Benefit 2"
       },
       "btn-text": "Subscribe now"
+    },
+    "subscription-settings": {
+      "menu": "Subscriptions",
+      "exp-label": "Expires on:",
+      "cancel-sub-btn": "Cancel Subscription",
+      "payment-history": "Payment History"
     }
   }
 }
