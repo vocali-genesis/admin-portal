@@ -63,3 +63,8 @@ You will need the Chat GPT key for this
 - [i18n](https://react.i18next.com/)
 - [Tailwind CSS](https://tailwindcss.com/docs/installation) and [Tailwind CSS Components](https://tailwindui.com/components)
 - [Style](https://github.com/styled-components/styled-components) Use this Extension for Visual Code    [styled-components.vscode-styled-components]( https://marketplace.cursorapi.com/items?itemName=styled-components.vscode-styled-components)
+
+## Sentry
+
+This project uses [Sentry](https://genesis-4s.sentry.io/) for monitoring.
+To Test an error you can access to the rout `/sentry`  (TODO: Hide it in production?)
