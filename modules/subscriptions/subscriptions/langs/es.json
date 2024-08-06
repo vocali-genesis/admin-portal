@@ -29,5 +29,15 @@
     "exp-label": "Caduca en:",
     "cancel-sub-btn": "Cancelar suscripción",
     "payment-history": "Historial de pagos"
+  },
+  "invoice-history": {
+    "invoice-id-th": "Id de Factura",
+    "date-th" : "Fecha",
+    "amount-th" : "Importe",
+    "action-th" : "Acciones",
+    "total-label" : "Total de Registros:",
+    "page-label" : "Página",
+    "of-label": "de",
+    "view-receipt": "Ver Recibo"
   }
 }

@@ -28,6 +28,16 @@
       "exp-label": "Caduca el:",
       "cancel-sub-btn": "Cancel·la la subscripció",
       "payment-history": "Historial de pagaments"
+    },
+    "invoice-history": {
+      "invoice-id-th": "Factura Id",
+      "date-th": "Data",
+      "amount-th": "Import",
+      "action-th": "Accions",
+      "total-label": "Total de registres:",
+      "page-label": "Pàgina",
+      "of-label": "de",
+      "view-receipt": "Veure rebut"
     }
   }
 }
