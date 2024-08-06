@@ -12,12 +12,9 @@ import { useTranslation } from "react-i18next";
 import Service from "@/core/module/service.factory";
 import { GenesisOauthProvider } from "@/core/module/core.types";
 
-
 interface RegisterFormProps {
   onRegisterSuccess: () => void;
 }
-
-
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   const { t } = useTranslation();
@@ -30,7 +27,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   });
 
   const onSubmit = async (data: any) => {
-    const response = await Service.get('oauth').registerUser(data.email, data.password);
+    const response = await Service.get("oauth")?.registerUser(
+      data.email,
+      data.password,
+    );
     if (response != null) {
       MessageHandler.get().handleSuccess(t("common.success"));
       onRegisterSuccess();
@@ -38,7 +38,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   };
 
   const handleOAuthClick = async (provider: GenesisOauthProvider) => {
-    const url = await Service.get('oauth').oauth(provider);
+    const url = await Service.get("oauth")?.oauth(provider);
     if (url) window.location.href = url;
   };
 
@@ -66,7 +66,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
           action="register"
         /> */}
       </div>
-    </form >
+    </form>
   );
 };
 

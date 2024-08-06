@@ -13,14 +13,13 @@ import { useTranslation } from "react-i18next";
 import Service, { useService } from "@/core/module/service.factory";
 import { GenesisOauthProvider } from "@/core/module/core.types";
 
-
 interface LoginFormProps {
   onLoginSuccess: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const { t } = useTranslation();
-  const authService = useService('oauth')
+  const authService = useService("oauth");
 
   const router = useRouter();
   const {
@@ -32,7 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   });
 
   const onSubmit = async (data: any) => {
-    const response = await authService.loginUser(data.email, data.password);
+    const response = await authService?.loginUser(data.email, data.password);
     if (response) {
       MessageHandler.get().handleSuccess(t("auth.login-successful"));
       onLoginSuccess();
@@ -40,7 +39,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   };
 
   const handleOAuthClick = async (provider: GenesisOauthProvider) => {
-    const url = await Service.get('oauth').oauth(provider);
+    const url = await Service.get("oauth")?.oauth(provider);
     if (url) window.location.href = url;
   };
 
@@ -65,11 +64,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       >
         Forgot password?
       </p>
-      <AuthButton label={t('auth.login')} />
+      <AuthButton label={t("auth.login")} />
       <div className={form_style.oauth}>
         <div className={form_style.oauthTextContainer}>
           <p className={form_style.oauthText}>
-            <strong>{t('auth.login')}</strong> {t('auth.with-others')}:
+            <strong>{t("auth.login")}</strong> {t("auth.with-others")}:
           </p>
         </div>
         <OAuthButton
@@ -83,7 +82,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           action="login"
         /> */}
       </div>
-    </form >
+    </form>
   );
 };
 
