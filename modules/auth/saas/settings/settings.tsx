@@ -11,11 +11,11 @@ import Service, { useService } from "@/core/module/service.factory";
 
 const messageHandler = MessageHandler.get();
 
-const Divider = () => <div className={settings_styles.divider} />
+const Divider = () => <div className={settings_styles.divider} />;
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
-  const authService = useService('oauth')
+  const authService = useService("oauth");
 
   const {
     register,
@@ -26,7 +26,10 @@ const Settings = () => {
   });
 
   const onSubmit = async (data: any) => {
-    const updatedUser = await authService.updateUser(data.email, data.password);
+    const updatedUser = await authService?.updateUser(
+      data.email,
+      data.password,
+    );
 
     if (updatedUser)
       messageHandler.handleSuccess("Profile updated successfully");
@@ -95,7 +98,6 @@ const Settings = () => {
             </div>
           </form>
 
-
           <Divider />
 
           <div className={settings_styles.socialLogins}>
@@ -131,7 +133,6 @@ const Settings = () => {
             </select>
           </div>
 
-
           {/*
           // UPCOMMING FEATURE
           <button
@@ -148,4 +149,9 @@ const Settings = () => {
 };
 
 GlobalCore.manager.settings("settings", Settings);
-GlobalCore.manager.menuSettings({ 'label': 'settings.menu', icon: '/profile-avatar.svg', url: 'settings', order: 0 })
+GlobalCore.manager.menuSettings({
+  label: "settings.menu",
+  icon: "/profile-avatar.svg",
+  url: "settings",
+  order: 0,
+});
