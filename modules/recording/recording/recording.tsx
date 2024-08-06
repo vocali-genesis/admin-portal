@@ -28,7 +28,16 @@ const Recording = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLeavingPage, setIsLeavingPage] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleLeavePage = (event: BeforeUnloadEvent | PopStateEvent) => {
+    if (event.type === "beforeunload") {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+    setIsLeavingPage(true);
+  };
 
   useEffect(() => {
     if (audioUrl && audioRef.current) {
@@ -36,6 +45,27 @@ const Recording = () => {
       audioRef.current.load();
     }
   }, [audioUrl]);
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleLeavePage);
+    window.addEventListener("popstate", handleLeavePage);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleLeavePage);
+      window.removeEventListener("popstate", handleLeavePage);
+    };
+  }, []);
+
+  useEffect(() => {
+    router.beforePopState(() => {
+      setIsLeavingPage(true);
+      return false;
+    });
+
+    return () => {
+      router.beforePopState(() => true);
+    };
+  }, [router]);
 
   const togglePlayPause = () => {
     if (!(audioUrl && audioRef.current)) return;
@@ -266,9 +296,21 @@ const Recording = () => {
         </div>
       </main>
       <DeleteConfirmation
-        isOpen={isDeleteModalOpen}
-        onRequestClose={cancelDelete}
-        onConfirm={confirmDelete}
+        isOpen={isDeleteModalOpen || isLeavingPage}
+        onRequestClose={() => {
+          setIsDeleteModalOpen(false);
+          setIsLeavingPage(false);
+        }}
+        onConfirm={() => {
+          if (isDeleteModalOpen) {
+            confirmDelete();
+          } else if (isLeavingPage) {
+            router.push({
+              pathname: "/app/dashboard",
+            });
+          }
+        }}
+        isLeavingPage={isLeavingPage}
       />
     </>
   );

@@ -7,18 +7,45 @@ import styles from "./styles/templates.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import { FaTrash, FaRegPenToSquare } from "react-icons/fa6";
 import MessageHandler from "@/core/message-handler";
+import { useRouter } from "next/router";
 
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
+  const router = useRouter();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [templateId, setTemplateId] = useState<number>();
+  const [isLeavingPage, setIsLeavingPage] = useState<boolean>(false);
 
   useEffect(() => {
     fetchTemplates();
-  }, []);
+
+    const handleLeavePage = (event: BeforeUnloadEvent | PopStateEvent) => {
+      if (event.type === "beforeunload") {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+      setIsLeavingPage(true);
+      setIsModalOpen(true);
+    };
+
+    window.addEventListener("beforeunload", handleLeavePage);
+    window.addEventListener("popstate", handleLeavePage);
+
+    router.beforePopState(() => {
+      setIsLeavingPage(true);
+      setIsModalOpen(true);
+      return false;
+    });
+
+    return () => {
+      window.removeEventListener("beforeunload", handleLeavePage);
+      window.removeEventListener("popstate", handleLeavePage);
+      router.beforePopState(() => true);
+    };
+  }, [router]);
 
   const fetchTemplates = async () => {
     setIsLoading(true);
@@ -33,22 +60,30 @@ const Templates = () => {
   };
 
   const handleDelete = (id: number) => {
-    setIsDeleteModalOpen(true);
+    setIsModalOpen(true);
     setTemplateId(id);
+    setIsLeavingPage(false);
   };
 
-  const confirmDelete = async () => {
-    setIsDeleteModalOpen(false);
+  const confirmAction = async () => {
+    setIsModalOpen(false);
 
-    const resp = await templateService.deleteTemplate(templateId as number);
-    if (resp) {
-      setTemplates(templates.filter((template) => template.id !== templateId));
-      return messageHandler.handleSuccess("Template deleted");
+    if (isLeavingPage) {
+      router.back();
+    } else {
+      const resp = await templateService.deleteTemplate(templateId as number);
+      if (resp) {
+        setTemplates(
+          templates.filter((template) => template.id !== templateId),
+        );
+        return messageHandler.handleSuccess("Template deleted");
+      }
     }
   };
 
-  const cancelDelete = () => {
-    setIsDeleteModalOpen(false);
+  const cancelAction = () => {
+    setIsModalOpen(false);
+    setIsLeavingPage(false);
   };
 
   const handleAddTemplate = async () => {
@@ -118,9 +153,10 @@ const Templates = () => {
         <button className={styles.paginationButton}>&gt;</button>
       </div>
       <DeleteConfirmation
-        isOpen={isDeleteModalOpen}
-        onRequestClose={cancelDelete}
-        onConfirm={confirmDelete}
+        isOpen={isModalOpen}
+        onRequestClose={cancelAction}
+        onConfirm={confirmAction}
+        isLeavingPage={isLeavingPage}
       />
     </div>
   );
