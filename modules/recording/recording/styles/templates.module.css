@@ -1,6 +1,7 @@
 .container {
   padding: 20px;
   background-color: #f8f9fa;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .header {
@@ -17,11 +18,11 @@
 }
 
 .addButton {
-  background-color: #38b2ac;
+  background-color: #1C364B;
   color: white;
   padding: 8px 16px;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 2vh;
   font-weight: 500;
 }
 
@@ -57,7 +58,6 @@
 }
 
 .actionButton {
-  color: #e53e3e;
   background: none;
   border: none;
   cursor: pointer;

@@ -1,6 +1,9 @@
 import { GlobalCore } from "@/core/module/module.types";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
+import MessageHandler from "@/core/message-handler";
+
+const messageHandler = MessageHandler.get();
 
 export interface Template {
   id: number;
@@ -20,46 +23,49 @@ class TemplateService {
     this.supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
 
-  async getTemplates(): Promise<Template[]> {
-    const { data, error } = await this.supabase
+  async getTemplates(): Promise<Template[] | null> {
+    let { data: templates, error } = await this.supabase
       .from("templates")
-      .select("*")
-      .order("createdAt", { ascending: false });
-    if (error) console.log(error);
-    console.log(data);
-    return data as Template[];
+      .select("*");
+    if (error) return messageHandler.handleError(error.message);
+
+    return templates as Template[];
   }
 
   async createTemplate(
     template: Omit<Template, "id" | "createdAt">,
-  ): Promise<Template> {
+  ): Promise<Template | null> {
     const { data, error } = await this.supabase
       .from("templates")
       .insert(template)
-      .single();
-    if (error) throw error;
-    return data as Template;
+      .select();
+    if (error) return messageHandler.handleError(error.message);
+
+    return data[0] as Template;
   }
 
   async updateTemplate(
     id: number,
     updates: Partial<Template>,
-  ): Promise<Template> {
+  ): Promise<Template | null> {
     const { data, error } = await this.supabase
       .from("templates")
       .update(updates)
       .eq("id", id)
       .single();
-    if (error) throw error;
+    if (error) return messageHandler.handleError(error.message);
+
     return data as Template;
   }
 
-  async deleteTemplate(id: number): Promise<void> {
+  async deleteTemplate(id: number): Promise<boolean | null> {
     const { error } = await this.supabase
       .from("templates")
       .delete()
       .eq("id", id);
-    if (error) throw error;
+
+    if (error) return messageHandler.handleError(error.message);
+    return true;
   }
 }
 
