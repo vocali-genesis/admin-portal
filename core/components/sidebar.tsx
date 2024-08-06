@@ -10,18 +10,16 @@ import { MenuItem } from "../module/module.types";
 import { FaHome } from "react-icons/fa";
 import dynamic from "next/dynamic";
 
-
-
 interface SidebarProps {
   isOpen: boolean;
   closeSidebar: () => void;
   menu: MenuItem[];
-  showHome?: boolean
+  showHome?: boolean;
 }
 
 function renderIcon(item: MenuItem) {
-  if (typeof item.icon === 'function') {
-    return (item.icon({}))
+  if (typeof item.icon === "function") {
+    return item.icon({});
   }
 
   return (
@@ -31,35 +29,38 @@ function renderIcon(item: MenuItem) {
       alt=""
       width={13}
       height={13}
-    />)
-
+    />
+  );
 }
-
 
 const SideBar: React.FC<SidebarProps> = ({
   isOpen,
   closeSidebar,
   menu,
-  showHome
+  showHome,
 }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const router = useRouter();
   const [origin, setOrigin] = useState<string | undefined>(undefined);
 
-
   useEffect(() => {
     if (!window) {
-      return
+      return;
     }
     setOrigin(window.location.origin);
   }, []);
 
   const logout = () => {
-    Service.get('oauth').logout();
+    Service.get("oauth")?.logout();
     router.push("/auth/login");
   };
 
-  const home = { label: "common.home", url: `${origin}/app`, icon: FaHome, order: -1 }
+  const home = {
+    label: "common.home",
+    url: `${origin}/app`,
+    icon: FaHome,
+    order: -1,
+  };
 
   const { slug } = router.query as { slug: string };
 
@@ -92,13 +93,14 @@ const SideBar: React.FC<SidebarProps> = ({
         ))}
       </ul>
       <div className={sidebar_styles.bottomButtons}>
-        <HighlightNavButton label={t("navbar.settings")} onClick={() => router.push("/settings/settings")} />
-        <BottomNavButton label={t('navbar.logout')} onClick={logout} />
+        <HighlightNavButton
+          label={t("navbar.settings")}
+          onClick={() => router.push("/settings/settings")}
+        />
+        <BottomNavButton label={t("navbar.logout")} onClick={logout} />
       </div>
-    </aside >
+    </aside>
   );
 };
-
-
 
 export default SideBar;
