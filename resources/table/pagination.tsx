@@ -86,7 +86,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <PaginationButton
           Icon={FaChevronRight}
           onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
-          disabled={currentPage === totalPages}
+          disabled={currentPage === totalPages || totalPages < 1}
         />
       </div>
     </div>

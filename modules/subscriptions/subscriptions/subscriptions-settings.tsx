@@ -19,10 +19,6 @@ const PaymentHistory: React.FC = () => {
       render: (item) => <>{moment(item.created_at).format("DD MMM, YYYY")}</>,
     },
     {
-      title: t('invoice-history.plan-th'),
-      render: () => <>Basic</>,
-    },
-    {
       title: t('invoice-history.amount-th'),
       render: (item) => <span>€ {(item.amount / 100).toFixed(2)}</span>,
     },

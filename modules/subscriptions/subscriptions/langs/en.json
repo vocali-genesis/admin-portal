@@ -33,7 +33,6 @@
   "invoice-history": {
     "invoice-id-th": "Invoice Id",
     "date-th" : "Date",
-    "plan-th" : "Plan",
     "amount-th" : "Amount",
     "action-th" : "Actions",
     "total-label" : "Total Records:",

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Spinner from "./spinner";
+import Image from "next/image";
 
 interface TableProps<T> {
   data: T[];
@@ -78,6 +79,13 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
               ))}
             </tr>
           ))}
+          {!data.length && <tr className="border-t-2 border-gray-100">
+            <td colSpan={columns.length} className="px-8 py-6 w-full">
+              <div className="w-full flex justify-center">
+                <Image src="/empty.png" alt="empty" width={60} height={30}/>
+              </div>
+            </td>
+          </tr>}
         </tbody>
       </table>
     </div>
