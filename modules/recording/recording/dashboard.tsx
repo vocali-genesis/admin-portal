@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import MessageHandler from "@/core/message-handler";
 import { AudioRecorder } from "./libs/audio-recorder";
-import { FaMicrophone, FaPause, FaStop, FaPlay } from "react-icons/fa6";
+import { FaStop } from "react-icons/fa6";
 import dash_styles from "./styles/dashboard.module.css";
 import { useTranslation } from "react-i18next";
 import { MicrophoneSelect } from "../../../resources/inputs/microphones.select";

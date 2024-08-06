@@ -132,7 +132,7 @@ const Recording = () => {
     const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
 
     const api_response =
-      await Service.get("medical-api").processAudioAndGenerateReport(file);
+      await Service.get("medical-api")?.processAudioAndGenerateReport(file);
 
     if (!api_response) {
       MessageHandler.get().handleError("Failed to generate report");
