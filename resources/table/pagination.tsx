@@ -7,6 +7,9 @@ export interface PaginationProps {
   totalPages: number;
   totalRecords: number;
   onPageChange: (page: number) => void;
+  totalLabel?: string,
+  pageLabel?: string
+  ofLabel?: string
 }
 
 interface PaginationButtonProps {
@@ -36,6 +39,9 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   totalRecords,
   onPageChange,
+  totalLabel,
+  pageLabel,
+  ofLabel,
 }) => {
   const maxPageNumbersToShow = 5; // Maximum number of page numbers to show at once
   const halfMax = Math.floor(maxPageNumbersToShow / 2);
@@ -58,7 +64,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="flex justify-between items-center mt-4 text-gray-500">
       <div>
-        Total Records: {totalRecords}, Page {currentPage} of {totalPages}
+        {totalLabel || 'Total Records:'} {totalRecords}, {pageLabel || "Page"} {currentPage} {ofLabel || "of"} {totalPages}
       </div>
       <div className="flex items-center space-x-2">
         <PaginationButton

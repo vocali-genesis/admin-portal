@@ -11,26 +11,27 @@ import Table from "@/resources/table";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 
 const PaymentHistory: React.FC = () => {
+  const { t } = useTranslation();
   const columns: ColumnConfig<TableDataModel>[] = [
-    { title: "Invoice ID", dataIndex: "invoice_id", sorter: false },
+    { title: t('invoice-history.invoice-id-th'), dataIndex: "invoice_id", sorter: false },
     {
-      title: "Date",
+      title: t('invoice-history.date-th'),
       render: (item) => <>{moment(item.created_at).format("DD MMM, YYYY")}</>,
     },
     {
-      title: "Plan",
+      title: t('invoice-history.plan-th'),
       render: () => <>Basic</>,
     },
     {
-      title: "Amount",
+      title: t('invoice-history.amount-th'),
       render: (item) => <span>€ {(item.amount / 100).toFixed(2)}</span>,
     },
     {
-      title: "Actions",
+      title: t('invoice-history.action-th'),
       render: (item) => (
         <>
           <a href={item.invoice_url} className="text-blue-500" target="__blank">
-            View Receipt
+            {t('invoice-history.view-receipt')}
           </a>
         </>
       ),
@@ -79,6 +80,9 @@ const PaymentHistory: React.FC = () => {
           totalPages,
           totalRecords,
           onPageChange: setCurrentPage,
+          totalLabel: t('invoice-history.total-label'),
+          pageLabel: t('invoice-history.page-label'),
+          ofLabel: t('invoice-history.of-label'),
         }}
       />
     </div>
@@ -110,7 +114,7 @@ const Subscriptions = () => {
   const validUntil = moment(subscription?.current_period_end || "").format(
     "DD MMM, YYYY"
   );
-  console.log('===== styles ======', styles)
+
   return (
     <div className={styles.container}>
       <main className={styles.contentWrapper}>

@@ -29,5 +29,16 @@
     "exp-label": "Expires on:",
     "cancel-sub-btn": "Cancel Subscription",
     "payment-history": "Payment History"
+  },
+  "invoice-history": {
+    "invoice-id-th": "Invoice Id",
+    "date-th" : "Date",
+    "plan-th" : "Plan",
+    "amount-th" : "Amount",
+    "action-th" : "Actions",
+    "total-label" : "Total Records:",
+    "page-label" : "Page",
+    "of-label": "of",
+    "view-receipt": "View Receipt"
   }
 }
