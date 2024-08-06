@@ -202,8 +202,8 @@ const Recording = () => {
     <>
       <main className={recording_styles.mainContent}>
         <div className={recording_styles.instructions}>
-          <h2>{t("recording.record-title")}</h2>
-          {t("recording.activate")}
+          <h2 className={recording_styles.h2}>{t("recording.record-title")}</h2>
+          <p className={recording_styles.p}>{t("recording.activate-audio")}</p>
         </div>
         <div className={recording_styles.audioPlayerContainer}>
           <div className={recording_styles.audioPlayer}>

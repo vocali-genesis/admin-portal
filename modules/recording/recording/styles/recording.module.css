@@ -21,6 +21,17 @@
   overflow-y: auto;
 }
 
+.h2 {
+  font-size: 1.9vh;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.p {
+  color: #666;
+  font-size: 1.75vh;
+  font-family: 'Montserrat', sans-serif;
+}
+
 .audioPlayerContainer {
   width: 60vh;
   max-width: 700px;
