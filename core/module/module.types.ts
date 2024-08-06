@@ -1,4 +1,4 @@
-import { ServiceInterface, ServiceName } from "./services.types";
+import { ComponentName, ServiceInterface, ServiceName } from "./services.types";
 import { IconType } from "react-icons";
 
 export type MenuItem<T = object> = {
@@ -16,6 +16,7 @@ export type CoreComponent = () => React.ReactNode;
 export interface ModuleSubscriber {
   auth: (key: string, component: CoreComponent) => void;
   app: (key: string, component: CoreComponent) => void;
+  langs: (module: ComponentName, langs:  Record<string, object>) => void;
   settings: (key: string, component: CoreComponent) => void;
   menu: (item: MenuItem) => void;
   menuSettings: (item: MenuItem) => void;
