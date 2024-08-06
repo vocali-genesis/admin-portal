@@ -9,6 +9,7 @@ import moment from "moment";
 import Table from "@/resources/table";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { SubscriptionResponse } from "@/core/module/services.types";
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
@@ -34,7 +35,7 @@ const PaymentHistory: React.FC = () => {
     },
   ];
 
-  const [data, setData] = useState<[Record<string, string | number>] | []>([]);
+  const [data, setData] = useState<[SubscriptionResponse] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -90,7 +91,7 @@ const Subscriptions = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [subscription, setSubscription] =
-    useState<Record<string, string | number>>();
+    useState<SubscriptionResponse>();
 
   useEffect(() => {
     (async () => {
