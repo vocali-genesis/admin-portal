@@ -5,25 +5,34 @@ import prices from "./pricing-config.json";
 import styles from "./styles/subscriptions.module.css";
 import Service from "@/core/module/service.factory";
 
-type Price = typeof prices[0]
+type Price = (typeof prices)[0];
 
 const PriceCard = (props: { item: Price }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const { title, currency, amount, interval, features, bttonText, buttonAction } = props.item;
+  const {
+    title,
+    currency,
+    amount,
+    interval,
+    features,
+    bttonText,
+    buttonAction,
+  } = props.item;
   const handleSubscribe = async () => {
-    setIsLoading(true)
-    const { url } = await Service.get('subscriptions').getSubscriptionLink();
-    if (url) {
-      window.location.href = url;
+    setIsLoading(true);
+    const subscriptionLink =
+      await Service.get("subscriptions")?.getSubscriptionLink();
+    if (subscriptionLink) {
+      window.location.href = subscriptionLink.url as string;
     }
     setIsLoading(false);
   };
   const customAction = () => {
-    if(!buttonAction) return
-    setIsLoading(true)
+    if (!buttonAction) return;
+    setIsLoading(true);
     window.location.href = buttonAction;
-  }
+  };
   return (
     <>
       <div className={styles.pricingCard}>
@@ -41,7 +50,7 @@ const PriceCard = (props: { item: Price }) => {
         </ul>
         <button
           onClick={() => {
-            buttonAction ? customAction() : handleSubscribe()
+            buttonAction ? customAction() : handleSubscribe();
           }}
           disabled={isLoading}
           className={styles.priceButton}
@@ -58,12 +67,8 @@ const Subscriptions = () => {
   return (
     <>
       <main className={styles.mainContent}>
-        <h1 className={styles.pricingTitle}>
-          {t('subscriptions.title')}
-        </h1>
-        <p className={styles.pricingSubTitle}>
-          {t('subscriptions.sub-title')}
-        </p>
+        <h1 className={styles.pricingTitle}>{t("subscriptions.title")}</h1>
+        <p className={styles.pricingSubTitle}>{t("subscriptions.sub-title")}</p>
         <div className={styles.pricingCardsWrapper}>
           {prices.map((item, idx) => (
             <PriceCard key={idx} item={item} />

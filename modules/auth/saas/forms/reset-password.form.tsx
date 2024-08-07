@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import Service from "@/core/module/service.factory";
 
-
 const ResetPasswordForm = () => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -23,12 +22,10 @@ const ResetPasswordForm = () => {
   });
 
   const onSubmit = async (data: any) => {
-    const response = await Service.get('oauth').resetPassword(data.email);
+    const response = await Service.get("oauth")?.resetPassword(data.email);
     if (!response) return;
 
-    MessageHandler.get().handleSuccess(
-      t("auth.reset-email-sent"),
-    );
+    MessageHandler.get().handleSuccess(t("auth.reset-email-sent"));
     router.push("/auth/login");
   };
 
@@ -38,8 +35,8 @@ const ResetPasswordForm = () => {
       className={form_style.formContainer}
     >
       <Input register={register} errors={errors} action="reset-password" />
-      <AuthButton label={t('auth.reset')} />
-    </form >
+      <AuthButton label={t("auth.reset")} />
+    </form>
   );
 };
 

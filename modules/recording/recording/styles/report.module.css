@@ -39,6 +39,21 @@
   position: relative;
 }
 
+.timeLabel {
+  position: absolute;
+  top: -20px;
+  left: 5px;
+  font-size: 12px;
+  color: black;
+  white-space: nowrap;
+  font-family: "Montserrat", sans-serif;
+}
+
+.progressSegment:last-child .timeLabel {
+  left: auto;
+  right: 5px;
+}
+
 .downloadButton {
   margin-bottom: 10px;
 }

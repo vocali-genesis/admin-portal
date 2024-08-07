@@ -9,8 +9,8 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
   private baseUrl: string = config.TRANSCRIPTION_API as string;
 
   constructor() {
-     if(!this.baseUrl) {
-      throw new Error("NEXT_PUBLIC_TRANSCRIPTION_API not configured properly")
+    if (!this.baseUrl) {
+      throw new Error("NEXT_PUBLIC_TRANSCRIPTION_API not configured properly");
     }
   }
   private handleError(error: unknown): void {
@@ -18,13 +18,18 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
     messageHandler.handleError(errorMessage);
   }
 
-  private async handleResponse(response: Response): Promise<string> {
+  private async handleResponse(response: Response): Promise<any> {
     if (!response.ok) {
       const errorData = await response.json();
       this.handleError(errorData.detail[0]?.msg || "API request failed");
-      return "";
+      return null;
     }
-    return await response.text();
+    const text = await response.text();
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      return text;
+    }
   }
 
   async transcribeAudio(audioFile: File): Promise<string> {
@@ -46,7 +51,7 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
     transcription: string,
     template?: string,
     language?: string,
-  ): Promise<string> {
+  ): Promise<any> {
     const response = await fetch(`${this.baseUrl}/api/generate_report`, {
       method: "POST",
       headers: {
@@ -61,7 +66,6 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
       this.handleError(error);
       return new Response();
     });
-
     return this.handleResponse(response);
   }
 
@@ -70,16 +74,14 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
     template?: string,
     language?: string,
   ): Promise<{
-    report: string;
+    report: any;
     transcription: string;
     time: { transcription: number; report: number };
   } | null> {
     const transcriptionStart = Date.now();
     const transcription: string = await this.transcribeAudio(audioFile);
     const transcriptionTime = Date.now() - transcriptionStart;
-
     if (!transcription) return null;
-
     const reportStart = Date.now();
     const report: string = await this.generateReport(
       transcription,
@@ -87,7 +89,6 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
       language,
     );
     const reportTime = Date.now() - reportStart;
-
     return {
       report,
       transcription,

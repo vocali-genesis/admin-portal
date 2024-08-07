@@ -4,9 +4,9 @@ import "react-quill/dist/quill.snow.css";
 import quill_styles from "./text-editor.module.css";
 import Spinner from "@/resources/containers/spinner";
 
-interface reportEditorProps {
-  content?: string;
-  onContentChange: (content: string) => void;
+interface EditorProps {
+  content?: { [key: string]: string };
+  onContentChange: (content: { [key: string]: string }) => void;
 }
 
 const ReactQuill = dynamic(() => import("react-quill"), {
@@ -14,7 +14,7 @@ const ReactQuill = dynamic(() => import("react-quill"), {
   loading: () => <Spinner />,
 });
 
-const Editor: React.FC<reportEditorProps> = ({ content, onContentChange }) => {
+const Editor: React.FC<EditorProps> = ({ content = {}, onContentChange }) => {
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
@@ -37,12 +37,37 @@ const Editor: React.FC<reportEditorProps> = ({ content, onContentChange }) => {
     "image",
   ];
 
+  const handleChange = (value: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(value, "text/html");
+    const updatedContent: { [key: string]: string } = {};
+
+    doc.body.childNodes.forEach((node: any) => {
+      if (node.nodeName === "P") {
+        const strong = node.querySelector("strong");
+        if (strong) {
+          const key = strong.textContent;
+          const textValue = node.textContent
+            .replace(strong.textContent, "")
+            .trim();
+          updatedContent[key] = textValue;
+        }
+      }
+    });
+
+    onContentChange(updatedContent);
+  };
+
+  const htmlContent = Object.entries(content)
+    .map(([key, value]) => `<p><strong>${key}</strong> ${value}</p>`)
+    .join("");
+
   return (
     <div className={quill_styles.editor}>
       <ReactQuill
         theme="snow"
-        value={content}
-        onChange={onContentChange}
+        value={htmlContent}
+        onChange={handleChange}
         modules={modules}
         formats={formats}
         className={quill_styles.quill}

@@ -5,13 +5,12 @@ import nav_styles from "@/core/components/styles/nav.module.css";
 import { useTranslation } from "react-i18next";
 import Service from "../module/service.factory";
 
-
 const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
   const { t } = useTranslation();
   const router = useRouter();
 
   const logout = () => {
-    Service.get('oauth').logout();
+    Service.get("oauth")?.logout();
     router.push("/auth/login");
   };
 
@@ -39,7 +38,7 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
           ☰
         </button>
       </div>
-    </nav >
+    </nav>
   );
 };
 

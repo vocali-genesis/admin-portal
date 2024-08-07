@@ -16,7 +16,8 @@ import recording_styles from "./styles/recording.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import { useTranslation } from "react-i18next";
 import Service from "@/core/module/service.factory";
-
+import Button from "@/resources/containers/button";
+import IconButton from "@/resources/containers/icon-button";
 
 const Recording = () => {
   const { t } = useTranslation();
@@ -27,7 +28,16 @@ const Recording = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLeavingPage, setIsLeavingPage] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleLeavePage = (event: BeforeUnloadEvent | PopStateEvent) => {
+    if (event.type === "beforeunload") {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+    setIsLeavingPage(true);
+  };
 
   useEffect(() => {
     if (audioUrl && audioRef.current) {
@@ -35,6 +45,27 @@ const Recording = () => {
       audioRef.current.load();
     }
   }, [audioUrl]);
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleLeavePage);
+    window.addEventListener("popstate", handleLeavePage);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleLeavePage);
+      window.removeEventListener("popstate", handleLeavePage);
+    };
+  }, []);
+
+  useEffect(() => {
+    router.beforePopState(() => {
+      setIsLeavingPage(true);
+      return false;
+    });
+
+    return () => {
+      router.beforePopState(() => true);
+    };
+  }, [router]);
 
   const togglePlayPause = () => {
     if (!(audioUrl && audioRef.current)) return;
@@ -131,20 +162,20 @@ const Recording = () => {
     const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
 
     const api_response =
-      await Service.get('medical-api').processAudioAndGenerateReport(file);
+      await Service.get("medical-api")?.processAudioAndGenerateReport(file);
 
     if (!api_response) {
       MessageHandler.get().handleError("Failed to generate report");
-      return
+      return;
     }
-    console.log({ api_response })
+    console.log({ api_response });
     // TODO: FInd a better way than teh query parameter
     router.push({
       pathname: "/app/report",
       query: {
         audioUrl: audioUrl as string,
-        report: encodeURIComponent(api_response.report),
-        transcription: (api_response.transcription),
+        report: JSON.stringify(api_response.report),
+        transcription: api_response.transcription,
         time: JSON.stringify(api_response.time),
       },
     });
@@ -171,8 +202,8 @@ const Recording = () => {
     <>
       <main className={recording_styles.mainContent}>
         <div className={recording_styles.instructions}>
-          <h2>{t("recording.record-title")}</h2>
-          {t("recording.activate")}
+          <h2 className={recording_styles.h2}>{t("recording.record-title")}</h2>
+          <p className={recording_styles.p}>{t("recording.activate-audio")}</p>
         </div>
         <div className={recording_styles.audioPlayerContainer}>
           <div className={recording_styles.audioPlayer}>
@@ -204,77 +235,82 @@ const Recording = () => {
               </span>
             </div>
             <div className={recording_styles.controlsContainer}>
-              <button
+              <IconButton
                 onClick={handleDelete}
                 className={recording_styles.actionButton}
+                size="small"
               >
                 <FaTrash size={16} style={{ color: "#DF4949" }} />
-              </button>
-              <button
+              </IconButton>
+
+              <IconButton
                 onClick={() => handleSkip(-30)}
                 className={recording_styles.skipButton}
+                size="small"
               >
                 <FaBackwardStep size={16} style={{ color: "black" }} />
-              </button>
-              <div className={recording_styles.playPauseContainer}>
+              </IconButton>
+
+              <IconButton
+                onClick={togglePlayPause}
+                className={recording_styles.playPauseButton}
+                size="medium"
+              >
                 {isPlaying ? (
-
-                  <button
-                    onClick={togglePlayPause}
-                    className={recording_styles.playPauseButton}
-                  >
-                    <FaCirclePause
-                      size={40}
-                      color="#59DBBC"
-                      style={{
-                        backgroundColor: "white",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  </button>
-
+                  <FaCirclePause
+                    color="#59DBBC"
+                    style={{ backgroundColor: "white", borderRadius: "50%" }}
+                  />
                 ) : (
-                  <button
-                    onClick={togglePlayPause}
-                    className={recording_styles.playPauseButton}
-                  >
-                    <FaCirclePlay
-                      size={40}
-                      color="#59DBBC"
-                      style={{
-                        backgroundColor: "white",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  </button>
+                  <FaCirclePlay
+                    color="#59DBBC"
+                    style={{ backgroundColor: "white", borderRadius: "50%" }}
+                  />
                 )}
-              </div>
-              <button
+              </IconButton>
+
+              <IconButton
                 onClick={() => handleSkip(30)}
                 className={recording_styles.skipButton}
+                size="small"
               >
                 <FaForwardStep size={16} style={{ color: "black" }} />
-              </button>
-              <button
+              </IconButton>
+
+              <IconButton
                 onClick={handleSave}
                 className={recording_styles.actionButton}
+                size="small"
               >
                 <FaFloppyDisk size={16} style={{ color: "blue" }} />
-              </button>
+              </IconButton>
             </div>
           </div>
-          <button
+          <Button
             onClick={handleSubmit}
+            variant="primary"
             className={recording_styles.submitButton}
           >
             {t("recording.submit")}
-          </button>
+          </Button>
         </div>
       </main>
       <DeleteConfirmation
-        isOpen={isDeleteModalOpen}
-        onRequestClose={cancelDelete}
-        onConfirm={confirmDelete}
+        isOpen={isDeleteModalOpen || isLeavingPage}
+        onRequestClose={() => {
+          setIsDeleteModalOpen(false);
+          setIsLeavingPage(false);
+        }}
+        onConfirm={() => {
+          if (isDeleteModalOpen) {
+            confirmDelete();
+          } else if (isLeavingPage) {
+            router.push({
+              pathname: "/app/dashboard",
+            });
+          }
+        }}
+        isLeavingPage={isLeavingPage}
       />
     </>
   );
