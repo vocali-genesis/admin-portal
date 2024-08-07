@@ -17,34 +17,9 @@ const Templates = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [templateId, setTemplateId] = useState<number>();
-  const [isLeavingPage, setIsLeavingPage] = useState<boolean>(false);
 
   useEffect(() => {
     fetchTemplates();
-
-    const handleLeavePage = (event: BeforeUnloadEvent | PopStateEvent) => {
-      if (event.type === "beforeunload") {
-        event.preventDefault();
-        event.returnValue = "";
-      }
-      setIsLeavingPage(true);
-      setIsModalOpen(true);
-    };
-
-    window.addEventListener("beforeunload", handleLeavePage);
-    window.addEventListener("popstate", handleLeavePage);
-
-    router.beforePopState(() => {
-      setIsLeavingPage(true);
-      setIsModalOpen(true);
-      return false;
-    });
-
-    return () => {
-      window.removeEventListener("beforeunload", handleLeavePage);
-      window.removeEventListener("popstate", handleLeavePage);
-      router.beforePopState(() => true);
-    };
   }, [router]);
 
   const fetchTemplates = async () => {
@@ -62,28 +37,20 @@ const Templates = () => {
   const handleDelete = (id: number) => {
     setIsModalOpen(true);
     setTemplateId(id);
-    setIsLeavingPage(false);
   };
 
   const confirmAction = async () => {
     setIsModalOpen(false);
 
-    if (isLeavingPage) {
-      router.back();
-    } else {
-      const resp = await templateService.deleteTemplate(templateId as number);
-      if (resp) {
-        setTemplates(
-          templates.filter((template) => template.id !== templateId),
-        );
-        return messageHandler.handleSuccess("Template deleted");
-      }
+    const resp = await templateService.deleteTemplate(templateId as number);
+    if (resp) {
+      setTemplates(templates.filter((template) => template.id !== templateId));
+      return messageHandler.handleSuccess("Template deleted");
     }
   };
 
   const cancelAction = () => {
     setIsModalOpen(false);
-    setIsLeavingPage(false);
   };
 
   const handleAddTemplate = async () => {
@@ -121,7 +88,17 @@ const Templates = () => {
         <tbody className={styles.tableBody}>
           {templates.map((template) => (
             <tr key={template.id}>
-              <td>{template.name}</td>
+              <td
+                onClick={() =>
+                  router.push({
+                    pathname: "/app/template-detail",
+                    query: { id: template.id },
+                  })
+                }
+                style={{ cursor: "pointer" }}
+              >
+                {template.name}
+              </td>
               <td>{new Date(template.createdAt).toLocaleDateString()}</td>
               <td>{template.preview}</td>
               <td>
@@ -156,7 +133,7 @@ const Templates = () => {
         isOpen={isModalOpen}
         onRequestClose={cancelAction}
         onConfirm={confirmAction}
-        isLeavingPage={isLeavingPage}
+        isLeavingPage={false}
       />
     </div>
   );

@@ -14,6 +14,11 @@ export interface Template {
   fields: object; // Might want to define a more specific type for fields
 }
 
+export interface TemplateField {
+  type: string;
+  description: string;
+}
+
 class TemplateService {
   private supabase: SupabaseClient;
 
@@ -28,8 +33,17 @@ class TemplateService {
       .from("templates")
       .select("*");
     if (error) return messageHandler.handleError(error.message);
-
     return templates as Template[];
+  }
+
+  async getTemplate(id: number): Promise<Template | null> {
+    const { data, error } = await this.supabase
+      .from("templates")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (error) return messageHandler.handleError(error.message);
+    return data as Template;
   }
 
   async createTemplate(
@@ -40,7 +54,6 @@ class TemplateService {
       .insert(template)
       .select();
     if (error) return messageHandler.handleError(error.message);
-
     return data[0] as Template;
   }
 
@@ -54,7 +67,6 @@ class TemplateService {
       .eq("id", id)
       .single();
     if (error) return messageHandler.handleError(error.message);
-
     return data as Template;
   }
 
@@ -63,11 +75,9 @@ class TemplateService {
       .from("templates")
       .delete()
       .eq("id", id);
-
     if (error) return messageHandler.handleError(error.message);
     return true;
   }
 }
 
-// GlobalCore.manager.service("templates", new TemplateService());
 export default new TemplateService();
