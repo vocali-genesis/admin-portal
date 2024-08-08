@@ -17,14 +17,17 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install pnpm
+        run: pnpm install
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
       
       - name: run eslint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: run test cases
-        run: npm run test
+        run: pnpm run test
 
       - name: Build the Next.js application
-        run: npm run build
+        run: pnpm run build
