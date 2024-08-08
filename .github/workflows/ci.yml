@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: run eslint
+        run: npm run lint
+
+      - name: run test cases
+        run: npm run test
+
+      - name: Build the Next.js application
+        run: npm run build

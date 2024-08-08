@@ -1,0 +1,73 @@
+name: Deploy to AWS ECS(Production)
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on any new tag that starts with 'v' (e.g., v1.0.0, v2.0.1)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: run eslint
+        run: npm run lint
+
+      - name: run test cases
+        run: npm run test
+
+      - name: Build the Next.js application
+        run: npm run build
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image to Amazon ECR
+        id: build-image
+        run: |
+          # Define variables
+          IMAGE_TAG=${GITHUB_SHA::7}
+          ECR_REGISTRY=YOUR_AWS_ACCOUNT_ID.dkr.ecr.YOUR_AWS_REGION.amazonaws.com
+          ECR_REPOSITORY=YOUR_ECR_REPOSITORY_NAME
+
+          # Build the Docker image
+          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+
+          # Tag the Docker image
+          docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          # Push the Docker image to ECR
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Deploy to Amazon ECS
+        id: deploy
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: YOUR_TASK_DEFINITION.json
+          service: YOUR_ECS_SERVICE_NAME
+          cluster: YOUR_ECS_CLUSTER_NAME
+          wait-for-service-stability: true
+          force-new-deployment: true
+          image: ${{ steps.build-image.outputs.image }}
+
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
