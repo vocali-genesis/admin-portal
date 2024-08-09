@@ -9,8 +9,6 @@ import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import Service from "@/core/module/service.factory";
 
-
-
 interface confirmResetPasswordInterface {
   onSuccess: () => void;
 }
@@ -24,13 +22,13 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(confirm_reset_password_schema),
+    resolver: yupResolver(confirm_reset_password_schema(t)),
   });
 
   const onSubmit = async (data: { password: string }) => {
-    const response = await Service.get('oauth').updateUser(
+    const response = await Service.get("oauth").updateUser(
       undefined,
-      data.password as string,
+      data.password as string
     );
     if (response) {
       MessageHandler.get().handleSuccess(t("common.success"));
@@ -48,7 +46,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
         errors={errors}
         action="confirm-reset-password"
       />
-      <AuthButton label={t('auth.reset')} />
+      <AuthButton label={t("auth.reset")} />
     </form>
   );
 };

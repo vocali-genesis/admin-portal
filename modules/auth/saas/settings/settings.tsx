@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FormEventHandler } from "react";
 import { useForm } from "react-hook-form";
 import { GlobalCore } from "@/core/module/module.types";
 import settings_styles from "./styles/settings.module.css";
@@ -7,25 +7,25 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LANGUAGES } from "@/core/constants";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
-import Service, { useService } from "@/core/module/service.factory";
+import { useService } from "@/core/module/service.factory";
 
 const messageHandler = MessageHandler.get();
 
-const Divider = () => <div className={settings_styles.divider} />
+const Divider = () => <div className={settings_styles.divider} />;
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
-  const authService = useService('oauth')
+  const authService = useService("oauth");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(settings_schema),
+    resolver: yupResolver(settings_schema(t)),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: { email: string; password: string }) => {
     const updatedUser = await authService.updateUser(data.email, data.password);
 
     if (updatedUser)
@@ -37,7 +37,9 @@ const Settings = () => {
       <div className={settings_styles.contentWrapper}>
         <main className={settings_styles.mainContent}>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={
+              handleSubmit(onSubmit) as unknown as FormEventHandler<HTMLElement>
+            }
             className={settings_styles.form}
           >
             <div className={settings_styles.mainFormGroup}>
@@ -95,7 +97,6 @@ const Settings = () => {
             </div>
           </form>
 
-
           <Divider />
 
           <div className={settings_styles.socialLogins}>
@@ -120,7 +121,7 @@ const Settings = () => {
             <select
               id="language"
               value={i18n.language}
-              onChange={(e) => i18n.changeLanguage(e.target.value)}
+              onChange={(e) => void i18n.changeLanguage(e.target.value)}
               className={settings_styles.languageSelect}
             >
               {LANGUAGES.map((lang, index) => (
@@ -130,7 +131,6 @@ const Settings = () => {
               ))}
             </select>
           </div>
-
 
           {/*
           // UPCOMMING FEATURE
@@ -148,4 +148,9 @@ const Settings = () => {
 };
 
 GlobalCore.manager.settings("settings", Settings);
-GlobalCore.manager.menuSettings({ 'label': 'settings.menu', icon: '/profile-avatar.svg', url: 'settings', order: 0 })
+GlobalCore.manager.menuSettings({
+  label: "settings.menu",
+  icon: "/profile-avatar.svg",
+  url: "settings",
+  order: 0,
+});

@@ -27,7 +27,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(login_schema),
+    resolver: yupResolver(login_schema(t)),
   });
 
   const onSubmit = async (data: { email: string; password: string }) => {

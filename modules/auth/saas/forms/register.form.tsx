@@ -18,7 +18,7 @@ const RegisterForm: React.FC = ({}) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(register_schema),
+    resolver: yupResolver(register_schema(t)),
   });
 
   const onSubmit = async (data: { email: string; password: string }) => {

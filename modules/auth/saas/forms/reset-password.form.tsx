@@ -18,7 +18,7 @@ const ResetPasswordForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(reset_password_schema),
+    resolver: yupResolver(reset_password_schema(t)),
   });
 
   const onSubmit = async (data: { email: string }) => {

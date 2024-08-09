@@ -7,11 +7,11 @@ import "@/import";
 // --  End
 
 // Imports after the dynamic load
-import "@/core/i18n"
+import "@/core/i18n";
+import React from "react";
 // -- End
 
 function App({ Component, pageProps }: AppProps) {
-
   return (
     <>
       <Toaster />
@@ -21,4 +21,3 @@ function App({ Component, pageProps }: AppProps) {
 }
 
 export default App;
-

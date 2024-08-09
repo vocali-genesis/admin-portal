@@ -1,5 +1,7 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { InputField } from "../../../../resources/inputs/input-field";
+import { useTranslation } from "react-i18next";
+import React from "react";
 type AuthFormData =
   | {
       email: string;
@@ -26,17 +28,15 @@ interface AuthInputProps {
 const inputConfig = {
   email: {
     type: "email",
-    placeholder: "Email",
+    placeholder: "email",
     validation: { required: "Email is required" },
   },
   password: {
     type: "password",
-    placeholder: "Password",
     validation: { required: "Password is required" },
   },
   confirm_password: {
     type: "password",
-    placeholder: "Confirm Password",
     validation: { required: "Confirm Password is required" },
   },
 } as const;
@@ -44,6 +44,7 @@ const inputConfig = {
 type InputConfigKey = keyof typeof inputConfig;
 
 const AuthInputs: React.FC<AuthInputProps> = ({ register, errors, action }) => {
+  const { t } = useTranslation();
   const fieldsToShow = {
     email: ["register", "login", "reset-password"].includes(action),
     password: ["register", "login", "confirm-reset-password"].includes(action),
@@ -61,11 +62,12 @@ const AuthInputs: React.FC<AuthInputProps> = ({ register, errors, action }) => {
         ([name, config]) =>
           fieldsToShow[name] && (
             <InputField<AuthFormData>
+              {...config}
               key={name}
               register={register}
               errors={errors}
               name={name}
-              {...config}
+              placeholder={t(`auth.${name}`)}
             />
           )
       )}
