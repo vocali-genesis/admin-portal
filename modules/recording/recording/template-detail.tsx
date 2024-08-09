@@ -6,19 +6,24 @@ import templateService, {
   TemplateField,
 } from "@/services/genesis/templates.service";
 import template_styles from "./styles/template-detail.module.css";
-import { FaEdit, FaSave, FaTrash } from "react-icons/fa";
+import { FaEdit, FaSave, FaTrash, FaArrowLeft, FaPlus } from "react-icons/fa";
 import MessageHandler from "@/core/message-handler";
+import DeleteConfirmation from "@/resources/containers/delete-confirmation";
+import { useTranslation } from "react-i18next";
 
 const messageHandler = MessageHandler.get();
 
 const TemplateDetail = () => {
   const router = useRouter();
+  const { t } = useTranslation();
   const { id } = router.query;
   const [template, setTemplate] = useState<Template | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editedValues, setEditedValues] = useState<{
     [key: string]: { name: string } & Partial<TemplateField>;
   }>({});
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [fieldToDelete, setFieldToDelete] = useState<string | null>(null);
 
   const typeOptions = [
     "string",
@@ -88,7 +93,6 @@ const TemplateDetail = () => {
         messageHandler.handleError("Failed to update template field");
       }
     } catch (error) {
-      console.log(error);
       messageHandler.handleError("Failed to update template field");
     }
   };
@@ -107,14 +111,87 @@ const TemplateDetail = () => {
     });
   };
 
+  const handleAddField = () => {
+    if (!template) return;
+
+    const newFieldKey = `newField${Object.keys(template.fields).length + 1}`;
+    const updatedFields = {
+      ...template.fields,
+      [newFieldKey]: {
+        type: "string",
+        description: "New field description",
+      },
+    };
+
+    templateService
+      .updateTemplate(template.id, { fields: updatedFields })
+      .then((updatedTemplate) => {
+        if (updatedTemplate) {
+          setTemplate(updatedTemplate);
+          messageHandler.handleSuccess("New field added successfully");
+        } else {
+          messageHandler.handleError("Failed to add new field");
+        }
+      })
+      .catch(() => {
+        messageHandler.handleError("Failed to add new field");
+      });
+  };
+
+  const handleDeleteField = (fieldKey: string) => {
+    setFieldToDelete(fieldKey);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!template || !fieldToDelete) return;
+
+    const updatedFields = { ...template.fields };
+    delete updatedFields[fieldToDelete];
+
+    try {
+      const updatedTemplate = await templateService.updateTemplate(
+        template.id,
+        { fields: updatedFields },
+      );
+
+      if (updatedTemplate) {
+        setTemplate(updatedTemplate);
+        messageHandler.handleSuccess("Field deleted successfully");
+      } else {
+        messageHandler.handleError("Failed to delete field");
+      }
+    } catch (error) {
+      messageHandler.handleError("Failed to delete field");
+    }
+
+    setIsDeleteModalOpen(false);
+    setFieldToDelete(null);
+  };
+
   if (!template) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className={template_styles.container}>
+      <div className={template_styles.header}>
+        <button
+          onClick={() => router.push("/app/templates")}
+          className={template_styles.backButton}
+        >
+          <FaArrowLeft /> {t("recording.back")}
+        </button>
+        <button
+          onClick={handleAddField}
+          className={template_styles.addFieldButton}
+        >
+          <FaPlus /> {t("recording.add_field")}
+        </button>
+      </div>
       <h1 className={template_styles.title}>{template.name}</h1>
-      <p>{template.preview}</p>
+      <p className={template_styles.p}>{template.preview}</p>
+
       <table className={template_styles.table}>
         <thead className={template_styles.tableHeader}>
           <tr>
@@ -179,7 +256,7 @@ const TemplateDetail = () => {
                   <button
                     onClick={() => handleSave(key)}
                     className={`${template_styles.actionButton}`}
-                    style={{ color: "#319795" }}
+                    style={{ color: "#59DBBC" }}
                   >
                     <FaSave />
                   </button>
@@ -188,17 +265,25 @@ const TemplateDetail = () => {
                     onClick={() => handleEdit(key)}
                     className={template_styles.actionButton}
                   >
-                    <FaEdit />
+                    <FaEdit style={{ color: "#59DBBC" }} />
                   </button>
                 )}
-                <button className={template_styles.actionButton}>
-                  <FaTrash />
+                <button
+                  onClick={() => handleDeleteField(key)}
+                  className={template_styles.actionButton}
+                >
+                  <FaTrash style={{ color: "#e53e3e" }} />
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <DeleteConfirmation
+        isOpen={isDeleteModalOpen}
+        onRequestClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 };
