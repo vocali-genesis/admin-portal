@@ -16,7 +16,7 @@ export interface Template {
   name: string;
   createdAt: string;
   preview: string;
-  fields: TemplateField; // Might want to define a more specific type for fields
+  fields: { [key: string]: TemplateField }; // Might want to define a more specific type for fields
 }
 
 class TemplateService {

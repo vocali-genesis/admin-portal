@@ -20,7 +20,7 @@ const TemplateDetail = () => {
   const [template, setTemplate] = useState<Template | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editedValues, setEditedValues] = useState<{
-    [key: string]: { name: string } & Partial<TemplateField>;
+    [key: string]: { name: string } & TemplateField;
   }>({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [fieldToDelete, setFieldToDelete] = useState<string | null>(null);
@@ -57,10 +57,13 @@ const TemplateDetail = () => {
 
   const handleEdit = (fieldKey: string) => {
     setEditingField(fieldKey);
-    setEditedValues({
-      ...editedValues,
-      [fieldKey]: { name: fieldKey, ...template?.fields[fieldKey] },
-    });
+    const field = template?.fields[fieldKey];
+    if (field) {
+      setEditedValues({
+        ...editedValues,
+        [fieldKey]: { name: fieldKey, ...field },
+      });
+    }
   };
 
   const handleSave = async (fieldKey: string) => {
