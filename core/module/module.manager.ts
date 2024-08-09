@@ -22,11 +22,17 @@ export class ModuleManager {
   private settings: Record<string, CoreComponent> = {};
   private menu: MenuItem[] = [];
   private menuSettings: MenuItem[] = [];
-  private langs: Record<ComponentName, Record<string, object>> = {} as Record<ComponentName, Record<string, object>> ;  // Name of the modules to lang object
-  private services: Record< ServiceName, ServiceInterface<ServiceName> | undefined> = {} as  Record< ServiceName, undefined>;
+  private langs: Record<ComponentName, Record<string, object>> = {} as Record<
+    ComponentName,
+    Record<string, object>
+  >; // Name of the modules to lang object
+  private services: Record<
+    ServiceName,
+    ServiceInterface<ServiceName> | undefined
+  > = {} as Record<ServiceName, undefined>;
 
   public get subscribe(): ModuleSubscriber {
-     return {
+    return {
       auth: (key: string, component: CoreComponent) => {
         this.auth[key] = component;
       },
@@ -37,19 +43,46 @@ export class ModuleManager {
         this.settings[key] = component;
       },
       menu: (item: MenuItem) => {
-        this.menu.push(item)
+        this.menu.push(item);
       },
       menuSettings: (item: MenuItem) => {
-        this.menuSettings.push(item)
+        this.menuSettings.push(item);
       },
-      service: <T extends ServiceName> (serviceName: T, service: ServiceInterface<T>) => {
+      service: <T extends ServiceName>(
+        serviceName: T,
+        service: ServiceInterface<T>
+      ) => {
         this.services[serviceName] = service;
       },
-      langs:  (module: ComponentName, langs:  Record<string, object>) => {
-        if(!!this.langs[module]) {
-          throw new Error(`Transation for module ${module} is already loaded`)
+      langs: (module: ComponentName, langs: Record<string, object>) => {
+        if (!!this.langs[module]) {
+          throw new Error(`Transation for module ${module} is already loaded`);
         }
         this.langs[module] = langs;
+      },
+      getComponent: <
+        T extends "app" | "auth" | "settings" | "service",
+        N extends ServiceName
+      >(
+        type: T,
+        name: T extends "service" ? N : string
+      ): T extends "service"
+        ? ServiceInterface<N> | undefined
+        : CoreComponent | undefined => {
+        if (type === "service") {
+          return this.services[name as N];
+        }
+        if (type === "app") {
+          return this.app[name] as CoreComponent;
+        }
+        if (type === "auth") {
+          return this.auth[name];
+        }
+        if (type === "settings") {
+          return this.settings[name];
+        }
+
+        return undefined;
       },
     };
   }
@@ -63,9 +96,9 @@ export class ModuleManager {
         this.settings[key] as T,
       defaultSettings: () => Object.keys(this.settings)[0] as string,
       services: (name: ServiceName) => this.services[name],
-      menus:[... this.menu].sort(( a, b)  => a.order - b.order),
-      menuSettings: [...this.menuSettings].sort(( a, b)  => a.order - b.order),
-      langs: Object.values(this.langs)
+      menus: [...this.menu].sort((a, b) => a.order - b.order),
+      menuSettings: [...this.menuSettings].sort((a, b) => a.order - b.order),
+      langs: Object.values(this.langs),
     };
   }
 }

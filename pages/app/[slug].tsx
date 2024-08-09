@@ -5,11 +5,9 @@ import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
 import Service from "@/core/module/service.factory";
-import { useTranslation } from "react-i18next";
 
 const App = () => {
   const router = useRouter();
-  const { t } = useTranslation();
   const loader = ModuleManager.get().components;
   const { slug } = router.query as { slug: string };
   const Component = loader.app(slug);
@@ -22,7 +20,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    (async () => {
+   void (async () => {
       setIsLoading(true);
       const { slug } = router.query as { slug: string };
       const user = await Service.get("oauth").getLoggedUser();
@@ -38,7 +36,7 @@ const App = () => {
         return router.push('/app/dashboard')
       }
       if (subscription?.status !== 'active' && slug !== 'subscriptions') {
-        router.push("/app/subscriptions");
+        await router.push("/app/subscriptions");
       }
     })();
   }, [router]);
@@ -51,7 +49,7 @@ const App = () => {
   }
 
   if (router.isReady && !Component) {
-    router.replace("/errors/not-found");
+    void router.replace("/errors/not-found");
   }
 
   const menu = ModuleManager.get().components.menus;

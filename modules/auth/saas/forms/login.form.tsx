@@ -1,18 +1,17 @@
-import React from "react";
+import React, { FormEventHandler } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import form_style from "./form.module.css";
 import { login_schema } from "./auth.schema";
 import MessageHandler from "@/core/message-handler";
-import Input from "@/resources/inputs/input";
+import AuthInputs from "./auth-inputs";
 import AuthButton from "@/resources/containers/auth-button";
 import OAuthButton from "@/resources/containers/oauth-button";
 import { useTranslation } from "react-i18next";
 import Service, { useService } from "@/core/module/service.factory";
 import { GenesisOauthProvider } from "@/core/module/core.types";
-
+import Link from "next/link";
 
 interface LoginFormProps {
   onLoginSuccess: () => void;
@@ -20,7 +19,7 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const { t } = useTranslation();
-  const authService = useService('oauth')
+  const authService = useService("oauth");
 
   const router = useRouter();
   const {
@@ -31,59 +30,36 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     resolver: yupResolver(login_schema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: { email: string; password: string }) => {
     const response = await authService.loginUser(data.email, data.password);
-    if (response) {
-      MessageHandler.get().handleSuccess(t("auth.login-successful"));
-      onLoginSuccess();
+    if (!response) {
+      return;
     }
-  };
-
-  const handleOAuthClick = async (provider: GenesisOauthProvider) => {
-    const url = await Service.get('oauth').oauth(provider);
-    if (url) window.location.href = url;
-  };
-
-  const resetPassword = async () => {
-    router.push("/auth/reset-password");
+    MessageHandler.get().handleSuccess(t("auth.login-successful"));
+    onLoginSuccess();
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={
+        handleSubmit(onSubmit) as unknown as FormEventHandler<HTMLFormElement>
+      }
       className={form_style.formContainer}
     >
-      <Input register={register} errors={errors} action="login" />
-      <p
+      <AuthInputs register={register} errors={errors} action="login" />
+      <Link
         style={{
           color: "black",
           fontSize: "1.75vh",
           fontFamily: "Montserrat",
           cursor: "pointer",
         }}
-        onClick={resetPassword}
+        href="/auth/reset-password"
       >
-        Forgot password?
-      </p>
-      <AuthButton label={t('auth.login')} />
-      <div className={form_style.oauth}>
-        <div className={form_style.oauthTextContainer}>
-          <p className={form_style.oauthText}>
-            <strong>{t('auth.login')}</strong> {t('auth.with-others')}:
-          </p>
-        </div>
-        <OAuthButton
-          provider="google"
-          onClick={handleOAuthClick}
-          label={t("auth.login-with")}
-        />
-        {/* <OAuthButton
-          provider="facebook"
-          onClick={handleOAuthClick}
-          action="login"
-        /> */}
-      </div>
-    </form >
+        {t("auth.forgot-password")}
+      </Link>
+      <AuthButton label={t("auth.login")} testId="submitLogin" />
+    </form>
   );
 };
 
