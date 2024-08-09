@@ -5,8 +5,8 @@ import { MODULE } from "@/core/constants";
 import { GenesisOauthProvider, GenesisUser } from "@/core/module/core.types";
 import { GlobalCore } from "@/core/module/module.types";
 import { AuthService } from "@/core/module/services.types";
-  
-const messageHandler = MessageHandler.get()
+
+const messageHandler = MessageHandler.get();
 class SupabaseAuthService implements AuthService {
   private supabase: SupabaseClient;
 
@@ -18,41 +18,47 @@ class SupabaseAuthService implements AuthService {
 
   async registerUser(
     email: string,
-    password: string,
+    password: string
   ): Promise<{ user: User | null; token: string | undefined } | null> {
     const { data, error } = await this.supabase.auth.signUp({
       email,
       password,
     });
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
 
     return { user: data.user, token: data.session?.access_token };
   }
 
   async loginUser(
     email: string,
-    password: string,
+    password: string
   ): Promise<{ user: User | null; token: string | undefined } | null> {
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
       password,
     });
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
 
     return { user: data.user, token: data.session?.access_token };
   }
- 
 
- public async oauth(
-    provider: GenesisOauthProvider,
-  ): Promise<string | null> {
+  public async oauth(provider: GenesisOauthProvider): Promise<string | null> {
     const { data, error } = await this.supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
         redirectTo: `${window.location.origin}/app/${MODULE.DASHBOARD}`,
       },
     });
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
 
     return data.url;
   }
@@ -63,20 +69,24 @@ class SupabaseAuthService implements AuthService {
   }
 
   async logout(): Promise<null | undefined> {
-    let { error } = await this.supabase.auth.signOut();
-    if (error) return messageHandler.handleError(error.message);
+    const { error } = await this.supabase.auth.signOut();
+    if (error) {
+      messageHandler.handleError(error.message);
+    }
+    return null;
   }
 
-  async resetPassword(email: string): Promise<{} | null> {
-    let { data, error } = await this.supabase.auth.resetPasswordForEmail(
-      email,
-      {
-        redirectTo: `${window.location.origin}/auth/${MODULE.CONFIRM_RESET_PASSWORD}`,
-      },
-    );
-    if (error) return messageHandler.handleError(error.message);
+  async resetPassword(email: string): Promise<boolean> {
+    const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/${MODULE.CONFIRM_RESET_PASSWORD}`,
+    });
 
-    return data;
+    if (error) {
+      messageHandler.handleError(error.message);
+      return false;
+    }
+
+    return true;
   }
 
   async updateUser(email?: string, password?: string): Promise<User | null> {
@@ -84,11 +94,13 @@ class SupabaseAuthService implements AuthService {
       email,
       password,
     });
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
 
     return data.user;
   }
 }
-
 
 GlobalCore.manager.service("oauth", new SupabaseAuthService());

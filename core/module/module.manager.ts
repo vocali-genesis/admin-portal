@@ -60,6 +60,30 @@ export class ModuleManager {
         }
         this.langs[module] = langs;
       },
+      getComponent: <
+        T extends "app" | "auth" | "settings" | "service",
+        N extends ServiceName
+      >(
+        type: T,
+        name: T extends "service" ? N : string
+      ): T extends "service"
+        ? ServiceInterface<N> | undefined
+        : CoreComponent | undefined => {
+        if (type === "service") {
+          return this.services[name as N];
+        }
+        if (type === "app") {
+          return this.app[name] as CoreComponent;
+        }
+        if (type === "auth") {
+          return this.auth[name];
+        }
+        if (type === "settings") {
+          return this.settings[name];
+        }
+
+        return undefined;
+      },
     };
   }
 

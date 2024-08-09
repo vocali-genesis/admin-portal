@@ -1,26 +1,21 @@
 import toast from "react-hot-toast";
- 
+
 class MessageHandler {
-  private static instance: MessageHandler = new MessageHandler()
+  private static instance: MessageHandler = new MessageHandler();
   public static get() {
-    return this.instance
+    return this.instance;
   }
-  private constructor() {
-
-  }
-  handleError(error: string): null {
+  private constructor() {}
+  handleError(error: string) {
     toast.error(error || "An unexpected error occurred");
-    return null;
   }
 
-  handleSuccess(message: string): null {
+  handleSuccess(message: string) {
     toast.success(message || "Success");
-    return null;
   }
 
-  info(message: string): null {
+  info(message: string) {
     toast(message || "Success");
-    return null;
   }
 }
 

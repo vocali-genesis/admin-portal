@@ -12,16 +12,24 @@ export type MenuItem<T = object> = {
 
 export type CoreComponent = () => React.ReactNode;
 
- 
 export interface ModuleSubscriber {
   auth: (key: string, component: CoreComponent) => void;
   app: (key: string, component: CoreComponent) => void;
-  langs: (module: ComponentName, langs:  Record<string, object>) => void;
+  langs: (module: ComponentName, langs: Record<string, object>) => void;
   settings: (key: string, component: CoreComponent) => void;
   menu: (item: MenuItem) => void;
   menuSettings: (item: MenuItem) => void;
-  service:  <T extends ServiceName> (serviceName: T, service: ServiceInterface<T>)  => void
-
+  service: <T extends ServiceName>(
+    serviceName: T,
+    service: ServiceInterface<T>
+  ) => void;
+  // For Testing
+  getComponent<T extends "app" | "auth" | "settings" | "service">(
+    type: T,
+    name: T extends "service" ? ServiceName : string
+  ): T extends "service"
+    ? ServiceInterface<ServiceName> | undefined
+    : CoreComponent | undefined;
 }
 
 export type CoreGlobal = {

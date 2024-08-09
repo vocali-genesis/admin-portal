@@ -1,11 +1,10 @@
 import React from "react";
-import { Provider } from "@supabase/supabase-js";
 import oauth_style from "./styles/oauth-button.module.css";
 import { GenesisOauthProvider } from "@/core/module/core.types";
 
 interface OAuthButtonProps {
   provider: GenesisOauthProvider;
-  onClick: (provider: GenesisOauthProvider) => void;
+  onClick: (provider: GenesisOauthProvider) => void | Promise<void>;
   label: string
 }
 
@@ -17,6 +16,7 @@ const OAuthButton: React.FC<OAuthButtonProps> = ({
 
   return (
     <button
+      data-testid={provider}
       type="button"
       onClick={() => onClick(provider)}
       className={`${oauth_style.oauthButton} ${oauth_style[`${provider}OAuthButton`]}`}

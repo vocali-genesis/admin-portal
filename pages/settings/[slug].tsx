@@ -22,7 +22,7 @@ const Settings = () => {
       return
     }
     if (!Component) {
-      router.replace('/errors/not-found')
+      void router.replace('/errors/not-found')
     }
   }, [Component, router])
   if (!router.isReady) {
