@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import form_style from "./form.module.css";
 import { confirm_reset_password_schema } from "./auth.schema";
-import Input from "@/resources/inputs/input";
+import AuthInputs from "./auth-inputs";
 import AuthButton from "@/resources/containers/auth-button";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
@@ -43,7 +43,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
       onSubmit={handleSubmit(onSubmit)}
       className={form_style.formContainer}
     >
-      <Input
+      <AuthInputs
         register={register}
         errors={errors}
         action="confirm-reset-password"

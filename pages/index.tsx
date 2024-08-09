@@ -2,21 +2,15 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Service from "@/core/module/service.factory";
 
-
-
 export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
     const checkAuth = async () => {
-      const user = await Service.get('oauth').getLoggedUser();
-      if (user === null) {
-        router.push("/auth/login");
-      } else {
-        router.push("/app/dashboard");
-      }
+      const user = await Service.get("oauth").getLoggedUser();
+      await router.push(user === null ? "/auth/login" : "/app/dashboard");
     };
-    checkAuth();
+    void checkAuth();
   }, [router]);
 
   return (
