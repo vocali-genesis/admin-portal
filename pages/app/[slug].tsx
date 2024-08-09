@@ -21,16 +21,16 @@ const App = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
- 
-
-  const isSpinner = !router.isReady || isLoading
+  const isSpinner = !router.isReady || isLoading;
 
   // remove this line after the i18nfix
-  if(isSpinner) {
-    return (<>
-      <ValidateUser onReady={() => setIsLoading(false)} />
-      <Spinner /> 
-    </>)
+  if (isSpinner) {
+    return (
+      <>
+        <ValidateUser onReady={() => setIsLoading(false)} />
+        <Spinner />
+      </>
+    );
   }
 
   if (router.isReady && !Component) {
@@ -48,11 +48,11 @@ const App = () => {
           closeSidebar={() => setSidebarOpen(false)}
           menu={menu}
         />
-        <main className="flex-grow p-5">
+        <main className="flex-grow p-5 overflow-y-scroll">
           {/* uncomment below line after the i18n issue fix*/}
           {/* { isSpinner ? <Spinner /> : <Component /> } */}
           {/* Remove below line after the i18n issue fix*/}
-          { <Component /> }
+          {<Component />}
         </main>
       </div>
     </div>
