@@ -1,12 +1,12 @@
+import { GlobalCore } from "@/core/module/module.types";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { GlobalCore } from "@/core/module/module.types";
 import templateService, {
   Template,
   TemplateField,
 } from "@/services/genesis/templates.service";
 import template_styles from "./styles/template-detail.module.css";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaSave, FaTrash } from "react-icons/fa";
 import MessageHandler from "@/core/message-handler";
 
 const messageHandler = MessageHandler.get();
@@ -15,76 +15,188 @@ const TemplateDetail = () => {
   const router = useRouter();
   const { id } = router.query;
   const [template, setTemplate] = useState<Template | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [editedValues, setEditedValues] = useState<{
+    [key: string]: { name: string } & Partial<TemplateField>;
+  }>({});
 
-  console.log(template);
+  const typeOptions = [
+    "string",
+    "number",
+    "boolean",
+    "object",
+    "array",
+    "date",
+  ];
 
   useEffect(() => {
     if (id) {
-      fetchTemplateDetails();
+      fetchTemplate();
     }
   }, [id]);
 
-  const fetchTemplateDetails = async () => {
-    setIsLoading(true);
-    try {
-      const data = await templateService.getTemplate(Number(id));
-      setTemplate(data);
-    } catch (error) {
-      console.error("Error fetching template details:", error);
-      messageHandler.handleError("Failed to load template details");
-    } finally {
-      setIsLoading(false);
+  const fetchTemplate = async () => {
+    if (typeof id === "string") {
+      try {
+        const fetchedTemplate = await templateService.getTemplate(parseInt(id));
+        if (fetchedTemplate) {
+          setTemplate(fetchedTemplate);
+        } else {
+          messageHandler.handleError("Template not found");
+        }
+      } catch (error) {
+        messageHandler.handleError("Failed to fetch template");
+      }
     }
   };
 
-  const handleEdit = () => {
-    router.push(`/app/templates/edit/${id}`);
+  const handleEdit = (fieldKey: string) => {
+    setEditingField(fieldKey);
+    setEditedValues({
+      ...editedValues,
+      [fieldKey]: { name: fieldKey, ...template?.fields[fieldKey] },
+    });
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const handleSave = async (fieldKey: string) => {
+    if (!template) return;
+
+    try {
+      const { name, ...fieldData } = editedValues[fieldKey];
+      const updatedFields = { ...template.fields };
+
+      if (name !== fieldKey) {
+        delete updatedFields[fieldKey];
+        updatedFields[name] = fieldData;
+      } else {
+        updatedFields[fieldKey] = fieldData;
+      }
+
+      const updatedTemplate = await templateService.updateTemplate(
+        template.id,
+        {
+          fields: updatedFields,
+        },
+      );
+
+      if (updatedTemplate) {
+        setTemplate(updatedTemplate);
+        setEditingField(null);
+        setEditedValues({});
+        messageHandler.handleSuccess("Template field updated successfully");
+      } else {
+        messageHandler.handleError("Failed to update template field");
+      }
+    } catch (error) {
+      console.log(error);
+      messageHandler.handleError("Failed to update template field");
+    }
+  };
+
+  const handleInputChange = (
+    fieldKey: string,
+    property: string,
+    value: string,
+  ) => {
+    setEditedValues({
+      ...editedValues,
+      [fieldKey]: {
+        ...editedValues[fieldKey],
+        [property]: value,
+      },
+    });
+  };
 
   if (!template) {
-    return <div>Template not found</div>;
+    return <div>Loading...</div>;
   }
 
   return (
     <div className={template_styles.container}>
-      <div className={template_styles.header}>
-        <h1 className={template_styles.title}>Template Detail</h1>
-        <button className={template_styles.editButton} onClick={handleEdit}>
-          Edit Template
-        </button>
-      </div>
+      <h1 className={template_styles.title}>{template.name}</h1>
+      <p>{template.preview}</p>
       <table className={template_styles.table}>
         <thead className={template_styles.tableHeader}>
           <tr>
-            <th>Name</th>
+            <th>Field</th>
             <th>Type</th>
-            <th>Explanation</th>
-            <th>Action</th>
+            <th>Description</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody className={template_styles.tableBody}>
-          {Object.entries(template.fields).map(
-            ([key, field]: [string, TemplateField]) => (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>{field.type}</td>
-                <td>{field.description}</td>
-                <td>
-                  <button className={template_styles.actionButton}>
-                    <FaEdit style={{ color: "#59DBBC" }} />
+          {Object.entries(template.fields).map(([key, field]) => (
+            <tr key={key}>
+              <td>
+                {editingField === key ? (
+                  <input
+                    type="text"
+                    value={editedValues[key]?.name || key}
+                    onChange={(e) =>
+                      handleInputChange(key, "name", e.target.value)
+                    }
+                    className={template_styles.input}
+                  />
+                ) : (
+                  key
+                )}
+              </td>
+              <td>
+                {editingField === key ? (
+                  <select
+                    value={editedValues[key]?.type || field.type}
+                    onChange={(e) =>
+                      handleInputChange(key, "type", e.target.value)
+                    }
+                    className={template_styles.input}
+                  >
+                    {typeOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  field.type
+                )}
+              </td>
+              <td>
+                {editingField === key ? (
+                  <input
+                    type="text"
+                    value={editedValues[key]?.description || field.description}
+                    onChange={(e) =>
+                      handleInputChange(key, "description", e.target.value)
+                    }
+                    className={template_styles.input}
+                  />
+                ) : (
+                  field.description
+                )}
+              </td>
+              <td>
+                {editingField === key ? (
+                  <button
+                    onClick={() => handleSave(key)}
+                    className={`${template_styles.actionButton}`}
+                    style={{ color: "#319795" }}
+                  >
+                    <FaSave />
                   </button>
-                  <button className={template_styles.actionButton}>
-                    <FaTrash style={{ color: "#e53e3e" }} />
+                ) : (
+                  <button
+                    onClick={() => handleEdit(key)}
+                    className={template_styles.actionButton}
+                  >
+                    <FaEdit />
                   </button>
-                </td>
-              </tr>
-            ),
-          )}
+                )}
+                <button className={template_styles.actionButton}>
+                  <FaTrash />
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

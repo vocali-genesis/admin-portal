@@ -5,18 +5,18 @@ import MessageHandler from "@/core/message-handler";
 
 const messageHandler = MessageHandler.get();
 
+export interface TemplateField {
+  type: string;
+  description: string;
+}
+
 export interface Template {
   id: number;
   ownerId: string;
   name: string;
   createdAt: string;
   preview: string;
-  fields: object; // Might want to define a more specific type for fields
-}
-
-export interface TemplateField {
-  type: string;
-  description: string;
+  fields: TemplateField; // Might want to define a more specific type for fields
 }
 
 class TemplateService {
@@ -65,9 +65,9 @@ class TemplateService {
       .from("templates")
       .update(updates)
       .eq("id", id)
-      .single();
+      .select();
     if (error) return messageHandler.handleError(error.message);
-    return data as Template;
+    return data[0] as Template;
   }
 
   async deleteTemplate(id: number): Promise<boolean | null> {
