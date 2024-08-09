@@ -23,8 +23,6 @@ const finalLangs = ModuleManager.get().components.langs.reduce(
   >
 );
 
-console.log({ langs: ModuleManager.get().components.langs });
-
 const resources = Object.keys(finalLangs).reduce(
   (lang, langCode) => ({
     ...lang,
