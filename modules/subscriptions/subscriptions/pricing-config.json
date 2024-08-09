@@ -6,7 +6,7 @@
     "interval": "subscriptions.price-1.interval",
     "features": ["subscriptions.price-1.features.feature-1"],
     "bttonText": "subscriptions.price-1.btn-text",
-    "buttonAction": "mailto:contactus@test.com"
+    "buttonAction": "https://invoxmedical.typeform.com/invox-genesis?typeform-source=genesismedical.ai"
   },
   {
     "title": "subscriptions.price-2.title",
