@@ -13,6 +13,7 @@ import Table from "@/resources/table/table";
 import FieldModal from "@/resources/containers/field-modal";
 
 const messageHandler = MessageHandler.get();
+type TableDataType = TemplateField & { key: string; name: string };
 
 const TemplateDetail = () => {
   const router = useRouter();
@@ -61,7 +62,12 @@ const TemplateDetail = () => {
 
     const { name, ...fieldData } = editedValues[fieldKey];
 
-    if (!name || !fieldData.type || !fieldData.description) {
+    // Check if the input is empty
+    if (
+      !name.trim() ||
+      !fieldData.type.trim() ||
+      !fieldData.description.trim()
+    ) {
       return messageHandler.handleError("All fields must be filled");
     }
 
@@ -111,17 +117,14 @@ const TemplateDetail = () => {
     if (!template) return;
 
     const newFieldKey = `newField${Object.keys(template.fields).length + 1}`;
-    const newField = {
+    const newField: TemplateField = {
       type: "text",
       description: "New field description",
     };
 
     setTemplate({
       ...template,
-      fields: {
-        ...template.fields,
-        [newFieldKey]: newField,
-      },
+      fields: { ...template.fields, [newFieldKey]: newField },
     });
 
     setEditingField(newFieldKey);
@@ -177,32 +180,42 @@ const TemplateDetail = () => {
     }
   };
 
-  const columns = [
+  const columns: ColumnConfig<TableDataType>[] = [
     {
       title: "Field",
       dataIndex: "name",
-      render: (name: string, field: TemplateField & { key: string }) =>
-        editingField === field?.key ? (
+      render: (record: TableDataType) =>
+        editingField === record.key ? (
           <input
             type="text"
-            value={editedValues[field.key]?.name || name}
-            onChange={(e) =>
-              handleInputChange(field.key, "name", e.target.value)
+            value={
+              editedValues[record.key]?.name !== undefined
+                ? editedValues[record.key].name
+                : record.name
             }
-            className={styles.input}
+            onChange={(e) =>
+              handleInputChange(record.key, "name", e.target.value)
+            }
+            className={`${styles.input} ${!editedValues[record.key]?.name?.trim() ? styles.inputError : ""}`}
           />
         ) : (
-          name
+          <>
+            <span>{record.name}</span>
+          </>
         ),
     },
     {
       title: "Type",
       dataIndex: "type",
-      render: (type: string, field: TemplateField & { key: string }) =>
-        editingField === field?.key ? (
+      render: (record: TableDataType) =>
+        editingField === record.key ? (
           <select
-            value={editedValues[field.key]?.type || type}
-            onChange={(e) => handleTypeChange(field.key, e.target.value)}
+            value={
+              editedValues[record.key]?.type !== undefined
+                ? editedValues[record.key].type
+                : record.type
+            }
+            onChange={(e) => handleTypeChange(record.key, e.target.value)}
             className={styles.input}
           >
             {typeOptions.map((option) => (
@@ -212,33 +225,42 @@ const TemplateDetail = () => {
             ))}
           </select>
         ) : (
-          type
+          <>
+            <span>{record.type}</span>
+          </>
         ),
     },
     {
       title: "Description",
       dataIndex: "description",
-      render: (description: string, field: TemplateField & { key: string }) =>
-        editingField === field?.key ? (
+      render: (record: TableDataType) =>
+        editingField === record.key ? (
           <input
             type="text"
-            value={editedValues[field.key]?.description || description}
-            onChange={(e) =>
-              handleInputChange(field.key, "description", e.target.value)
+            value={
+              editedValues[record.key]?.description !== undefined
+                ? editedValues[record.key].description
+                : record.description
             }
-            className={styles.input}
+            onChange={(e) =>
+              handleInputChange(record.key, "description", e.target.value)
+            }
+            className={`${styles.input} ${!editedValues[record.key]?.description?.trim() ? styles.inputError : ""}`}
           />
         ) : (
-          description
+          <>
+            <span>{record.description}</span>
+          </>
         ),
     },
     {
       title: "Actions",
-      render: (_: any, field: TemplateField & { key: string }) => (
+      dataIndex: "key",
+      render: (record: TableDataType) => (
         <>
-          {editingField === field?.key ? (
+          {editingField === record.key ? (
             <button
-              onClick={() => handleSave(field.key)}
+              onClick={() => handleSave(record.key)}
               className={styles.actionButton}
             >
               <FaSave style={{ color: "#59DBBC" }} />
@@ -246,13 +268,13 @@ const TemplateDetail = () => {
           ) : (
             <>
               <button
-                onClick={() => handleEdit(field.key)}
+                onClick={() => handleEdit(record.key)}
                 className={styles.actionButton}
               >
                 <FaEdit style={{ color: "#59DBBC" }} />
               </button>
               <button
-                onClick={() => handleDeleteField(field.key)}
+                onClick={() => handleDeleteField(record.key)}
                 className={styles.actionButton}
               >
                 <FaTrash style={{ color: "#e53e3e" }} />
@@ -264,7 +286,7 @@ const TemplateDetail = () => {
     },
   ];
 
-  const tableData = template
+  const tableData: TableDataType[] = template
     ? Object.entries(template.fields).map(([key, field]) => ({
         key,
         name: key,

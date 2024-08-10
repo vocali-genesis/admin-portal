@@ -45,12 +45,13 @@
   font-size: 3vh;
   font-weight: 600;
   color: #333;
+  margin-left: 2vh
 }
 
-.p {
+.preview {
   color: #333;
   font-size: 2vh;
-  margin-bottom: 4vh;
+  margin: 0.5vh 0 3vh 2vh;
 }
 
 .editButton, .saveButton {
@@ -63,33 +64,6 @@
 
 .editButton:hover, .saveButton:hover {
   background-color: #59DBBC;
-}
-
-.table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.tableHeader th {
-  background-color: #f1f5f9;
-  color: #64748b;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 12px;
-  padding: 12px 16px;
-  text-align: left;
-}
-
-.tableBody td {
-  padding: 12px 16px;
-  border-top: 1px solid #e2e8f0;
-  color: #333;
-  font-size: 14px;
 }
 
 .actionButton {
@@ -108,6 +82,11 @@
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   background-color: #f8fafc;
+}
+
+.inputError {
+  border: 1px solid #e53e3e;
+  background-color: #ffe0e0;
 }
 
 .input:focus, .select:focus {

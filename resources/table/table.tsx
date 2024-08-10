@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Spinner from "./spinner";
+import styles from "./styles/table.module.css";
 
 interface TableProps<T> {
   data: T[];
@@ -33,20 +34,20 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
   return (
     <div className="relative overflow-x-auto">
       {isLoading && (
-        <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center">
+        <div className="inset-0 bg-white bg-opacity-70 flex items-center justify-center">
           <Spinner />
         </div>
       )}
-      <table className="w-full text-sm text-left">
-        <thead className="text-xs uppercase bg-white">
-          <tr>
+      <table className={`w-full text-sm text-left ${styles.table}`}>
+        <thead className={`text-xs uppercase bg-white ${styles.thead}`}>
+          <tr className={styles.tr}>
             {columns.map((column, index) => (
               <th
                 key={index}
                 onClick={() => handleSort(column)}
                 className={`px-6 py-3 font-medium ${
                   column.sorter ? "cursor-pointer" : ""
-                }`}
+                } ${styles.th}`}
               >
                 {column.title}
                 {column.sorter && column.dataIndex && (
@@ -62,11 +63,11 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className={styles.tbody}>
           {data.map((item, rowIndex) => (
-            <tr key={rowIndex} className="bg-white border-b">
+            <tr key={rowIndex} className={`bg-white border-b ${styles.tr}`}>
               {columns.map((column, colIndex) => (
-                <td key={colIndex} className="px-6 py-4">
+                <td key={colIndex} className={`px-6 py-4 ${styles.td}`}>
                   {column.render
                     ? column.render(item)
                     : column.dataIndex &&

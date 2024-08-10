@@ -1,0 +1,38 @@
+.modalOverlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  font-family: 'Montserrat', sans-serif;
+  width: 60vh;
+}
+
+.title {
+  margin-left: 1vh;
+  margin-bottom: 1vh;
+}
+
+.modalContent {
+  @apply bg-white rounded-md shadow-xl p-6 max-w-md w-full;
+  font-size: 2.5vh;
+}
+
+.input {
+  @apply w-full border border-gray-300 rounded-md px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-teal-500;
+  margin-bottom: 2vh;
+  font-size: 2vh;
+}
+
+.button {
+  @apply px-4 py-2 rounded-md text-sm font-medium;
+}
+
+.cancelButton {
+  @apply text-gray-600 hover:bg-gray-100;
+}
+
+.createButton {
+  @apply bg-teal-500 text-white hover:bg-teal-600;
+}

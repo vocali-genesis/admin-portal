@@ -5,7 +5,7 @@ import templateService, {
 } from "@/services/genesis/templates.service";
 import styles from "./styles/templates.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
-import { FaTrash, FaEdit, FaPlus } from "react-icons/fa";
+import { FaTrash, FaEdit, FaPlus, FaSave } from "react-icons/fa";
 import MessageHandler from "@/core/message-handler";
 import { useRouter } from "next/router";
 import Table from "@/resources/table/table";
@@ -98,11 +98,11 @@ const Templates = () => {
     }
   };
 
-  const columns = [
+  const columns: ColumnConfig<Template>[] = [
     {
       title: "Template Name",
       dataIndex: "name",
-      render: (name: string, template: Template) =>
+      render: (template: Template) =>
         editingTemplate && editingTemplate.id === template.id ? (
           <input
             type="text"
@@ -117,19 +117,21 @@ const Templates = () => {
             }
             style={{ cursor: "pointer" }}
           >
-            {name}
+            {template.name}
           </span>
         ),
     },
     {
       title: "Date",
       dataIndex: "createdAt",
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (template: Template) => (
+        <span>{new Date(template.createdAt).toLocaleDateString()}</span>
+      ),
     },
     {
       title: "Preview",
       dataIndex: "preview",
-      render: (preview: string, template: Template) =>
+      render: (template: Template) =>
         editingTemplate && editingTemplate.id === template.id ? (
           <input
             type="text"
@@ -138,22 +140,24 @@ const Templates = () => {
             className={styles.input}
           />
         ) : (
-          preview
+          <span>{template.preview}</span>
         ),
     },
     {
       title: "Action",
-      render: (_: any, template: Template) => (
+      dataIndex: "id",
+      render: (template: Template) => (
         <>
           {editingTemplate && editingTemplate.id === template.id ? (
             <button onClick={handleSave} className={styles.actionButton}>
-              <FaEdit style={{ color: "#59DBBC" }} />
+              <FaSave style={{ color: "#59DBBC" }} />
             </button>
           ) : (
             <>
               <button
                 onClick={() => handleEdit(template)}
                 className={styles.actionButton}
+                style={{ marginRight: "4vh" }}
               >
                 <FaEdit style={{ color: "#59DBBC" }} />
               </button>
