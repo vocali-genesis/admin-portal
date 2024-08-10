@@ -5,50 +5,40 @@ import templateService, {
   Template,
   TemplateField,
 } from "@/services/genesis/templates.service";
-import template_styles from "./styles/template-detail.module.css";
+import styles from "./styles/template-detail.module.css";
 import { FaEdit, FaSave, FaTrash, FaArrowLeft, FaPlus } from "react-icons/fa";
 import MessageHandler from "@/core/message-handler";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
-import { useTranslation } from "react-i18next";
+import Table from "@/resources/table/table";
+import FieldModal from "@/resources/containers/field-modal";
 
 const messageHandler = MessageHandler.get();
 
 const TemplateDetail = () => {
   const router = useRouter();
-  const { t } = useTranslation();
   const { id } = router.query;
   const [template, setTemplate] = useState<Template | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editedValues, setEditedValues] = useState<{
-    [key: string]: { name: string } & TemplateField;
+    [key: string]: TemplateField & { name: string };
   }>({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [fieldToDelete, setFieldToDelete] = useState<string | null>(null);
+  const [isFieldModalOpen, setIsFieldModalOpen] = useState(false);
+  const [currentFieldKey, setCurrentFieldKey] = useState<string | null>(null);
 
-  const typeOptions = [
-    "string",
-    "number",
-    "boolean",
-    "object",
-    "array",
-    "date",
-  ];
+  const typeOptions = ["text", "number", "multiselect"];
 
   useEffect(() => {
-    if (id) {
-      fetchTemplate();
-    }
+    if (id) fetchTemplate();
   }, [id]);
 
   const fetchTemplate = async () => {
     if (typeof id === "string") {
       try {
-        const fetchedTemplate = await templateService.getTemplate(parseInt(id));
-        if (fetchedTemplate) {
-          setTemplate(fetchedTemplate);
-        } else {
-          messageHandler.handleError("Template not found");
-        }
+        const fetchedTemplate = await templateService.getTemplate(+id);
+        if (fetchedTemplate) setTemplate(fetchedTemplate);
+        else messageHandler.handleError("Template not found");
       } catch (error) {
         messageHandler.handleError("Failed to fetch template");
       }
@@ -69,8 +59,13 @@ const TemplateDetail = () => {
   const handleSave = async (fieldKey: string) => {
     if (!template) return;
 
+    const { name, ...fieldData } = editedValues[fieldKey];
+
+    if (!name || !fieldData.type || !fieldData.description) {
+      return messageHandler.handleError("All fields must be filled");
+    }
+
     try {
-      const { name, ...fieldData } = editedValues[fieldKey];
       const updatedFields = { ...template.fields };
 
       if (name !== fieldKey) {
@@ -82,9 +77,7 @@ const TemplateDetail = () => {
 
       const updatedTemplate = await templateService.updateTemplate(
         template.id,
-        {
-          fields: updatedFields,
-        },
+        { fields: updatedFields },
       );
 
       if (updatedTemplate) {
@@ -118,27 +111,24 @@ const TemplateDetail = () => {
     if (!template) return;
 
     const newFieldKey = `newField${Object.keys(template.fields).length + 1}`;
-    const updatedFields = {
-      ...template.fields,
-      [newFieldKey]: {
-        type: "string",
-        description: "New field description",
-      },
+    const newField = {
+      type: "text",
+      description: "New field description",
     };
 
-    templateService
-      .updateTemplate(template.id, { fields: updatedFields })
-      .then((updatedTemplate) => {
-        if (updatedTemplate) {
-          setTemplate(updatedTemplate);
-          messageHandler.handleSuccess("New field added successfully");
-        } else {
-          messageHandler.handleError("Failed to add new field");
-        }
-      })
-      .catch(() => {
-        messageHandler.handleError("Failed to add new field");
-      });
+    setTemplate({
+      ...template,
+      fields: {
+        ...template.fields,
+        [newFieldKey]: newField,
+      },
+    });
+
+    setEditingField(newFieldKey);
+    setEditedValues({
+      ...editedValues,
+      [newFieldKey]: { name: newFieldKey, ...newField },
+    });
   };
 
   const handleDeleteField = (fieldKey: string) => {
@@ -172,120 +162,145 @@ const TemplateDetail = () => {
     setFieldToDelete(null);
   };
 
-  if (!template) {
-    return <div>Loading...</div>;
-  }
+  const handleTypeChange = (fieldKey: string, newType: string) => {
+    if (newType === "number" || newType === "multiselect") {
+      setCurrentFieldKey(fieldKey);
+      setIsFieldModalOpen(true);
+    }
+    handleInputChange(fieldKey, "type", newType);
+  };
+
+  const handleFieldModalSave = (data: any) => {
+    if (currentFieldKey) {
+      const updatedField = { ...editedValues[currentFieldKey], ...data };
+      setEditedValues({ ...editedValues, [currentFieldKey]: updatedField });
+    }
+  };
+
+  const columns = [
+    {
+      title: "Field",
+      dataIndex: "name",
+      render: (name: string, field: TemplateField & { key: string }) =>
+        editingField === field?.key ? (
+          <input
+            type="text"
+            value={editedValues[field.key]?.name || name}
+            onChange={(e) =>
+              handleInputChange(field.key, "name", e.target.value)
+            }
+            className={styles.input}
+          />
+        ) : (
+          name
+        ),
+    },
+    {
+      title: "Type",
+      dataIndex: "type",
+      render: (type: string, field: TemplateField & { key: string }) =>
+        editingField === field?.key ? (
+          <select
+            value={editedValues[field.key]?.type || type}
+            onChange={(e) => handleTypeChange(field.key, e.target.value)}
+            className={styles.input}
+          >
+            {typeOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        ) : (
+          type
+        ),
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      render: (description: string, field: TemplateField & { key: string }) =>
+        editingField === field?.key ? (
+          <input
+            type="text"
+            value={editedValues[field.key]?.description || description}
+            onChange={(e) =>
+              handleInputChange(field.key, "description", e.target.value)
+            }
+            className={styles.input}
+          />
+        ) : (
+          description
+        ),
+    },
+    {
+      title: "Actions",
+      render: (_: any, field: TemplateField & { key: string }) => (
+        <>
+          {editingField === field?.key ? (
+            <button
+              onClick={() => handleSave(field.key)}
+              className={styles.actionButton}
+            >
+              <FaSave style={{ color: "#59DBBC" }} />
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => handleEdit(field.key)}
+                className={styles.actionButton}
+              >
+                <FaEdit style={{ color: "#59DBBC" }} />
+              </button>
+              <button
+                onClick={() => handleDeleteField(field.key)}
+                className={styles.actionButton}
+              >
+                <FaTrash style={{ color: "#e53e3e" }} />
+              </button>
+            </>
+          )}
+        </>
+      ),
+    },
+  ];
+
+  const tableData = template
+    ? Object.entries(template.fields).map(([key, field]) => ({
+        key,
+        name: key,
+        ...field,
+      }))
+    : [];
 
   return (
-    <div className={template_styles.container}>
-      <div className={template_styles.header}>
+    <div className={styles.container}>
+      <div className={styles.header}>
         <button
           onClick={() => router.push("/app/templates")}
-          className={template_styles.backButton}
+          className={styles.backButton}
         >
-          <FaArrowLeft /> {t("recording.back")}
+          <FaArrowLeft /> Back
         </button>
-        <button
-          onClick={handleAddField}
-          className={template_styles.addFieldButton}
-        >
-          <FaPlus /> {t("recording.add_field")}
+        <button onClick={handleAddField} className={styles.addFieldButton}>
+          <FaPlus /> Add Field
         </button>
       </div>
-      <h1 className={template_styles.title}>{template.name}</h1>
-      <p className={template_styles.p}>{template.preview}</p>
+      <h1 className={styles.title}>{template?.name}</h1>
+      <p className={styles.preview}>{template?.preview}</p>
 
-      <table className={template_styles.table}>
-        <thead className={template_styles.tableHeader}>
-          <tr>
-            <th>Field</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody className={template_styles.tableBody}>
-          {Object.entries(template.fields).map(([key, field]) => (
-            <tr key={key}>
-              <td>
-                {editingField === key ? (
-                  <input
-                    type="text"
-                    value={editedValues[key]?.name || key}
-                    onChange={(e) =>
-                      handleInputChange(key, "name", e.target.value)
-                    }
-                    className={template_styles.input}
-                  />
-                ) : (
-                  key
-                )}
-              </td>
-              <td>
-                {editingField === key ? (
-                  <select
-                    value={editedValues[key]?.type || field.type}
-                    onChange={(e) =>
-                      handleInputChange(key, "type", e.target.value)
-                    }
-                    className={template_styles.input}
-                  >
-                    {typeOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  field.type
-                )}
-              </td>
-              <td>
-                {editingField === key ? (
-                  <input
-                    type="text"
-                    value={editedValues[key]?.description || field.description}
-                    onChange={(e) =>
-                      handleInputChange(key, "description", e.target.value)
-                    }
-                    className={template_styles.input}
-                  />
-                ) : (
-                  field.description
-                )}
-              </td>
-              <td>
-                {editingField === key ? (
-                  <button
-                    onClick={() => handleSave(key)}
-                    className={`${template_styles.actionButton}`}
-                    style={{ color: "#59DBBC" }}
-                  >
-                    <FaSave />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleEdit(key)}
-                    className={template_styles.actionButton}
-                  >
-                    <FaEdit style={{ color: "#59DBBC" }} />
-                  </button>
-                )}
-                <button
-                  onClick={() => handleDeleteField(key)}
-                  className={template_styles.actionButton}
-                >
-                  <FaTrash style={{ color: "#e53e3e" }} />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table data={tableData} columns={columns} isLoading={!template} />
+
       <DeleteConfirmation
         isOpen={isDeleteModalOpen}
         onRequestClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDelete}
+      />
+
+      <FieldModal
+        isOpen={isFieldModalOpen}
+        onClose={() => setIsFieldModalOpen(false)}
+        onSave={handleFieldModalSave}
+        fieldType={currentFieldKey ? editedValues[currentFieldKey]?.type : ""}
       />
     </div>
   );

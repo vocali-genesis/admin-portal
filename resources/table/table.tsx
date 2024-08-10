@@ -69,7 +69,12 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
                 <td key={colIndex} className="px-6 py-4">
                   {column.render
                     ? column.render(item)
-                    : (item[column.dataIndex!] as React.ReactNode)}
+                    : column.dataIndex &&
+                        typeof item[column.dataIndex] !== "object"
+                      ? (item[column.dataIndex] as React.ReactNode)
+                      : column.dataIndex
+                        ? JSON.stringify(item[column.dataIndex])
+                        : ""}
                 </td>
               ))}
             </tr>

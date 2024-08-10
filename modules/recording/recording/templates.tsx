@@ -5,28 +5,30 @@ import templateService, {
 } from "@/services/genesis/templates.service";
 import styles from "./styles/templates.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
-import { FaTrash, FaRegPenToSquare } from "react-icons/fa6";
+import { FaTrash, FaEdit, FaPlus } from "react-icons/fa";
 import MessageHandler from "@/core/message-handler";
 import { useRouter } from "next/router";
+import Table from "@/resources/table/table";
 
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
   const router = useRouter();
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [templateId, setTemplateId] = useState<number>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [templateToDelete, setTemplateToDelete] = useState<number | null>(null);
+  const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
 
   useEffect(() => {
     fetchTemplates();
-  }, [router]);
+  }, []);
 
   const fetchTemplates = async () => {
     setIsLoading(true);
     try {
       const data = await templateService.getTemplates();
-      setTemplates(data as Template[]);
+      if (data) setTemplates(data);
     } catch (error) {
       console.error("Error fetching templates:", error);
     } finally {
@@ -36,103 +38,151 @@ const Templates = () => {
 
   const handleDelete = (id: number) => {
     setIsModalOpen(true);
-    setTemplateId(id);
+    setTemplateToDelete(id);
   };
 
-  const confirmAction = async () => {
-    setIsModalOpen(false);
-
-    const resp = await templateService.deleteTemplate(templateId as number);
-    if (resp) {
-      setTemplates(templates.filter((template) => template.id !== templateId));
-      return messageHandler.handleSuccess("Template deleted");
+  const confirmDelete = async () => {
+    if (templateToDelete) {
+      const resp = await templateService.deleteTemplate(templateToDelete);
+      if (resp) {
+        setTemplates(
+          templates.filter((template) => template.id !== templateToDelete),
+        );
+        messageHandler.handleSuccess("Template deleted");
+      }
     }
-  };
-
-  const cancelAction = () => {
     setIsModalOpen(false);
+    setTemplateToDelete(null);
   };
 
   const handleAddTemplate = async () => {
-    // Implement add template functionality
-    const data = await templateService.createTemplate({
+    const newTemplate = {
       ownerId: "9196981c-e26d-4177-98d1-78492a32e292",
-      name: "Template 1",
-      preview: "First template",
+      name: "New Template",
+      preview: "New template preview",
       fields: {},
-    });
-
-    if (data) {
-      setTemplates(templates.concat([data]));
-      return messageHandler.handleSuccess("Template added successfully");
+    };
+    const createdTemplate = await templateService.createTemplate(newTemplate);
+    if (createdTemplate) {
+      setTemplates([...templates, createdTemplate]);
+      setEditingTemplate(createdTemplate);
+      messageHandler.handleSuccess("Template added successfully");
     }
   };
+
+  const handleEdit = (template: Template) => {
+    setEditingTemplate(template);
+  };
+
+  const handleSave = async () => {
+    if (editingTemplate) {
+      const updatedTemplate = await templateService.updateTemplate(
+        editingTemplate.id,
+        editingTemplate,
+      );
+      if (updatedTemplate) {
+        setTemplates(
+          templates.map((t) =>
+            t.id === updatedTemplate.id ? updatedTemplate : t,
+          ),
+        );
+        setEditingTemplate(null);
+        messageHandler.handleSuccess("Template updated successfully");
+      }
+    }
+  };
+
+  const handleInputChange = (field: keyof Template, value: string) => {
+    if (editingTemplate) {
+      setEditingTemplate({ ...editingTemplate, [field]: value });
+    }
+  };
+
+  const columns = [
+    {
+      title: "Template Name",
+      dataIndex: "name",
+      render: (name: string, template: Template) =>
+        editingTemplate && editingTemplate.id === template.id ? (
+          <input
+            type="text"
+            value={editingTemplate.name}
+            onChange={(e) => handleInputChange("name", e.target.value)}
+            className={styles.input}
+          />
+        ) : (
+          <span
+            onClick={() =>
+              router.push(`/app/template-detail?id=${template.id}`)
+            }
+            style={{ cursor: "pointer" }}
+          >
+            {name}
+          </span>
+        ),
+    },
+    {
+      title: "Date",
+      dataIndex: "createdAt",
+      render: (date: string) => new Date(date).toLocaleDateString(),
+    },
+    {
+      title: "Preview",
+      dataIndex: "preview",
+      render: (preview: string, template: Template) =>
+        editingTemplate && editingTemplate.id === template.id ? (
+          <input
+            type="text"
+            value={editingTemplate.preview}
+            onChange={(e) => handleInputChange("preview", e.target.value)}
+            className={styles.input}
+          />
+        ) : (
+          preview
+        ),
+    },
+    {
+      title: "Action",
+      render: (_: any, template: Template) => (
+        <>
+          {editingTemplate && editingTemplate.id === template.id ? (
+            <button onClick={handleSave} className={styles.actionButton}>
+              <FaEdit style={{ color: "#59DBBC" }} />
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => handleEdit(template)}
+                className={styles.actionButton}
+              >
+                <FaEdit style={{ color: "#59DBBC" }} />
+              </button>
+              <button
+                onClick={() => handleDelete(template.id)}
+                className={styles.actionButton}
+              >
+                <FaTrash style={{ color: "#e53e3e" }} />
+              </button>
+            </>
+          )}
+        </>
+      ),
+    },
+  ];
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>All Template</h1>
+        <h1 className={styles.title}>All Templates</h1>
         <button className={styles.addButton} onClick={handleAddTemplate}>
-          Add Template
+          <FaPlus /> Add Template
         </button>
       </div>
-      <table className={styles.table}>
-        <thead className={styles.tableHeader}>
-          <tr>
-            <th>Template Name</th>
-            <th>Date</th>
-            <th>Preview</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody className={styles.tableBody}>
-          {templates.map((template) => (
-            <tr key={template.id}>
-              <td
-                onClick={() =>
-                  router.push({
-                    pathname: "/app/template-detail",
-                    query: { id: template.id },
-                  })
-                }
-                style={{ cursor: "pointer" }}
-              >
-                {template.name}
-              </td>
-              <td>{new Date(template.createdAt).toLocaleDateString()}</td>
-              <td>{template.preview}</td>
-              <td>
-                <button
-                  className={styles.actionButton}
-                  onClick={() => handleDelete(template.id)}
-                  style={{ marginRight: "3vh" }}
-                >
-                  <FaRegPenToSquare style={{ color: "#59DBBC" }} />
-                </button>
-                <button
-                  className={styles.actionButton}
-                  onClick={() => handleDelete(template.id)}
-                >
-                  <FaTrash style={{ color: "#e53e3e" }} />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className={styles.pagination}>
-        <button className={styles.paginationButton} disabled>
-          &lt;
-        </button>
-        <button className={styles.paginationButton}>1</button>
-        <button className={styles.paginationButton}>2</button>
-        <button className={styles.paginationButton}>3</button>
-        <button className={styles.paginationButton}>&gt;</button>
-      </div>
+      <Table data={templates} columns={columns} isLoading={isLoading} />
       <DeleteConfirmation
         isOpen={isModalOpen}
-        onRequestClose={cancelAction}
-        onConfirm={confirmAction}
+        onRequestClose={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete}
         isLeavingPage={false}
       />
     </div>

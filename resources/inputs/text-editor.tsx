@@ -43,16 +43,14 @@ const Editor: React.FC<EditorProps> = ({ content = {}, onContentChange }) => {
     const updatedContent: { [key: string]: string } = {};
 
     doc.body.childNodes.forEach((node: any) => {
-      if (node.nodeName === "P") {
-        const strong = node.querySelector("strong");
-        if (strong) {
-          const key = strong.textContent;
-          const textValue = node.textContent
-            .replace(strong.textContent, "")
-            .trim();
-          updatedContent[key] = textValue;
-        }
-      }
+      if (node.nodeName !== "P") return;
+
+      const strong = node.querySelector("strong");
+      if (!strong) return;
+
+      const key = strong.textContent;
+      const textValue = node.textContent.replace(strong.textContent, "").trim();
+      updatedContent[key] = textValue;
     });
 
     onContentChange(updatedContent);

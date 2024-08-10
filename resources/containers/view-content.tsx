@@ -31,7 +31,7 @@ const ViewContent: React.FC<ViewContentProps> = ({ content }) => {
 
   console.log(typeof content);
 
-  if (typeof content === "object" && content !== null) {
+  if (typeof content === "object") {
     return (
       <div className={styles.viewContent}>
         {Object.entries(content).map(([key, value], index) => (
