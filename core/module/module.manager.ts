@@ -19,7 +19,7 @@ export class ModuleManager {
 
   private auth: Record<string, CoreComponent> = {};
   private app: Record<string, CoreComponent> = {};
-  private defaultApp: string;
+  private defaultApp: string = "";
   private settings: Record<string, CoreComponent> = {};
   private menu: MenuItem[] = [];
   private menuSettings: MenuItem[] = [];
