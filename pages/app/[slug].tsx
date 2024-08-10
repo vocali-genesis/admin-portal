@@ -29,14 +29,16 @@ const AppSlug = () => {
         return router.push("/auth/login");
       }
 
-      const subscription = await Service.get(
-        "subscriptions"
-      )?.getActiveSubscription();
-      if (
-        !subscription ||
-        (subscription?.status !== "active" && slug !== "subscriptions")
-      ) {
-        await router.push("/app/subscriptions");
+      const subscriptionService = Service.get("subscriptions");
+      if (!subscriptionService) {
+        setIsLoading(false);
+        return;
+      }
+      const subscription = await subscriptionService.getActiveSubscription();
+      if (!subscription || subscription.status !== "active") {
+        slug !== "subscriptions" && void router.push("/app/subscriptions");
+        setIsLoading(false);
+
         return;
       }
       setIsLoading(false);

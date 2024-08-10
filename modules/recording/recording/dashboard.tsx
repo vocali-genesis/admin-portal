@@ -18,9 +18,8 @@ const Dashboard = () => {
   const [recordingState, setRecordingState] = useState<
     "inactive" | "recording" | "paused"
   >("inactive");
-  const [microphone, setMicrophone] = useState('')
+  const [microphone, setMicrophone] = useState("");
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
-
 
   const toggleRecording = async () => {
     if (!microphone) {
@@ -40,19 +39,19 @@ const Dashboard = () => {
       } catch (error) {
         messageHandler.handleError((error as Error).message);
       }
-      return
+      return;
     }
     if (recordingState === "recording") {
       audioRecorderRef.current.pauseRecording();
       messageHandler.info(t("recording.paused"));
       setRecordingState("paused");
-      return
+      return;
     }
     if (recordingState === "paused") {
       await audioRecorderRef.current.startRecording(microphone);
       messageHandler.info(t("recording.resumed"));
       setRecordingState("recording");
-      return
+      return;
     }
   };
 
@@ -81,8 +80,6 @@ const Dashboard = () => {
     };
   }, []);
 
-
-
   const handleUpload = (selectedFile: File) => {
     if (selectedFile) {
       const audioUrl = URL.createObjectURL(selectedFile);
@@ -105,12 +102,13 @@ const Dashboard = () => {
         <div className={dash_styles.recordSection}>
           <MicrophoneSelect value={microphone} onChange={setMicrophone} />
           <button
-            className={`${dash_styles.recordButton} ${recordingState === "recording"
-              ? dash_styles.recording
-              : recordingState === "paused"
+            className={`${dash_styles.recordButton} ${
+              recordingState === "recording"
+                ? dash_styles.recording
+                : recordingState === "paused"
                 ? dash_styles.paused
                 : ""
-              }`}
+            }`}
             onClick={toggleRecording}
           >
             {recordingState === "recording" ? (
@@ -125,8 +123,8 @@ const Dashboard = () => {
             {recordingState === "recording"
               ? t("recording.click-to-pause")
               : recordingState === "paused"
-                ? t("recording.click-to-resume")
-                : t("recording.click-to-start")}
+              ? t("recording.click-to-resume")
+              : t("recording.click-to-start")}
           </p>
           {recordingState !== "inactive" && (
             <button className={dash_styles.stopButton} onClick={stopRecording}>
@@ -141,11 +139,16 @@ const Dashboard = () => {
         <div className={dash_styles.uploadSection}>
           <h3 className={dash_styles.h3}>{t("recording.upload")}</h3>
           <UploadFile onFile={(file) => handleUpload(file)} />
-        </div >
-      </div >
-    </div >
+        </div>
+      </div>
+    </div>
   );
 };
 
-GlobalCore.manager.app("dashboard", Dashboard);
-GlobalCore.manager.menu({ 'label': 'recording.menu', icon: '/recordings.svg', url: 'dashboard', order: 0 })
+GlobalCore.manager.app("dashboard", Dashboard, { default: true });
+GlobalCore.manager.menu({
+  label: "recording.menu",
+  icon: "/recordings.svg",
+  url: "dashboard",
+  order: 0,
+});

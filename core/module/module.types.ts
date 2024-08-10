@@ -14,7 +14,11 @@ export type CoreComponent = () => React.ReactNode;
 
 export interface ModuleSubscriber {
   auth: (key: string, component: CoreComponent) => void;
-  app: (key: string, component: CoreComponent) => void;
+  app: (
+    key: string,
+    component: CoreComponent,
+    options?: { default?: boolean }
+  ) => void;
   langs: (module: ComponentName, langs: Record<string, object>) => void;
   settings: (key: string, component: CoreComponent) => void;
   menu: (item: MenuItem) => void;
