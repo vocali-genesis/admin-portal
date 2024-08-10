@@ -9,7 +9,12 @@ window.open = () => {
  * Global Mocks
  */
 // Router
-export const RouterMock = { push: jest.fn };
+export const RouterMock = {
+  push: jest.fn,
+  replace: jest.fn,
+  query: { slug: "" },
+  isReady: true,
+};
 jest.mock("next/router", () => ({
   useRouter: jest.fn().mockReturnValue(RouterMock),
 }));

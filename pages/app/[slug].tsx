@@ -6,7 +6,7 @@ import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
 import Service from "@/core/module/service.factory";
 
-const App = () => {
+const AppSlug = () => {
   const router = useRouter();
   const loader = ModuleManager.get().components;
   const { slug } = router.query as { slug: string };
@@ -24,32 +24,33 @@ const App = () => {
       setIsLoading(true);
       const { slug } = router.query as { slug: string };
       const user = await Service.get("oauth").getLoggedUser();
+
       if (!user) {
         return router.push("/auth/login");
       }
+
       const subscription: Record<string, unknown> = await Service.get(
         "subscriptions"
-      ).getActiveSubscription();
-      setIsLoading(false);
-      // TODO: we should make this configurable
-      if (subscription?.status === "active" && slug !== "dashboard") {
-        return router.push("/app/dashboard");
-      }
-      if (subscription?.status !== "active" && slug !== "subscriptions") {
+      )?.getActiveSubscription();
+      if (
+        !subscription ||
+        (subscription?.status !== "active" && slug !== "subscriptions")
+      ) {
         await router.push("/app/subscriptions");
+        return;
       }
+      setIsLoading(false);
     })();
   }, [router]);
 
   const isSpinner = !router.isReady || isLoading;
-
-  // remove this lines after the i18nfix
+  // remove this lines after the i18n fix
   if (isSpinner) {
     return <Spinner />;
   }
-
   if (router.isReady && !Component) {
     void router.replace("/errors/not-found");
+    return null;
   }
 
   const menu = ModuleManager.get().components.menus;
@@ -74,4 +75,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppSlug;

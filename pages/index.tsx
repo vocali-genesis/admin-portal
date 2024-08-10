@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Service from "@/core/module/service.factory";
+import React from "react";
 
 export default function Home() {
   const router = useRouter();
@@ -13,6 +14,9 @@ export default function Home() {
     void checkAuth();
   }, [router]);
 
+  /**
+   * Refactor, use the Spinner of the resources here
+   */
   return (
     <div className="flex justify-center items-center h-screen bg-white">
       <div className="relative w-12 h-12">

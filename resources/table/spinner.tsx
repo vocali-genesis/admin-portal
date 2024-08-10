@@ -1,13 +1,15 @@
+import React from "react";
+
 const Spinner: React.FC = ({ cssClass }: { cssClass?: string }) => {
   return (
     <svg
       className={
-        cssClass ||
-        "w-12 h-12 text-gray-200 animate-spin fill-teal-400"
+        cssClass || "w-12 h-12 text-gray-200 animate-spin fill-teal-400"
       }
       aria-hidden="true"
       viewBox="0 0 100 101"
       fill="none"
+      data-testid="spinner"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

@@ -1,5 +1,6 @@
 import { ModuleManager } from "@/core/module/module.manager";
 import Spinner from "@/resources/containers/spinner";
+import React from "react";
 
 export function getServerSideProps() {
   return {

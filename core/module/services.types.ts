@@ -64,7 +64,7 @@ export interface AuthService {
 
 export interface SubscriptionService {
   getSubscriptionLink(): Promise<{ url: string | null }>;
-  getActiveSubscription(): Promise<SubscriptionResponse>;
+  getActiveSubscription(): Promise<SubscriptionResponse | null>;
   getInvoices(
     from: number,
     to: number
