@@ -43,10 +43,13 @@ class TemplateService {
   }
 
   async getTemplate(id: number): Promise<Template | null> {
+    const userData = await Service.get("oauth")?.getLoggedUser();
+
     const { data, error } = await this.supabase
       .from("templates")
       .select("*")
       .eq("id", id)
+      .eq("ownerId", userData?.id)
       .select();
     if (error) return messageHandler.handleError(error.message);
     return data[0] as Template;

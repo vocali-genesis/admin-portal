@@ -42,14 +42,14 @@ const Templates = () => {
   };
 
   const confirmDelete = async () => {
-    if (templateToDelete) {
-      const resp = await templateService.deleteTemplate(templateToDelete);
-      if (resp) {
-        setTemplates(
-          templates.filter((template) => template.id !== templateToDelete),
-        );
-        messageHandler.handleSuccess("Template deleted");
-      }
+    if (!templateToDelete) return;
+
+    const resp = await templateService.deleteTemplate(templateToDelete);
+    if (resp) {
+      setTemplates(
+        templates.filter((template) => template.id !== templateToDelete),
+      );
+      messageHandler.handleSuccess("Template deleted");
     }
     setIsModalOpen(false);
     setTemplateToDelete(null);
@@ -57,17 +57,16 @@ const Templates = () => {
 
   const handleAddTemplate = async () => {
     const newTemplate = {
-      ownerId: "9196981c-e26d-4177-98d1-78492a32e292",
       name: "New Template",
       preview: "New template preview",
       fields: {},
     };
     const createdTemplate = await templateService.createTemplate(newTemplate);
-    if (createdTemplate) {
-      setTemplates([...templates, createdTemplate]);
-      setEditingTemplate(createdTemplate);
-      messageHandler.handleSuccess("Template added successfully");
-    }
+
+    if (!createdTemplate) return;
+    setTemplates([...templates, createdTemplate]);
+    setEditingTemplate(createdTemplate);
+    messageHandler.handleSuccess("Template added successfully");
   };
 
   const handleEdit = (template: Template) => {
@@ -75,27 +74,25 @@ const Templates = () => {
   };
 
   const handleSave = async () => {
-    if (editingTemplate) {
-      const updatedTemplate = await templateService.updateTemplate(
-        editingTemplate.id,
-        editingTemplate,
-      );
-      if (updatedTemplate) {
-        setTemplates(
-          templates.map((t) =>
-            t.id === updatedTemplate.id ? updatedTemplate : t,
-          ),
-        );
-        setEditingTemplate(null);
-        messageHandler.handleSuccess("Template updated successfully");
-      }
-    }
+    if (!editingTemplate) return;
+
+    const updatedTemplate = await templateService.updateTemplate(
+      editingTemplate.id,
+      editingTemplate,
+    );
+    if (!updatedTemplate) return;
+
+    setTemplates(
+      templates.map((t) => (t.id === updatedTemplate.id ? updatedTemplate : t)),
+    );
+    setEditingTemplate(null);
+    messageHandler.handleSuccess("Template updated successfully");
   };
 
   const handleInputChange = (field: keyof Template, value: string) => {
-    if (editingTemplate) {
-      setEditingTemplate({ ...editingTemplate, [field]: value });
-    }
+    if (!editingTemplate) return;
+
+    setEditingTemplate({ ...editingTemplate, [field]: value });
   };
 
   const columns: ColumnConfig<Template>[] = [

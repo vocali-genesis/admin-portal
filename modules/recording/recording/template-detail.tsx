@@ -35,26 +35,26 @@ const TemplateDetail = () => {
   }, [id]);
 
   const fetchTemplate = async () => {
-    if (typeof id === "string") {
-      try {
-        const fetchedTemplate = await templateService.getTemplate(+id);
-        if (fetchedTemplate) setTemplate(fetchedTemplate);
-        else messageHandler.handleError("Template not found");
-      } catch (error) {
-        messageHandler.handleError("Failed to fetch template");
-      }
+    if (!(typeof id === "string")) return;
+
+    const fetchedTemplate = await templateService.getTemplate(+id);
+    if (!fetchedTemplate) {
+      messageHandler.handleError("Template not found");
+      return;
     }
+
+    setTemplate(fetchedTemplate);
   };
 
   const handleEdit = (fieldKey: string) => {
     setEditingField(fieldKey);
     const field = template?.fields[fieldKey];
-    if (field) {
-      setEditedValues({
-        ...editedValues,
-        [fieldKey]: { name: fieldKey, ...field },
-      });
-    }
+    if (!field) return;
+
+    setEditedValues({
+      ...editedValues,
+      [fieldKey]: { name: fieldKey, ...field },
+    });
   };
 
   const handleSave = async (fieldKey: string) => {
@@ -71,32 +71,28 @@ const TemplateDetail = () => {
       return messageHandler.handleError("All fields must be filled");
     }
 
-    try {
-      const updatedFields = { ...template.fields };
+    const updatedFields = { ...template.fields };
 
-      if (name !== fieldKey) {
-        delete updatedFields[fieldKey];
-        updatedFields[name] = fieldData;
-      } else {
-        updatedFields[fieldKey] = fieldData;
-      }
-
-      const updatedTemplate = await templateService.updateTemplate(
-        template.id,
-        { fields: updatedFields },
-      );
-
-      if (updatedTemplate) {
-        setTemplate(updatedTemplate);
-        setEditingField(null);
-        setEditedValues({});
-        messageHandler.handleSuccess("Template field updated successfully");
-      } else {
-        messageHandler.handleError("Failed to update template field");
-      }
-    } catch (error) {
-      messageHandler.handleError("Failed to update template field");
+    if (name !== fieldKey) {
+      delete updatedFields[fieldKey];
+      updatedFields[name] = fieldData;
+    } else {
+      updatedFields[fieldKey] = fieldData;
     }
+
+    const updatedTemplate = await templateService.updateTemplate(template.id, {
+      fields: updatedFields,
+    });
+
+    if (!updatedTemplate) {
+      messageHandler.handleError("Failed to update template field");
+      return;
+    }
+
+    setTemplate(updatedTemplate);
+    setEditingField(null);
+    setEditedValues({});
+    messageHandler.handleSuccess("Template field updated successfully");
   };
 
   const handleInputChange = (
@@ -145,21 +141,17 @@ const TemplateDetail = () => {
     const updatedFields = { ...template.fields };
     delete updatedFields[fieldToDelete];
 
-    try {
-      const updatedTemplate = await templateService.updateTemplate(
-        template.id,
-        { fields: updatedFields },
-      );
+    const updatedTemplate = await templateService.updateTemplate(template.id, {
+      fields: updatedFields,
+    });
 
-      if (updatedTemplate) {
-        setTemplate(updatedTemplate);
-        messageHandler.handleSuccess("Field deleted successfully");
-      } else {
-        messageHandler.handleError("Failed to delete field");
-      }
-    } catch (error) {
+    if (!updatedTemplate) {
       messageHandler.handleError("Failed to delete field");
+      return;
     }
+
+    setTemplate(updatedTemplate);
+    messageHandler.handleSuccess("Field deleted successfully");
 
     setIsDeleteModalOpen(false);
     setFieldToDelete(null);
@@ -174,10 +166,10 @@ const TemplateDetail = () => {
   };
 
   const handleFieldModalSave = (data: any) => {
-    if (currentFieldKey) {
-      const updatedField = { ...editedValues[currentFieldKey], ...data };
-      setEditedValues({ ...editedValues, [currentFieldKey]: updatedField });
-    }
+    if (!currentFieldKey) return;
+
+    const updatedField = { ...editedValues[currentFieldKey], ...data };
+    setEditedValues({ ...editedValues, [currentFieldKey]: updatedField });
   };
 
   const columns: ColumnConfig<TableDataType>[] = [
