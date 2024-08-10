@@ -5,7 +5,7 @@ import form_style from "./form.module.css";
 import { register_schema } from "./auth.schema";
 import MessageHandler from "@/core/message-handler";
 import AuthInputs from "./auth-inputs";
-import AuthButton from "@/resources/containers/auth-button";
+import SubmitButton from "@/resources/containers/submit.button";
 import { useTranslation } from "react-i18next";
 import Service from "@/core/module/service.factory";
 import { useRouter } from "next/router";
@@ -41,7 +41,7 @@ const RegisterForm: React.FC = ({}) => {
       className={form_style.formContainer}
     >
       <AuthInputs register={register} errors={errors} action="register" />
-      <AuthButton label={t("auth.register")} testId="submitRegistration" />
+      <SubmitButton label={t("auth.register")} testId="submitRegistration" />
     </form>
   );
 };

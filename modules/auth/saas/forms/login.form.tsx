@@ -6,18 +6,12 @@ import form_style from "./form.module.css";
 import { login_schema } from "./auth.schema";
 import MessageHandler from "@/core/message-handler";
 import AuthInputs from "./auth-inputs";
-import AuthButton from "@/resources/containers/auth-button";
-import OAuthButton from "@/resources/containers/oauth-button";
+import SubmitButton from "@/resources/containers/submit.button";
 import { useTranslation } from "react-i18next";
-import Service, { useService } from "@/core/module/service.factory";
-import { GenesisOauthProvider } from "@/core/module/core.types";
+import { useService } from "@/core/module/service.factory";
 import Link from "next/link";
 
-interface LoginFormProps {
-  onLoginSuccess: () => void;
-}
-
-const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
+const LoginForm: React.FC = ({}) => {
   const { t } = useTranslation();
   const authService = useService("oauth");
 
@@ -36,7 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       return;
     }
     MessageHandler.get().handleSuccess(t("auth.login-successful"));
-    onLoginSuccess();
+    void router.push("/app/dashboard");
   };
 
   return (
@@ -58,7 +52,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       >
         {t("auth.forgot-password")}
       </Link>
-      <AuthButton label={t("auth.login")} testId="submitLogin" />
+      <SubmitButton label={t("auth.login")} testId="submitLogin" />
     </form>
   );
 };

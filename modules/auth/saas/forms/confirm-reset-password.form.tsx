@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import form_style from "./form.module.css";
 import { confirm_reset_password_schema } from "./auth.schema";
 import AuthInputs from "./auth-inputs";
-import AuthButton from "@/resources/containers/auth-button";
+import SubmitButton from "@/resources/containers/submit.button";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import Service from "@/core/module/service.factory";
@@ -46,7 +46,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
         errors={errors}
         action="confirm-reset-password"
       />
-      <AuthButton label={t("auth.reset")} />
+      <SubmitButton label={t("auth.reset")} />
     </form>
   );
 };

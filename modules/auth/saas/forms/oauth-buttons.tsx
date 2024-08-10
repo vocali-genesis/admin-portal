@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import form_style from "./form.module.css";
-import OAuthButton from "@/resources/containers/oauth-button";
+import OAuthButton from "@/resources/containers/oauth.button";
 import { GenesisOauthProvider } from "@/core/module/core.types";
 import Service from "@/core/module/service.factory";
 

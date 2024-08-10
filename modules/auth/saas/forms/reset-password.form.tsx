@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import form_style from "./form.module.css";
 import { reset_password_schema } from "./auth.schema";
 import AuthInputs from "./auth-inputs";
-import AuthButton from "@/resources/containers/auth-button";
+import SubmitButton from "@/resources/containers/submit.button";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import Service from "@/core/module/service.factory";
@@ -37,7 +37,7 @@ const ResetPasswordForm = () => {
       className={form_style.formContainer}
     >
       <AuthInputs register={register} errors={errors} action="reset-password" />
-      <AuthButton testId="resetPassword" label={t("auth.reset")} />
+      <SubmitButton testId="resetPassword" label={t("auth.reset")} />
     </form>
   );
 };

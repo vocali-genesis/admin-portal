@@ -14,6 +14,7 @@ interface InputFieldProps<T extends FieldValues = FieldValues> {
   type: string;
   placeholder: string;
   validation: object;
+  icon?: string;
 }
 
 export function InputField<T extends FieldValues = FieldValues>({
@@ -23,6 +24,7 @@ export function InputField<T extends FieldValues = FieldValues>({
   type,
   placeholder,
   validation,
+  icon,
 }: InputFieldProps<T>) {
   return (
     <div className={form_style.formInput}>
@@ -30,9 +32,7 @@ export function InputField<T extends FieldValues = FieldValues>({
         {...register(name, validation)}
         type={type}
         placeholder={placeholder}
-        className={`${form_style.formControl} ${
-          form_style[`input${type.charAt(0).toUpperCase() + type.slice(1)}Icon`]
-        }`}
+        className={`${icon || ""} ${form_style.formControl} `}
       />
       {errors[name]?.message && (
         <span className={form_style.errorMessage}>{errors[name]?.message}</span>

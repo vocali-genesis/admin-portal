@@ -4,7 +4,7 @@
   align-items: center;
   padding: 10px 20px;
   background-color: white;
-  box-shadow: 0 0.5px 1px rgba(0,0,0,0.5);
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.5);
   z-index: 10;
 }
 
@@ -28,7 +28,8 @@
   color: black;
   padding-right: 3rem;
   appearance: none;
-  background: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") no-repeat;
+  background: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>")
+    no-repeat;
   background-position: right 10px top 50%;
   background-size: 20px;
 
@@ -52,11 +53,11 @@
 }
 
 .settingsButton {
-  background-color: #1C364B;
+  background-color: #1c364b;
 }
 
 .logoutButton {
-  background-color: #59DBBC;
+  background-color: #59dbbc;
 }
 
 .userIcon {
@@ -73,6 +74,9 @@
   cursor: pointer;
 }
 
+.userLabel {
+  color: black;
+}
 @media (max-width: 500px) {
   .navbar {
     display: flex;
@@ -96,12 +100,16 @@
   .navbarLeft {
     display: none;
   }
-  
+
   .menuButton {
     display: block;
   }
 
   .dropdown {
+    display: none;
+  }
+
+  .userLabel {
     display: none;
   }
 }

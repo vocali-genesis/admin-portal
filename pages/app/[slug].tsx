@@ -20,7 +20,7 @@ const App = () => {
   };
 
   useEffect(() => {
-   void (async () => {
+    void (async () => {
       setIsLoading(true);
       const { slug } = router.query as { slug: string };
       const user = await Service.get("oauth").getLoggedUser();
@@ -32,20 +32,20 @@ const App = () => {
       ).getActiveSubscription();
       setIsLoading(false);
       // TODO: we should make this configurable
-      if (subscription?.status === 'active' && slug !== 'dashboard') {
-        return router.push('/app/dashboard')
+      if (subscription?.status === "active" && slug !== "dashboard") {
+        return router.push("/app/dashboard");
       }
-      if (subscription?.status !== 'active' && slug !== 'subscriptions') {
+      if (subscription?.status !== "active" && slug !== "subscriptions") {
         await router.push("/app/subscriptions");
       }
     })();
   }, [router]);
 
-  const isSpinner = !router.isReady || isLoading
+  const isSpinner = !router.isReady || isLoading;
 
   // remove this lines after the i18nfix
-  if(isSpinner) {
-    return <Spinner />
+  if (isSpinner) {
+    return <Spinner />;
   }
 
   if (router.isReady && !Component) {
@@ -67,7 +67,7 @@ const App = () => {
           {/* uncomment below line after the i18n issue fix*/}
           {/* { isSpinner ? <Spinner /> : <Component /> } */}
           {/* Remove below line after the i18n issue fix*/}
-          { <Component /> }
+          {<Component />}
         </main>
       </div>
     </div>

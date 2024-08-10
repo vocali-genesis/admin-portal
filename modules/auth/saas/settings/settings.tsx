@@ -1,17 +1,18 @@
 import React, { FormEventHandler } from "react";
 import { useForm } from "react-hook-form";
 import { GlobalCore } from "@/core/module/module.types";
-import settings_styles from "./styles/settings.module.css";
 import { settings_schema } from "./settings.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LANGUAGES } from "@/core/constants";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import { useService } from "@/core/module/service.factory";
+import { SettingsInputField } from "@/resources/inputs/settings-input-field";
+import styled from "styled-components";
+import SubmitButton from "@/resources/containers/submit.button";
+import { BasicSelect } from "@/resources/inputs/basic-select.input";
 
 const messageHandler = MessageHandler.get();
-
-const Divider = () => <div className={settings_styles.divider} />;
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
@@ -28,122 +29,91 @@ const Settings = () => {
   const onSubmit = async (data: { email: string; password: string }) => {
     const updatedUser = await authService.updateUser(data.email, data.password);
 
-    if (updatedUser)
+    if (updatedUser) {
       messageHandler.handleSuccess("Profile updated successfully");
+    }
   };
 
   return (
-    <div className={settings_styles.container}>
-      <div className={settings_styles.contentWrapper}>
-        <main className={settings_styles.mainContent}>
-          <form
+    <Container>
+      <ContentWrapper>
+        <MainContent>
+          <Form
             onSubmit={
               handleSubmit(onSubmit) as unknown as FormEventHandler<HTMLElement>
             }
-            className={settings_styles.form}
           >
-            <div className={settings_styles.mainFormGroup}>
-              <div className={`${settings_styles.formGroup}`}>
-                <div className={settings_styles.inputContainer}>
-                  <label htmlFor="email">{t("settings.email")}:</label>
-                  <input type="email" id="email" {...register("email")} />
-                </div>
-                {errors.email && (
-                  <span className={settings_styles.errorMessage}>
-                    {errors.email.message}
-                  </span>
-                )}
-              </div>
-              <div className={`${settings_styles.formGroup}`}>
-                <div className={settings_styles.inputContainer}>
-                  <label htmlFor="password">
-                    {t("settings.new-password")}:
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    {...register("password")}
-                  />
-                </div>
-                {errors.password && (
-                  <span className={settings_styles.errorMessage}>
-                    {errors.password.message}
-                  </span>
-                )}
-              </div>
-              <div className={`${settings_styles.formGroup}`}>
-                <div className={settings_styles.inputContainer}>
-                  <label htmlFor="confirm-password">
-                    {t("settings.confirm-password")}:
-                  </label>
-                  <input
-                    type="password"
-                    id="confirm-password"
-                    {...register("confirm_password")}
-                  />
-                </div>
-                {errors.confirm_password && (
-                  <span className={settings_styles.errorMessage}>
-                    {errors.confirm_password.message}
-                  </span>
-                )}
-              </div>
+            <div className="w-full px-[1rem] py-[5rem]">
+              <SettingsInputField
+                name="email"
+                label={t("settings.email")}
+                error={errors["email"]}
+              >
+                <input type="email" id="email" {...register("email")} />
+              </SettingsInputField>
+              <SettingsInputField
+                name="password"
+                label={t("settings.new-password")}
+                error={errors["password"]}
+              >
+                <input
+                  type="password"
+                  id="password"
+                  {...register("password")}
+                />
+              </SettingsInputField>
+              <SettingsInputField
+                name="confirm_password"
+                label={t("settings.confirm-password")}
+                error={errors["confirm_password"]}
+              >
+                <input
+                  type="password"
+                  id="confirm-password"
+                  {...register("confirm_password")}
+                />
+              </SettingsInputField>
 
               <div className="flex justify-center">
-                <button type="submit" className={settings_styles.saveButton}>
-                  {t("settings.save")}
-                </button>
+                <SubmitButton
+                  label={t("settings.save")}
+                  testId="updateSettings"
+                />
               </div>
             </div>
-          </form>
+          </Form>
 
           <Divider />
 
-          <div className={settings_styles.socialLogins}>
-            {/*  <button
-              type="button"
-              className={`${settings_styles.oauthButton} ${settings_styles.googleOAuthButton}`}
-            >
-              <p>
-                {t('settings.revoke')}
-                <strong> Google</strong>
-              </p>
-            </button>
-          <button type="button" className={settings_styles.facebookLogin}>
-                {t("Sign in with Facebook")}
-              </button> */}
-          </div>
+          {/* <SocialLoginWrapper>
+            <OAuthButton
+              provider="google"
+              label={t("settings.revoke")}
+              onClick={() => 1}
+            />
+          </SocialLoginWrapper>
 
-          {/* <Divider /> */}
+          <Divider /> */}
 
-          <div className={settings_styles.languageGroup}>
-            <label htmlFor="language">{t("settings.language")}:</label>
-            <select
-              id="language"
+          <SettingsInputField name="language" label={t("settings.language")}>
+            <BasicSelect
+              name="language"
               value={i18n.language}
-              onChange={(e) => void i18n.changeLanguage(e.target.value)}
-              className={settings_styles.languageSelect}
-            >
-              {LANGUAGES.map((lang, index) => (
-                <option key={index} value={lang}>
-                  {lang.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </div>
+              onChange={(lang: string) => void i18n.changeLanguage(lang)}
+              options={LANGUAGES.map((lang) => ({
+                value: lang,
+                label: lang.toUpperCase(),
+              }))}
+            />
+          </SettingsInputField>
 
           {/*
           // UPCOMMING FEATURE
-          <button
-            onClick={handleDeleteAccount}
-            className={settings_styles.deleteAccount}
-          >
-            <FaTrash size={16} style={{ color: "#DF4949", marginTop: 4 }} />
-            {t("settings.delete-account")}
-          </button> */}
-        </main>
-      </div>
-    </div>
+          <DeleteButton label={t("settings.delete-account")} /> 
+          */}
+        </MainContent>
+      </ContentWrapper>
+    </Container>
   );
 };
 
@@ -154,3 +124,44 @@ GlobalCore.manager.menuSettings({
   url: "settings",
   order: 0,
 });
+
+const Form = styled.form`
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 0.1px;
+  background-color: rgb(0, 0, 0, 0.3);
+  margin-bottom: 2rem;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: white;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+`;
+
+const MainContent = styled.main`
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const SocialLoginWrapper = styled.div`
+  padding: 3vh 12.5vh 1vh 12.5vh;
+`;

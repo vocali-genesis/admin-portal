@@ -6,8 +6,9 @@ import "./index";
 import "@/services/auth/auth-mock.service";
 import { AuthService } from "@/core/module/services.types";
 import { faker } from "@faker-js/faker";
-import { RouterMock, ToastMock } from "@/jest-setup";
+import { RouterMock, ToastMock, TranslationMock } from "@/jest-setup";
 import MessageHandler from "@/core/message-handler";
+import React from "react";
 
 const getInput = (container: HTMLElement, inputName: string) => {
   return container.querySelector(`input[name="${inputName}"]`) as Element;
@@ -151,7 +152,7 @@ describe("=====  SAAS LOGIN =====", () => {
     it("Reset Password is Mounted", () => {
       const { container } = render(<ResetPassword />);
 
-      expect(container.querySelector('input[name="email"]')).not.toBeNull();
+      expect(getInput(container, "email")).not.toBeNull();
       expect(screen.getByTestId("resetPassword")).toBeInTheDocument();
 
       expect(
@@ -244,11 +245,9 @@ describe("=====  SAAS LOGIN =====", () => {
     it("Register is Mounted", () => {
       const { container } = render(<Register />);
 
-      expect(container.querySelector('input[name="email"]')).not.toBeNull();
-      expect(container.querySelector('input[name="password"]')).not.toBeNull();
-      expect(
-        container.querySelector('input[name="confirm_password"]')
-      ).not.toBeNull();
+      expect(getInput(container, "email")).not.toBeNull();
+      expect(getInput(container, "password")).not.toBeNull();
+      expect(getInput(container, "confirm_password")).not.toBeNull();
 
       expect(screen.getByText("auth.login")).toHaveAttribute(
         "href",
@@ -344,6 +343,147 @@ describe("=====  SAAS LOGIN =====", () => {
       await waitFor(() =>
         expect(toastSpy).toHaveBeenCalledWith("User already registered")
       );
+    });
+  });
+
+  describe("Update Settings", () => {
+    let Settings: CoreComponent;
+    beforeAll(() => {
+      const SettingsComponent = GlobalCore.manager.getComponent(
+        "settings",
+        "settings"
+      );
+      expect(SettingsComponent).not.toBeUndefined();
+      Settings = SettingsComponent as CoreComponent;
+
+      authService.loginUser();
+    });
+
+    afterAll(() => {
+      authService.logout();
+    });
+
+    it("Register is Mounted", () => {
+      const { container } = render(<Settings />);
+
+      expect(getInput(container, "email")).not.toBeNull();
+      expect(getInput(container, "password")).not.toBeNull();
+      expect(getInput(container, "confirm_password")).not.toBeNull();
+
+      expect(screen.getByTestId("updateSettings")).toBeInTheDocument();
+
+      expect(container.querySelector('select[name="language"]')).not.toBeNull();
+    });
+
+    it.skip("Rovoke SSO Google", async () => {});
+
+    it("Update Settings Fields are required", async () => {
+      render(<Settings />);
+
+      act(() => screen.getByTestId("updateSettings").click());
+
+      await waitFor(() => screen.getByText("auth.email-required"));
+
+      expect(screen.getByText("auth.email-required")).toBeInTheDocument();
+      expect(screen.getByText("auth.password-min-length")).toBeInTheDocument();
+      expect(
+        screen.getByText("auth.confirm-password-required")
+      ).toBeInTheDocument();
+    });
+
+    it("Update Settings Fields are invalid", async () => {
+      const { container } = render(<Settings />);
+      const emailInput = getInput(container, "email");
+      const passwordInput = getInput(container, "password");
+      const confirmPassword = getInput(container, "confirm_password");
+
+      // Makes the form dirty
+      act(() => screen.getByTestId("updateSettings").click());
+      await act(async () => {
+        await userEvent.type(emailInput, "wrong-email");
+        await userEvent.type(passwordInput, "123");
+        await userEvent.type(confirmPassword, "Different");
+      });
+
+      await waitFor(() => screen.getByText("auth.invalid-email-format"));
+
+      expect(screen.getByText("auth.invalid-email-format")).toBeInTheDocument();
+      expect(screen.getByText("auth.password-min-length")).toBeInTheDocument();
+      expect(screen.getByText("auth.password-dont-match")).toBeInTheDocument();
+    });
+
+    it("Update Settings Successful", async () => {
+      const toastSpy = jest.spyOn(ToastMock, "success");
+
+      const { container } = render(<Settings />);
+      const emailInput = getInput(container, "email");
+      const passwordInput = getInput(container, "password");
+      const confirmPassword = getInput(container, "confirm_password");
+
+      const password = faker.internet.password({ length: 10 });
+      await act(async () => {
+        await userEvent.type(emailInput, faker.internet.email());
+        await userEvent.type(passwordInput, password);
+        await userEvent.type(confirmPassword, password);
+
+        screen.getByTestId("updateSettings").click();
+      });
+
+      expect(toastSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("Update Settings Api Error", async () => {
+      jest.spyOn(authService, "updateUser").mockImplementationOnce(() => {
+        MessageHandler.get().handleError("Error Updating the user");
+        return Promise.resolve(null);
+      });
+      const toastSpy = jest.spyOn(ToastMock, "error");
+
+      const { container } = render(<Settings />);
+      const emailInput = getInput(container, "email");
+      const passwordInput = getInput(container, "password");
+      const confirmPassword = getInput(container, "confirm_password");
+
+      const password = faker.internet.password({ length: 10 });
+      await act(async () => {
+        await userEvent.type(emailInput, faker.internet.email());
+        await userEvent.type(passwordInput, password);
+        await userEvent.type(confirmPassword, password);
+
+        screen.getByTestId("updateSettings").click();
+      });
+      await waitFor(() =>
+        expect(toastSpy).toHaveBeenCalledWith("Error Updating the user")
+      );
+    });
+
+    it("Select Language Change", async () => {
+      const { container } = render(<Settings />);
+
+      const langSpy = jest.spyOn(TranslationMock.i18n, "changeLanguage");
+      const select = container.querySelector(
+        'select[name="language"]'
+      ) as Element;
+
+      await act(async () => {
+        await userEvent.selectOptions(select, "es");
+      });
+      expect(langSpy).toHaveBeenCalledWith("es");
+
+      await act(async () => {
+        await userEvent.selectOptions(select, "ca");
+      });
+      expect(langSpy).toHaveBeenCalledWith("ca");
+
+      await act(async () => {
+        await userEvent.selectOptions(select, "pt");
+      });
+      expect(langSpy).toHaveBeenCalledWith("pt");
+
+      await act(async () => {
+        await userEvent.selectOptions(select, "en");
+      });
+      expect(langSpy).toHaveBeenCalledWith("en");
     });
   });
 });

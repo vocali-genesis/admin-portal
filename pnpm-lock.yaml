@@ -17,6 +17,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.43.5
         version: 2.44.4
+      '@types/css-modules':
+        specifier: ^1.0.5
+        version: 1.0.5
       chatgpt:
         specifier: ^5.2.5
         version: 5.2.5
@@ -978,6 +981,9 @@ packages:
 
   '@types/connect@3.4.36':
     resolution: {integrity: sha512-P63Zd/JUGq+PdrM1lv0Wv5SBYeA2+CORvbrXbngriYY0jzLUWfQMQQxOhjONEz/wlHOAxOdY7CY65rgQdTjq2w==}
+
+  '@types/css-modules@1.0.5':
+    resolution: {integrity: sha512-oeKafs/df9lwOvtfiXVliZsocFVOexK9PZtLQWuPeuVCFR7jwiqlg60lu80JTe5NFNtH3tnV6Fs/ySR8BUPHAw==}
 
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
@@ -5235,6 +5241,8 @@ snapshots:
   '@types/connect@3.4.36':
     dependencies:
       '@types/node': 20.14.11
+
+  '@types/css-modules@1.0.5': {}
 
   '@types/debug@4.1.12':
     dependencies:

@@ -63,8 +63,18 @@ You will need the Chat GPT key for this
 - [i18n](https://react.i18next.com/)
 - [Tailwind CSS](https://tailwindcss.com/docs/installation) and [Tailwind CSS Components](https://tailwindui.com/components)
 - [Style](https://github.com/styled-components/styled-components) Use this Extension for Visual Code    [styled-components.vscode-styled-components]( https://marketplace.cursorapi.com/items?itemName=styled-components.vscode-styled-components)
+- [Test and Mocks: Jest](https://jestjs.io/docs/getting-started)
 
 ## Sentry
 
 This project uses [Sentry](https://genesis-4s.sentry.io/) for monitoring.
 To Test an error you can access to the rout `/sentry`  (TODO: Hide it in production?)
+
+## Testing
+
+Follow our tutorial of [How to test](https://jestjs.io/docs/getting-started)
+
+Before running the test the `jest-setup.ts` where we declarate some usefull mocks that help you to validate some actions (Like the toast, the navigation, i18n).
+
+Create a Mock for each service that return positive, we can just the mock to return error in a specific action.
+

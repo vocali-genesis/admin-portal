@@ -9,10 +9,10 @@ export const settings_schema = (t: TFunction<"translation", undefined>) =>
       .required(t("auth.email-required")),
     password: yup
       .string()
-      .min(8, "Password must be at least 8 characters")
+      .min(8, t("auth.password-min-length", { times: 8 }))
       .required(t("auth.password-required")),
     confirm_password: yup
       .string()
       .oneOf([yup.ref("password"), undefined], t("auth.password-dont-match"))
-      .required(t("confirm-password-required")),
+      .required(t("auth.confirm-password-required")),
   });
