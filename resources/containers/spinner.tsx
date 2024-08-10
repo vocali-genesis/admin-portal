@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Spinner({ maxHeight }: { maxHeight: string }) {
+export default function Spinner({ maxHeight }: { maxHeight?: string }) {
   return (
     <div
       data-testid="spinner"

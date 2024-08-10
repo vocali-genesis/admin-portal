@@ -35,7 +35,9 @@ export function InputField<T extends FieldValues = FieldValues>({
         className={`${icon || ""} ${form_style.formControl} `}
       />
       {errors[name]?.message && (
-        <span className={form_style.errorMessage}>{errors[name]?.message}</span>
+        <span className={form_style.errorMessage}>
+          {errors[name]?.message as string}
+        </span>
       )}
     </div>
   );

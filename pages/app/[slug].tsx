@@ -29,7 +29,7 @@ const AppSlug = () => {
         return router.push("/auth/login");
       }
 
-      const subscription: Record<string, unknown> = await Service.get(
+      const subscription = await Service.get(
         "subscriptions"
       )?.getActiveSubscription();
       if (

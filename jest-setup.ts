@@ -24,7 +24,7 @@ jest.mock("react-hot-toast", () => ToastMock);
 // i18n
 
 export const TranslationMock = {
-  t: (str) => str,
+  t: (str: string) => str,
   i18n: {
     language: "en",
     changeLanguage: () => new Promise(() => {}),

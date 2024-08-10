@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormRegister } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import form_style from "./form.module.css";
 import { confirm_reset_password_schema } from "./auth.schema";
@@ -42,7 +42,13 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
       className={form_style.formContainer}
     >
       <AuthInputs
-        register={register}
+        register={
+          register as unknown as UseFormRegister<{
+            email: string; // Not real, but I cant fix the TS issue
+            password: string;
+            confirm_password: string;
+          }>
+        }
         errors={errors}
         action="confirm-reset-password"
       />

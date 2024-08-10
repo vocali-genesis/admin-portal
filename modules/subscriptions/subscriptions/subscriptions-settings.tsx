@@ -14,21 +14,25 @@ import { SubscriptionResponse } from "@/core/module/services.types";
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
   const columns: ColumnConfig<TableDataModel>[] = [
-    { title: t('invoice-history.invoice-id-th'), dataIndex: "invoice_id", sorter: false },
     {
-      title: t('invoice-history.date-th'),
+      title: t("invoice-history.invoice-id-th"),
+      dataIndex: "invoice_id",
+      sorter: false,
+    },
+    {
+      title: t("invoice-history.date-th"),
       render: (item) => <>{moment(item.created_at).format("DD MMM, YYYY")}</>,
     },
     {
-      title: t('invoice-history.amount-th'),
+      title: t("invoice-history.amount-th"),
       render: (item) => <span>€ {(item.amount / 100).toFixed(2)}</span>,
     },
     {
-      title: t('invoice-history.action-th'),
+      title: t("invoice-history.action-th"),
       render: (item) => (
         <>
           <a href={item.invoice_url} className="text-blue-500" target="__blank">
-            {t('invoice-history.view-receipt')}
+            {t("invoice-history.view-receipt")}
           </a>
         </>
       ),
@@ -41,7 +45,7 @@ const PaymentHistory: React.FC = () => {
   const [totalRecords, setTotalRecords] = useState(0);
 
   const itemsPerPage = 5;
-  const fromRange = (currentPage * itemsPerPage) - itemsPerPage;
+  const fromRange = currentPage * itemsPerPage - itemsPerPage;
   const toRange = fromRange + itemsPerPage - 1;
   const totalPages = Math.ceil(totalRecords / itemsPerPage);
 
@@ -77,9 +81,9 @@ const PaymentHistory: React.FC = () => {
           totalPages,
           totalRecords,
           onPageChange: setCurrentPage,
-          totalLabel: t('invoice-history.total-label'),
-          pageLabel: t('invoice-history.page-label'),
-          ofLabel: t('invoice-history.of-label'),
+          totalLabel: t("invoice-history.total-label"),
+          pageLabel: t("invoice-history.page-label"),
+          ofLabel: t("invoice-history.of-label"),
         }}
       />
     </div>
@@ -90,14 +94,13 @@ const Subscriptions = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
-  const [subscription, setSubscription] =
-    useState<SubscriptionResponse>();
+  const [subscription, setSubscription] = useState<SubscriptionResponse>();
 
   useEffect(() => {
     (async () => {
       const data = await Service.get("subscriptions").getActiveSubscription();
       setIsLoading(false);
-      if (!data.status || data.status !== "active") {
+      if (!data || !data.status || data.status !== "active") {
         return router.push("/app/subscriptions");
       }
       setSubscription(data);

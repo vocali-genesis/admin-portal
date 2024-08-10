@@ -1,6 +1,6 @@
 import React, { FormEventHandler } from "react";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormRegister } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import form_style from "./form.module.css";
 import { login_schema } from "./auth.schema";
@@ -40,7 +40,17 @@ const LoginForm: React.FC = ({}) => {
       }
       className={form_style.formContainer}
     >
-      <AuthInputs register={register} errors={errors} action="login" />
+      <AuthInputs
+        register={
+          register as unknown as UseFormRegister<{
+            email: string;
+            password: string;
+            confirm_password: string; // Not real, but I cant fix the TS issue
+          }>
+        }
+        errors={errors}
+        action="login"
+      />
       <Link
         style={{
           color: "black",

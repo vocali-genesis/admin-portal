@@ -62,7 +62,7 @@ export class ModuleManager {
       },
       getComponent: <
         T extends "app" | "auth" | "settings" | "service",
-        N extends ServiceName
+        N extends T extends "service" ? ServiceName : never
       >(
         type: T,
         name: T extends "service" ? N : string
@@ -70,16 +70,20 @@ export class ModuleManager {
         ? ServiceInterface<N> | undefined
         : CoreComponent | undefined => {
         if (type === "service") {
-          return this.services[name as N];
+          return this.services[name as N] as T extends "service"
+            ? ServiceInterface<N> | undefined
+            : never;
         }
         if (type === "app") {
-          return this.app[name] as CoreComponent;
+          return this.app[name] as T extends "service" ? never : CoreComponent;
         }
         if (type === "auth") {
-          return this.auth[name];
+          return this.auth[name] as T extends "service" ? never : CoreComponent;
         }
         if (type === "settings") {
-          return this.settings[name];
+          return this.settings[name] as T extends "service"
+            ? never
+            : CoreComponent;
         }
 
         return undefined;

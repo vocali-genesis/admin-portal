@@ -10,6 +10,11 @@ type AuthFormData =
       confirm_password: string;
     }
   | {
+      email: never;
+      password: string;
+      confirm_password: string;
+    }
+  | {
       email: string;
       password: string;
       confirm_password: never;
@@ -54,24 +59,31 @@ const AuthInputs: React.FC<AuthInputProps> = ({ register, errors, action }) => {
   const fieldsToShow = {
     register: ["email", "password", "confirm_password"],
     "reset-password": ["email"],
-    confirm_password: ["password", "confirm_password"],
+    "confirm-reset-password": ["password", "confirm_password"],
     login: ["email", "password"],
   };
 
   return (
     <>
-      {fieldsToShow[action].map((name) => (
-        <InputField<AuthFormData>
-          type={InputConfig[name].type}
-          validation={InputConfig[name].validation}
-          key={name}
-          register={register}
-          errors={errors}
-          name={name}
-          icon={`${form_style[InputConfig[name].icon]}`}
-          placeholder={t(`auth.${name}`)}
-        />
-      ))}
+      {fieldsToShow[action].map((name) => {
+        const nameKey = name as keyof typeof InputConfig;
+        const config = InputConfig[nameKey];
+        if (!config) {
+          return null;
+        }
+        return (
+          <InputField<AuthFormData>
+            type={config.type}
+            validation={config.validation}
+            key={name}
+            register={register}
+            errors={errors}
+            name={nameKey}
+            icon={`${form_style[config.icon]}`}
+            placeholder={t(`auth.${name}`)}
+          />
+        );
+      })}
     </>
   );
 };

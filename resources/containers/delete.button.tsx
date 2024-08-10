@@ -1,4 +1,5 @@
 import React from "react";
+import { FaTrash } from "react-icons/fa6";
 import styled from "styled-components";
 
 interface DeleteButtonProps {

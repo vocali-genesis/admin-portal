@@ -82,6 +82,7 @@ export const MicrophoneSelect = ({
 
   return (
     <BasicSelect
+      name="microphone-select"
       value={value}
       onChange={onChange}
       options={devices.map((device) => ({
