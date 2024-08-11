@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CoreComponent, GlobalCore } from "@/core/module/module.types";
 import "./index";
@@ -59,7 +59,10 @@ describe("===== SAAS LOGIN =====", () => {
       const googleButton = screen.getByTestId("google");
       googleButton.click();
 
-      await waitFor(() => expect(window.open).toHaveBeenCalledWith(url));
+      await waitFor(() =>
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(window.location.assign).toHaveBeenCalledWith(url)
+      );
     });
 
     it("Login Fields are required", async () => {
@@ -269,7 +272,10 @@ describe("===== SAAS LOGIN =====", () => {
       const googleButton = screen.getByTestId("google");
       googleButton.click();
 
-      await waitFor(() => expect(window.open).toHaveBeenCalledWith(url));
+      await waitFor(() =>
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(window.location.assign).toHaveBeenCalledWith(url)
+      );
     });
 
     it("Register Fields are required", async () => {
@@ -358,11 +364,11 @@ describe("===== SAAS LOGIN =====", () => {
       expect(SettingsComponent).not.toBeUndefined();
       Settings = SettingsComponent as CoreComponent;
 
-      login(authService);
+      void login(authService);
     });
 
     afterAll(() => {
-      authService.logout();
+      void authService.logout();
     });
 
     it("Register is Mounted", () => {

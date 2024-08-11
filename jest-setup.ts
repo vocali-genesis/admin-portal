@@ -1,9 +1,14 @@
 // Enable translations
 import "@/core/i18n";
-
-window.open = () => {
-  return null;
-};
+window.open = jest.fn();
+const mockResponse = jest.fn();
+Object.defineProperty(window, "location", {
+  value: {
+    ...window.location,
+    assign: mockResponse,
+  },
+  writable: true,
+});
 
 /**
  * Global Mocks

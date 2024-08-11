@@ -42,7 +42,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     beforeEach(() => {
       jest.replaceProperty(RouterMock, "query", { slug: "demo" });
     });
-    it("App is Mounted", async () => {
+    it("App is Mounted", () => {
       render(<AppSlug />);
       expect(screen.getByTestId("spinner")).toBeInTheDocument();
     });
@@ -57,7 +57,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       // Now is enable by default the mock one
     });
     it("User without subscription", async () => {
-      login(authService);
+      await login(authService);
       jest
         .spyOn(subscriptionServices, "getActiveSubscription")
         .mockReturnValueOnce(Promise.resolve(null));
@@ -73,7 +73,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
 
     it("App User with subscription expired", async () => {
-      login(authService);
+      await login(authService);
       jest
         .spyOn(subscriptionServices, "getActiveSubscription")
         .mockReturnValueOnce(Promise.resolve({ status: "expired" }));
@@ -89,7 +89,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
 
     it("App Component not found", async () => {
-      login(authService);
+      await login(authService);
       const spy = jest.spyOn(RouterMock, "replace");
       jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
 
@@ -101,7 +101,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
 
     it("App Load component successfully", async () => {
-      login(authService);
+      await login(authService);
 
       render(<AppSlug />);
 
@@ -117,7 +117,7 @@ describe("===== DYNAMIC PATHS =====", () => {
         url: "/demo",
         order: 0,
       });
-      login(authService);
+      await login(authService);
       const spy = jest.spyOn(RouterMock, "push");
 
       render(<AppSlug />);
@@ -147,20 +147,20 @@ describe("===== DYNAMIC PATHS =====", () => {
       jest.replaceProperty(RouterMock, "query", { slug: "demo" });
     });
 
-    it("Settings is Mounted", async () => {
+    it("Settings is Mounted", () => {
       render(<SettingSlug />);
       expect(screen.getByTestId("spinner")).toBeInTheDocument();
     });
 
     it("Settings User not logged", async () => {
-      authService.logout();
+      await authService.logout();
       const spy = jest.spyOn(RouterMock, "push");
       render(<SettingSlug />);
       await waitFor(() => expect(spy).toHaveBeenCalledWith("/auth/login"));
     });
 
     it("Settings Component not found", async () => {
-      login(authService);
+      await login(authService);
       const spy = jest.spyOn(RouterMock, "replace");
       jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
 
@@ -172,7 +172,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
 
     it("Settings Load component successfully", async () => {
-      login(authService);
+      await login(authService);
 
       render(<SettingSlug />);
 
@@ -188,7 +188,7 @@ describe("===== DYNAMIC PATHS =====", () => {
         url: "/demo",
         order: 0,
       });
-      login(authService);
+      await login(authService);
       const spy = jest.spyOn(RouterMock, "push");
 
       render(<SettingSlug />);
@@ -218,7 +218,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       jest.replaceProperty(RouterMock, "query", { slug: "demo" });
     });
 
-    it("Auth is Mounted", async () => {
+    it("Auth is Mounted", () => {
       jest.replaceProperty(RouterMock, "isReady", false);
       render(<AuthSlug />);
       expect(screen.getByTestId("spinner")).toBeInTheDocument();
