@@ -29,12 +29,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-      
+
       - name: run eslint
         run: pnpm run lint
 
-      # - name: run test cases
-      #   run: pnpm run test
+      - name: run test cases
+        run: pnpm run test
 
       - name: Build the Next.js application
         run: pnpm run build
