@@ -5,15 +5,17 @@ import { PaginationProps } from "./pagination";
 
 import { useTranslation } from "react-i18next";
 
-interface Props {
-  columns: ColumnConfig<TableDataModel>[];
-  data: TableDataModel[];
+interface Props<T> {
+  columns: ColumnConfig<T>[];
+  data: T[];
   pagination?: PaginationProps;
   onSort?: (key: string, column: string) => void;
   isLoading?: boolean;
 }
 
-const Table: React.FC<Props> = (props) => {
+function Table<T extends Record<string, unknown> = Record<string, unknown>>(
+  props: Props<T>
+) {
   const { pagination, columns, data, onSort, isLoading } = props;
   return (
     <div className="container mx-auto">
@@ -28,6 +30,6 @@ const Table: React.FC<Props> = (props) => {
       {pagination && <Pagination {...pagination} />}
     </div>
   );
-};
+}
 
 export default Table;

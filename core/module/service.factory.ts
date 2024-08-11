@@ -10,12 +10,18 @@ const messageHandler = MessageHandler.get();
 
 export default class Service {
   public static get<S extends ServiceName>(
-    name: S,
+    name: S
   ): ServiceInterface<S> | undefined {
+    const service = ModuleManager.get().components.services(name);
+
+    return service as ServiceInterface<S> | undefined;
+  }
+
+  public static require<S extends ServiceName>(name: S): ServiceInterface<S> {
     const service = ModuleManager.get().components.services(name);
     if (!service) {
       throw new Error(
-        `Service ${name} not init, have you imported in the config.json? Have you 'pnpm load' the config.json?`,
+        `Service ${name} not init, have you imported in the config.json? Have you 'pnpm load' the config.json?`
       );
     }
     return service as ServiceInterface<S>;
@@ -26,14 +32,14 @@ export default class Service {
  * Hook
  */
 export const useService = <S extends ServiceName>(
-  serviceName: S,
+  serviceName: S
 ): ServiceInterface<S> | null => {
   const [service] = useState(Service.get(serviceName));
   if (service) {
     return service;
   } else {
     return messageHandler.handleError(
-      `Service ${serviceName} not init, have you imported in the config.json? Have you 'pnpm load' the config.json?`,
+      `Service ${serviceName} not init, have you imported in the config.json? Have you 'pnpm load' the config.json?`
     );
   }
 };

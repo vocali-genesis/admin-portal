@@ -9,46 +9,53 @@ import moment from "moment";
 import Table from "@/resources/table";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-import { SubscriptionResponse } from "@/core/module/services.types";
+import {
+  InvoiceResponse,
+  SubscriptionResponse,
+} from "@/core/module/services.types";
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
-  const columns: ColumnConfig<TableDataModel>[] = [
-    { title: t('invoice-history.invoice-id-th'), dataIndex: "invoice_id", sorter: false },
+  const columns: ColumnConfig<InvoiceResponse>[] = [
     {
-      title: t('invoice-history.date-th'),
+      title: t("invoice-history.invoice-id-th"),
+      dataIndex: "invoice_id",
+      sorter: false,
+    },
+    {
+      title: t("invoice-history.date-th"),
       render: (item) => <>{moment(item.created_at).format("DD MMM, YYYY")}</>,
     },
     {
-      title: t('invoice-history.amount-th'),
+      title: t("invoice-history.amount-th"),
       render: (item) => <span>€ {(item.amount / 100).toFixed(2)}</span>,
     },
     {
-      title: t('invoice-history.action-th'),
+      title: t("invoice-history.action-th"),
       render: (item) => (
         <>
           <a href={item.invoice_url} className="text-blue-500" target="__blank">
-            {t('invoice-history.view-receipt')}
+            {t("invoice-history.view-receipt")}
           </a>
         </>
       ),
     },
   ];
 
-  const [data, setData] = useState<[SubscriptionResponse] | []>([]);
+  const [data, setData] = useState<[InvoiceResponse] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
 
   const itemsPerPage = 5;
-  const fromRange = (currentPage * itemsPerPage) - itemsPerPage;
+  const fromRange = currentPage * itemsPerPage - itemsPerPage;
   const toRange = fromRange + itemsPerPage - 1;
   const totalPages = Math.ceil(totalRecords / itemsPerPage);
 
   const loadData = () => {
     (async () => {
       setIsLoading(true);
-      const { invoices, count } = await Service.get(
+      const { invoices, count } = await Service.require(
         "subscriptions"
       ).getInvoices(fromRange, toRange);
       setTotalRecords(count);
@@ -67,7 +74,7 @@ const PaymentHistory: React.FC = () => {
 
   return (
     <div className="container mx-auto">
-      <Table
+      <Table<InvoiceResponse>
         data={data}
         columns={columns}
         onSort={handleSort}
@@ -77,9 +84,9 @@ const PaymentHistory: React.FC = () => {
           totalPages,
           totalRecords,
           onPageChange: setCurrentPage,
-          totalLabel: t('invoice-history.total-label'),
-          pageLabel: t('invoice-history.page-label'),
-          ofLabel: t('invoice-history.of-label'),
+          totalLabel: t("invoice-history.total-label"),
+          pageLabel: t("invoice-history.page-label"),
+          ofLabel: t("invoice-history.of-label"),
         }}
       />
     </div>
@@ -90,12 +97,13 @@ const Subscriptions = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
-  const [subscription, setSubscription] =
-    useState<SubscriptionResponse>();
+  const [subscription, setSubscription] = useState<SubscriptionResponse>();
 
   useEffect(() => {
     (async () => {
-      const data = await Service.get("subscriptions").getActiveSubscription();
+      const data = await Service.require(
+        "subscriptions"
+      ).getActiveSubscription();
       setIsLoading(false);
       if (!data.status || data.status !== "active") {
         return router.push("/app/subscriptions");
