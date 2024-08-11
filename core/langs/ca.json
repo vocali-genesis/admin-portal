@@ -2,7 +2,10 @@
   "resources": {
     "confirm-delete": "Confirmar eliminació",
     "are-you-sure": "Estàs segur que vols eliminar-ho?",
-    "microphone-error": "Error al obtenir els dispositius d'àudio. Assegureu-vos que heu concedit permisos al micròfon."
+    "microphone-error": "Error al obtenir els dispositius d'àudio. Assegureu-vos que heu concedit permisos al micròfon.",
+    "total-records": "Registres totals",
+    "page": "Pàgina",
+    "of": "de"
   },
   "navbar": {
     "upgrade": "Actualitzar",

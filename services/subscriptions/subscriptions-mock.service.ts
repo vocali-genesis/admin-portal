@@ -6,6 +6,7 @@ import {
   SubscriptionService,
 } from "../../core/module/services.types";
 import moment from "moment";
+import { Seed } from "@/resources/tests/seed";
 
 class SubscriptionsMock implements SubscriptionService {
   constructor() {}
@@ -14,7 +15,7 @@ class SubscriptionsMock implements SubscriptionService {
    * retruns the subscription link, so that the users can subscribe to a plan
    */
   public async getSubscriptionLink(): Promise<{ url: string | null }> {
-    return { url: faker.internet.url() };
+    return Promise.resolve({ url: faker.internet.url() });
   }
 
   /**
@@ -35,7 +36,7 @@ class SubscriptionsMock implements SubscriptionService {
     count: number;
   }> {
     return Promise.resolve({
-      invoices: [{ todo: "refactor" }],
+      invoices: [Seed.new().invoice()],
       count: 1,
     });
   }

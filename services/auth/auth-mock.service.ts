@@ -1,43 +1,38 @@
-import moment from "moment";
 import { GenesisUser } from "@/core/module/core.types";
 import { GlobalCore } from "@/core/module/module.types";
 import { AuthService } from "@/core/module/services.types";
 import { faker } from "@faker-js/faker";
+import { Seed } from "@/resources/tests/seed";
 
 class AuthMockService implements AuthService {
   private loggedUser: GenesisUser | null = null;
 
   constructor() {}
-  private generateUser({
-    email,
-    password,
-  }: Partial<{ email: string; password: string }> = {}) {
-    const user = {
-      id: faker.string.uuid(),
-      created_at: moment().format(),
-      email: email || faker.internet.email(),
-    };
-    const token = faker.string.hexadecimal({ length: 12 });
 
-    this.loggedUser = user;
-    return Promise.resolve({ user, token });
+  private generateToken() {
+    return faker.string.hexadecimal({ length: 12 });
   }
 
   registerUser(): Promise<{
     user: GenesisUser;
     token: string | undefined;
   } | null> {
-    return this.generateUser();
+    const { user } = Seed.new().user();
+    this.loggedUser = user;
+    return Promise.resolve({
+      token: this.generateToken(),
+      user: this.loggedUser,
+    });
   }
-
-  async loginUser(
-    email: string,
-    password: string
-  ): Promise<{
+  async loginUser(email: string): Promise<{
     user: GenesisUser | null;
     token: string | undefined;
   } | null> {
-    return this.generateUser({ email, password });
+    this.loggedUser = { email: email } as GenesisUser;
+    return Promise.resolve({
+      token: this.generateToken(),
+      user: this.loggedUser,
+    });
   }
 
   public async oauth(): Promise<string | null> {

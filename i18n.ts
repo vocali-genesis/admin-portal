@@ -234,6 +234,17 @@ async function translateKeys({
       .replace(`\`\`\``, "");
 
     const result = JSON.parse(resultJSON) as Record<string, Translation>;
+    // If is only a module, the IA ommits it on the JSON
+    if (Object.keys(inputData).length === 1) {
+      const key = Object.keys(inputData)[0];
+      Object.keys(result).forEach((lang) => {
+        // Here Chat GPT confused the type return
+        const translations = result[lang] as unknown as Record<string, string>;
+        delete result[lang];
+        result[lang] = { [key]: translations } as Translation;
+      });
+    }
+    console.log({ result, inputJSON });
     return result;
   } catch (err) {
     console.info({ prompt, response: translation.text });

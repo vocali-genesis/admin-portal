@@ -22,9 +22,9 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? SubscriptionService
   : never;
 
-type CENTS = number & { __brand: "cents" }; // 100 => 1.00
-export function centsToNumber(value: CENTS) {
-  return (value / 100) as number;
+export type CENTS = number & { __brand: "cents" }; // 100 => 1.00
+export function centsToNumber(value: CENTS): number {
+  return value / 100;
 }
 
 export type InvoiceResponse = {
