@@ -21,7 +21,7 @@ const Settings = () => {
   useEffect(() => {
     void (async () => {
       setIsLoading(true);
-      const user = await Service.get("oauth").getLoggedUser();
+      const user = await Service.require("oauth").getLoggedUser();
       if (!user) {
         return router.push("/auth/login");
       }

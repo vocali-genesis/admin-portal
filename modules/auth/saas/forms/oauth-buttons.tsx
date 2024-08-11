@@ -7,7 +7,7 @@ import Service from "@/core/module/service.factory";
 export const OauthButtons = ({ label }: { label: JSX.Element }) => {
   const { t } = useTranslation();
   const handleOAuthClick = async (provider: GenesisOauthProvider) => {
-    const url = await Service.get("oauth").oauth(provider);
+    const url = await Service.require("oauth").oauth(provider);
     if (url) {
       window.open(url);
     }
