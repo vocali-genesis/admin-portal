@@ -19,7 +19,6 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
 
   const handleSort = (column: ColumnConfig<T>) => {
     if (!column.sorter || !column.dataIndex) return;
-
     let direction: Direction = "asc";
     if (
       sortConfig &&
@@ -33,12 +32,14 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
   };
 
   return (
-    <div className="relative">
-      {isLoading && <div className="absolute inset-0 bg-teal-50 bg-opacity-60 flex items-center justify-center">
-        <Spinner />
-      </div>}
-      <table className="min-w-full bg-white border border-gray-100">
-        <thead>
+    <div className="relative overflow-x-auto">
+      {isLoading && (
+        <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center">
+          <Spinner />
+        </div>
+      )}
+      <table className="w-full text-sm text-left">
+        <thead className="text-xs uppercase bg-white">
           <tr>
             {columns.map((column, index) => (
               <th
@@ -57,7 +58,11 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
                         : ""
                     }`}
                   >
-                    {sortConfig?.direction === "asc" ? "▲" : "▼"}
+                    {sortConfig?.key === column.dataIndex
+                      ? sortConfig.direction === "asc"
+                        ? "▲"
+                        : "▼"
+                      : "▼"}
                   </span>
                 )}
               </th>
@@ -79,13 +84,15 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
               ))}
             </tr>
           ))}
-          {!data.length && <tr className="border-t-2 border-gray-100">
-            <td colSpan={columns.length} className="px-8 py-6 w-full">
-              <div className="w-full flex justify-center">
-                <Image src="/empty.png" alt="empty" width={60} height={30}/>
-              </div>
-            </td>
-          </tr>}
+          {!data.length && (
+            <tr className="border-t-2 border-gray-100">
+              <td colSpan={columns.length} className="px-8 py-6 w-full">
+                <div className="w-full flex justify-center">
+                  <Image src="/empty.png" alt="empty" width={60} height={30} />
+                </div>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

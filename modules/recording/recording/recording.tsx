@@ -16,7 +16,8 @@ import recording_styles from "./styles/recording.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import { useTranslation } from "react-i18next";
 import Service from "@/core/module/service.factory";
-
+import Button from "@/resources/containers/button";
+import IconButton from "@/resources/containers/icon-button";
 
 const Recording = () => {
   const { t } = useTranslation();
@@ -131,20 +132,20 @@ const Recording = () => {
     const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
 
     const api_response =
-      await Service.get('medical-api').processAudioAndGenerateReport(file);
+      await Service.get("medical-api")?.processAudioAndGenerateReport(file);
 
     if (!api_response) {
       MessageHandler.get().handleError("Failed to generate report");
-      return
+      return;
     }
-    console.log({ api_response })
+    console.log({ api_response });
     // TODO: FInd a better way than teh query parameter
     router.push({
       pathname: "/app/report",
       query: {
         audioUrl: audioUrl as string,
-        report: encodeURIComponent(api_response.report),
-        transcription: (api_response.transcription),
+        report: JSON.stringify(api_response.report),
+        transcription: api_response.transcription,
         time: JSON.stringify(api_response.time),
       },
     });
@@ -204,71 +205,64 @@ const Recording = () => {
               </span>
             </div>
             <div className={recording_styles.controlsContainer}>
-              <button
+              <IconButton
                 onClick={handleDelete}
                 className={recording_styles.actionButton}
+                size="small"
               >
                 <FaTrash size={16} style={{ color: "#DF4949" }} />
-              </button>
-              <button
+              </IconButton>
+
+              <IconButton
                 onClick={() => handleSkip(-30)}
                 className={recording_styles.skipButton}
+                size="small"
               >
                 <FaBackwardStep size={16} style={{ color: "black" }} />
-              </button>
-              <div className={recording_styles.playPauseContainer}>
+              </IconButton>
+
+              <IconButton
+                onClick={togglePlayPause}
+                className={recording_styles.playPauseButton}
+                size="medium"
+              >
                 {isPlaying ? (
-
-                  <button
-                    onClick={togglePlayPause}
-                    className={recording_styles.playPauseButton}
-                  >
-                    <FaCirclePause
-                      size={40}
-                      color="#59DBBC"
-                      style={{
-                        backgroundColor: "white",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  </button>
-
+                  <FaCirclePause
+                    color="#59DBBC"
+                    style={{ backgroundColor: "white", borderRadius: "50%" }}
+                  />
                 ) : (
-                  <button
-                    onClick={togglePlayPause}
-                    className={recording_styles.playPauseButton}
-                  >
-                    <FaCirclePlay
-                      size={40}
-                      color="#59DBBC"
-                      style={{
-                        backgroundColor: "white",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  </button>
+                  <FaCirclePlay
+                    color="#59DBBC"
+                    style={{ backgroundColor: "white", borderRadius: "50%" }}
+                  />
                 )}
-              </div>
-              <button
+              </IconButton>
+
+              <IconButton
                 onClick={() => handleSkip(30)}
                 className={recording_styles.skipButton}
+                size="small"
               >
                 <FaForwardStep size={16} style={{ color: "black" }} />
-              </button>
-              <button
+              </IconButton>
+
+              <IconButton
                 onClick={handleSave}
                 className={recording_styles.actionButton}
+                size="small"
               >
                 <FaFloppyDisk size={16} style={{ color: "blue" }} />
-              </button>
+              </IconButton>
             </div>
           </div>
-          <button
+          <Button
             onClick={handleSubmit}
+            variant="primary"
             className={recording_styles.submitButton}
           >
             {t("recording.submit")}
-          </button>
+          </Button>
         </div>
       </main>
       <DeleteConfirmation

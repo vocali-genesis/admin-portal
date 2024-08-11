@@ -116,7 +116,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 5vh;
   margin-bottom: 20px;
 }
 
@@ -130,21 +130,12 @@
   justify-content: center;
 }
 
-/* .playPauseButton {
-  width: 40px;
-  height: 40px;
-  background-color: #59DBBC;
-  border-radius: 50%;
-} */
-
 .playPauseContainer {
   display: flex;
   gap: 10px;
 }
 
 .playPauseButton {
-  width: 40px;
-  height: 40px;
   padding: 0;
   border: none;
   cursor: pointer;
