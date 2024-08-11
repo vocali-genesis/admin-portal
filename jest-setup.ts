@@ -1,30 +1,27 @@
+import { Mock } from "node:test";
 // Enable translations
 import "@/core/i18n";
-window.open = jest.fn();
-const mockResponse = jest.fn();
-Object.defineProperty(window, "location", {
-  value: {
-    ...window.location,
-    assign: mockResponse,
-  },
-  writable: true,
-});
 
 /**
  * Global Mocks
  */
+URL.createObjectURL = jest.fn(() => "");
+
 // Router
 export const RouterMock = {
-  push: jest.fn,
-  replace: jest.fn,
+  push: jest.fn(),
+  replace: jest.fn(),
   query: { slug: "" },
   isReady: true,
 };
 jest.mock("next/router", () => ({
   useRouter: jest.fn().mockReturnValue(RouterMock),
 }));
-// Toast
-export const ToastMock = { success: jest.fn, error: jest.fn };
+// Toast -- Is a default function and a object at the same time
+export const ToastMock = jest.fn() as Mock & { success: Mock; error: Mock };
+ToastMock.success = jest.fn();
+ToastMock.error = jest.fn();
+
 jest.mock("react-hot-toast", () => ToastMock);
 // i18n
 
@@ -45,3 +42,26 @@ jest.mock("react-i18next", () => ({
     init: () => {},
   },
 }));
+
+// Media
+export const MediaDevicesMock = {
+  getUserMedia: jest.fn(),
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+  enumerateDevices: jest.fn().mockReturnValue([]),
+};
+
+Object.defineProperty(global.navigator, "mediaDevices", {
+  value: MediaDevicesMock,
+});
+
+// Window
+window.open = jest.fn();
+const mockResponse = jest.fn();
+Object.defineProperty(window, "location", {
+  value: {
+    ...window.location,
+    assign: mockResponse,
+  },
+  writable: true,
+});

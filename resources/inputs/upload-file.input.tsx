@@ -6,14 +6,25 @@ import { ButtonSpinner } from "../containers/button-spinner";
 import dash_styles from "./upload-file.module.css";
 
 const messageHandler = MessageHandler.get();
-
-export const UploadFile = ({ onFile }: { onFile: (file: File) => void }) => {
+interface Props {
+  onFile: (file: File) => void;
+  testId?: string;
+  errorLabel: string;
+  accept: string;
+  maxSizeMB: number;
+}
+export const UploadFile = ({
+  onFile,
+  testId,
+  accept,
+  errorLabel,
+  maxSizeMB,
+}: Props) => {
   const { t } = useTranslation();
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsUploading(true);
@@ -24,19 +35,35 @@ export const UploadFile = ({ onFile }: { onFile: (file: File) => void }) => {
     setIsUploading(false);
   };
 
-  const handleFileSelection = useCallback((file: File) => {
-    if (!file.type.startsWith("audio/")) {
-      messageHandler.handleError(t("recording.select-file"));
-      return
-    }
-    setSelectedFile(file);
-  }, [t]);
+  const handleFileSelection = useCallback(
+    (file: File) => {
+      const maxSizeBytes = maxSizeMB * 1024 * 1024;
+      console.log("FILE ", { size: file.size, maxSizeBytes });
+      if (file.size > maxSizeBytes) {
+        messageHandler.handleError(
+          t("resources.file-too-large", { size: maxSizeMB })
+        );
+        return;
+      }
+
+      const formats = accept.split(",");
+      const accepted = formats.find((format) =>
+        file.type.includes(format.replace("/*", ""))
+      );
+
+      console.log({ accepted });
+      if (!accepted) {
+        messageHandler.handleError(errorLabel);
+        return;
+      }
+      setSelectedFile(file);
+    },
+    [accept, t]
+  );
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
   };
-
-
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -55,27 +82,27 @@ export const UploadFile = ({ onFile }: { onFile: (file: File) => void }) => {
     e.stopPropagation();
   };
 
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
 
-    setIsUploading(true);
-    const files = e.dataTransfer.files;
-    if (files.length) {
-      handleFileSelection(files[0]);
-    }
-    setIsUploading(false);
-  }, [handleFileSelection]);
-
-
+      setIsUploading(true);
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        handleFileSelection(files[0]);
+      }
+      setIsUploading(false);
+    },
+    [handleFileSelection]
+  );
 
   return (
     <div>
       <div
         className={`
-          ${dash_styles.uploadArea} ${isDragging ? dash_styles.dragging : ""
-          }`}
+          ${dash_styles.uploadArea} ${isDragging ? dash_styles.dragging : ""}`}
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -89,26 +116,27 @@ export const UploadFile = ({ onFile }: { onFile: (file: File) => void }) => {
           height={50}
         />
         <p className={dash_styles.p}>
-          {t("recording.drag-and-drop")}{" "}
-          <span
-            onClick={handleBrowseClick}
-            className={dash_styles.browseLink}
-          >
-            {t("recording.browse")}
+          {t("resources.drag-and-drop")}{" "}
+          <span onClick={handleBrowseClick} className={dash_styles.browseLink}>
+            {t("resources.browse")}
           </span>
         </p>
         <small className={dash_styles.small}>
-          {t("recording.supported-format")}
+          {t("resources.supported-format")}
+        </small>
+        <small className={dash_styles.small}>
+          {t("resources.max-size")} {`${maxSizeMB}MB`}
         </small>
         {selectedFile && (
           <p className={dash_styles.selectedFile}>{selectedFile.name}</p>
         )}
       </div>
       <input
+        data-testid={testId}
         type="file"
         ref={fileInputRef}
         onChange={handleFileInput}
-        accept="audio/*"
+        accept={accept}
         style={{ display: "none" }}
       />
 

@@ -1,4 +1,10 @@
-import { GenesisOauthProvider, GenesisUser } from "./core.types";
+import {
+  GenesisInvoice,
+  GenesisOauthProvider,
+  GenesisReport,
+  GenesisUser,
+  SubscriptionResponse,
+} from "./core.types";
 
 export type ComponentName =
   | "subscriptions"
@@ -22,38 +28,13 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? SubscriptionService
   : never;
 
-export type CENTS = number & { __brand: "cents" }; // 100 => 1.00
-export function centsToNumber(value: CENTS): number {
-  return value / 100;
-}
-
-export type InvoiceResponse = {
-  invoice_id: string;
-  created_at: string;
-  amount: CENTS;
-  invoice_url: string;
-};
-export type SubscriptionResponse = Record<string, string | number>;
-
 export interface MedicalTranscription {
   transcribeAudio(audioFile: File): Promise<string>;
-  generateReport(
-    transcription: string,
-    template?: string,
-    language?: string
-  ): Promise<string>;
   processAudioAndGenerateReport(
     audioFile: File,
     template?: string,
     language?: string
-  ): Promise<{
-    report: string;
-    transcription: string;
-    time: {
-      transcription: number;
-      report: number;
-    };
-  } | null>;
+  ): Promise<GenesisReport | null>;
 }
 
 export interface AuthService {
@@ -78,5 +59,5 @@ export interface SubscriptionService {
   getInvoices(
     from: number,
     to: number
-  ): Promise<{ invoices: [InvoiceResponse] | []; count: number }>;
+  ): Promise<{ invoices: [GenesisInvoice] | []; count: number }>;
 }

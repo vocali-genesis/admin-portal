@@ -33,7 +33,7 @@ const Dashboard = () => {
     if (!audioRecorderRef.current) {
       audioRecorderRef.current = new AudioRecorder();
     }
-
+    console.log({ audioRecorderRef, recordingState });
     if (recordingState === "inactive") {
       try {
         await audioRecorderRef.current.startRecording(microphone);
@@ -41,6 +41,7 @@ const Dashboard = () => {
         setRecordingState("recording");
         startVisualization();
       } catch (error) {
+        console.error(error);
         messageHandler.handleError((error as Error).message);
       }
       return;
@@ -64,6 +65,7 @@ const Dashboard = () => {
   };
 
   const stopRecording = async () => {
+    console.log({ recordingState });
     if (!(audioRecorderRef.current && recordingState !== "inactive")) return;
 
     try {
@@ -71,7 +73,6 @@ const Dashboard = () => {
       messageHandler.info(t("recording.stopped"));
       setRecordingState("inactive");
       stopVisualization();
-
       router.push({
         pathname: "/app/recording",
         query: { audioUrl: audioUrl },
@@ -131,26 +132,27 @@ const Dashboard = () => {
   }, []);
 
   const handleUpload = (selectedFile: File) => {
-    if (!selectedFile)
+    console.log("AJAJAJAj");
+    if (!selectedFile) {
       messageHandler.handleError(t("recording.select-file-upload"));
+    }
 
     const audioUrl = URL.createObjectURL(selectedFile);
     router.push({
       pathname: "/app/recording",
-      query: { audioUrl: audioUrl },
+      query: { audioUrl },
     });
   };
 
   const getStatusMessage = () => {
-    if (recordingState === "recording") {
-      return t("recording.click-to-pause");
-    } else if (recordingState === "paused") {
-      return t("recording.click-to-resume");
-    } else {
-      return t("recording.click-to-start");
-    }
-  };
+    const message: Record<typeof recordingState, string> = {
+      recording: t("recording.click-to-pause"),
+      paused: t("recording.click-to-resume"),
+      inactive: t("recording.click-to-start"),
+    };
 
+    return message[recordingState];
+  };
   return (
     <div className="p-5">
       <h2 className={dash_styles.h2}>{t("recording.record-title")}</h2>
@@ -177,7 +179,13 @@ const Dashboard = () => {
 
         <div className={dash_styles.uploadSection}>
           <h3 className={dash_styles.h3}>{t("recording.upload")}</h3>
-          <UploadFile onFile={(file) => handleUpload(file)} />
+          <UploadFile
+            accept="audio/*"
+            errorLabel={t("recording.select-file")}
+            onFile={(file) => handleUpload(file)}
+            testId="upload-recording"
+            maxSizeMB={30}
+          />
         </div>
       </div>
     </div>

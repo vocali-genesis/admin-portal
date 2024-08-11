@@ -1,5 +1,5 @@
 import {
-  InvoiceResponse,
+  GenesisInvoice,
   SubscriptionResponse,
   SubscriptionService,
 } from "./../../core/module/services.types";
@@ -57,7 +57,7 @@ class SubscriptionSupabase implements SubscriptionService {
   public async getInvoices(
     from: number,
     to: number
-  ): Promise<{ invoices: [InvoiceResponse] | []; count: number }> {
+  ): Promise<{ invoices: [GenesisInvoice] | []; count: number }> {
     const { data: invoices, error } = await this.supabase
       .from("invoices")
       .select("*")
@@ -70,7 +70,7 @@ class SubscriptionSupabase implements SubscriptionService {
       .from("invoices")
       .select("*", { count: "exact", head: true });
     return { invoices, count } as {
-      invoices: [InvoiceResponse];
+      invoices: [GenesisInvoice];
       count: number;
     };
   }

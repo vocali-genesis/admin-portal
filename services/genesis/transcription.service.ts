@@ -1,4 +1,5 @@
 import MessageHandler from "@/core/message-handler";
+import { GenesisReport } from "@/core/module/core.types";
 import { GlobalCore } from "@/core/module/module.types";
 import { MedicalTranscription } from "@/core/module/services.types";
 import config from "@/resources/utils/config";
@@ -18,17 +19,20 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
     messageHandler.handleError(errorMessage);
   }
 
-  private async handleResponse(response: Response): Promise<any> {
+  private async handleResponse<T>(response: Response): Promise<T | null> {
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = (await response.json()) as {
+        detail: Array<{ msg: string }>;
+      };
       this.handleError(errorData.detail[0]?.msg || "API request failed");
       return null;
     }
     const text = await response.text();
     try {
-      return JSON.parse(text);
-    } catch (e) {
-      return text;
+      return JSON.parse(text) as T;
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   }
 
@@ -44,14 +48,15 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
       return new Response();
     });
 
-    return this.handleResponse(response);
+    const result = (await this.handleResponse<string>(response)) || "";
+    return result;
   }
 
   async generateReport(
     transcription: string,
     template?: string,
-    language?: string,
-  ): Promise<any> {
+    language?: string
+  ): Promise<string> {
     const response = await fetch(`${this.baseUrl}/api/generate_report`, {
       method: "POST",
       headers: {
@@ -66,18 +71,15 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
       this.handleError(error);
       return new Response();
     });
-    return this.handleResponse(response);
+    const result = await this.handleResponse<string>(response);
+    return result || "";
   }
 
   async processAudioAndGenerateReport(
     audioFile: File,
     template?: string,
-    language?: string,
-  ): Promise<{
-    report: any;
-    transcription: string;
-    time: { transcription: number; report: number };
-  } | null> {
+    language?: string
+  ): Promise<GenesisReport | null> {
     const transcriptionStart = Date.now();
     const transcription: string = await this.transcribeAudio(audioFile);
     const transcriptionTime = Date.now() - transcriptionStart;
@@ -86,7 +88,7 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
     const report: string = await this.generateReport(
       transcription,
       template,
-      language,
+      language
     );
     const reportTime = Date.now() - reportStart;
     return {

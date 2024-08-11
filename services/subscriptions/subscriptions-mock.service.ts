@@ -1,7 +1,7 @@
 import { GlobalCore } from "@/core/module/module.types";
 import { faker } from "@faker-js/faker";
 import {
-  InvoiceResponse,
+  GenesisInvoice,
   SubscriptionResponse,
   SubscriptionService,
 } from "../../core/module/services.types";
@@ -32,11 +32,11 @@ class SubscriptionsMock implements SubscriptionService {
    * Retruns the payment invoices of the loggedin user
    */
   public async getInvoices(): Promise<{
-    invoices: [InvoiceResponse] | [];
+    invoices: [GenesisInvoice] | [];
     count: number;
   }> {
     return Promise.resolve({
-      invoices: [Seed.new().invoice()],
+      invoices: Seed.new().invoice().many(2),
       count: 1,
     });
   }
