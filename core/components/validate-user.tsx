@@ -15,11 +15,8 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
 
   useEffect(() => {
     async function checkLogin(): Promise<boolean> {
-      const userService = Service.get("oauth");
+      const userService = Service.require("oauth");
 
-      if (!userService) {
-        return false; // This module is mandatory
-      }
       const user = await userService.getLoggedUser();
       if (!user) {
         router.push("/auth/login");
@@ -39,10 +36,11 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
       }
       const subscription = await subscriptionService.getActiveSubscription();
 
-      console.log(subscription);
-      if (!subscription.status || subscription.status !== "active") {
+      if (subscription?.status !== "active") {
         // Avoid infinite loop
-        if (slug === "subscriptions") return true;
+        if (slug === "subscriptions") {
+          return true;
+        }
         router.push("/app/subscriptions");
         return false;
       }

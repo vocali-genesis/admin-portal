@@ -9,6 +9,9 @@ import MessageHandler from "@/core/message-handler";
 const messageHandler = MessageHandler.get();
 
 export default class Service {
+  /**
+   * Will return the service or undefined of not registered
+   */
   public static get<S extends ServiceName>(
     name: S
   ): ServiceInterface<S> | undefined {
@@ -17,6 +20,9 @@ export default class Service {
     return service as ServiceInterface<S> | undefined;
   }
 
+  /**
+   * Will return the service or throw an exception if not registered
+   */
   public static require<S extends ServiceName>(name: S): ServiceInterface<S> {
     const service = ModuleManager.get().components.services(name);
     if (!service) {
@@ -29,17 +35,12 @@ export default class Service {
 }
 
 /**
- * Hook
+ * Hook that calls `Service.required` under the hook
  */
 export const useService = <S extends ServiceName>(
   serviceName: S
-): ServiceInterface<S> | null => {
-  const [service] = useState(Service.get(serviceName));
-  if (service) {
-    return service;
-  } else {
-    return messageHandler.handleError(
-      `Service ${serviceName} not init, have you imported in the config.json? Have you 'pnpm load' the config.json?`
-    );
-  }
+): ServiceInterface<S> => {
+  const [service] = useState(Service.require(serviceName));
+
+  return service;
 };

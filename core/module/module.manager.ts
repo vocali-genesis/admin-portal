@@ -19,6 +19,7 @@ export class ModuleManager {
 
   private auth: Record<string, CoreComponent> = {};
   private app: Record<string, CoreComponent> = {};
+  private defaultApp: string = "";
   private settings: Record<string, CoreComponent> = {};
   private menu: MenuItem[] = [];
   private menuSettings: MenuItem[] = [];
@@ -36,8 +37,15 @@ export class ModuleManager {
       auth: (key: string, component: CoreComponent) => {
         this.auth[key] = component;
       },
-      app: (key: string, component: CoreComponent) => {
+      app: (
+        key: string,
+        component: CoreComponent,
+        options: { default?: boolean } = {}
+      ) => {
         this.app[key] = component;
+        if (options.default) {
+          this.defaultApp = key;
+        }
       },
       settings: (key: string, component: CoreComponent) => {
         this.settings[key] = component;
@@ -60,6 +68,34 @@ export class ModuleManager {
         }
         this.langs[module] = langs;
       },
+      getComponent: <
+        T extends "app" | "auth" | "settings" | "service",
+        N extends T extends "service" ? ServiceName : never
+      >(
+        type: T,
+        name: T extends "service" ? N : string
+      ): T extends "service"
+        ? ServiceInterface<N> | undefined
+        : CoreComponent | undefined => {
+        if (type === "service") {
+          return this.services[name as N] as T extends "service"
+            ? ServiceInterface<N> | undefined
+            : never;
+        }
+        if (type === "app") {
+          return this.app[name] as T extends "service" ? never : CoreComponent;
+        }
+        if (type === "auth") {
+          return this.auth[name] as T extends "service" ? never : CoreComponent;
+        }
+        if (type === "settings") {
+          return this.settings[name] as T extends "service"
+            ? never
+            : CoreComponent;
+        }
+
+        return undefined;
+      },
     };
   }
 
@@ -67,7 +103,7 @@ export class ModuleManager {
     return {
       auth: <T extends CoreComponent>(key: string) => this.auth[key] as T,
       app: <T extends CoreComponent>(key: string) => this.app[key] as T,
-      defaultApp: () => Object.keys(this.app)[0] as string,
+      defaultApp: () => this.defaultApp,
       settings: <T extends CoreComponent>(key: string) =>
         this.settings[key] as T,
       defaultSettings: () => Object.keys(this.settings)[0] as string,

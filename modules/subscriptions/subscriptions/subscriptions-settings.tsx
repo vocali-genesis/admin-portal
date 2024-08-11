@@ -105,7 +105,7 @@ const Subscriptions = () => {
         "subscriptions"
       ).getActiveSubscription();
       setIsLoading(false);
-      if (!data.status || data.status !== "active") {
+      if (!data || !data.status || data.status !== "active") {
         return router.push("/app/subscriptions");
       }
       setSubscription(data);

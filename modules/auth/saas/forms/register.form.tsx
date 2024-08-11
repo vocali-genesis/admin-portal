@@ -1,71 +1,47 @@
-import React from "react";
+import React, { FormEventHandler } from "react";
 import { useForm } from "react-hook-form";
-import { Provider } from "@supabase/supabase-js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import form_style from "./form.module.css";
 import { register_schema } from "./auth.schema";
 import MessageHandler from "@/core/message-handler";
-import Input from "@/resources/inputs/input";
-import AuthButton from "@/resources/containers/auth-button";
-import OAuthButton from "@/resources/containers/oauth-button";
+import AuthInputs from "./auth-inputs";
+import SubmitButton from "@/resources/containers/submit.button";
 import { useTranslation } from "react-i18next";
 import Service from "@/core/module/service.factory";
-import { GenesisOauthProvider } from "@/core/module/core.types";
+import { useRouter } from "next/router";
 
-interface RegisterFormProps {
-  onRegisterSuccess: () => void;
-}
-
-const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
+const RegisterForm: React.FC = ({}) => {
+  const router = useRouter();
   const { t } = useTranslation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(register_schema),
+    resolver: yupResolver(register_schema(t)),
   });
 
-  const onSubmit = async (data: any) => {
-    const response = await Service.get("oauth")?.registerUser(
+  const onSubmit = async (data: { email: string; password: string }) => {
+    const response = await Service.require("oauth").registerUser(
       data.email,
-      data.password,
+      data.password
     );
-    if (response != null) {
-      MessageHandler.get().handleSuccess(t("common.success"));
-      onRegisterSuccess();
+    if (response === null) {
+      return;
     }
-  };
-
-  const handleOAuthClick = async (provider: GenesisOauthProvider) => {
-    const url = await Service.get("oauth")?.oauth(provider);
-    if (url) window.location.href = url;
+    MessageHandler.get().handleSuccess(t("common.success"));
+    void router.push("/auth/login");
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={
+        handleSubmit(onSubmit) as unknown as FormEventHandler<HTMLElement>
+      }
       className={form_style.formContainer}
     >
-      <Input register={register} errors={errors} action="register" />
-      <AuthButton label={t("auth.register")} />
-      <div className={form_style.oauth}>
-        <div className={form_style.oauthTextContainer}>
-          <p className={form_style.oauthText}>
-            <strong>{t("auth.register")}</strong> {t("auth.with-others")}:
-          </p>
-        </div>
-        <OAuthButton
-          provider="google"
-          onClick={handleOAuthClick}
-          label={t("auth.register-with")}
-        />
-        {/* <OAuthButton
-          provider="facebook"
-          onClick={handleOAuthClick}
-          action="register"
-        /> */}
-      </div>
+      <AuthInputs register={register} errors={errors} action="register" />
+      <SubmitButton label={t("auth.register")} testId="submitRegistration" />
     </form>
   );
 };

@@ -22,9 +22,9 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? SubscriptionService
   : never;
 
-type CENTS = number & { __brand: "cents" }; // 100 => 1.00
-export function centsToNumber(value: CENTS) {
-  return (value / 100) as number;
+export type CENTS = number & { __brand: "cents" }; // 100 => 1.00
+export function centsToNumber(value: CENTS): number {
+  return value / 100;
 }
 
 export type InvoiceResponse = {
@@ -68,13 +68,13 @@ export interface AuthService {
   oauth(provider: GenesisOauthProvider): Promise<string | null>;
   getLoggedUser(): Promise<GenesisUser | null>;
   logout(): Promise<null | undefined>;
-  resetPassword(email: string): Promise<{} | null>;
+  resetPassword(email: string): Promise<boolean>;
   updateUser(email?: string, password?: string): Promise<GenesisUser | null>;
 }
 
 export interface SubscriptionService {
   getSubscriptionLink(): Promise<{ url: string | null }>;
-  getActiveSubscription(): Promise<SubscriptionResponse>;
+  getActiveSubscription(): Promise<SubscriptionResponse | null>;
   getInvoices(
     from: number,
     to: number

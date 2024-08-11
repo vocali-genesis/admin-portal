@@ -1,5 +1,6 @@
 import Head from "next/head";
 import * as Sentry from "@sentry/nextjs";
+import React from "react";
 
 export default function Page() {
   return (
@@ -16,7 +17,7 @@ export default function Page() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#333"
+          backgroundColor: "#333",
         }}
       >
         <h1 style={{ fontSize: "4rem", margin: "14px 0" }}>
@@ -47,16 +48,19 @@ export default function Page() {
             fontSize: "14px",
             margin: "18px",
           }}
-          onClick={async () => {
-            await Sentry.startSpan({
-              name: 'Example Frontend Span',
-              op: 'test'
-            }, async () => {
-              const res = await fetch("/api/sentry-example-api");
-              if (!res.ok) {
-                throw new Error("Sentry Example Frontend Error");
+          onClick={() => {
+            void Sentry.startSpan(
+              {
+                name: "Example Frontend Span",
+                op: "test",
+              },
+              async () => {
+                const res = await fetch("/api/sentry-example-api");
+                if (!res.ok) {
+                  throw new Error("Sentry Example Frontend Error");
+                }
               }
-            });
+            );
           }}
         >
           Throw error!
@@ -64,7 +68,10 @@ export default function Page() {
 
         <p>
           Next, look for the error on the{" "}
-          <a href="https://genesis-4s.sentry.io/issues/?project=4507703321493584">Issues Page</a>.
+          <a href="https://genesis-4s.sentry.io/issues/?project=4507703321493584">
+            Issues Page
+          </a>
+          .
         </p>
         <p style={{ marginTop: "24px" }}>
           For more information, see{" "}

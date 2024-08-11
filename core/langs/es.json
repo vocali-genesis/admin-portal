@@ -2,7 +2,10 @@
   "resources": {
     "confirm-delete": "Confirmar eliminación",
     "are-you-sure": "¿Estás seguro de que deseas eliminarlo?",
-    "microphone-error": "Error al obtener los dispositivos de audio. Asegúrate de haber concedido permisos al micrófono."
+    "microphone-error": "Error al obtener los dispositivos de audio. Asegúrate de haber concedido permisos al micrófono.",
+    "total-records": "Registros totales",
+    "page": "Página",
+    "of": "de"
   },
   "navbar": {
     "upgrade": "Actualizar",

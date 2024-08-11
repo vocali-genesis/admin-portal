@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
@@ -6,7 +6,7 @@ import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
 import { ValidateUser } from "@/core/components/validate-user";
 
-const App = () => {
+const AppSlug = () => {
   const router = useRouter();
   const loader = ModuleManager.get().components;
   const { slug } = router.query as { slug: string };
@@ -30,9 +30,9 @@ const App = () => {
       </>
     );
   }
-
   if (router.isReady && !Component) {
-    router.replace("/errors/not-found");
+    void router.replace("/errors/not-found");
+    return null;
   }
 
   const menu = ModuleManager.get().components.menus;
@@ -57,4 +57,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppSlug;

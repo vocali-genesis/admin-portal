@@ -31,7 +31,7 @@ const resources = Object.keys(finalLangs).reduce(
   {}
 );
 
-i18n
+void i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .use(LanguageDetector)
   .init({
@@ -44,4 +44,8 @@ i18n
     },
   });
 
+/**
+ * Don't import i18n from the modules, it will cause a import loop that will stop to allow
+ * the module langs load ontime
+ */
 export default i18n;

@@ -1,3 +1,5 @@
+import React from "react";
+
 const Spinner: React.FC = ({ cssClass }: { cssClass?: string }) => {
   return (
     <svg
@@ -7,6 +9,7 @@ const Spinner: React.FC = ({ cssClass }: { cssClass?: string }) => {
       aria-hidden="true"
       viewBox="0 0 100 101"
       fill="none"
+      data-testid="spinner"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

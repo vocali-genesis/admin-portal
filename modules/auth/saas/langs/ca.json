@@ -21,7 +21,16 @@
     "reset-email-sent": "L'enllaç per restablir la contrasenya s'ha enviat al teu correu electrònic",
     "login-with": "Iniciar sessió amb",
     "register-with": "Registrar-se amb",
-    "reset-email-sent ": "S'ha enviat l'enllaç de restabliment de contrasenya al teu correu electrònic"
-    
+    "reset-email-sent ": "S'ha enviat l'enllaç de restabliment de contrasenya al teu correu electrònic",
+    "email": "Correu electrònic",
+    "confirm_password": "Confirmar contrasenya",
+    "password": "Contrasenya",
+    "forgot-password": "Heu oblidat la contrasenya?",
+    "invalid-email-format": "Format d'email no vàlid",
+    "email-required": "Cal un correu electrònic",
+    "password-min-length": "La contrasenya ha de tenir almenys {{times}} caràcters",
+    "password-required": "Cal una contrasenya",
+    "password-dont-match": "Les contrasenyes han de coincidir",
+    "confirm-password-required": "Cal confirmar la contrasenya"
   }
 }
