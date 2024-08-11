@@ -38,7 +38,11 @@ class TemplateService {
       .select("*")
       .eq("ownerId", userData?.id)
       .select();
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
+
     return templates as Template[];
   }
 
@@ -51,7 +55,11 @@ class TemplateService {
       .eq("id", id)
       .eq("ownerId", userData?.id)
       .select();
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
+
     return data[0] as Template;
   }
 
@@ -64,7 +72,11 @@ class TemplateService {
       .from("templates")
       .insert({ ...template, ownerId: userData?.id })
       .select();
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
+
     return data[0] as Template;
   }
 
@@ -77,7 +89,11 @@ class TemplateService {
       .update(updates)
       .eq("id", id)
       .select();
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
+
     return data[0] as Template;
   }
 
@@ -94,4 +110,4 @@ class TemplateService {
   }
 }
 
-export default new TemplateService();
+GlobalCore.manager.service("templates", new TemplateService());

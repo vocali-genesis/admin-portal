@@ -1,22 +1,24 @@
 import { GlobalCore } from "@/core/module/module.types";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import templateService, {
+import {
   Template,
   TemplateField,
-} from "@/services/genesis/templates.service";
+} from "@/services/templates/templates.service";
 import styles from "./styles/template-detail.module.css";
 import { FaEdit, FaSave, FaTrash, FaArrowLeft, FaPlus } from "react-icons/fa";
 import MessageHandler from "@/core/message-handler";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import Table from "@/resources/table/table";
 import FieldModal from "@/resources/containers/field-modal";
+import { useService } from "@/core/module/service.factory";
 
 const messageHandler = MessageHandler.get();
 type TableDataType = TemplateField & { key: string; name: string };
 
 const TemplateDetail = () => {
   const router = useRouter();
+  const templateService = useService("templates");
   const { id } = router.query;
   const [template, setTemplate] = useState<Template | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -37,7 +39,7 @@ const TemplateDetail = () => {
   const fetchTemplate = async () => {
     if (!(typeof id === "string")) return;
 
-    const fetchedTemplate = await templateService.getTemplate(+id);
+    const fetchedTemplate = await templateService?.getTemplate(+id);
     if (!fetchedTemplate) {
       messageHandler.handleError("Template not found");
       return;
@@ -80,7 +82,7 @@ const TemplateDetail = () => {
       updatedFields[fieldKey] = fieldData;
     }
 
-    const updatedTemplate = await templateService.updateTemplate(template.id, {
+    const updatedTemplate = await templateService?.updateTemplate(template.id, {
       fields: updatedFields,
     });
 
@@ -141,7 +143,7 @@ const TemplateDetail = () => {
     const updatedFields = { ...template.fields };
     delete updatedFields[fieldToDelete];
 
-    const updatedTemplate = await templateService.updateTemplate(template.id, {
+    const updatedTemplate = await templateService?.updateTemplate(template.id, {
       fields: updatedFields,
     });
 
@@ -158,10 +160,10 @@ const TemplateDetail = () => {
   };
 
   const handleTypeChange = (fieldKey: string, newType: string) => {
-    if (newType === "number" || newType === "multiselect") {
-      setCurrentFieldKey(fieldKey);
-      setIsFieldModalOpen(true);
-    }
+    if (!(newType === "number" || newType === "multiselect")) return;
+
+    setCurrentFieldKey(fieldKey);
+    setIsFieldModalOpen(true);
     handleInputChange(fieldKey, "type", newType);
   };
 

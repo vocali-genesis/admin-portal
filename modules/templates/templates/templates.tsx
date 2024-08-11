@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { GlobalCore } from "@/core/module/module.types";
-import templateService, {
-  Template,
-} from "@/services/genesis/templates.service";
+import { Template } from "@/services/templates/templates.service";
 import styles from "./styles/templates.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
-import { FaTrash, FaEdit, FaPlus, FaSave } from "react-icons/fa";
+import {
+  FaTrash,
+  FaEdit,
+  FaPlus,
+  FaSave,
+  FaRegFolderOpen,
+} from "react-icons/fa";
 import MessageHandler from "@/core/message-handler";
 import { useRouter } from "next/router";
 import Table from "@/resources/table/table";
+import Service, { useService } from "@/core/module/service.factory";
 
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
   const router = useRouter();
+  const templateService = useService("templates");
   const [templates, setTemplates] = useState<Template[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,7 +33,7 @@ const Templates = () => {
   const fetchTemplates = async () => {
     setIsLoading(true);
     try {
-      const data = await templateService.getTemplates();
+      const data = await templateService?.getTemplates();
       if (data) setTemplates(data);
     } catch (error) {
       console.error("Error fetching templates:", error);
@@ -44,13 +50,13 @@ const Templates = () => {
   const confirmDelete = async () => {
     if (!templateToDelete) return;
 
-    const resp = await templateService.deleteTemplate(templateToDelete);
-    if (resp) {
-      setTemplates(
-        templates.filter((template) => template.id !== templateToDelete),
-      );
-      messageHandler.handleSuccess("Template deleted");
-    }
+    const resp = await templateService?.deleteTemplate(templateToDelete);
+    if (!resp) return;
+    
+    setTemplates(
+      templates.filter((template) => template.id !== templateToDelete),
+    );
+    messageHandler.handleSuccess("Template deleted");
     setIsModalOpen(false);
     setTemplateToDelete(null);
   };
@@ -61,7 +67,7 @@ const Templates = () => {
       preview: "New template preview",
       fields: {},
     };
-    const createdTemplate = await templateService.createTemplate(newTemplate);
+    const createdTemplate = await templateService?.createTemplate(newTemplate);
 
     if (!createdTemplate) return;
     setTemplates([...templates, createdTemplate]);
@@ -76,7 +82,7 @@ const Templates = () => {
   const handleSave = async () => {
     if (!editingTemplate) return;
 
-    const updatedTemplate = await templateService.updateTemplate(
+    const updatedTemplate = await templateService?.updateTemplate(
       editingTemplate.id,
       editingTemplate,
     );
@@ -108,14 +114,16 @@ const Templates = () => {
             className={styles.input}
           />
         ) : (
-          <span
+          <div
             onClick={() =>
               router.push(`/app/template-detail?id=${template.id}`)
             }
-            style={{ cursor: "pointer" }}
+            className="flex items-center"
+            style={{ gap: "1vh", cursor: "pointer" }}
           >
-            {template.name}
-          </span>
+            <span>{template.name}</span>
+            <FaRegFolderOpen size={17.5} />
+          </div>
         ),
     },
     {

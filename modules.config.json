@@ -2,11 +2,13 @@
   "modules": [
     "auth/saas",
     "recording/recording",
-    "subscriptions/subscriptions"
+    "subscriptions/subscriptions",
+    "templates/templates"
   ],
   "services": [
     "auth/auth-supabase.service",
     "genesis/transcription.service",
-    "subscriptions/subscriptions-supabase.service"
+    "subscriptions/subscriptions-supabase.service",
+    "templates/templates.service"
   ]
 }
