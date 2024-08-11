@@ -1,0 +1,43 @@
+{
+  "subscriptions": {
+    "title": "Encontre o plano de preços para o seu negócio",
+    "sub-title": "Selecione o plano perfeito para o crescimento do seu negócio",
+    "price-1": {
+      "title": "Grátis",
+      "currency": "€",
+      "amount": "0",
+      "interval": "/mês",
+      "features": {
+        "feature-1": "Benefício 1"
+      },
+      "btn-text": "Tente agora"
+    },
+    "price-2": {
+      "title": "Pró",
+      "currency": "€",
+      "amount": "100",
+      "interval": "/mês",
+      "features": {
+        "feature-1": "Benefício 1",
+        "feature-2": "Benefício 2"
+      },
+      "btn-text": "Inscreva-se já"
+    },
+    "subscription-settings": {
+      "menu": "Assinaturas",
+      "exp-label": "Expira em:",
+      "cancel-sub-btn": "Cancelar assinatura",
+      "payment-history": "Histórico de pagamentos"
+    },
+    "invoice-history": {
+      "invoice-id-th": "ID da Fatura",
+      "date-th": "Data",
+      "amount-th": "Valor",
+      "action-th": "Ações",
+      "total-label": "Total de Registros:",
+      "page-label": "Página",
+      "of-label": "de",
+      "view-receipt": "Ver Recibo"
+    }
+  }
+}

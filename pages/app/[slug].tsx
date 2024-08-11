@@ -4,8 +4,6 @@ import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
-import Service from "@/core/module/service.factory";
-import { useTranslation } from "react-i18next";
 import { ValidateUser } from "@/core/components/validate-user";
 
 const App = () => {

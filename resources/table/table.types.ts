@@ -4,5 +4,3 @@ interface ColumnConfig<T> {
   render?: (item: T) => JSX.Element;
   sorter?: boolean;
 }
-
-type TableDataModel = Record<string | number, any>;

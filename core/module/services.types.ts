@@ -1,5 +1,6 @@
 import { GenesisOauthProvider, GenesisUser } from "./core.types";
 
+export type ComponentName = 'subscriptions' | 'recording' | 'auth' | 'templates'
 export type ServiceName =
   | "oauth"
   | "medical-api"
@@ -16,6 +17,9 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   : T extends "subscriptions"
   ? SubscriptionService
   : never;
+
+  export type InvoiceResponse = Record<string, string | number>
+  export type SubscriptionResponse = Record<string, string | number>
 
 export interface MedicalTranscription {
   transcribeAudio(audioFile: File): Promise<string>;
@@ -54,5 +58,6 @@ export interface AuthService {
 
 export interface SubscriptionService {
   getSubscriptionLink(): Promise<{ url: string | null }>
-  getActiveSubscription(): Promise<Record<string, string|number>>
+  getActiveSubscription(): Promise<SubscriptionResponse>
+  getInvoices(from: number, to: number): Promise<{ invoices: [InvoiceResponse] | [], count: number}>
 }
