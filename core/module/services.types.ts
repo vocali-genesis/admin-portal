@@ -22,7 +22,17 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? SubscriptionService
   : never;
 
-export type InvoiceResponse = Record<string, string | number>;
+type CENTS = number & { __brand: "cents" }; // 100 => 1.00
+export function centsToNumber(value: CENTS) {
+  return (value / 100) as number;
+}
+
+export type InvoiceResponse = {
+  invoice_id: string;
+  created_at: string;
+  amount: CENTS;
+  invoice_url: string;
+};
 export type SubscriptionResponse = Record<string, string | number>;
 
 export interface MedicalTranscription {

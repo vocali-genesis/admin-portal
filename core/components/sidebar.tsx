@@ -51,7 +51,7 @@ const SideBar: React.FC<SidebarProps> = ({
   }, []);
 
   const logout = () => {
-    Service.get("oauth").logout();
+    Service.require("oauth").logout();
     router.push("/auth/login");
   };
 

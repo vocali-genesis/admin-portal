@@ -12,12 +12,12 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
   const [user, setUser] = useState<GenesisUser | undefined>(undefined);
 
   const logout = () => {
-    Service.get("oauth").logout();
+    Service.require("oauth").logout();
     void router.push("/auth/login");
   };
 
   useEffect(() => {
-    Service.get("oauth")
+    Service.require("oauth")
       .getLoggedUser()
       .then((loggedUser) => {
         if (!loggedUser) {

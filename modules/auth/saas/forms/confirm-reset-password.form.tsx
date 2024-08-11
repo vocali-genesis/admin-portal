@@ -26,7 +26,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
   });
 
   const onSubmit = async (data: { password: string }) => {
-    const response = await Service.get("oauth").updateUser(
+    const response = await Service.require("oauth").updateUser(
       undefined,
       data.password as string
     );

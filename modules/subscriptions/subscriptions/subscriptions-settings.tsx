@@ -9,11 +9,14 @@ import moment from "moment";
 import Table from "@/resources/table";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-import { SubscriptionResponse } from "@/core/module/services.types";
+import {
+  InvoiceResponse,
+  SubscriptionResponse,
+} from "@/core/module/services.types";
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
-  const columns: ColumnConfig<TableDataModel>[] = [
+  const columns: ColumnConfig<InvoiceResponse>[] = [
     {
       title: t("invoice-history.invoice-id-th"),
       dataIndex: "invoice_id",
@@ -39,7 +42,7 @@ const PaymentHistory: React.FC = () => {
     },
   ];
 
-  const [data, setData] = useState<[SubscriptionResponse] | []>([]);
+  const [data, setData] = useState<[InvoiceResponse] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -52,7 +55,7 @@ const PaymentHistory: React.FC = () => {
   const loadData = () => {
     (async () => {
       setIsLoading(true);
-      const { invoices, count } = await Service.get(
+      const { invoices, count } = await Service.require(
         "subscriptions"
       ).getInvoices(fromRange, toRange);
       setTotalRecords(count);
@@ -71,7 +74,7 @@ const PaymentHistory: React.FC = () => {
 
   return (
     <div className="container mx-auto">
-      <Table
+      <Table<InvoiceResponse>
         data={data}
         columns={columns}
         onSort={handleSort}
@@ -98,7 +101,9 @@ const Subscriptions = () => {
 
   useEffect(() => {
     (async () => {
-      const data = await Service.get("subscriptions").getActiveSubscription();
+      const data = await Service.require(
+        "subscriptions"
+      ).getActiveSubscription();
       setIsLoading(false);
       if (!data || !data.status || data.status !== "active") {
         return router.push("/app/subscriptions");

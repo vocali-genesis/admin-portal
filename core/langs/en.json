@@ -2,7 +2,10 @@
   "resources": {
     "confirm-delete": "Confirm Delete",
     "are-you-sure": "Are you sure you want to delete it?",
-    "microphone-error": "Failed to get audio devices. Please ensure you've granted microphone permissions."
+    "microphone-error": "Failed to get audio devices. Please ensure you've granted microphone permissions.",
+    "total-records": "Total Records",
+    "page": "Page",
+    "of": "of"
   },
   "navbar": {
     "upgrade": "Upgrade",

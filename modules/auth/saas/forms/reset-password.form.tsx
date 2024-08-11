@@ -22,7 +22,7 @@ const ResetPasswordForm = () => {
   });
 
   const onSubmit = async (data: { email: string }) => {
-    const response = await Service.get("oauth").resetPassword(data.email);
+    const response = await Service.require("oauth").resetPassword(data.email);
     if (!response) return;
 
     MessageHandler.get().handleSuccess(t("auth.reset-email-sent"));

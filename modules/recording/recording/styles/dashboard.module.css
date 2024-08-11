@@ -4,10 +4,6 @@
   margin-top: 5vh;
 }
 
-.recordSection {
-  margin-top: 6vh;
-}
-
 .recordSection,
 .uploadSection {
   flex: 1;
@@ -17,39 +13,8 @@
   text-align: center;
 }
 
-.recordSection .p {
-  margin-top: 3vh;
-  font-size: 3vh;
-  font-weight: bold;
-  color: black;
-}
-
-.recordButton {
-  width: 175px;
-  height: 175px;
-  background-color: #59dbbc;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  margin-top: 5vh;
-  margin-bottom: 10px;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.recordButton:hover {
-  background-color: #4bc1a4;
-}
-
-.recordButton.recording {
-  background-color: #ff6b6b;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-.recordButton.paused {
-  background-color: #59dbbc;
+.recordSection {
+  margin-top: 6vh;
 }
 
 .stopButton {
@@ -59,8 +24,8 @@
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
-  font-family: "Montserrat", sans-serif;
   font-size: 1.9vh;
+  font-family: 'Montserrat', sans-serif;
   margin-top: 2vh;
   display: flex;
   align-items: center;
@@ -71,18 +36,6 @@
   background-color: #ff5252;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
 .divider {
   width: 0.1%;
   min-width: 1px;
@@ -91,116 +44,21 @@
   margin: 0 1%;
 }
 
-.uploadArea {
-  width: 50vh;
-  height: 50vh;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-
-  background: #f8f8ff;
-  border: 2px dashed #ccc;
-  padding: 20px;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.uploadArea img {
-  margin-bottom: 10px;
-}
-
-.uploadButton {
-  background-color: #59dbbc;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 50vh;
-
-  font-family: "Montserrat", sans-serif;
-  font-size: 1.9vh;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-
-
-.selectedFile {
-  margin-top: 10px;
-  font-size: 1.75vh;
-  color: #666;
-
-  font-family: "Montserrat", sans-serif;
-}
-
-.uploadButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.uploadArea.dragging {
-  border-color: #59dbbc;
-  background-color: rgba(89, 219, 188, 0.1);
-}
-
-.browseLink {
-  color: #59dbbc;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.browseLink:hover {
-  color: #4dbcaa;
-}
-
 .h2 {
   color: black;
-  font-family: "Montserrat", sans-serif;
   font-size: 1.9vh;
 }
 
 .p {
   color: #666;
-  font-family: "Montserrat", sans-serif;
   font-size: 1.75vh;
-}
-
-.uploadArea .p {
-  font-size: 2vh;
-  font-weight: bold;
 }
 
 .h3 {
   margin-bottom: 2.5vh;
   font-size: 2.5vh;
   color: black;
-  font-family: "Montserrat", sans-serif;
   font-weight: bold;
-}
-
-.small {
-  color: #999;
-  font-family: "Montserrat", sans-serif;
-  font-size: 1.5vh;
-
-  margin-top: 1.25vh;
 }
 
 @media (max-width: 840px) {
@@ -215,29 +73,10 @@
     max-width: 300px;
   }
 
-  .recordSection {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .uploadSection {
-    margin-top: 2rem;
-  }
-
   .divider {
     width: 80%;
     height: 1px;
     margin: 20px 0;
-  }
-
-  .uploadArea {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-  }
-
-  .recordButton {
-    margin-top: 3rem;
   }
 
   .h2 {
@@ -250,29 +89,9 @@
     font-size: 0.6rem;
     text-align: center;
   }
-
-  .uploadArea .p {
-    font-size: 0.8rem;
-  }
-
-  .small {
-    font-size: 0.7rem;
-  }
 }
 
 @media (max-width: 500px) {
-  .contentWrapper {
-    flex-direction: column;
-  }
-
-  .mainContent .h2 {
-    display: none;
-  }
-
-  .mainContent .top_p {
-    display: none;
-  }
-
   .mainContent {
     padding: 20px;
   }
@@ -280,18 +99,5 @@
   .recordButton {
     width: 150px;
     height: 150px;
-  }
-
-  .h3 {
-    display: none;
-  }
-
-  .uploadArea {
-    display: none;
-  }
-
-  .uploadButton {
-    width: 100%;
-    max-width: 300px;
   }
 }

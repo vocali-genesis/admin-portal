@@ -8,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const user = await Service.get("oauth").getLoggedUser();
+      const user = await Service.require("oauth").getLoggedUser();
       await router.push(user === null ? "/auth/login" : "/app/dashboard");
     };
     void checkAuth();

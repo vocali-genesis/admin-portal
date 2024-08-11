@@ -22,7 +22,7 @@ const RegisterForm: React.FC = ({}) => {
   });
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    const response = await Service.get("oauth").registerUser(
+    const response = await Service.require("oauth").registerUser(
       data.email,
       data.password
     );

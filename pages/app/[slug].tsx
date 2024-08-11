@@ -4,7 +4,7 @@ import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
-import Service from "@/core/module/service.factory";
+import { ValidateUser } from "@/core/components/validate-user";
 
 const AppSlug = () => {
   const router = useRouter();
@@ -19,36 +19,16 @@ const AppSlug = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  useEffect(() => {
-    void (async () => {
-      setIsLoading(true);
-      const { slug } = router.query as { slug: string };
-      const user = await Service.get("oauth").getLoggedUser();
-
-      if (!user) {
-        return router.push("/auth/login");
-      }
-
-      const subscriptionService = Service.get("subscriptions");
-      if (!subscriptionService) {
-        setIsLoading(false);
-        return;
-      }
-      const subscription = await subscriptionService.getActiveSubscription();
-      if (!subscription || subscription.status !== "active") {
-        slug !== "subscriptions" && void router.push("/app/subscriptions");
-        setIsLoading(false);
-
-        return;
-      }
-      setIsLoading(false);
-    })();
-  }, [router]);
-
   const isSpinner = !router.isReady || isLoading;
-  // remove this lines after the i18n fix
+
+  // remove this line after the i18nfix
   if (isSpinner) {
-    return <Spinner />;
+    return (
+      <>
+        <ValidateUser onReady={() => setIsLoading(false)} />
+        <Spinner />
+      </>
+    );
   }
   if (router.isReady && !Component) {
     void router.replace("/errors/not-found");
@@ -66,7 +46,7 @@ const AppSlug = () => {
           closeSidebar={() => setSidebarOpen(false)}
           menu={menu}
         />
-        <main className="flex-grow p-5">
+        <main className="flex-grow p-5 overflow-y-scroll">
           {/* uncomment below line after the i18n issue fix*/}
           {/* { isSpinner ? <Spinner /> : <Component /> } */}
           {/* Remove below line after the i18n issue fix*/}

@@ -22,22 +22,22 @@
         "feature-2": "Benefício 2"
       },
       "btn-text": "Inscreva-se já"
-    },
-    "subscription-settings": {
-      "menu": "Assinaturas",
-      "exp-label": "Expira em:",
-      "cancel-sub-btn": "Cancelar assinatura",
-      "payment-history": "Histórico de pagamentos"
-    },
-    "invoice-history": {
-      "invoice-id-th": "ID da Fatura",
-      "date-th": "Data",
-      "amount-th": "Valor",
-      "action-th": "Ações",
-      "total-label": "Total de Registros:",
-      "page-label": "Página",
-      "of-label": "de",
-      "view-receipt": "Ver Recibo"
     }
+  },
+  "subscription-settings": {
+    "menu": "Assinaturas",
+    "exp-label": "Expira em:",
+    "cancel-sub-btn": "Cancelar assinatura",
+    "payment-history": "Histórico de pagamentos"
+  },
+  "invoice-history": {
+    "invoice-id-th": "ID da Fatura",
+    "date-th": "Data",
+    "amount-th": "Valor",
+    "action-th": "Ações",
+    "total-label": "Total de Registros:",
+    "page-label": "Página",
+    "of-label": "de",
+    "view-receipt": "Ver Recibo"
   }
 }
