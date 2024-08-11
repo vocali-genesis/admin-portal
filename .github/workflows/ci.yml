@@ -10,6 +10,7 @@ jobs:
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_KEY }}
+      NEXT_PUBLIC_TRANSCRIPTION_API: ${{ vars.NEXT_PUBLIC_TRANSCRIPTION_API }}
 
     steps:
       - name: Checkout code
