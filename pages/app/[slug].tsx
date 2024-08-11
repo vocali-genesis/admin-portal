@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
-import Service from "@/core/module/service.factory";
-import { useTranslation } from "react-i18next";
 import { ValidateUser } from "@/core/components/validate-user";
 
-const App = () => {
+const AppSlug = () => {
   const router = useRouter();
   const loader = ModuleManager.get().components;
   const { slug } = router.query as { slug: string };
@@ -21,20 +19,20 @@ const App = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
- 
-
-  const isSpinner = !router.isReady || isLoading
+  const isSpinner = !router.isReady || isLoading;
 
   // remove this line after the i18nfix
-  if(isSpinner) {
-    return (<>
-      <ValidateUser onReady={() => setIsLoading(false)} />
-      <Spinner /> 
-    </>)
+  if (isSpinner) {
+    return (
+      <>
+        <ValidateUser onReady={() => setIsLoading(false)} />
+        <Spinner />
+      </>
+    );
   }
-
   if (router.isReady && !Component) {
-    router.replace("/errors/not-found");
+    void router.replace("/errors/not-found");
+    return null;
   }
 
   const menu = ModuleManager.get().components.menus;
@@ -48,15 +46,15 @@ const App = () => {
           closeSidebar={() => setSidebarOpen(false)}
           menu={menu}
         />
-        <main className="flex-grow p-5">
+        <main className="flex-grow p-5 overflow-y-scroll">
           {/* uncomment below line after the i18n issue fix*/}
           {/* { isSpinner ? <Spinner /> : <Component /> } */}
           {/* Remove below line after the i18n issue fix*/}
-          { <Component /> }
+          {<Component />}
         </main>
       </div>
     </div>
   );
 };
 
-export default App;
+export default AppSlug;

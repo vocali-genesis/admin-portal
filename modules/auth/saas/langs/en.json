@@ -16,11 +16,21 @@
     "register": "Register",
     "login-register": "Login and Register",
     "logout": "Logout",
+    "email": "Email",
+    "confirm_password": "Confirm Password",
+    "password": "Password",
     "reset": "Reset Password",
     "with-others": "With Others",
     "login-successful": "Login successful",
     "reset-email-sent ": "Password reset link has been sent to your email",
     "login-with": "Login with",
-    "register-with": "Register with"
+    "register-with": "Register with",
+    "forgot-password": "Forgot password?",
+    "invalid-email-format": "Invalid email format",
+    "email-required": "Email is required",
+    "password-min-length": "Password must be at least {{times}} characters",
+    "password-required": "Password is required",
+    "password-dont-match": "Passwords must match",
+    "confirm-password-required": "Confirm Password is required"
   }
 }

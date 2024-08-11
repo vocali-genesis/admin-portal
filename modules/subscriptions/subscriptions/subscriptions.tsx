@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { GlobalCore } from "@/core/module/module.types";
 import prices from "./pricing-config.json";
-import styles from "./styles/subscriptions.module.css";
 import Service from "@/core/module/service.factory";
+import styles from "./styles/subscriptions.module.css";
 
 type Price = (typeof prices)[0];
 

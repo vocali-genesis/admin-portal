@@ -1,4 +1,8 @@
-import { SubscriptionService } from "./../../core/module/services.types";
+import {
+  InvoiceResponse,
+  SubscriptionResponse,
+  SubscriptionService,
+} from "./../../core/module/services.types";
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
@@ -34,9 +38,7 @@ class SubscriptionSupabase implements SubscriptionService {
   /**
    * Retruns the currently active user subscription, so that the users can subscribe to a plan
    */
-  public async getActiveSubscription(): Promise<
-    Record<string, string | number>
-  > {
+  public async getActiveSubscription(): Promise<SubscriptionResponse | null> {
     const { data, error } = await this.supabase
       .from("subscriptions")
       .select(
@@ -44,9 +46,33 @@ class SubscriptionSupabase implements SubscriptionService {
       );
     if (error) {
       messageHandler.handleError(error.message);
-      return {};
+      return null;
     }
-    return { ...data[0] };
+    return data[0];
+  }
+
+  /**
+   * Retruns the payment invoices of the loggedin user
+   */
+  public async getInvoices(
+    from: number,
+    to: number
+  ): Promise<{ invoices: [InvoiceResponse] | []; count: number }> {
+    const { data: invoices, error } = await this.supabase
+      .from("invoices")
+      .select("*")
+      .range(from, to);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return { invoices: [], count: 0 };
+    }
+    const { count = 0 } = await this.supabase
+      .from("invoices")
+      .select("*", { count: "exact", head: true });
+    return { invoices, count } as {
+      invoices: [InvoiceResponse];
+      count: number;
+    };
   }
 }
 

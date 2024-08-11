@@ -51,7 +51,7 @@ const SideBar: React.FC<SidebarProps> = ({
   }, []);
 
   const logout = () => {
-    Service.get("oauth")?.logout();
+    Service.require("oauth").logout();
     router.push("/auth/login");
   };
 
@@ -66,7 +66,9 @@ const SideBar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`${sidebar_styles.sidebar} ${isOpen ? sidebar_styles.open : ""}`}
+      className={`${sidebar_styles.sidebar} ${
+        isOpen ? sidebar_styles.open : ""
+      }`}
     >
       <button className={sidebar_styles.closeButton} onClick={closeSidebar}>
         ×
@@ -84,11 +86,13 @@ const SideBar: React.FC<SidebarProps> = ({
         {menu.map((item, index) => (
           <li
             key={index}
-            className={`${sidebar_styles.sidebarItem} ${item.url === slug ? sidebar_styles.activeTab : ""}`}
+            className={`${sidebar_styles.sidebarItem} ${
+              item.url === slug ? sidebar_styles.activeTab : ""
+            }`}
             onClick={() => router.push(item.url)}
           >
             {renderIcon(item)}
-            <span>{t(item.label)}</span>
+            {t(item.label)}
           </li>
         ))}
       </ul>

@@ -74,3 +74,13 @@
 .messageText {
   font-size: 14px;
 }
+
+.inputEmailIcon {
+  background-image: url("/frame-1.svg") !important;
+  background-size: 1.25rem !important;
+}
+
+.inputPasswordIcon {
+  background-image: url("/frame-2.svg") !important;
+  background-size: 1.1rem !important;
+}

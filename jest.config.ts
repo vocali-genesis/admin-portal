@@ -6,7 +6,9 @@ const createJestConfig = nextJest({
 });
 
 const config: Config = {
+  clearMocks: true,
   coverageProvider: "v8",
+  setupFiles: ["./jest-setup.ts"],
   testEnvironment: "jest-environment-jsdom",
   modulePaths: ["<rootDir>/"],
   moduleNameMapper: {

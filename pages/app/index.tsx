@@ -1,7 +1,8 @@
 import { ModuleManager } from "@/core/module/module.manager";
 import Spinner from "@/resources/containers/spinner";
+import React from "react";
 
-export async function getServerSideProps() {
+export function getServerSideProps() {
   return {
     redirect: {
       destination: "/app/" + ModuleManager.get().components.defaultApp(),

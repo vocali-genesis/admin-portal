@@ -3,12 +3,14 @@ import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
-import Spinner from '@/resources/containers/spinner';
+import Spinner from "@/resources/containers/spinner";
+import Service from "@/core/module/service.factory";
 
 const Settings = () => {
   const router = useRouter();
   const { slug } = router.query as { slug: string };
   const Component = ModuleManager.get().components.settings(slug);
+  const [isLoading, setIsLoading] = useState(true);
 
   // --- This logic needs to be refactor
   // This shall go in the reducer
@@ -16,27 +18,35 @@ const Settings = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+  useEffect(() => {
+    void (async () => {
+      setIsLoading(true);
+      const user = await Service.require("oauth").getLoggedUser();
+      if (!user) {
+        return router.push("/auth/login");
+      }
+
+      setIsLoading(false);
+    })();
+  }, [router]);
 
   useEffect(() => {
     if (!router.isReady) {
-      return
+      return;
     }
     if (!Component) {
-      router.replace('/errors/not-found')
+      void router.replace("/errors/not-found");
     }
-  }, [Component, router])
-  if (!router.isReady) {
+  }, [Component, router]);
+
+  if (!router.isReady || isLoading) {
     return <Spinner />;
   }
   if (!Component) {
-    return null
-  }
-  if (!Component) {
-    // TODO: Redirect to 404
-    return <Spinner />;
+    return null;
   }
 
-  const menu = ModuleManager.get().components.menuSettings
+  const menu = ModuleManager.get().components.menuSettings;
 
   return (
     <div className="flex flex-col h-screen bg-white">
