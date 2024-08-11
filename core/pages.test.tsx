@@ -12,7 +12,8 @@ import AppSlug from "@/pages/app/[slug]";
 import SettingSlug from "@/pages/settings/[slug]";
 import AuthSlug from "@/pages/auth/[slug]";
 
-import { SubscriptionService } from "../../core/module/services.types";
+import { SubscriptionService } from "@/core/module/services.types";
+import { login } from "@/resources/tests/test.utils";
 
 describe("===== DYNAMIC PATHS =====", () => {
   let authService: AuthService;
@@ -56,7 +57,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       // Now is enable by default the mock one
     });
     it("User without subscription", async () => {
-      authService.loginUser();
+      login(authService);
       jest
         .spyOn(subscriptionServices, "getActiveSubscription")
         .mockReturnValueOnce(Promise.resolve(null));
@@ -72,7 +73,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
 
     it("App User with subscription expired", async () => {
-      authService.loginUser();
+      login(authService);
       jest
         .spyOn(subscriptionServices, "getActiveSubscription")
         .mockReturnValueOnce(Promise.resolve({ status: "expired" }));
@@ -88,7 +89,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
 
     it("App Component not found", async () => {
-      authService.loginUser();
+      login(authService);
       const spy = jest.spyOn(RouterMock, "replace");
       jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
 
@@ -100,7 +101,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
 
     it("App Load component successfully", async () => {
-      authService.loginUser();
+      login(authService);
 
       render(<AppSlug />);
 
@@ -116,7 +117,7 @@ describe("===== DYNAMIC PATHS =====", () => {
         url: "/demo",
         order: 0,
       });
-      authService.loginUser();
+      login(authService);
       const spy = jest.spyOn(RouterMock, "push");
 
       render(<AppSlug />);
@@ -127,7 +128,7 @@ describe("===== DYNAMIC PATHS =====", () => {
 
       const item = screen.getByText("demo-menu");
       expect(item).toBeInTheDocument();
-      act(() => item.click());
+      item.click();
 
       expect(spy).toHaveBeenCalledWith("/demo");
     });
@@ -159,7 +160,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
 
     it("Settings Component not found", async () => {
-      authService.loginUser();
+      login(authService);
       const spy = jest.spyOn(RouterMock, "replace");
       jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
 
@@ -171,7 +172,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
 
     it("Settings Load component successfully", async () => {
-      authService.loginUser();
+      login(authService);
 
       render(<SettingSlug />);
 
@@ -185,8 +186,9 @@ describe("===== DYNAMIC PATHS =====", () => {
         label: "demo-menu",
         icon: "./public/user.svg",
         url: "/demo",
+        order: 0,
       });
-      authService.loginUser();
+      login(authService);
       const spy = jest.spyOn(RouterMock, "push");
 
       render(<SettingSlug />);
@@ -197,7 +199,7 @@ describe("===== DYNAMIC PATHS =====", () => {
 
       const item = screen.getByText("demo-menu");
       expect(item).toBeInTheDocument();
-      act(() => item.click());
+      item.click();
 
       expect(spy).toHaveBeenCalledWith("/demo");
     });

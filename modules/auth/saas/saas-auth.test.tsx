@@ -9,11 +9,12 @@ import { faker } from "@faker-js/faker";
 import { RouterMock, ToastMock, TranslationMock } from "@/jest-setup";
 import MessageHandler from "@/core/message-handler";
 import React from "react";
+import { login } from "@/resources/tests/test.utils";
 
 const getInput = (container: HTMLElement, inputName: string) => {
   return container.querySelector(`input[name="${inputName}"]`) as Element;
 };
-describe("=====  SAAS LOGIN =====", () => {
+describe("===== SAAS LOGIN =====", () => {
   let authService: AuthService;
 
   beforeAll(() => {
@@ -64,7 +65,7 @@ describe("=====  SAAS LOGIN =====", () => {
     it("Login Fields are required", async () => {
       render(<Login />);
 
-      act(() => screen.getByTestId("submitLogin").click());
+      screen.getByTestId("submitLogin").click();
 
       await waitFor(() => {
         expect(screen.getByText("auth.email-required")).toBeInTheDocument();
@@ -81,8 +82,8 @@ describe("=====  SAAS LOGIN =====", () => {
       const passwordInput = getInput(container, "password");
 
       // Makes the form dirty
-      act(() => screen.getByTestId("submitLogin").click());
 
+      screen.getByTestId("submitLogin").click();
       await userEvent.type(emailInput, "wrong-email");
       await userEvent.type(passwordInput, "123");
 
@@ -110,7 +111,7 @@ describe("=====  SAAS LOGIN =====", () => {
         faker.internet.password({ length: 10 })
       );
 
-      act(() => screen.getByTestId("submitLogin").click());
+      screen.getByTestId("submitLogin").click();
 
       await waitFor(() => expect(spy).toHaveBeenCalledWith("/app/dashboard"));
     });
@@ -133,7 +134,8 @@ describe("=====  SAAS LOGIN =====", () => {
         faker.internet.password({ length: 10 })
       );
 
-      act(() => screen.getByTestId("submitLogin").click());
+      screen.getByTestId("submitLogin").click();
+
       await waitFor(() =>
         expect(toastSpy).toHaveBeenCalledWith("User Don`t exists")
       );
@@ -163,7 +165,7 @@ describe("=====  SAAS LOGIN =====", () => {
     it("Reset Password Fields are required", async () => {
       render(<ResetPassword />);
 
-      act(() => screen.getByTestId("resetPassword").click());
+      screen.getByTestId("resetPassword").click();
 
       await waitFor(() => {
         expect(screen.getByText("auth.email-required")).toBeInTheDocument();
@@ -178,7 +180,7 @@ describe("=====  SAAS LOGIN =====", () => {
       ) as Element;
 
       // Makes the form dirty
-      act(() => screen.getByTestId("resetPassword").click());
+      screen.getByTestId("resetPassword").click();
 
       await userEvent.type(emailInput, "wrong-email");
 
@@ -201,7 +203,7 @@ describe("=====  SAAS LOGIN =====", () => {
 
       await userEvent.type(emailInput, faker.internet.email());
 
-      act(() => screen.getByTestId("resetPassword").click());
+      screen.getByTestId("resetPassword").click();
 
       await waitFor(() => {
         expect(spy).toHaveBeenCalledWith("/auth/login");
@@ -224,7 +226,7 @@ describe("=====  SAAS LOGIN =====", () => {
 
       await userEvent.type(emailInput, faker.internet.email());
 
-      act(() => screen.getByTestId("resetPassword").click());
+      screen.getByTestId("resetPassword").click();
       await waitFor(() =>
         expect(toastSpy).toHaveBeenCalledWith("Email Not Found")
       );
@@ -273,7 +275,7 @@ describe("=====  SAAS LOGIN =====", () => {
     it("Register Fields are required", async () => {
       render(<Register />);
 
-      act(() => screen.getByTestId("submitRegistration").click());
+      screen.getByTestId("submitRegistration").click();
 
       await waitFor(() => screen.getByText("auth.email-required"));
 
@@ -291,7 +293,7 @@ describe("=====  SAAS LOGIN =====", () => {
       const confirmPassword = getInput(container, "confirm_password");
 
       // Makes the form dirty
-      act(() => screen.getByTestId("submitRegistration").click());
+      screen.getByTestId("submitRegistration").click();
 
       await userEvent.type(emailInput, "wrong-email");
       await userEvent.type(passwordInput, "123");
@@ -317,7 +319,7 @@ describe("=====  SAAS LOGIN =====", () => {
       await userEvent.type(passwordInput, password);
       await userEvent.type(confirmPassword, password);
 
-      act(() => screen.getByTestId("submitRegistration").click());
+      screen.getByTestId("submitRegistration").click();
 
       await waitFor(() => expect(spy).toHaveBeenCalledWith("/auth/login"));
     });
@@ -339,7 +341,7 @@ describe("=====  SAAS LOGIN =====", () => {
       await userEvent.type(passwordInput, password);
       await userEvent.type(confirmPassword, password);
 
-      act(() => screen.getByTestId("submitRegistration").click());
+      screen.getByTestId("submitRegistration").click();
       await waitFor(() =>
         expect(toastSpy).toHaveBeenCalledWith("User already registered")
       );
@@ -356,7 +358,7 @@ describe("=====  SAAS LOGIN =====", () => {
       expect(SettingsComponent).not.toBeUndefined();
       Settings = SettingsComponent as CoreComponent;
 
-      authService.loginUser();
+      login(authService);
     });
 
     afterAll(() => {
@@ -380,7 +382,7 @@ describe("=====  SAAS LOGIN =====", () => {
     it("Update Settings Fields are required", async () => {
       render(<Settings />);
 
-      act(() => screen.getByTestId("updateSettings").click());
+      screen.getByTestId("updateSettings").click();
 
       await waitFor(() => screen.getByText("auth.email-required"));
 
@@ -398,12 +400,11 @@ describe("=====  SAAS LOGIN =====", () => {
       const confirmPassword = getInput(container, "confirm_password");
 
       // Makes the form dirty
-      act(() => screen.getByTestId("updateSettings").click());
-      await act(async () => {
-        await userEvent.type(emailInput, "wrong-email");
-        await userEvent.type(passwordInput, "123");
-        await userEvent.type(confirmPassword, "Different");
-      });
+      screen.getByTestId("updateSettings").click();
+
+      await userEvent.type(emailInput, "wrong-email");
+      await userEvent.type(passwordInput, "123");
+      await userEvent.type(confirmPassword, "Different");
 
       await waitFor(() => screen.getByText("auth.invalid-email-format"));
 
@@ -421,15 +422,13 @@ describe("=====  SAAS LOGIN =====", () => {
       const confirmPassword = getInput(container, "confirm_password");
 
       const password = faker.internet.password({ length: 10 });
-      await act(async () => {
-        await userEvent.type(emailInput, faker.internet.email());
-        await userEvent.type(passwordInput, password);
-        await userEvent.type(confirmPassword, password);
 
-        screen.getByTestId("updateSettings").click();
-      });
+      await userEvent.type(emailInput, faker.internet.email());
+      await userEvent.type(passwordInput, password);
+      await userEvent.type(confirmPassword, password);
 
-      expect(toastSpy).toHaveBeenCalledTimes(1);
+      screen.getByTestId("updateSettings").click();
+      await waitFor(() => expect(toastSpy).toHaveBeenCalledTimes(1));
     });
 
     it("Update Settings Api Error", async () => {
@@ -445,13 +444,13 @@ describe("=====  SAAS LOGIN =====", () => {
       const confirmPassword = getInput(container, "confirm_password");
 
       const password = faker.internet.password({ length: 10 });
-      await act(async () => {
-        await userEvent.type(emailInput, faker.internet.email());
-        await userEvent.type(passwordInput, password);
-        await userEvent.type(confirmPassword, password);
 
-        screen.getByTestId("updateSettings").click();
-      });
+      await userEvent.type(emailInput, faker.internet.email());
+      await userEvent.type(passwordInput, password);
+      await userEvent.type(confirmPassword, password);
+
+      screen.getByTestId("updateSettings").click();
+
       await waitFor(() =>
         expect(toastSpy).toHaveBeenCalledWith("Error Updating the user")
       );
@@ -465,24 +464,20 @@ describe("=====  SAAS LOGIN =====", () => {
         'select[name="language"]'
       ) as Element;
 
-      await act(async () => {
-        await userEvent.selectOptions(select, "es");
-      });
+      await userEvent.selectOptions(select, "es");
+
       expect(langSpy).toHaveBeenCalledWith("es");
 
-      await act(async () => {
-        await userEvent.selectOptions(select, "ca");
-      });
+      await userEvent.selectOptions(select, "ca");
+
       expect(langSpy).toHaveBeenCalledWith("ca");
 
-      await act(async () => {
-        await userEvent.selectOptions(select, "pt");
-      });
+      await userEvent.selectOptions(select, "pt");
+
       expect(langSpy).toHaveBeenCalledWith("pt");
 
-      await act(async () => {
-        await userEvent.selectOptions(select, "en");
-      });
+      await userEvent.selectOptions(select, "en");
+
       expect(langSpy).toHaveBeenCalledWith("en");
     });
   });

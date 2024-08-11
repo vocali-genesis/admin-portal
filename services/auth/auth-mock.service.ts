@@ -8,11 +8,14 @@ class AuthMockService implements AuthService {
   private loggedUser: GenesisUser | null = null;
 
   constructor() {}
-  private generateUser() {
+  private generateUser({
+    email,
+    password,
+  }: Partial<{ email: string; password: string }> = {}) {
     const user = {
       id: faker.string.uuid(),
       created_at: moment().format(),
-      email: faker.internet.email(),
+      email: email || faker.internet.email(),
     };
     const token = faker.string.hexadecimal({ length: 12 });
 
@@ -27,11 +30,14 @@ class AuthMockService implements AuthService {
     return this.generateUser();
   }
 
-  async loginUser(): Promise<{
+  async loginUser(
+    email: string,
+    password: string
+  ): Promise<{
     user: GenesisUser | null;
     token: string | undefined;
   } | null> {
-    return this.generateUser();
+    return this.generateUser({ email, password });
   }
 
   public async oauth(): Promise<string | null> {
