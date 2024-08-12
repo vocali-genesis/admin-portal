@@ -42,12 +42,13 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
       }
       const subscription = await subscriptionService.getActiveSubscription();
   
-      if (subscription?.status !== 'active' ) {
+      if (!subscription.status || subscription.status !== "active") {
         // Avoid infinite loop
-        slug !== 'subscriptions' && router.push("/app/subscriptions");
-        return false
+        if (slug === "subscriptions") return true;
+        router.push("/app/subscriptions");
+        return false;
       }
-      return true
+      return true;
     }
 
     checkLogin().then( (result) =>{
