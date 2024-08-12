@@ -123,15 +123,6 @@ const Recording = () => {
     }
   };
 
-  const handleStop = () => {
-    if (!audioRef.current) return;
-
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
-    setIsPlaying(false);
-    updateSeekBarProgress();
-  };
-
   const handleEnded = () => {
     if (!audioRef.current) return;
 
@@ -143,14 +134,29 @@ const Recording = () => {
   const handleSave = () => {
     if (!(audioUrl && audioRef.current)) return;
 
-    const anchor = document.createElement("a");
-    anchor.href = audioUrl as string;
+    // Create a Blob from the audio URL
+    fetch(audioUrl as string)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const blobUrl = URL.createObjectURL(blob);
 
-    anchor.download = typeof audioUrl === "string" ? audioUrl : audioUrl[0];
+        // Create an anchor element and trigger the download
+        const anchor = document.createElement("a");
+        anchor.href = blobUrl;
 
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+        // Set the desired file name for download
+        anchor.download = `audio-${new Date().toLocaleDateString()}.mp3`; // Set your desired file name
+
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+
+        // Revoke the object URL after the download
+        URL.revokeObjectURL(blobUrl);
+      })
+      .catch((error) => {
+        console.error("Failed to download audio file:", error);
+      });
   };
 
   const handleSubmit = async () => {
@@ -168,7 +174,6 @@ const Recording = () => {
       MessageHandler.get().handleError("Failed to generate report");
       return;
     }
-    console.log({ api_response });
     // TODO: FInd a better way than teh query parameter
     router.push({
       pathname: "/app/report",
