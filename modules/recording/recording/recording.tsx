@@ -258,12 +258,12 @@ const Recording = () => {
               >
                 {isPlaying ? (
                   <FaCirclePause
-                    color="#59DBBC"
+                    color="var(--primary)"
                     style={{ backgroundColor: "white", borderRadius: "50%" }}
                   />
                 ) : (
                   <FaCirclePlay
-                    color="#59DBBC"
+                    color="var(--primary)"
                     style={{ backgroundColor: "white", borderRadius: "50%" }}
                   />
                 )}

@@ -259,7 +259,7 @@ const TemplateDetail = () => {
                   <button
                     onClick={() => handleSave(key)}
                     className={`${template_styles.actionButton}`}
-                    style={{ color: "#59DBBC" }}
+                    style={{ color: "var(--primary)" }}
                   >
                     <FaSave />
                   </button>
@@ -268,7 +268,7 @@ const TemplateDetail = () => {
                     onClick={() => handleEdit(key)}
                     className={template_styles.actionButton}
                   >
-                    <FaEdit style={{ color: "#59DBBC" }} />
+                    <FaEdit style={{ color: "var(--primary)" }} />
                   </button>
                 )}
                 <button

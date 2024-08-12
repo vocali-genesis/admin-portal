@@ -1,6 +1,6 @@
 .sidebar {
   min-width: 200px;
-  background-color: #1e2640;
+  background-color: var(--secondary);
   color: white;
   padding-top: 1.5rem;
   height: 100%;
@@ -33,7 +33,7 @@
 }
 
 .activeTab {
-  background-color: #59DBBC;
+  background-color: var(--primary);
 }
 
 .sidebar.open {

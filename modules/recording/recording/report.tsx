@@ -75,7 +75,7 @@ const Report = () => {
             className={report_styles.progressSegment}
             style={{
               width: `7.5px`,
-              backgroundColor: "#59DBBC",
+              backgroundColor: "var(--primary)",
               borderTopLeftRadius: "20px",
               borderBottomLeftRadius: "20px",
             }}
@@ -85,7 +85,7 @@ const Report = () => {
             className={report_styles.progressSegment}
             style={{
               width: `${audioWidth}%`,
-              backgroundColor: "#59DBBC",
+              backgroundColor: "var(--primary)",
             }}
             title={`Audio Length: ${Math.round(audioLength)} seconds`}
           >
