@@ -159,6 +159,11 @@
   color: white;
 }
 
+.cancelButton {
+  background-color: #DF4949;
+  margin-left: 2vh;
+}
+
 .newRecordingButton {
   background-color: #59dbbc;
 }

@@ -27,6 +27,7 @@ const Report = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [audioLength, setAudioLength] = useState(0);
+  const [originalReportContent, setOriginalReportContent] = useState({});
 
   useEffect(() => {
     if (
@@ -40,6 +41,7 @@ const Report = () => {
     }
 
     setReportContent(JSON.parse(router.query.report as string));
+    setOriginalReportContent(JSON.parse(router.query.report as string));
     setTranscriptionContent(router.query.transcription as string[]);
     setTime(JSON.parse(router.query.time as string));
 
@@ -59,7 +61,17 @@ const Report = () => {
   };
 
   const toggleEditMode = () => {
+    if (isEditing) {
+      setOriginalReportContent(reportContent);
+    } else {
+      setOriginalReportContent(reportContent);
+    }
     setIsEditing(!isEditing);
+  };
+
+  const handleCancelEdit = () => {
+    setReportContent(originalReportContent);
+    setIsEditing(false);
   };
 
   const renderProgressBar = () => {
@@ -265,15 +277,34 @@ const Report = () => {
         </Button>
         <div>
           {activeTab === "report" && (
-            <Button
-              onClick={toggleEditMode}
-              variant={isEditing ? "primary" : "secondary"}
-              className={
-                isEditing ? report_styles.editButton : report_styles.saveButton
-              }
-            >
-              {isEditing ? t("common.save") : t("common.edit")}
-            </Button>
+            <>
+              {isEditing ? (
+                <>
+                  <Button
+                    onClick={toggleEditMode}
+                    variant="primary"
+                    className={report_styles.saveButton}
+                  >
+                    {t("common.save")}
+                  </Button>
+                  <Button
+                    onClick={handleCancelEdit}
+                    variant="secondary"
+                    className={report_styles.cancelButton}
+                  >
+                    {t("common.cancel")}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={toggleEditMode}
+                  variant="secondary"
+                  className={report_styles.editButton}
+                >
+                  {t("common.edit")}
+                </Button>
+              )}
+            </>
           )}
           <Button
             onClick={() => router.push("/app/dashboard")}
