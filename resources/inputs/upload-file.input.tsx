@@ -38,7 +38,6 @@ export const UploadFile = ({
   const handleFileSelection = useCallback(
     (file: File) => {
       const maxSizeBytes = maxSizeMB * 1024 * 1024;
-      console.log("FILE ", { size: file.size, maxSizeBytes });
       if (file.size > maxSizeBytes) {
         messageHandler.handleError(
           t("resources.file-too-large", { size: maxSizeMB })

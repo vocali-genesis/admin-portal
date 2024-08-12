@@ -51,11 +51,21 @@ export class Seed {
     return new SeedBuilder<GenesisReport>(report, props);
   }
 
-  public file(props: {
-    data?: Uint8Array[];
-    type?: string;
-    name: string;
-  }): File {
+  public file(props: { data?: Uint8Array; type?: string; name: string }): File {
+    const type = props.type || "image/png";
+
+    // Convert the byte array to a Blob
+    const audioBlob = this.blob({ data: props.data, type });
+
+    // Create a fake audio file
+    const fakeAudioFile = new File([audioBlob], props.name, {
+      type,
+    });
+
+    return fakeAudioFile;
+  }
+
+  public blob(props: { data?: Uint8Array; type?: string }): File {
     const fileData =
       props.data ||
       new Uint8Array(
@@ -71,11 +81,8 @@ export class Seed {
     });
 
     // Create a fake audio file
-    const fakeAudioFile = new File([audioBlob], props.name, {
-      type,
-    });
 
-    return fakeAudioFile;
+    return audioBlob;
   }
 }
 

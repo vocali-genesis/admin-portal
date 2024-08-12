@@ -53,9 +53,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       await waitFor(() => expect(spy).toHaveBeenCalledWith("/auth/login"));
     });
 
-    it.skip("Login without subscription module", async () => {
-      // Now is enable by default the mock one
-    });
+    it.todo("Login without subscription module");
     it("User without subscription", async () => {
       await login(authService);
       jest

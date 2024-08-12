@@ -378,7 +378,7 @@ describe("===== SAAS LOGIN =====", () => {
       expect(container.querySelector('select[name="language"]')).not.toBeNull();
     });
 
-    it.skip("Rovoke SSO Google", async () => {});
+    it.todo("Revoke SSO Google");
 
     it("Update Settings Fields are required", async () => {
       render(<Settings />);

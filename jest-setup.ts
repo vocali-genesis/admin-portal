@@ -1,6 +1,7 @@
 import { Mock } from "node:test";
 // Enable translations
 import "@/core/i18n";
+import { Seed } from "./resources/tests/seed";
 
 /**
  * Global Mocks
@@ -64,4 +65,19 @@ Object.defineProperty(window, "location", {
     assign: mockResponse,
   },
   writable: true,
+});
+
+// Fetch
+
+export const FetchMock = {
+  blob: () =>
+    jest.fn(() => new Blob(["fake text content"], { type: "application/txt" })),
+  json: () => jest.fn(() => ({})),
+};
+
+global.fetch = jest.fn(() => Promise.resolve(FetchMock));
+
+// Audio element
+Object.defineProperty(HTMLAudioElement.prototype, "load", {
+  value: jest.fn(),
 });

@@ -23,6 +23,8 @@
     "download-report": "Download Report",
     "download-transcription": "Download Transcription",
     "statistics": "Statistics",
-    "new-recording": "New Recording"
+    "new-recording": "New Recording",
+    "api-error": "Failed to generate report",
+    "error-no-audio-file": "Audio file expired"
   }
 }

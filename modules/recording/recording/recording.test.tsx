@@ -17,6 +17,7 @@ import {
 
 import { faker } from "@faker-js/faker";
 import {
+  FetchMock,
   MediaDevicesMock,
   RouterMock,
   ToastMock,
@@ -45,7 +46,7 @@ describe("===== RECORDING LOGIN =====", () => {
     ) as MedicalTranscription;
   });
 
-  describe("Dasboard Page", () => {
+  describe("Dashboard Page", () => {
     const SampleMicrophone = {
       deviceId: faker.string.uuid(),
       label: "Jest Microphone",
@@ -95,8 +96,8 @@ describe("===== RECORDING LOGIN =====", () => {
       await waitFor(() => screen.getByText("recording.click-to-resume"));
     });
 
-    it.skip("Audio is recorded between pauses", () => {});
-    it.skip("Button audio changes according to the volume", () => {});
+    it.todo("Audio is recorded between pauses");
+    it.todo("Button audio changes according to the volume");
 
     it("Stop recording takes me to the preview page", async () => {
       const spy = jest.spyOn(RouterMock, "push");
@@ -177,6 +178,135 @@ describe("===== RECORDING LOGIN =====", () => {
         pathname: "/app/recording",
         query: { audioUrl: "" },
       });
+    });
+  });
+
+  describe("Recording Page", () => {
+    let Recording: CoreComponent;
+    let audioUrl: string;
+
+    beforeAll(() => {
+      Recording = getComponent("app", "recording");
+      jest
+        .spyOn(FetchMock, "blob")
+        .mockResolvedValueOnce(
+          Seed.new().file({ name: "audio.mp3", type: "audio/mp3" })
+        );
+    });
+    beforeEach(() => {
+      audioUrl = faker.internet.url();
+      jest.replaceProperty(RouterMock, "query", {
+        audioUrl,
+      });
+    });
+    afterEach(() => {});
+
+    it("Recording page mounts", () => {
+      render(<Recording />);
+      expect(screen.findByTestId("audio-player"));
+      expect(screen.findByRole("button", { name: "recording.submit" }));
+    });
+
+    it("Click next we call the transcription api", async () => {
+      // Mock API response
+      const report = Seed.new().report().create();
+      jest
+        .spyOn(genesisService, "processAudioAndGenerateReport")
+        .mockResolvedValue(report);
+
+      await act(() => render(<Recording />));
+
+      const submitButton = await screen.findByRole("button", {
+        name: "recording.submit",
+      });
+
+      act(() => submitButton.click());
+      await waitFor(() => {
+        expect(RouterMock.push).toHaveBeenCalledWith({
+          pathname: "/app/report",
+          query: {
+            audioUrl: audioUrl,
+            report: JSON.stringify(report.report),
+            transcription: report.transcription,
+            time: JSON.stringify(report.time),
+          },
+        });
+      });
+    });
+
+    it("Click next with no audio file prompts an error", async () => {
+      // Mock the blog
+      jest.replaceProperty(RouterMock, "query", {
+        audioUrl: "",
+      });
+      await act(() => render(<Recording />));
+
+      const submitButton = await screen.findByRole("button", {
+        name: "recording.submit",
+      });
+
+      act(() => submitButton.click());
+      await waitFor(() => {
+        expect(ToastMock.error).toHaveBeenCalledWith(
+          "recording.error-no-audio-file"
+        );
+        expect(RouterMock.replace).toHaveBeenCalledWith("/app/dashboard");
+      });
+    });
+
+    it("API genesis returns error", async () => {
+      jest
+        .spyOn(genesisService, "processAudioAndGenerateReport")
+        .mockImplementation(() => {
+          MessageHandler.get().handleError("Upstream Error");
+          return Promise.resolve(null);
+        });
+
+      await act(() => render(<Recording />));
+
+      const submitButton = await screen.findByRole("button", {
+        name: "recording.submit",
+      });
+
+      act(() => submitButton.click());
+      await waitFor(() => {
+        expect(ToastMock.error).toHaveBeenCalledWith("Upstream Error");
+        expect(RouterMock.push).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    it("Click Delete Audio", async () => {
+      const { container } = await act(() => render(<Recording />));
+
+      const deleteButton = container.querySelector(
+        "button[name='delete']"
+      ) as HTMLButtonElement;
+      expect(deleteButton).toBeDefined();
+
+      act(() => deleteButton.click());
+
+      await waitFor(() => screen.getByTestId("delete-confirmation"));
+      screen.getByText("common.delete").click();
+
+      expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
+    });
+
+    it("Click Save the Audio", async () => {
+      const { container } = await act(() => render(<Recording />));
+
+      const saveButton = container.querySelector(
+        "button[name='save']"
+      ) as HTMLButtonElement;
+
+      expect(saveButton).toBeDefined();
+      const appendSpy = jest.spyOn(document.body, "appendChild");
+      const removeSpy = jest.spyOn(document.body, "removeChild");
+
+      act(() => saveButton.click());
+      const anchor = appendSpy.mock.calls[0]?.[0] as HTMLAnchorElement;
+      expect(anchor.href).toEqual(audioUrl);
+
+      expect(removeSpy).toHaveBeenCalledTimes(1);
     });
   });
 });

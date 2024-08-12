@@ -83,7 +83,9 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
     const transcriptionStart = Date.now();
     const transcription: string = await this.transcribeAudio(audioFile);
     const transcriptionTime = Date.now() - transcriptionStart;
-    if (!transcription) return null;
+    if (!transcription) {
+      return null;
+    }
     const reportStart = Date.now();
     const report: string = await this.generateReport(
       transcription,
