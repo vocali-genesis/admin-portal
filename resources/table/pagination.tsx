@@ -56,9 +56,14 @@ const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <div className="flex justify-between items-center mt-4 text-gray-500">
+    <div
+      className="flex justify-between items-center mt-4 text-gray-500"
+      style={{ marginTop: "1vh" }}
+    >
       <div>
-        Total Records: {totalRecords}, Page {currentPage} of {totalPages}
+        <span style={{ fontSize: "1.75vh" }}>
+          Total Records: {totalRecords}, Page {currentPage} of {totalPages}
+        </span>
       </div>
       <div className="flex items-center space-x-2">
         <PaginationButton

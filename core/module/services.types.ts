@@ -1,5 +1,5 @@
 import { GenesisOauthProvider, GenesisUser } from "./core.types";
-import { Template } from "@/services/templates/templates.service";
+import { Template, PaginatedResponse } from "@/services/templates/templates.service";
 
 export type ComponentName =
   | "subscriptions"
@@ -66,7 +66,7 @@ export interface SubscriptionService {
 }
 
 export interface TemplateService {
-  getTemplates(): Promise<Template[] | null>;
+  getTemplates(page: number, pageSize: number): Promise<PaginatedResponse<Template> | null>
   getTemplate(id: number): Promise<Template | null>;
   createTemplate(
     template: Omit<Template, "id" | "createdAt" | "ownerId">,

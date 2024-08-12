@@ -3,18 +3,13 @@ import { GlobalCore } from "@/core/module/module.types";
 import { Template } from "@/services/templates/templates.service";
 import styles from "./styles/templates.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
-import {
-  FaTrash,
-  FaEdit,
-  FaPlus,
-  FaSave,
-  FaRegFolderOpen,
-} from "react-icons/fa";
+import { FaTrash, FaEdit, FaPlus, FaSave, FaRegFolderOpen } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import { useRouter } from "next/router";
 import Table from "@/resources/table/table";
 import { useService } from "@/core/module/service.factory";
+import Pagination from '@/resources/table/pagination';
 
 const messageHandler = MessageHandler.get();
 
@@ -27,21 +22,33 @@ const Templates = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<number | null>(null);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [pageSize] = useState(10);
 
   useEffect(() => {
-    fetchTemplates();
-  }, []);
+    fetchTemplates(currentPage);
+  }, [currentPage]);
 
-  const fetchTemplates = async () => {
+  const fetchTemplates = async (page: number) => {
     setIsLoading(true);
     try {
-      const data = await templateService?.getTemplates();
-      if (data) setTemplates(data);
+      const response = await templateService?.getTemplates(page, pageSize);
+      if (response) {
+        setTemplates(response.data);
+        setTotalPages(response.totalPages);
+        setTotalRecords(response.totalCount);
+      }
     } catch (error) {
       messageHandler.handleError(t("templates.fetchError"));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const handleDelete = (id: number) => {
@@ -217,6 +224,12 @@ const Templates = () => {
         </button>
       </div>
       <Table data={templates} columns={columns} isLoading={isLoading} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalRecords={totalRecords}
+        onPageChange={handlePageChange}
+      />
       <DeleteConfirmation
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}

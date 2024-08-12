@@ -21,6 +21,12 @@ export interface Template {
   fields: { [key: string]: TemplateField };
 }
 
+export interface PaginatedResponse<T> {
+  data: T[];
+  totalCount: number;
+  totalPages: number;
+}
+
 class TemplateService {
   private supabase: SupabaseClient;
 
@@ -30,20 +36,30 @@ class TemplateService {
     this.supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
 
-  async getTemplates(): Promise<Template[] | null> {
+  async getTemplates(page: number = 1, pageSize: number = 10): Promise<PaginatedResponse<Template> | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
 
-    let { data: templates, error } = await this.supabase
+    const { data, error, count } = await this.supabase
       .from("templates")
-      .select("*")
+      .select("*", { count: 'exact' })
       .eq("ownerId", userData?.id)
-      .select();
+      .range(from, to);
+
     if (error) {
       messageHandler.handleError(error.message);
       return null;
     }
 
-    return templates as Template[];
+    const totalCount = count || 0;
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    return {
+      data: data as Template[],
+      totalCount,
+      totalPages
+    };
   }
 
   async getTemplate(id: number): Promise<Template | null> {
