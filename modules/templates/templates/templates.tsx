@@ -10,15 +10,17 @@ import {
   FaSave,
   FaRegFolderOpen,
 } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import { useRouter } from "next/router";
 import Table from "@/resources/table/table";
-import Service, { useService } from "@/core/module/service.factory";
+import { useService } from "@/core/module/service.factory";
 
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
   const router = useRouter();
+  const { t } = useTranslation();
   const templateService = useService("templates");
   const [templates, setTemplates] = useState<Template[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +38,7 @@ const Templates = () => {
       const data = await templateService?.getTemplates();
       if (data) setTemplates(data);
     } catch (error) {
-      console.error("Error fetching templates:", error);
+      messageHandler.handleError(t("templates.fetchError"));
     } finally {
       setIsLoading(false);
     }
@@ -52,11 +54,11 @@ const Templates = () => {
 
     const resp = await templateService?.deleteTemplate(templateToDelete);
     if (!resp) return;
-    
+
     setTemplates(
       templates.filter((template) => template.id !== templateToDelete),
     );
-    messageHandler.handleSuccess("Template deleted");
+    messageHandler.handleSuccess(t("templates.deleteSuccess"));
     setIsModalOpen(false);
     setTemplateToDelete(null);
   };
@@ -65,6 +67,7 @@ const Templates = () => {
     const newTemplate = {
       name: "New Template",
       preview: "New template preview",
+      createdAt: new Date().toISOString(),
       fields: {},
     };
     const createdTemplate = await templateService?.createTemplate(newTemplate);
@@ -72,7 +75,7 @@ const Templates = () => {
     if (!createdTemplate) return;
     setTemplates([...templates, createdTemplate]);
     setEditingTemplate(createdTemplate);
-    messageHandler.handleSuccess("Template added successfully");
+    messageHandler.handleSuccess(t("templates.createSuccess"));
   };
 
   const handleEdit = (template: Template) => {
@@ -82,17 +85,33 @@ const Templates = () => {
   const handleSave = async () => {
     if (!editingTemplate) return;
 
-    const updatedTemplate = await templateService?.updateTemplate(
-      editingTemplate.id,
-      editingTemplate,
+    const updatedTemplate = { ...editingTemplate };
+
+    // Ensure the date is in the correct format
+    if (updatedTemplate.createdAt) {
+      try {
+        const date = new Date(updatedTemplate.createdAt);
+        updatedTemplate.createdAt = date.toISOString();
+      } catch (error) {
+        messageHandler.handleError(t("templates.editError"));
+        return;
+      }
+      updatedTemplate.createdAt = new Date(
+        updatedTemplate.createdAt,
+      ).toISOString();
+    }
+
+    const savedTemplate = await templateService?.updateTemplate(
+      updatedTemplate.id,
+      updatedTemplate,
     );
-    if (!updatedTemplate) return;
+    if (!savedTemplate) return;
 
     setTemplates(
-      templates.map((t) => (t.id === updatedTemplate.id ? updatedTemplate : t)),
+      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
     );
     setEditingTemplate(null);
-    messageHandler.handleSuccess("Template updated successfully");
+    messageHandler.handleSuccess(t("templates.editSuccess"));
   };
 
   const handleInputChange = (field: keyof Template, value: string) => {
@@ -103,7 +122,7 @@ const Templates = () => {
 
   const columns: ColumnConfig<Template>[] = [
     {
-      title: "Template Name",
+      title: t("templates.title"),
       dataIndex: "name",
       render: (template: Template) =>
         editingTemplate && editingTemplate.id === template.id ? (
@@ -127,14 +146,24 @@ const Templates = () => {
         ),
     },
     {
-      title: "Date",
+      title: t("templates.date"),
       dataIndex: "createdAt",
-      render: (template: Template) => (
-        <span>{new Date(template.createdAt).toLocaleDateString()}</span>
-      ),
+      render: (template: Template) =>
+        editingTemplate && editingTemplate.id === template.id ? (
+          <input
+            type="date"
+            value={
+              new Date(editingTemplate.createdAt).toISOString().split("T")[0]
+            }
+            onChange={(e) => handleInputChange("createdAt", e.target.value)}
+            className={styles.input}
+          />
+        ) : (
+          <span>{new Date(template.createdAt).toLocaleDateString()}</span>
+        ),
     },
     {
-      title: "Preview",
+      title: t("templates.preview"),
       dataIndex: "preview",
       render: (template: Template) =>
         editingTemplate && editingTemplate.id === template.id ? (
@@ -149,7 +178,7 @@ const Templates = () => {
         ),
     },
     {
-      title: "Action",
+      title: t("templates.action"),
       dataIndex: "id",
       render: (template: Template) => (
         <>
@@ -182,9 +211,9 @@ const Templates = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>All Templates</h1>
+        <h1 className={styles.title}>{t("templates.all_templates")}</h1>
         <button className={styles.addButton} onClick={handleAddTemplate}>
-          <FaPlus /> Add Template
+          <FaPlus /> {t("templates.create")}
         </button>
       </div>
       <Table data={templates} columns={columns} isLoading={isLoading} />

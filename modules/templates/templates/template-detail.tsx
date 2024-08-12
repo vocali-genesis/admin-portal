@@ -5,6 +5,7 @@ import {
   Template,
   TemplateField,
 } from "@/services/templates/templates.service";
+import { useTranslation } from "react-i18next";
 import styles from "./styles/template-detail.module.css";
 import { FaEdit, FaSave, FaTrash, FaArrowLeft, FaPlus } from "react-icons/fa";
 import MessageHandler from "@/core/message-handler";
@@ -18,6 +19,7 @@ type TableDataType = TemplateField & { key: string; name: string };
 
 const TemplateDetail = () => {
   const router = useRouter();
+  const { t } = useTranslation();
   const templateService = useService("templates");
   const { id } = router.query;
   const [template, setTemplate] = useState<Template | null>(null);
@@ -41,7 +43,7 @@ const TemplateDetail = () => {
 
     const fetchedTemplate = await templateService?.getTemplate(+id);
     if (!fetchedTemplate) {
-      messageHandler.handleError("Template not found");
+      messageHandler.handleError(t("templates.templatesNotFound"));
       return;
     }
 
@@ -70,7 +72,7 @@ const TemplateDetail = () => {
       !fieldData.type.trim() ||
       !fieldData.description.trim()
     ) {
-      return messageHandler.handleError("All fields must be filled");
+      return messageHandler.handleError(t("templates.fieldEmptyError"));
     }
 
     const updatedFields = { ...template.fields };
@@ -87,14 +89,14 @@ const TemplateDetail = () => {
     });
 
     if (!updatedTemplate) {
-      messageHandler.handleError("Failed to update template field");
+      messageHandler.handleError(t("templates.editError"));
       return;
     }
 
     setTemplate(updatedTemplate);
     setEditingField(null);
     setEditedValues({});
-    messageHandler.handleSuccess("Template field updated successfully");
+    messageHandler.handleSuccess(t("templates.editSuccess"));
   };
 
   const handleInputChange = (
@@ -148,12 +150,12 @@ const TemplateDetail = () => {
     });
 
     if (!updatedTemplate) {
-      messageHandler.handleError("Failed to delete field");
+      messageHandler.handleError(t("templates.fieldDeleteError"));
       return;
     }
 
     setTemplate(updatedTemplate);
-    messageHandler.handleSuccess("Field deleted successfully");
+    messageHandler.handleSuccess(t("templates.fieldDeleteSuccess"));
 
     setIsDeleteModalOpen(false);
     setFieldToDelete(null);
@@ -176,7 +178,7 @@ const TemplateDetail = () => {
 
   const columns: ColumnConfig<TableDataType>[] = [
     {
-      title: "Field",
+      title: t("templates.field"),
       dataIndex: "name",
       render: (record: TableDataType) =>
         editingField === record.key ? (
@@ -199,7 +201,7 @@ const TemplateDetail = () => {
         ),
     },
     {
-      title: "Type",
+      title: t("templates.type"),
       dataIndex: "type",
       render: (record: TableDataType) =>
         editingField === record.key ? (
@@ -214,7 +216,7 @@ const TemplateDetail = () => {
           >
             {typeOptions.map((option) => (
               <option key={option} value={option}>
-                {option}
+                {t(`templates.type-${option}`)}
               </option>
             ))}
           </select>
@@ -225,7 +227,7 @@ const TemplateDetail = () => {
         ),
     },
     {
-      title: "Description",
+      title: t("templates.description"),
       dataIndex: "description",
       render: (record: TableDataType) =>
         editingField === record.key ? (
@@ -248,7 +250,7 @@ const TemplateDetail = () => {
         ),
     },
     {
-      title: "Actions",
+      title: t("templates.action"),
       dataIndex: "key",
       render: (record: TableDataType) => (
         <>
@@ -295,10 +297,10 @@ const TemplateDetail = () => {
           onClick={() => router.push("/app/templates")}
           className={styles.backButton}
         >
-          <FaArrowLeft /> Back
+          <FaArrowLeft /> {t("templates.back")}
         </button>
         <button onClick={handleAddField} className={styles.addFieldButton}>
-          <FaPlus /> Add Field
+          <FaPlus /> {t("templates.addField")}
         </button>
       </div>
       <h1 className={styles.title}>{template?.name}</h1>
