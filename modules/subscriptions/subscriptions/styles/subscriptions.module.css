@@ -107,7 +107,7 @@
 }
 
 .priceButton:hover {
-  background-color: #1C364B;
+  background-color: var(--secondary);
 }
 
 @media (max-width: 500px) {

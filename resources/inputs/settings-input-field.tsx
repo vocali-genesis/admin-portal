@@ -37,7 +37,7 @@ const FormGroup = styled.div`
   & input {
     flex: 0 0 60%;
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--gray-200);
     border-radius: 4px;
     height: 6vh;
     color: black;
