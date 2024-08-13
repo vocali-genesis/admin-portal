@@ -22,12 +22,22 @@
         "feature-2": "Benefit 2"
       },
       "btn-text": "Subscribe now"
-    },
-    "subscription-settings": {
-      "menu": "Subscriptions",
-      "exp-label": "Expires on:",
-      "cancel-sub-btn": "Cancel Subscription",
-      "payment-history": "Payment History"
     }
+  },
+  "subscription-settings": {
+    "menu": "Subscriptions",
+    "exp-label": "Expires on:",
+    "cancel-sub-btn": "Cancel Subscription",
+    "payment-history": "Payment History"
+  },
+  "invoice-history": {
+    "invoice-id-th": "Invoice Id",
+    "date-th" : "Date",
+    "amount-th" : "Amount",
+    "action-th" : "Actions",
+    "total-label" : "Total Records:",
+    "page-label" : "Page",
+    "of-label": "of",
+    "view-receipt": "View Receipt"
   }
 }

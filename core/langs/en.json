@@ -4,7 +4,10 @@
     "are-you-sure": "Are you sure you want to delete it?",
     "microphone-error": "Failed to get audio devices. Please ensure you've granted microphone permissions.",
     "leave-page-title": "Leave Page",
-    "leave-page-confirm": "Are you sure you want to leave this page? Your recording progress will be lost."
+    "leave-page-confirm": "Are you sure you want to leave this page? Your recording progress will be lost.",
+    "total-records": "Total Records",
+    "page": "Page",
+    "of": "of"
   },
   "navbar": {
     "upgrade": "Upgrade",
@@ -19,7 +22,7 @@
     "required": "Required",
     "delete": "Delete",
     "cancel": "Cancel",
-    "home": "home",
+    "home": "Home",
     "save": "Save",
     "edit": "Edit",
     "leave": "Leave"

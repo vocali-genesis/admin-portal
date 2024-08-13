@@ -2,7 +2,10 @@
   "resources": {
     "confirm-delete": "Confirmar exclusão",
     "are-you-sure": "Você tem certeza de que deseja excluir?",
-    "microphone-error": "Falha ao obter dispositivos de áudio. Certifique-se de ter concedido permissões ao microfone."
+    "microphone-error": "Falha ao obter dispositivos de áudio. Certifique-se de ter concedido permissões ao microfone.",
+    "total-records": "Registros totais",
+    "page": "Página",
+    "of": "de"
   },
   "navbar": {
     "upgrade": "Atualizar",

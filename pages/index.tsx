@@ -1,22 +1,22 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Service from "@/core/module/service.factory";
+import React from "react";
 
 export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
     const checkAuth = async () => {
-      const user = await Service.get("oauth")?.getLoggedUser();
-      if (user === null) {
-        router.push("/auth/login");
-      } else {
-        router.push("/app/dashboard");
-      }
+      const user = await Service.require("oauth").getLoggedUser();
+      await router.push(user === null ? "/auth/login" : "/app/dashboard");
     };
-    checkAuth();
+    void checkAuth();
   }, [router]);
 
+  /**
+   * Refactor, use the Spinner of the resources here
+   */
   return (
     <div className="flex justify-center items-center h-screen bg-white">
       <div className="relative w-12 h-12">

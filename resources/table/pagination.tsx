@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { IconType } from "react-icons";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
@@ -7,6 +8,9 @@ export interface PaginationProps {
   totalPages: number;
   totalRecords: number;
   onPageChange: (page: number) => void;
+  totalLabel?: string;
+  pageLabel?: string;
+  ofLabel?: string;
 }
 
 interface PaginationButtonProps {
@@ -36,7 +40,11 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   totalRecords,
   onPageChange,
+  totalLabel,
+  pageLabel,
+  ofLabel,
 }) => {
+  const { t } = useTranslation();
   const maxPageNumbersToShow = 5; // Maximum number of page numbers to show at once
   const halfMax = Math.floor(maxPageNumbersToShow / 2);
   let startPage = Math.max(1, currentPage - halfMax);
@@ -85,7 +93,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <PaginationButton
           Icon={FaChevronRight}
           onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
-          disabled={currentPage === totalPages}
+          disabled={currentPage === totalPages || totalPages < 1}
         />
       </div>
     </div>

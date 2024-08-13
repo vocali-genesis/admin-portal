@@ -21,6 +21,16 @@
     "reset-email-sent": "O link para redefinir a senha foi enviado para o seu email",
     "login-with": "Entrar com",
     "register-with": "Registrar com",
-    "reset-email-sent ": "O link para redefinir a senha foi enviado para o seu e-mail"
+    "reset-email-sent ": "O link para redefinir a senha foi enviado para o seu e-mail",
+    "email": "E-mail",
+    "confirm_password": "Confirmar senha",
+    "password": "Senha",
+    "forgot-password": "Esqueceu a senha?",
+    "invalid-email-format": "Formato de e-mail inválido",
+    "email-required": "E-mail é obrigatório",
+    "password-min-length": "A senha deve ter pelo menos {{times}} caracteres",
+    "password-required": "Senha é obrigatória",
+    "password-dont-match": "As senhas devem corresponder",
+    "confirm-password-required": "Confirmação da senha é obrigatória"
   }
 }

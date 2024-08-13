@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Spinner from "@/resources/containers/spinner";
@@ -8,12 +8,26 @@ const Auth = () => {
   const router = useRouter();
   const { slug } = router.query as { slug: string };
   const Component = ModuleManager.get().components.auth(slug);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (!Component) {
-    // TODO: Redirect to 404
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+    if (!Component) {
+      void router.replace("/errors/not-found");
+      return;
+    }
+    setIsLoading(false);
+  }, [Component, router]);
+
+  if (!router.isReady || isLoading) {
     return <Spinner />;
   }
 
+  if (!Component) {
+    return null;
+  }
   return (
     <div className="flex flex-col h-screen bg-white">
       <nav className="custom:flex hidden justify-center items-center bg-[#1C364B] h-16">

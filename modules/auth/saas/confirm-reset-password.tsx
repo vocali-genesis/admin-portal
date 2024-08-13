@@ -7,7 +7,6 @@ import { GlobalCore } from "@/core/module/module.types";
 import auth_style from "./auth.module.css";
 import { useTranslation } from "react-i18next";
 
-
 const ConfirmResetPassword = () => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -18,14 +17,21 @@ const ConfirmResetPassword = () => {
 
   return (
     <div className={auth_style.rightColumnContent}>
-      <Image src="/user.svg" alt={t('auth.login-register')} width={45} height={45} />
+      <Image
+        src="/user.svg"
+        alt={t("auth.login-register")}
+        width={45}
+        height={45}
+      />
       <h1 className={auth_style.title}>{t("auth.register")}</h1>
       <ConfirmResetPasswordForm onSuccess={onSuccess} />
       <p className={auth_style.login_text}>
         {t("auth.no-account-question")}{" "}
-        <Link href="/auth/register" className={auth_style.register_link}>
-          <strong>{t("auth.register")}</strong>
-        </Link>
+        <strong>
+          <Link href="/auth/register" className={auth_style.register_link}>
+            {t("auth.register")}
+          </Link>
+        </strong>
       </p>
     </div>
   );
