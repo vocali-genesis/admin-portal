@@ -2,6 +2,7 @@ import { GenesisReport, GenesisUser } from "@/core/module/core.types";
 import { CENTS, GenesisInvoice } from "@/core/module/core.types";
 import { faker } from "@faker-js/faker";
 import moment from "moment";
+import { TextEncoder } from "util";
 
 export class Seed {
   public static new() {
