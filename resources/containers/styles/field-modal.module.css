@@ -20,8 +20,7 @@
 }
 
 .input {
-  @apply w-full border border-gray-300 rounded-md px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-teal-500;
-  margin-bottom: 2vh;
+  @apply w-full rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500;
   font-size: 2vh;
 }
 
@@ -35,4 +34,56 @@
 
 .createButton {
   @apply bg-teal-500 text-white hover:bg-teal-600;
+}
+
+.multiselectContainer {
+  position: relative;
+  width: 100%;
+}
+
+.selectedOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.optionTag {
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+}
+
+.optionTag button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 16px;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  z-index: 10;
+}
+
+.dropdownOption {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdownOption:hover {
+  background-color: #f7fafc;
 }
