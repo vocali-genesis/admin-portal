@@ -3,29 +3,15 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
 import Service from "@/core/module/service.factory";
-
-const messageHandler = MessageHandler.get();
-
-export interface TemplateField {
-  type: "text" | "number" | "multiselect";
-  description: string;
-  options?: string[];
-}
-
-export interface Template {
-  id: number;
-  ownerId: string;
-  name: string;
-  createdAt: string;
-  preview: string;
-  fields: { [key: string]: TemplateField };
-}
+import { GenesisTemplate } from "@/core/module/core.types";
 
 export interface PaginatedResponse<T> {
   data: T[];
   totalCount: number;
   totalPages: number;
 }
+
+const messageHandler = MessageHandler.get();
 
 class TemplateService {
   private supabase: SupabaseClient;
@@ -36,14 +22,17 @@ class TemplateService {
     this.supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
 
-  async getTemplates(page: number = 1, pageSize: number = 10): Promise<PaginatedResponse<Template> | null> {
+  async getTemplates(
+    page: number = 1,
+    pageSize: number = 10,
+  ): Promise<PaginatedResponse<GenesisTemplate> | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
     const { data, error, count } = await this.supabase
       .from("templates")
-      .select("*", { count: 'exact' })
+      .select("*", { count: "exact" })
       .eq("ownerId", userData?.id)
       .range(from, to);
 
@@ -56,13 +45,13 @@ class TemplateService {
     const totalPages = Math.ceil(totalCount / pageSize);
 
     return {
-      data: data as Template[],
+      data: data as GenesisTemplate[],
       totalCount,
-      totalPages
+      totalPages,
     };
   }
 
-  async getTemplate(id: number): Promise<Template | null> {
+  async getTemplate(id: number): Promise<GenesisTemplate | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
 
     const { data, error } = await this.supabase
@@ -76,12 +65,12 @@ class TemplateService {
       return null;
     }
 
-    return data[0] as Template;
+    return data[0] as GenesisTemplate;
   }
 
   async createTemplate(
-    template: Omit<Template, "id" | "createdAt" | "ownerId">,
-  ): Promise<Template | null> {
+    template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">,
+  ): Promise<GenesisTemplate | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
 
     const { data, error } = await this.supabase
@@ -93,13 +82,13 @@ class TemplateService {
       return null;
     }
 
-    return data[0] as Template;
+    return data[0] as GenesisTemplate;
   }
 
   async updateTemplate(
     id: number,
-    updates: Partial<Template>,
-  ): Promise<Template | null> {
+    updates: Partial<GenesisTemplate>,
+  ): Promise<GenesisTemplate | null> {
     const { data, error } = await this.supabase
       .from("templates")
       .update(updates)
@@ -110,7 +99,7 @@ class TemplateService {
       return null;
     }
 
-    return data[0] as Template;
+    return data[0] as GenesisTemplate;
   }
 
   async deleteTemplate(id: number): Promise<boolean> {

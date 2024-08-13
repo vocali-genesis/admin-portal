@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { GlobalCore } from "@/core/module/module.types";
-import { Template } from "@/services/templates/templates.service";
+import { GenesisTemplate } from "@/core/module/core.types";
 import styles from "./styles/templates.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
-import { FaTrash, FaEdit, FaPlus, FaSave, FaRegFolderOpen } from "react-icons/fa";
+import {
+  FaTrash,
+  FaEdit,
+  FaPlus,
+  FaSave,
+  FaRegFolderOpen,
+} from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import { useRouter } from "next/router";
 import Table from "@/resources/table/table";
 import { useService } from "@/core/module/service.factory";
-import Pagination from '@/resources/table/pagination';
+import Pagination from "@/resources/table/pagination";
 
 const messageHandler = MessageHandler.get();
 
@@ -17,11 +23,12 @@ const Templates = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const templateService = useService("templates");
-  const [templates, setTemplates] = useState<Template[]>([]);
+  const [templates, setTemplates] = useState<GenesisTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<number | null>(null);
-  const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
+  const [editingTemplate, setEditingTemplate] =
+    useState<GenesisTemplate | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -85,7 +92,7 @@ const Templates = () => {
     messageHandler.handleSuccess(t("templates.createSuccess"));
   };
 
-  const handleEdit = (template: Template) => {
+  const handleEdit = (template: GenesisTemplate) => {
     setEditingTemplate(template);
   };
 
@@ -121,17 +128,17 @@ const Templates = () => {
     messageHandler.handleSuccess(t("templates.editSuccess"));
   };
 
-  const handleInputChange = (field: keyof Template, value: string) => {
+  const handleInputChange = (field: keyof GenesisTemplate, value: string) => {
     if (!editingTemplate) return;
 
     setEditingTemplate({ ...editingTemplate, [field]: value });
   };
 
-  const columns: ColumnConfig<Template>[] = [
+  const columns: ColumnConfig<GenesisTemplate>[] = [
     {
       title: t("templates.title"),
       dataIndex: "name",
-      render: (template: Template) =>
+      render: (template: GenesisTemplate) =>
         editingTemplate && editingTemplate.id === template.id ? (
           <input
             type="text"
@@ -155,7 +162,7 @@ const Templates = () => {
     {
       title: t("templates.date"),
       dataIndex: "createdAt",
-      render: (template: Template) =>
+      render: (template: GenesisTemplate) =>
         editingTemplate && editingTemplate.id === template.id ? (
           <input
             type="date"
@@ -172,7 +179,7 @@ const Templates = () => {
     {
       title: t("templates.preview"),
       dataIndex: "preview",
-      render: (template: Template) =>
+      render: (template: GenesisTemplate) =>
         editingTemplate && editingTemplate.id === template.id ? (
           <input
             type="text"
@@ -187,7 +194,7 @@ const Templates = () => {
     {
       title: t("templates.action"),
       dataIndex: "id",
-      render: (template: Template) => (
+      render: (template: GenesisTemplate) => (
         <>
           {editingTemplate && editingTemplate.id === template.id ? (
             <button onClick={handleSave} className={styles.actionButton}>

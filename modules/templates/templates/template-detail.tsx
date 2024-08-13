@@ -2,9 +2,9 @@ import { GlobalCore } from "@/core/module/module.types";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import {
-  Template,
-  TemplateField,
-} from "@/services/templates/templates.service";
+  GenesisTemplate,
+  GenesisTemplateField,
+} from "@/core/module/core.types";
 import { useTranslation } from "react-i18next";
 import styles from "./styles/template-detail.module.css";
 import { FaEdit, FaSave, FaTrash, FaArrowLeft, FaPlus } from "react-icons/fa";
@@ -15,17 +15,17 @@ import FieldModal from "@/resources/containers/field-modal";
 import { useService } from "@/core/module/service.factory";
 
 const messageHandler = MessageHandler.get();
-type TableDataType = TemplateField & { key: string; name: string };
+type TableDataType = GenesisTemplateField & { key: string; name: string };
 
 const TemplateDetail = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const templateService = useService("templates");
   const { id } = router.query;
-  const [template, setTemplate] = useState<Template | null>(null);
+  const [template, setTemplate] = useState<GenesisTemplate | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editedValues, setEditedValues] = useState<{
-    [key: string]: TemplateField & { name: string };
+    [key: string]: GenesisTemplateField & { name: string };
   }>({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [fieldToDelete, setFieldToDelete] = useState<string | null>(null);
@@ -117,7 +117,7 @@ const TemplateDetail = () => {
     if (!template) return;
 
     const newFieldKey = `newField${Object.keys(template.fields).length + 1}`;
-    const newField: TemplateField = {
+    const newField: GenesisTemplateField = {
       type: "text",
       description: "New field description",
     };

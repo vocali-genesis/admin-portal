@@ -1,5 +1,9 @@
-import { GenesisOauthProvider, GenesisUser } from "./core.types";
-import { Template, PaginatedResponse } from "@/services/templates/templates.service";
+import {
+  GenesisOauthProvider,
+  GenesisUser,
+  GenesisTemplate,
+} from "./core.types";
+import { PaginatedResponse } from "@/services/templates/templates.service";
 
 export type ComponentName =
   | "subscriptions"
@@ -16,8 +20,7 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? AuthService
   : T extends "medical-api"
     ? MedicalTranscription
-    : // TODO
-      T extends "templates"
+    : T extends "templates"
       ? TemplateService
       : T extends "subscriptions"
         ? SubscriptionService
@@ -66,14 +69,17 @@ export interface SubscriptionService {
 }
 
 export interface TemplateService {
-  getTemplates(page: number, pageSize: number): Promise<PaginatedResponse<Template> | null>
-  getTemplate(id: number): Promise<Template | null>;
+  getTemplates(
+    page: number,
+    pageSize: number,
+  ): Promise<PaginatedResponse<GenesisTemplate> | null>;
+  getTemplate(id: number): Promise<GenesisTemplate | null>;
   createTemplate(
-    template: Omit<Template, "id" | "createdAt" | "ownerId">,
-  ): Promise<Template | null>;
+    template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">,
+  ): Promise<GenesisTemplate | null>;
   updateTemplate(
     id: number,
-    updates: Partial<Template>,
-  ): Promise<Template | null>;
+    updates: Partial<GenesisTemplate>,
+  ): Promise<GenesisTemplate | null>;
   deleteTemplate(id: number): Promise<boolean>;
 }
