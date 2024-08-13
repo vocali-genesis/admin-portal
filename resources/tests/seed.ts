@@ -1,5 +1,5 @@
 import { GenesisReport, GenesisUser } from "@/core/module/core.types";
-import { CENTS, GenesisInvoice } from "@/core/module/services.types";
+import { CENTS, GenesisInvoice } from "@/core/module/core.types";
 import { faker } from "@faker-js/faker";
 import moment from "moment";
 
@@ -21,7 +21,7 @@ export class Seed {
     }
     return new SeedBuilder<GenesisUser>(user, props);
   }
-  public invoice(props: Partial<GenesisInvoice> = {}): GenesisInvoice {
+  public invoice(props: Partial<GenesisInvoice> = {}) {
     function invoice(props: Partial<GenesisInvoice> = {}) {
       return {
         invoice_id: faker.string.uuid(),
@@ -35,15 +35,29 @@ export class Seed {
   }
 
   public report(props: Partial<GenesisReport> = {}) {
-    function report(props: Partial<GenesisReport>) {
+    function report(props: Partial<GenesisReport>): GenesisReport {
       const { time, ...mainProps } = props;
+      // The report are key-values, where key is the header, and the value is the content
+      const reportJSON = faker.lorem
+        .paragraphs({ min: 2, max: 5 }, "\n")
+        .split("\n")
+        .reduce(
+          (report, paragraph: string) => ({
+            ...report,
+            [faker.word.words()]: paragraph,
+          }),
+          {} as Record<string, string>
+        );
+
       return {
-        report: faker.lorem.paragraph(),
-        transcription: faker.lorem.sentences({ min: 10, max: 15 }),
+        report: reportJSON,
+        transcription: faker.lorem
+          .sentences({ min: 10, max: 15 }, "\n")
+          .split("\n"),
         ...mainProps,
         time: {
-          transcription: faker.number.int({ min: 10, max: 15 }),
-          report: faker.number.int({ min: 10, max: 15 }),
+          transcription: faker.number.float({ min: 10, max: 15 }) * 1000,
+          report: faker.number.float({ min: 10, max: 15 }) * 1000,
           ...time,
         },
       };
@@ -65,14 +79,14 @@ export class Seed {
     return fakeAudioFile;
   }
 
-  public blob(props: { data?: Uint8Array; type?: string }): File {
-    const fileData =
-      props.data ||
-      new Uint8Array(
-        Array.from({ length: faker.number.int({ min: 4, max: 30 }) }).map(() =>
-          faker.number.binary()
-        )
-      ); // This is just an example and doesn't represent real audio
+  public blob(props: { data?: Uint8Array; type?: string }): Blob {
+    const randomData = Array.from({
+      length: faker.number.int({ min: 4, max: 30 }),
+    }).map(() => faker.number.binary());
+    const encoder = new TextEncoder();
+    const sharedArrayBuffer = encoder.encode(JSON.stringify(randomData))
+      .buffer as SharedArrayBuffer;
+    const fileData = props.data || new Uint8Array(sharedArrayBuffer); // This is just an example and doesn't represent real audio
 
     const type = props.type || "image/png";
     // Convert the byte array to a Blob

@@ -28,8 +28,8 @@ export type GenesisInvoice = {
 };
 export type SubscriptionResponse = Record<string, string | number>;
 export type GenesisReport = {
-  report: string;
-  transcription: string;
+  report: Record<string, string>;
+  transcription: string[];
   time: {
     transcription: number;
     report: number;

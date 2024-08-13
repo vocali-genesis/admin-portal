@@ -29,7 +29,7 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   : never;
 
 export interface MedicalTranscription {
-  transcribeAudio(audioFile: File): Promise<string>;
+  transcribeAudio(audioFile: File): Promise<GenesisReport["transcription"]>;
   processAudioAndGenerateReport(
     audioFile: File,
     template?: string,
@@ -59,5 +59,5 @@ export interface SubscriptionService {
   getInvoices(
     from: number,
     to: number
-  ): Promise<{ invoices: [GenesisInvoice] | []; count: number }>;
+  ): Promise<{ invoices: GenesisInvoice[]; count: number }>;
 }

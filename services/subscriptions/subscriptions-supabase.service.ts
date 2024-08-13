@@ -1,9 +1,6 @@
-import {
-  GenesisInvoice,
-  SubscriptionResponse,
-  SubscriptionService,
-} from "./../../core/module/services.types";
-import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
+import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
+import { SubscriptionService } from "@/core/module/services.types";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
 import { GlobalCore } from "@/core/module/module.types";

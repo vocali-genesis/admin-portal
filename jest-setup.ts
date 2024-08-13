@@ -1,7 +1,6 @@
 import { Mock } from "node:test";
 // Enable translations
 import "@/core/i18n";
-import { Seed } from "./resources/tests/seed";
 
 /**
  * Global Mocks
@@ -19,7 +18,10 @@ jest.mock("next/router", () => ({
   useRouter: jest.fn().mockReturnValue(RouterMock),
 }));
 // Toast -- Is a default function and a object at the same time
-export const ToastMock = jest.fn() as Mock & { success: Mock; error: Mock };
+export const ToastMock = jest.fn() as unknown as {
+  success: () => void;
+  error: () => void;
+};
 ToastMock.success = jest.fn();
 ToastMock.error = jest.fn();
 
@@ -75,7 +77,8 @@ export const FetchMock = {
   json: () => jest.fn(() => ({})),
 };
 
-global.fetch = jest.fn(() => Promise.resolve(FetchMock));
+(global as unknown as { fetch: () => Promise<typeof FetchMock> }).fetch =
+  jest.fn(() => Promise.resolve(FetchMock));
 
 // Audio element
 Object.defineProperty(HTMLAudioElement.prototype, "load", {

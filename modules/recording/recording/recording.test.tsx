@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
 import {
+  fireEvent,
   render,
   screen,
   waitFor,
@@ -10,10 +11,7 @@ import { CoreComponent, GlobalCore } from "@/core/module/module.types";
 import "./index";
 import "@/services/auth/auth-mock.service";
 import "@/services/genesis/genesis-mock.service";
-import {
-  AuthService,
-  MedicalTranscription,
-} from "@/core/module/services.types";
+import { MedicalTranscription } from "@/core/module/services.types";
 
 import { faker } from "@faker-js/faker";
 import {
@@ -21,25 +19,21 @@ import {
   MediaDevicesMock,
   RouterMock,
   ToastMock,
-  TranslationMock,
 } from "@/jest-setup";
 import MessageHandler from "@/core/message-handler";
 import React, { act } from "react";
-import { getComponent, login } from "@/resources/tests/test.utils";
+import {
+  getComponent,
+  mockDownload,
+  setRouteQuery,
+} from "@/resources/tests/test.utils";
 import { Seed } from "@/resources/tests/seed";
+import { GenesisReport } from "@/core/module/core.types";
 
-const getInput = (container: HTMLElement, inputName: string) => {
-  return container.querySelector(`input[name="${inputName}"]`) as Element;
-};
 describe("===== RECORDING LOGIN =====", () => {
-  let authService: AuthService;
   let genesisService: MedicalTranscription;
 
   beforeAll(() => {
-    authService = GlobalCore.manager.getComponent(
-      "service",
-      "oauth"
-    ) as AuthService;
     genesisService = GlobalCore.manager.getComponent(
       "service",
       "medical-api"
@@ -69,6 +63,7 @@ describe("===== RECORDING LOGIN =====", () => {
       expect(screen.getByTestId("record-button")).toBeInTheDocument();
       expect(screen.getByTestId("upload-recording")).toBeInTheDocument();
       expect(screen.queryByText("recording.stop")).not.toBeInTheDocument();
+      screen.debug();
     });
 
     it("Can't record without permissions", async () => {
@@ -195,9 +190,7 @@ describe("===== RECORDING LOGIN =====", () => {
     });
     beforeEach(() => {
       audioUrl = faker.internet.url();
-      jest.replaceProperty(RouterMock, "query", {
-        audioUrl,
-      });
+      setRouteQuery({ audioUrl });
     });
     afterEach(() => {});
 
@@ -299,14 +292,250 @@ describe("===== RECORDING LOGIN =====", () => {
       ) as HTMLButtonElement;
 
       expect(saveButton).toBeDefined();
-      const appendSpy = jest.spyOn(document.body, "appendChild");
-      const removeSpy = jest.spyOn(document.body, "removeChild");
+
+      const download = mockDownload();
 
       act(() => saveButton.click());
-      const anchor = appendSpy.mock.calls[0]?.[0] as HTMLAnchorElement;
-      expect(anchor.href).toEqual(audioUrl);
+      download.check((anchor) => expect(anchor.href).toContain(audioUrl));
+    });
+  });
 
-      expect(removeSpy).toHaveBeenCalledTimes(1);
+  describe("Report Page", () => {
+    let Report: CoreComponent;
+
+    let audioUrl: string;
+    let report: GenesisReport;
+    const getProgressBar = () => screen.getByTestId("time-bar");
+    const getRecordingTab = () => screen.getByText("recording.report");
+    const getTranscriptionTab = () =>
+      screen.getByText("recording.transcription");
+    const getEditButton = () =>
+      screen.queryByText("common.edit") as HTMLButtonElement;
+    const getSaveButton = () =>
+      screen.queryByText("common.save") as HTMLButtonElement;
+    const getDownloadButton = () => screen.getByText("recording.download");
+
+    const getNewRecordingButton = () =>
+      screen.getByRole("button", { name: "recording.new-recording" });
+    const getReplyButton = () => screen.getByTestId("replay-audio");
+
+    beforeAll(() => {
+      Report = getComponent("app", "report");
+    });
+    beforeEach(() => {
+      audioUrl = faker.internet.url();
+      report = Seed.new().report().create();
+
+      setRouteQuery({
+        report: JSON.stringify(report.report),
+        transcription: report.transcription,
+        time: JSON.stringify(report.time),
+        audioUrl,
+      });
+    });
+    afterEach(() => {});
+
+    it("Report page mounts", () => {
+      render(<Report />);
+      expect(getProgressBar()).toBeInTheDocument();
+      expect(getRecordingTab()).toBeInTheDocument();
+      expect(getTranscriptionTab()).toBeInTheDocument();
+      expect(getNewRecordingButton()).toBeInTheDocument();
+      expect(getEditButton()).toBeInTheDocument();
+      expect(getSaveButton()).not.toBeInTheDocument();
+      expect(getDownloadButton()).toBeInTheDocument();
+      expect(getReplyButton()).toBeInTheDocument();
+    });
+
+    it("Scenario: Query Data missing", async () => {
+      setRouteQuery({ audioUrl });
+
+      await act(() => render(<Report />));
+
+      expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
+    });
+    it("Report tab contains report result", async () => {
+      await act(() => render(<Report />));
+      const entries = Object.entries(report.report);
+      console.log({ Title: entries[0] });
+      // Wait for it to be ready
+      await waitFor(() => screen.getByText(entries[0][0]));
+
+      entries.forEach(([title, content]) => {
+        expect(screen.getByRole("heading", { name: title }));
+        expect(screen.getByText(content)); // Dangerous html not allow check by role
+      });
+      // Transcription is hidden
+      expect(
+        screen.getByText(report.transcription[0]).closest(".hiddenContent")
+      ).toBeTruthy();
+    });
+
+    it("Transcription tab contains report result", async () => {
+      await act(() => render(<Report />));
+      act(() => getTranscriptionTab().click());
+
+      await waitFor(() => screen.getByText(report.transcription[0]));
+
+      report.transcription.forEach((transcription) => {
+        expect(screen.getByText(transcription)).toBeInTheDocument();
+      });
+      // Report is hidden
+
+      expect(
+        screen
+          .getByText(Object.values(report.report)[0])
+          .closest(".hiddenContent")
+      ).toBeTruthy();
+    });
+
+    it("We can replay te audio", async () => {
+      const playSpy = jest.spyOn(HTMLAudioElement.prototype, "play");
+      const pauseSpy = jest.spyOn(HTMLAudioElement.prototype, "pause");
+
+      await act(() => render(<Report />));
+
+      screen.getByText("recording.replay-audio");
+
+      getReplyButton().click();
+
+      await waitFor(() => expect(playSpy).toHaveBeenCalled());
+
+      screen.getByText("recording.pause-audio");
+
+      getReplyButton().click();
+
+      await waitFor(() => expect(pauseSpy).toHaveBeenCalled());
+
+      screen.getByText("recording.replay-audio");
+    });
+
+    it("Click on New Recording", async () => {
+      await act(() => render(<Report />));
+
+      getNewRecordingButton().click();
+
+      // TODO: Add alert message here that he needs to confirm or will lose the audio
+      expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
+    });
+    it.todo("URL changes fires the not saved audio warning");
+
+    it("We can edit the report", async () => {
+      const { container } = render(<Report />);
+      act(() => getEditButton().click());
+
+      // Wait for the editor to load
+      await waitFor(() => container.querySelector(".ql-editor"));
+      const qlEditor = container.querySelector(".ql-editor") as Element;
+
+      Object.entries(report.report).forEach(([title, content]) => {
+        expect(qlEditor.innerHTML).toContain(`<h3>${title}</h3>`);
+        expect(qlEditor.innerHTML).toContain(`<p>${content}</p>`);
+      });
+
+      expect(getSaveButton()).toBeInTheDocument();
+      expect(getEditButton()).not.toBeInTheDocument();
+    });
+
+    it("Update the editor also updates the preview", async () => {
+      const { container } = render(<Report />);
+      act(() => getEditButton().click());
+
+      await waitFor(() => container.querySelector(".ql-editor"));
+      const qlEditor = container.querySelector(".ql-editor") as Element;
+      // Get first title
+      const firstTitle = qlEditor.querySelector("h3") as Element;
+      expect(firstTitle).toBeTruthy();
+
+      firstTitle.innerHTML = "My new title";
+      await act(() => fireEvent.change(qlEditor, qlEditor.innerHTML));
+
+      act(() => {
+        getSaveButton().click();
+      });
+
+      await waitFor(() => screen.getByText("My new title"));
+      expect(screen.getByText("My new title").tagName).toEqual("H2");
+
+      expect(getSaveButton()).not.toBeInTheDocument();
+      expect(getEditButton()).toBeInTheDocument();
+    });
+
+    it("Download Audio", async () => {
+      render(<Report />);
+      getDownloadButton().click();
+
+      const button = await screen.findByText("recording.download-audio");
+
+      act(() => button.click());
+
+      expect(window.open).toHaveBeenCalledWith(audioUrl, "_blank");
+    });
+
+    it("Download Report", async () => {
+      render(<Report />);
+      getDownloadButton().click();
+
+      const button = await screen.findByText("recording.download-report");
+
+      const download = mockDownload();
+      act(() => button.click());
+
+      // How to check the file content?
+      download.check();
+    });
+
+    it.todo("Verify Report Doc Content");
+
+    it("Download Transcription", async () => {
+      render(<Report />);
+      getDownloadButton().click();
+
+      const button = await screen.findByText(
+        "recording.download-transcription"
+      );
+
+      const download = mockDownload();
+      act(() => button.click());
+
+      // How to check the file content?
+      download.check();
+    });
+
+    it("Check Report generate data", async () => {
+      render(<Report />);
+      getDownloadButton().click();
+
+      const button = await screen.findByText(
+        "recording.download-transcription"
+      );
+
+      const download = mockDownload();
+      act(() => button.click());
+
+      // How to check the file content?
+      download.check();
+    });
+
+    it("Statistics bar shows right percentages", () => {
+      render(<Report />);
+      // getDownloadButton().click();
+      const total = report.time.report + report.time.transcription;
+      const reportWidth = (report.time.report / total) * 100;
+      const transcriptionWidth = (report.time.transcription / total) * 100;
+      console.log({ total, reportWidth, transcriptionWidth });
+      const bar = screen.getByTestId("time-bar");
+      const segments = bar.querySelectorAll(
+        ".progressSegment"
+      ) as unknown as HTMLDivElement[];
+
+      expect(segments[0].style.width).toEqual(transcriptionWidth + "%");
+      expect(segments[1].style.width).toEqual(reportWidth + "%");
+
+      const totalTime = screen.getByText("recording.total-time");
+      expect(totalTime.parentElement?.textContent).toContain(
+        (total / 1000).toString()
+      );
     });
   });
 });

@@ -14,8 +14,10 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
     messageHandler.handleError(errorMessage);
   }
 
-  async transcribeAudio(): Promise<string> {
-    return Promise.resolve(faker.lorem.paragraphs());
+  async transcribeAudio(): Promise<GenesisReport["transcription"]> {
+    return Promise.resolve(
+      faker.lorem.paragraphs({ min: 1, max: 5 }, "\n").split("\n")
+    );
   }
 
   async processAudioAndGenerateReport(): Promise<GenesisReport | null> {

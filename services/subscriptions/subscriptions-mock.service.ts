@@ -3,10 +3,10 @@ import { faker } from "@faker-js/faker";
 import {
   GenesisInvoice,
   SubscriptionResponse,
-  SubscriptionService,
-} from "../../core/module/services.types";
+} from "../../core/module/core.types";
 import moment from "moment";
 import { Seed } from "@/resources/tests/seed";
+import { SubscriptionService } from "@/core/module/services.types";
 
 class SubscriptionsMock implements SubscriptionService {
   constructor() {}
@@ -32,12 +32,13 @@ class SubscriptionsMock implements SubscriptionService {
    * Retruns the payment invoices of the loggedin user
    */
   public async getInvoices(): Promise<{
-    invoices: [GenesisInvoice] | [];
+    invoices: GenesisInvoice[];
     count: number;
   }> {
+    const invoices = Seed.new().invoice().array(2);
     return Promise.resolve({
-      invoices: Seed.new().invoice().many(2),
-      count: 1,
+      invoices,
+      count: invoices.length,
     });
   }
 }

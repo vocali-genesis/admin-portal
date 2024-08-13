@@ -9,10 +9,7 @@ import moment from "moment";
 import Table from "@/resources/table";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-import {
-  GenesisInvoice,
-  SubscriptionResponse,
-} from "@/core/module/services.types";
+import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
@@ -42,7 +39,7 @@ const PaymentHistory: React.FC = () => {
     },
   ];
 
-  const [data, setData] = useState<[GenesisInvoice] | []>([]);
+  const [data, setData] = useState<GenesisInvoice[] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -53,7 +50,7 @@ const PaymentHistory: React.FC = () => {
   const totalPages = Math.ceil(totalRecords / itemsPerPage);
 
   const loadData = () => {
-    (async () => {
+    void (async () => {
       setIsLoading(true);
       const { invoices, count } = await Service.require(
         "subscriptions"
@@ -100,7 +97,7 @@ const Subscriptions = () => {
   const [subscription, setSubscription] = useState<SubscriptionResponse>();
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const data = await Service.require(
         "subscriptions"
       ).getActiveSubscription();
