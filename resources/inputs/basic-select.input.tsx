@@ -36,4 +36,5 @@ const Select = styled.select`
   color: black;
   font-size: 2vh;
   font-family: "Montserrat", sans-serif;
+  width: 55vh;
 `;
