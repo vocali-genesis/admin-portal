@@ -29,8 +29,6 @@ const ViewContent: React.FC<ViewContentProps> = ({ content }) => {
     );
   }
 
-  console.log(typeof content);
-
   if (typeof content === "object") {
     return (
       <div className={styles.viewContent}>

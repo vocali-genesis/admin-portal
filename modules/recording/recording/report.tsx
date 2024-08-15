@@ -8,6 +8,7 @@ import MessageHandler from "@/core/message-handler";
 import { FaRegNewspaper, FaRegMessage, FaPlay, FaPause } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import Button from "@/resources/containers/button";
+import Download from "./libs/download";
 
 const messageHandler = MessageHandler.get();
 
@@ -164,25 +165,40 @@ const Report = () => {
 
     switch (type) {
       case "audio":
-        window.open(audioUrl as string, "_blank");
+        if (!(audioUrl && audioRef.current)) return;
+
+        // Create a Blob from the audio URL
+        fetch(audioUrl as string)
+          .then((response) => response.blob())
+          .then((blob) => {
+            const blobUrl = URL.createObjectURL(blob);
+
+            // Create an anchor element and trigger the download
+            const anchor = document.createElement("a");
+            anchor.href = blobUrl;
+
+            // Set the desired file name for download
+            anchor.download = `audio-${new Date().toLocaleDateString()}.mp3`; // Set your desired file name
+
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+
+            // Revoke the object URL after the download
+            URL.revokeObjectURL(blobUrl);
+          })
+          .catch((error) => {
+            console.error("Failed to download audio file:", error);
+          });
+
         return;
       case "report":
-        content = JSON.stringify(reportContent, null, 2);
-        filename = "report.txt";
+        Download.downloadReport(reportContent);
         break;
       case "transcription":
-        content = transcriptionContent.join("\n");
-        filename = "transcription.txt";
+        Download.downloadTranscription(transcriptionContent);
         break;
     }
-
-    const element = document.createElement("a");
-    const file = new Blob([content], { type: "text/plain" });
-    element.href = URL.createObjectURL(file);
-    element.download = filename;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
   };
 
   const handleReplayAudio = () => {
