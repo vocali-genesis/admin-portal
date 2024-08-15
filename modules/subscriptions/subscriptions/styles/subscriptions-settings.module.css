@@ -43,7 +43,7 @@
 }
 
 .cancelBtn:hover {
-  background-color: var(--red-100);
+  background-color: var(--red-500);
 }
 
 .content {
