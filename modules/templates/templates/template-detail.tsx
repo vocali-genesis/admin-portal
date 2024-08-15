@@ -12,7 +12,10 @@ import MessageHandler from "@/core/message-handler";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import Table from "@/resources/table/table";
 import FieldModal from "@/resources/containers/field-modal";
-import { useService } from "@/core/module/service.factory";
+import Service from "@/core/module/service.factory";
+import BasicInput from "@/resources/inputs/basic-input";
+import { BasicSelect } from "@/resources/inputs/basic-select.input";
+import { TYPE_OPTIONS } from "@/core/constants";
 
 const messageHandler = MessageHandler.get();
 type TableDataType = GenesisTemplateField & { key: string; name: string };
@@ -20,7 +23,7 @@ type TableDataType = GenesisTemplateField & { key: string; name: string };
 const TemplateDetail = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const templateService = useService("templates");
+  const templateService = Service.require("templates");
   const { id } = router.query;
   const [template, setTemplate] = useState<GenesisTemplate | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -32,21 +35,15 @@ const TemplateDetail = () => {
   const [isFieldModalOpen, setIsFieldModalOpen] = useState(false);
   const [currentFieldKey, setCurrentFieldKey] = useState<string | null>(null);
 
-  const typeOptions = ["text", "number", "multiselect"];
-
   useEffect(() => {
-    if (id) fetchTemplate();
+    if (!id) router.push("/app/templates");
+    fetchTemplate();
   }, [id]);
 
   const fetchTemplate = async () => {
     if (!(typeof id === "string")) return;
 
-    const fetchedTemplate = await templateService?.getTemplate(+id);
-    if (!fetchedTemplate) {
-      messageHandler.handleError(t("templates.templatesNotFound"));
-      return;
-    }
-
+    const fetchedTemplate = await templateService.getTemplate(+id);
     setTemplate(fetchedTemplate);
   };
 
@@ -66,7 +63,6 @@ const TemplateDetail = () => {
 
     const { name, ...fieldData } = editedValues[fieldKey];
 
-    // Check if the input is empty
     if (
       !name.trim() ||
       !fieldData.type.trim() ||
@@ -84,7 +80,7 @@ const TemplateDetail = () => {
       updatedFields[fieldKey] = fieldData;
     }
 
-    const updatedTemplate = await templateService?.updateTemplate(template.id, {
+    const updatedTemplate = await templateService.updateTemplate(template.id, {
       fields: updatedFields,
     });
 
@@ -134,18 +130,13 @@ const TemplateDetail = () => {
     });
   };
 
-  const handleDeleteField = (fieldKey: string) => {
-    setFieldToDelete(fieldKey);
-    setIsDeleteModalOpen(true);
-  };
-
   const confirmDelete = async () => {
     if (!template || !fieldToDelete) return;
 
     const updatedFields = { ...template.fields };
     delete updatedFields[fieldToDelete];
 
-    const updatedTemplate = await templateService?.updateTemplate(template.id, {
+    const updatedTemplate = await templateService.updateTemplate(template.id, {
       fields: updatedFields,
     });
 
@@ -162,7 +153,7 @@ const TemplateDetail = () => {
   };
 
   const handleTypeChange = (fieldKey: string, newType: string) => {
-    if (!(newType === "number" || newType === "multiselect")) return;
+    if (newType === "text") return;
 
     setCurrentFieldKey(fieldKey);
     setIsFieldModalOpen(true);
@@ -176,28 +167,29 @@ const TemplateDetail = () => {
     setEditedValues({ ...editedValues, [currentFieldKey]: updatedField });
   };
 
+  const handleDeleteField = (fieldKey: string) => {
+    setFieldToDelete(fieldKey);
+  };
+
   const columns: ColumnConfig<TableDataType>[] = [
     {
       title: t("templates.field"),
       dataIndex: "name",
       render: (record: TableDataType) =>
         editingField === record.key ? (
-          <input
-            type="text"
+          <BasicInput
             value={
               editedValues[record.key]?.name !== undefined
                 ? editedValues[record.key].name
                 : record.name
             }
-            onChange={(e) =>
-              handleInputChange(record.key, "name", e.target.value)
-            }
-            className={`${styles.input} ${!editedValues[record.key]?.name?.trim() ? styles.inputError : ""}`}
+            onChange={(e) => {
+              handleInputChange(record.key, "name", e.target.value);
+            }}
+            placeholder={t("templates.fieldNamePlaceholder")}
           />
         ) : (
-          <>
-            <span>{record.name}</span>
-          </>
+          <span>{record.name}</span>
         ),
     },
     {
@@ -205,25 +197,22 @@ const TemplateDetail = () => {
       dataIndex: "type",
       render: (record: TableDataType) =>
         editingField === record.key ? (
-          <select
+          <BasicSelect
+            name="fieldType"
             value={
               editedValues[record.key]?.type !== undefined
                 ? editedValues[record.key].type
                 : record.type
             }
-            onChange={(e) => handleTypeChange(record.key, e.target.value)}
-            className={styles.input}
-          >
-            {typeOptions.map((option) => (
-              <option key={option} value={option}>
-                {t(`templates.type-${option}`)}
-              </option>
-            ))}
-          </select>
+            onChange={(newValue) => handleTypeChange(record.key, newValue)}
+            options={Object.values(TYPE_OPTIONS).map((option) => ({
+              value: option,
+              label: t(`templates.type-${option}`),
+            }))}
+            disabled={false}
+          />
         ) : (
-          <>
-            <span>{record.type}</span>
-          </>
+          <span>{record.type}</span>
         ),
     },
     {
@@ -231,8 +220,7 @@ const TemplateDetail = () => {
       dataIndex: "description",
       render: (record: TableDataType) =>
         editingField === record.key ? (
-          <input
-            type="text"
+          <BasicInput
             value={
               editedValues[record.key]?.description !== undefined
                 ? editedValues[record.key].description
@@ -241,12 +229,10 @@ const TemplateDetail = () => {
             onChange={(e) =>
               handleInputChange(record.key, "description", e.target.value)
             }
-            className={`${styles.input} ${!editedValues[record.key]?.description?.trim() ? styles.inputError : ""}`}
+            placeholder={t("templates.descriptionPlaceholder")}
           />
         ) : (
-          <>
-            <span>{record.description}</span>
-          </>
+          <span>{record.description}</span>
         ),
     },
     {
@@ -309,8 +295,8 @@ const TemplateDetail = () => {
       <Table data={tableData} columns={columns} isLoading={!template} />
 
       <DeleteConfirmation
-        isOpen={isDeleteModalOpen}
-        onRequestClose={() => setIsDeleteModalOpen(false)}
+        isOpen={fieldToDelete ? true : isDeleteModalOpen}
+        onRequestClose={() => setFieldToDelete(null)}
         onConfirm={confirmDelete}
       />
 

@@ -70,7 +70,9 @@ const Pagination: React.FC<PaginationProps> = ({
     >
       <div>
         <span style={{ fontSize: "1.75vh" }}>
-          Total Records: {totalRecords}, Page {currentPage} of {totalPages}
+          {totalLabel || t("common.total-records")} {totalRecords},{" "}
+          {pageLabel || t("common.total-page")} {currentPage}{" "}
+          {ofLabel || t("common.of")} {totalPages}
         </span>
       </div>
       <div className="flex items-center space-x-2">

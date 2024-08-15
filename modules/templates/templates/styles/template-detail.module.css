@@ -75,7 +75,7 @@
   margin-right: 0;
 }
 
-.input, .select {
+.select {
   width: 100%;
   padding: 8px 12px;
   font-size: 14px;
@@ -84,12 +84,7 @@
   background-color: #f8fafc;
 }
 
-.inputError {
-  border: 1px solid #e53e3e;
-  background-color: #ffe0e0;
-}
-
-.input:focus, .select:focus {
+.select:focus {
   outline: none;
   border-color: #38b2ac;
   box-shadow: 0 0 0 3px rgba(56, 178, 172, 0.1);

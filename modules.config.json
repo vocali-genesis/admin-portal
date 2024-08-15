@@ -9,6 +9,6 @@
     "auth/auth-supabase.service",
     "genesis/transcription.service",
     "subscriptions/subscriptions-supabase.service",
-    "templates/templates.service"
+    "templates/supabase-templates.service"
   ]
 }

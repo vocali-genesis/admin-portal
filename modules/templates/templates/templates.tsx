@@ -14,63 +14,63 @@ import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import { useRouter } from "next/router";
 import Table from "@/resources/table/table";
-import { useService } from "@/core/module/service.factory";
+import Service from "@/core/module/service.factory";
 import Pagination from "@/resources/table/pagination";
+import BasicInput from "@/resources/inputs/basic-input";
 
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const templateService = useService("templates");
+  const templateService = Service.require("templates");
   const [templates, setTemplates] = useState<GenesisTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<number | null>(null);
   const [editingTemplate, setEditingTemplate] =
     useState<GenesisTemplate | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [pageSize] = useState(10);
+  const [pagination, setPagination] = useState<{
+    currentPage: number;
+    totalPages: number;
+    totalRecords: number;
+  }>({ currentPage: 1, totalPages: 1, totalRecords: 0 });
 
   useEffect(() => {
-    fetchTemplates(currentPage);
-  }, [currentPage]);
+    fetchTemplates(pagination.currentPage);
+  }, [pagination.currentPage]);
 
   const fetchTemplates = async (page: number) => {
     setIsLoading(true);
-    try {
-      const response = await templateService?.getTemplates(page, pageSize);
-      if (response) {
-        setTemplates(response.data);
-        setTotalPages(response.totalPages);
-        setTotalRecords(response.totalCount);
-      }
-    } catch (error) {
-      messageHandler.handleError(t("templates.fetchError"));
-    } finally {
-      setIsLoading(false);
-    }
+    const response = await templateService.getTemplates(page, 7);
+    if (!response) return;
+
+    setTemplates(response.data);
+    setPagination({
+      ...pagination,
+      totalPages: response.totalPages,
+      totalRecords: response.totalCount,
+    });
+
+    setIsLoading(false);
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    setPagination({ ...pagination, currentPage: page });
   };
 
   const handleDelete = (id: number) => {
-    setIsModalOpen(true);
     setTemplateToDelete(id);
   };
 
   const confirmDelete = async () => {
     if (!templateToDelete) return;
 
-    const resp = await templateService?.deleteTemplate(templateToDelete);
+    const resp = await templateService.deleteTemplate(templateToDelete);
     if (!resp) return;
 
     setTemplates(
-      templates.filter((template) => template.id !== templateToDelete)
+      templates.filter((template) => template.id !== templateToDelete),
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
     setIsModalOpen(false);
@@ -84,7 +84,7 @@ const Templates = () => {
       createdAt: new Date().toISOString(),
       fields: {},
     };
-    const createdTemplate = await templateService?.createTemplate(newTemplate);
+    const createdTemplate = await templateService.createTemplate(newTemplate);
 
     if (!createdTemplate) return;
     setTemplates([...templates, createdTemplate]);
@@ -99,39 +99,17 @@ const Templates = () => {
   const handleSave = async () => {
     if (!editingTemplate) return;
 
-    const updatedTemplate = { ...editingTemplate };
-
-    // Ensure the date is in the correct format
-    if (updatedTemplate.createdAt) {
-      try {
-        const date = new Date(updatedTemplate.createdAt);
-        updatedTemplate.createdAt = date.toISOString();
-      } catch (error) {
-        messageHandler.handleError(t("templates.editError"));
-        return;
-      }
-      updatedTemplate.createdAt = new Date(
-        updatedTemplate.createdAt
-      ).toISOString();
-    }
-
-    const savedTemplate = await templateService?.updateTemplate(
-      updatedTemplate.id,
-      updatedTemplate
+    const savedTemplate = await templateService.updateTemplate(
+      editingTemplate.id,
+      editingTemplate,
     );
     if (!savedTemplate) return;
 
     setTemplates(
-      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t))
+      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
     );
     setEditingTemplate(null);
     messageHandler.handleSuccess(t("templates.editSuccess"));
-  };
-
-  const handleInputChange = (field: keyof GenesisTemplate, value: string) => {
-    if (!editingTemplate) return;
-
-    setEditingTemplate({ ...editingTemplate, [field]: value });
   };
 
   const columns: ColumnConfig<GenesisTemplate>[] = [
@@ -139,12 +117,16 @@ const Templates = () => {
       title: t("templates.title"),
       dataIndex: "name",
       render: (template: GenesisTemplate) =>
-        editingTemplate && editingTemplate.id === template.id ? (
-          <input
-            type="text"
+        editingTemplate?.id === template.id ? (
+          <BasicInput
             value={editingTemplate.name}
-            onChange={(e) => handleInputChange("name", e.target.value)}
-            className={styles.input}
+            onChange={(value) =>
+              setEditingTemplate({
+                ...editingTemplate,
+                name: value.target.value,
+              })
+            }
+            placeholder={t("templates.namePlaceholder")}
           />
         ) : (
           <div
@@ -163,29 +145,22 @@ const Templates = () => {
       title: t("templates.date"),
       dataIndex: "createdAt",
       render: (template: GenesisTemplate) =>
-        editingTemplate && editingTemplate.id === template.id ? (
-          <input
-            type="date"
-            value={
-              new Date(editingTemplate.createdAt).toISOString().split("T")[0]
-            }
-            onChange={(e) => handleInputChange("createdAt", e.target.value)}
-            className={styles.input}
-          />
-        ) : (
-          <span>{new Date(template.createdAt).toLocaleDateString()}</span>
-        ),
+        <span>{new Date(template.createdAt).toLocaleDateString()}</span>
     },
     {
       title: t("templates.preview"),
       dataIndex: "preview",
       render: (template: GenesisTemplate) =>
-        editingTemplate && editingTemplate.id === template.id ? (
-          <input
-            type="text"
+        editingTemplate?.id === template.id ? (
+          <BasicInput
             value={editingTemplate.preview}
-            onChange={(e) => handleInputChange("preview", e.target.value)}
-            className={styles.input}
+            onChange={(value) =>
+              setEditingTemplate({
+                ...editingTemplate,
+                preview: value.target.value,
+              })
+            }
+            placeholder={t("templates.previewPlaceholder")}
           />
         ) : (
           <span>{template.preview}</span>
@@ -232,14 +207,14 @@ const Templates = () => {
       </div>
       <Table data={templates} columns={columns} isLoading={isLoading} />
       <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalRecords={totalRecords}
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        totalRecords={pagination.totalRecords}
         onPageChange={handlePageChange}
       />
       <DeleteConfirmation
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        isOpen={templateToDelete ? true : isModalOpen}
+        onRequestClose={() => setTemplateToDelete(null)}
         onConfirm={confirmDelete}
         isLeavingPage={false}
       />

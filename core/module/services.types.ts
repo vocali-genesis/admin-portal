@@ -3,7 +3,7 @@ import {
   GenesisUser,
   GenesisTemplate,
 } from "./core.types";
-import { PaginatedResponse } from "@/services/templates/templates.service";
+import { PaginatedResponse } from "@/services/templates/supabase-templates.service";
 
 export type ComponentName =
   | "subscriptions"
@@ -21,7 +21,7 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   : T extends "medical-api"
     ? MedicalTranscription
     : T extends "templates"
-      ? TemplateService
+      ? SupabaseTemplateService
       : T extends "subscriptions"
         ? SubscriptionService
         : never;
@@ -81,7 +81,7 @@ export interface SubscriptionService {
   getActiveSubscription(): Promise<Record<string, string | number>>;
 }
 
-export interface TemplateService {
+export interface SupabaseTemplateService {
   getTemplates(
     page: number,
     pageSize: number,

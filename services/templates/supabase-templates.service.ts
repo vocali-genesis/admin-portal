@@ -13,7 +13,7 @@ export interface PaginatedResponse<T> {
 
 const messageHandler = MessageHandler.get();
 
-class TemplateService {
+class SupabaseTemplateService {
   private supabase: SupabaseClient;
 
   constructor() {
@@ -24,7 +24,7 @@ class TemplateService {
 
   async getTemplates(
     page: number = 1,
-    pageSize: number = 10,
+    pageSize: number = 8,
   ): Promise<PaginatedResponse<GenesisTemplate> | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
     const from = (page - 1) * pageSize;
@@ -52,7 +52,7 @@ class TemplateService {
   }
 
   async getTemplate(id: number): Promise<GenesisTemplate | null> {
-    const userData = await Service.get("oauth")?.getLoggedUser();
+    const userData = await Service.require("oauth").getLoggedUser();
 
     const { data, error } = await this.supabase
       .from("templates")
@@ -115,4 +115,4 @@ class TemplateService {
   }
 }
 
-GlobalCore.manager.service("templates", new TemplateService());
+GlobalCore.manager.service("templates", new SupabaseTemplateService());

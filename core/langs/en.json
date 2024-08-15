@@ -25,6 +25,9 @@
     "home": "Home",
     "save": "Save",
     "edit": "Edit",
-    "leave": "Leave"
+    "leave": "Leave",
+    "total-records": "Total Records",
+    "total-page": "Total Pages",
+    "of": "of"
   }
 }
