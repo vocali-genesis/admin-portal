@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Spinner from "./spinner";
 import styles from "./styles/table.module.css";
+import Image from "next/image";
 
 interface TableProps<T> {
   data: T[];
@@ -77,11 +78,11 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
                   {column.render
                     ? column.render(item)
                     : column.dataIndex &&
-                        typeof item[column.dataIndex] !== "object"
-                      ? (item[column.dataIndex] as React.ReactNode)
-                      : column.dataIndex
-                        ? JSON.stringify(item[column.dataIndex])
-                        : ""}
+                      typeof item[column.dataIndex] !== "object"
+                    ? (item[column.dataIndex] as React.ReactNode)
+                    : column.dataIndex
+                    ? JSON.stringify(item[column.dataIndex])
+                    : ""}
                 </td>
               ))}
             </tr>

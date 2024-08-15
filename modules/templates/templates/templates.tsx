@@ -70,7 +70,7 @@ const Templates = () => {
     if (!resp) return;
 
     setTemplates(
-      templates.filter((template) => template.id !== templateToDelete),
+      templates.filter((template) => template.id !== templateToDelete)
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
     setIsModalOpen(false);
@@ -111,18 +111,18 @@ const Templates = () => {
         return;
       }
       updatedTemplate.createdAt = new Date(
-        updatedTemplate.createdAt,
+        updatedTemplate.createdAt
       ).toISOString();
     }
 
     const savedTemplate = await templateService?.updateTemplate(
       updatedTemplate.id,
-      updatedTemplate,
+      updatedTemplate
     );
     if (!savedTemplate) return;
 
     setTemplates(
-      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
+      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t))
     );
     setEditingTemplate(null);
     messageHandler.handleSuccess(t("templates.editSuccess"));
