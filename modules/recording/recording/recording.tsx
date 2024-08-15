@@ -18,6 +18,9 @@ import { useTranslation } from "react-i18next";
 import Service from "@/core/module/service.factory";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
+import Download from "./libs/download";
+
+const messageHandler = MessageHandler.get();
 
 const Recording = () => {
   const { t } = useTranslation();
@@ -123,15 +126,6 @@ const Recording = () => {
     }
   };
 
-  const handleStop = () => {
-    if (!audioRef.current) return;
-
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
-    setIsPlaying(false);
-    updateSeekBarProgress();
-  };
-
   const handleEnded = () => {
     if (!audioRef.current) return;
 
@@ -143,29 +137,10 @@ const Recording = () => {
   const handleSave = () => {
     if (!(audioUrl && audioRef.current)) return;
 
-    // Create a Blob from the audio URL
-    fetch(audioUrl as string)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const blobUrl = URL.createObjectURL(blob);
-
-        // Create an anchor element and trigger the download
-        const anchor = document.createElement("a");
-        anchor.href = blobUrl;
-
-        // Set the desired file name for download
-        anchor.download = `audio-${new Date().toLocaleDateString()}.mp3`; // Set your desired file name
-
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
-
-        // Revoke the object URL after the download
-        URL.revokeObjectURL(blobUrl);
-      })
-      .catch((error) => {
-        console.error("Failed to download audio file:", error);
-      });
+    Download.downloadAudio(audioUrl as string).catch((error) => {
+      console.error("Error downloading audio:", error);
+      messageHandler.handleError("Failed to download audio file");
+    });
   };
 
   const handleSubmit = async () => {

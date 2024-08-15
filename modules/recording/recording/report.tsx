@@ -160,38 +160,14 @@ const Report = () => {
   };
 
   const handleDownload = (type: string) => {
-    let content = "";
-    let filename = "";
-
     switch (type) {
       case "audio":
-        if (!(audioUrl && audioRef.current)) return;
-
-        // Create a Blob from the audio URL
-        fetch(audioUrl as string)
-          .then((response) => response.blob())
-          .then((blob) => {
-            const blobUrl = URL.createObjectURL(blob);
-
-            // Create an anchor element and trigger the download
-            const anchor = document.createElement("a");
-            anchor.href = blobUrl;
-
-            // Set the desired file name for download
-            anchor.download = `audio-${new Date().toLocaleDateString()}.mp3`; // Set your desired file name
-
-            document.body.appendChild(anchor);
-            anchor.click();
-            document.body.removeChild(anchor);
-
-            // Revoke the object URL after the download
-            URL.revokeObjectURL(blobUrl);
-          })
-          .catch((error) => {
-            console.error("Failed to download audio file:", error);
+        if (audioUrl) {
+          Download.downloadAudio(audioUrl as string).catch((error) => {
+            messageHandler.handleError("Error downloading audio");
           });
-
-        return;
+        }
+        break;
       case "report":
         Download.downloadReport(reportContent);
         break;

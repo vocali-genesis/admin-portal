@@ -2,6 +2,28 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { saveAs } from "file-saver";
 
 class Download {
+
+  static async downloadAudio(audioUrl: string) {
+    try {
+      const response = await fetch(audioUrl);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const anchor = document.createElement("a");
+      anchor.href = blobUrl;
+      anchor.download = `audio-${new Date().toLocaleDateString()}.mp3`;
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Failed to download audio file:", error);
+      throw error;
+    }
+  }
+  
   static async downloadTranscription(content: string[]) {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([600, 800]);
