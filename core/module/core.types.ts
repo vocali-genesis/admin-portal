@@ -15,6 +15,15 @@ export interface GenesisUser {
  */
 export type GenesisOauthProvider = "google" | "facebook";
 
+export type CENTS = number & { __brand: "cents" }; // 100 => 1.00
+
+export type GenesisInvoice = {
+  invoice_id: string;
+  created_at: string;
+  amount: CENTS;
+  invoice_url: string;
+};
+
 export interface GenesisTemplateField {
     type: "text" | "number" | "multiselect";
     description: string;
