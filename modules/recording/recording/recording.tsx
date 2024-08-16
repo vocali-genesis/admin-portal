@@ -16,36 +16,7 @@ const Recording = () => {
   const router = useRouter();
   const { audioUrl } = router.query as { audioUrl: string };
   const [isLoading, setIsLoading] = useState(false);
-  const [isLeavingPage, setIsLeavingPage] = useState(false);
 
-  const handleLeavePage = (event: BeforeUnloadEvent | PopStateEvent) => {
-    if (event.type === "beforeunload") {
-      event.preventDefault();
-      event.returnValue = "";
-    }
-    setIsLeavingPage(true);
-  };
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", handleLeavePage);
-    window.addEventListener("popstate", handleLeavePage);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleLeavePage);
-      window.removeEventListener("popstate", handleLeavePage);
-    };
-  }, []);
-
-  useEffect(() => {
-    router.beforePopState(() => {
-      setIsLeavingPage(true);
-      return false;
-    });
-
-    return () => {
-      router.beforePopState(() => true);
-    };
-  }, [router]);
   const handleSubmit = async () => {
     if (!audioUrl) {
       MessageHandler.get().handleError(t("recording.error-no-audio-file"));
@@ -103,18 +74,7 @@ const Recording = () => {
           </Button>
         </div>
       </main>
-      <OnLeaveConfirmation
-        isOpen={isLeavingPage}
-        onRequestClose={() => {
-          setIsLeavingPage(false);
-        }}
-        onConfirm={() => {
-          void router.push({
-            pathname: "/app/dashboard",
-          });
-        }}
-        isLeavingPage={isLeavingPage}
-      />
+      <OnLeaveConfirmation allowedRoutes={["/app/report"]} />
     </>
   );
 };

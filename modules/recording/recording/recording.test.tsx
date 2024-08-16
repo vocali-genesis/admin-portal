@@ -313,6 +313,8 @@ describe("===== RECORDING LOGIN =====", () => {
       screen.queryByText("common.edit") as HTMLButtonElement;
     const getSaveButton = () =>
       screen.queryByText("common.save") as HTMLButtonElement;
+    const getCancelButton = () =>
+      screen.queryByText("common.cancel") as HTMLButtonElement;
     const getDownloadButton = () => screen.getByText("recording.download");
 
     const getNewRecordingButton = () =>
@@ -456,6 +458,32 @@ describe("===== RECORDING LOGIN =====", () => {
 
       await waitFor(() => screen.getByText("My new title"));
       expect(screen.getByText("My new title").tagName).toEqual("H2");
+
+      expect(getSaveButton()).not.toBeInTheDocument();
+      expect(getEditButton()).toBeInTheDocument();
+    });
+
+    it("Cancel the editor don't update the preview", async () => {
+      const { container } = render(<Report />);
+      act(() => getEditButton().click());
+
+      await waitFor(() => container.querySelector(".ql-editor"));
+
+      expect(getCancelButton()).toBeInTheDocument();
+
+      const qlEditor = container.querySelector(".ql-editor") as Element;
+      // Get first title
+      const firstTitle = qlEditor.querySelector("h3") as Element;
+      expect(firstTitle).toBeTruthy();
+
+      firstTitle.innerHTML = "My new title";
+      await act(() => fireEvent.change(qlEditor, qlEditor.innerHTML));
+
+      act(() => {
+        getCancelButton().click();
+      });
+      // await waitForElementToBeRemoved(() => screen.getByText("My new title"));
+      expect(screen.queryByText("My new title")).not.toBeInTheDocument();
 
       expect(getSaveButton()).not.toBeInTheDocument();
       expect(getEditButton()).toBeInTheDocument();
