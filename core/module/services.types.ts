@@ -5,6 +5,7 @@ import {
   GenesisUser,
   GenesisTemplate,
   GenesisPagination,
+  SubscriptionResponse,
 } from "./core.types";
 
 export type ComponentName =
@@ -55,10 +56,10 @@ export interface AuthService {
 
 export interface SubscriptionService {
   getSubscriptionLink(): Promise<{ url: string | null }>;
-  getActiveSubscription(): Promise<Record<string, string | number>>;
+  getActiveSubscription(): Promise<SubscriptionResponse | null>;
   getInvoices(
     from: number,
-    to: number,
+    to: number
   ): Promise<{ invoices: GenesisInvoice[]; count: number }>;
 }
 
