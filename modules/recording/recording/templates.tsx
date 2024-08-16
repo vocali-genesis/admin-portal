@@ -107,7 +107,7 @@ const Templates = () => {
                   onClick={() => handleDelete(template.id)}
                   style={{ marginRight: "3vh" }}
                 >
-                  <FaRegPenToSquare style={{ color: "#59DBBC" }} />
+                  <FaRegPenToSquare style={{ color: "var(--primary)" }} />
                 </button>
                 <button
                   className={styles.actionButton}

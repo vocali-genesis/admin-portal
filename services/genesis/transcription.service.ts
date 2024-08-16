@@ -1,4 +1,5 @@
 import MessageHandler from "@/core/message-handler";
+import { GenesisReport } from "@/core/module/core.types";
 import { GlobalCore } from "@/core/module/module.types";
 import { MedicalTranscription } from "@/core/module/services.types";
 import config from "@/resources/utils/config";
@@ -18,40 +19,53 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
     messageHandler.handleError(errorMessage);
   }
 
-  private async handleResponse(response: Response): Promise<any> {
+  private async handleResponse<T>(
+    response: Response | null
+  ): Promise<T | null> {
+    if (!response) {
+      return null;
+    }
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = (await response.json()) as {
+        detail: Array<{ msg: string }>;
+      };
       this.handleError(errorData.detail[0]?.msg || "API request failed");
       return null;
     }
     const text = await response.text();
     try {
-      return JSON.parse(text);
-    } catch (e) {
-      return text;
+      return JSON.parse(text) as T;
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   }
 
-  async transcribeAudio(audioFile: File): Promise<string> {
+  async transcribeAudio(
+    audioFile: File
+  ): Promise<GenesisReport["transcription"]> {
     const formData = new FormData();
     formData.append("audio_file", audioFile);
-
-    const response = await fetch(`${this.baseUrl}/api/transcribe_file`, {
-      method: "POST",
-      body: formData,
-    }).catch((error) => {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/transcribe_file`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await this.handleResponse<GenesisReport["transcription"]>(
+        response
+      );
+      return result || [];
+    } catch (error) {
       this.handleError(error);
-      return new Response();
-    });
-
-    return this.handleResponse(response);
+      return [];
+    }
   }
 
   async generateReport(
-    transcription: string,
+    transcription: GenesisReport["transcription"],
     template?: string,
-    language?: string,
-  ): Promise<any> {
+    language?: string
+  ): Promise<GenesisReport["report"]> {
     const response = await fetch(`${this.baseUrl}/api/generate_report`, {
       method: "POST",
       headers: {
@@ -66,28 +80,23 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
       this.handleError(error);
       return new Response();
     });
-    return this.handleResponse(response);
+    const result = await this.handleResponse<GenesisReport["report"]>(response);
+    return result || {};
   }
 
   async processAudioAndGenerateReport(
     audioFile: File,
     template?: string,
-    language?: string,
-  ): Promise<{
-    report: any;
-    transcription: string;
-    time: { transcription: number; report: number };
-  } | null> {
+    language?: string
+  ): Promise<GenesisReport | null> {
     const transcriptionStart = Date.now();
-    const transcription: string = await this.transcribeAudio(audioFile);
+    const transcription = await this.transcribeAudio(audioFile);
     const transcriptionTime = Date.now() - transcriptionStart;
-    if (!transcription) return null;
+    if (!transcription) {
+      return null;
+    }
     const reportStart = Date.now();
-    const report: string = await this.generateReport(
-      transcription,
-      template,
-      language,
-    );
+    const report = await this.generateReport(transcription, template, language);
     const reportTime = Date.now() - reportStart;
     return {
       report,

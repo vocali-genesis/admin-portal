@@ -26,7 +26,7 @@ const AppSlug = () => {
     return (
       <>
         <ValidateUser onReady={() => setIsLoading(false)} />
-        <Spinner />
+        <Spinner maxHeight="100hv" />
       </>
     );
   }

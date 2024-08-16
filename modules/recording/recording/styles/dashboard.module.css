@@ -40,7 +40,7 @@
   width: 0.1%;
   min-width: 1px;
   max-width: 3px;
-  background-color: #ccc;
+  background-color: var(--gray-200);
   margin: 0 1%;
 }
 

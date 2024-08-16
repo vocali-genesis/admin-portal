@@ -17,7 +17,7 @@ class AuthMockService implements AuthService {
     user: GenesisUser;
     token: string | undefined;
   } | null> {
-    const { user } = Seed.new().user();
+    const user = Seed.new().user().create();
     this.loggedUser = user;
     return Promise.resolve({
       token: this.generateToken(),

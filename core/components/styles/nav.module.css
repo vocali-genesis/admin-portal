@@ -3,8 +3,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: white;
-  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.5);
+  background-color: var(--white);
+  box-shadow: 0 0.5px 1px var(--black-alpha-300);
   z-index: 10;
 }
 
@@ -17,15 +17,15 @@
 }
 
 .dropdown {
-  border-color: rgb(0, 0, 0, 0.5);
+  border-color: var(--black-alpha-300);
   font-size: 0.85rem;
 }
 
 .dropdown select {
   padding: 7.5px 20px 5px 20px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--gray-200);
   border-radius: 4px;
-  color: black;
+  color: var(--black);
   padding-right: 3rem;
   appearance: none;
   background: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>")
@@ -42,7 +42,7 @@
 }
 
 .navRightButton {
-  color: white;
+  color: var(--white);
   border: none;
   padding: 5px 20px 5px 20px;
   border-radius: 4px;
@@ -53,11 +53,11 @@
 }
 
 .settingsButton {
-  background-color: #1c364b;
+  background-color: var(--secondary);
 }
 
 .logoutButton {
-  background-color: #59dbbc;
+  background-color: var(--primary);
 }
 
 .userIcon {
@@ -68,7 +68,7 @@
   display: none;
   background: none;
   border: none;
-  color: white;
+  color: var(--white);
   font-size: 1.5rem;
   margin-right: 10px;
   cursor: pointer;
@@ -83,8 +83,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #1e2640;
-    color: white;
+    background-color: var(--secondary);
+    color: var(--white);
   }
 
   .navbarMobileRight {
