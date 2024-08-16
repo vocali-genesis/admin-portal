@@ -32,6 +32,7 @@
     "statistics": "Statistics",
     "new-recording": "New Recording",
     "back": "Back",
-    "add_field": "Add field"
+    "add_field": "Add field",
+    "download_success": "Download Success"
   }
 }

@@ -163,9 +163,7 @@ const Report = () => {
     switch (type) {
       case "audio":
         if (audioUrl) {
-          Download.downloadAudio(audioUrl as string).catch((error) => {
-            messageHandler.handleError("Error downloading audio");
-          });
+          Download.downloadAudio(audioUrl as string);
         }
         break;
       case "report":

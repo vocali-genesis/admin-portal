@@ -137,10 +137,7 @@ const Recording = () => {
   const handleSave = () => {
     if (!(audioUrl && audioRef.current)) return;
 
-    Download.downloadAudio(audioUrl as string).catch((error) => {
-      console.error("Error downloading audio:", error);
-      messageHandler.handleError("Failed to download audio file");
-    });
+    Download.downloadAudio(audioUrl as string);
   };
 
   const handleSubmit = async () => {
