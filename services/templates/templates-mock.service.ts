@@ -28,8 +28,32 @@ class MockTemplateService {
     };
   }
 
-  async getTemplate(id: number): Promise<GenesisTemplate | null> {
-    return this.templates.find((template) => template.id === id) || null;
+  async getTemplate(
+    id: number,
+    page: number = 1,
+    pageSize: number = 8,
+  ): Promise<PaginatedResponse<GenesisTemplate> | null> {
+    const template = this.templates.find((template) => template.id === id);
+
+    if (!template) return null;
+
+    const entries = Object.entries(template.fields);
+    const totalCount = entries.length;
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    const paginatedEntries = entries.slice((page - 1) * pageSize, page * pageSize);
+    const paginatedFields = Object.fromEntries(paginatedEntries);
+
+    const paginatedTemplate = {
+      ...template,
+      fields: paginatedFields,
+    };
+
+    return {
+      data: [paginatedTemplate],
+      totalCount,
+      totalPages,
+    };
   }
 
   async createTemplate(
