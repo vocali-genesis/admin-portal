@@ -1,7 +1,7 @@
 .recordButton {
   width: 175px;
   height: 175px;
-  background-color: #59dbbc;
+  background-color: var(--primary);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -22,7 +22,7 @@
 }
 
 .recordButton.paused {
-  background-color: #59dbbc;
+  background-color: var(--primary);
 }
 
 .p {

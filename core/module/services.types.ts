@@ -1,10 +1,11 @@
 import {
   GenesisInvoice,
   GenesisOauthProvider,
+  GenesisReport,
   GenesisUser,
   GenesisTemplate,
+  GenesisPagination,
 } from "./core.types";
-import { PaginatedResponse } from "@/services/templates/supabase-templates.service";
 
 export type ComponentName =
   | "subscriptions"
@@ -20,55 +21,30 @@ export type ServiceName =
 export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? AuthService
   : T extends "medical-api"
-    ? MedicalTranscription
-    : T extends "templates"
-      ? SupabaseTemplateService
-      : T extends "subscriptions"
-        ? SubscriptionService
-        : never;
-
-export type CENTS = number & { __brand: "cents" }; // 100 => 1.00
-export function centsToNumber(value: CENTS): number {
-  return value / 100;
-}
-
-export type InvoiceResponse = {
-  invoice_id: string;
-  created_at: string;
-  amount: CENTS;
-  invoice_url: string;
-};
-export type SubscriptionResponse = Record<string, string | number>;
+  ? MedicalTranscription
+  : T extends "templates"
+  ? SupabaseTemplateService
+  : T extends "subscriptions"
+  ? SubscriptionService
+  : never;
 
 export interface MedicalTranscription {
-  transcribeAudio(audioFile: File): Promise<string>;
-  generateReport(
-    transcription: string,
-    template?: string,
-    language?: string,
-  ): Promise<string>;
+  transcribeAudio(audioFile: File): Promise<GenesisReport["transcription"]>;
   processAudioAndGenerateReport(
     audioFile: File,
     template?: string,
-    language?: string,
-  ): Promise<{
-    report: string;
-    transcription: string;
-    time: {
-      transcription: number;
-      report: number;
-    };
-  } | null>;
+    language?: string
+  ): Promise<GenesisReport | null>;
 }
 
 export interface AuthService {
   registerUser(
     email: string,
-    password: string,
+    password: string
   ): Promise<{ user: GenesisUser | null; token: string | undefined } | null>;
   loginUser(
     email: string,
-    password: string,
+    password: string
   ): Promise<{ user: GenesisUser | null; token: string | undefined } | null>;
   oauth(provider: GenesisOauthProvider): Promise<string | null>;
   getLoggedUser(): Promise<GenesisUser | null>;
@@ -82,22 +58,22 @@ export interface SubscriptionService {
   getActiveSubscription(): Promise<Record<string, string | number>>;
   getInvoices(
     from: number,
-    to: number,
+    to: number
   ): Promise<{ invoices: GenesisInvoice[]; count: number }>;
 }
 
 export interface SupabaseTemplateService {
   getTemplates(
     page: number,
-    pageSize: number,
-  ): Promise<PaginatedResponse<GenesisTemplate> | null>;
+    pageSize: number
+  ): Promise<GenesisPagination<GenesisTemplate> | null>;
   getTemplate(id: number): Promise<GenesisTemplate | null>;
   createTemplate(
-    template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">,
+    template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">
   ): Promise<GenesisTemplate | null>;
   updateTemplate(
     id: number,
-    updates: Partial<GenesisTemplate>,
+    updates: Partial<GenesisTemplate>
   ): Promise<GenesisTemplate | null>;
   deleteTemplate(id: number): Promise<boolean>;
 }

@@ -98,7 +98,7 @@ const TemplateDetail = () => {
   const handleInputChange = (
     fieldKey: string,
     property: string,
-    value: string,
+    value: string
   ) => {
     setEditedValues({
       ...editedValues,
@@ -245,7 +245,7 @@ const TemplateDetail = () => {
               onClick={() => handleSave(record.key)}
               className={styles.actionButton}
             >
-              <FaSave style={{ color: "#59DBBC" }} />
+              <FaSave style={{ color: "var(--primary)" }} />
             </button>
           ) : (
             <>
@@ -253,7 +253,7 @@ const TemplateDetail = () => {
                 onClick={() => handleEdit(record.key)}
                 className={styles.actionButton}
               >
-                <FaEdit style={{ color: "#59DBBC" }} />
+                <FaEdit style={{ color: "var(--primary)" }} />
               </button>
               <button
                 onClick={() => handleDeleteField(record.key)}

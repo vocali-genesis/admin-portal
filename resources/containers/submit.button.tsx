@@ -17,7 +17,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({ label, testId }) => {
 export default SubmitButton;
 
 const StyledButton = styled.button`
-  background: #1c364b;
+  background: var(--secondary);
   color: white;
   padding: 0.5rem 1rem;
   border: none;

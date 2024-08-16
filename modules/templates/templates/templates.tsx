@@ -70,7 +70,7 @@ const Templates = () => {
     if (!resp) return;
 
     setTemplates(
-      templates.filter((template) => template.id !== templateToDelete),
+      templates.filter((template) => template.id !== templateToDelete)
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
     setIsModalOpen(false);
@@ -101,12 +101,12 @@ const Templates = () => {
 
     const savedTemplate = await templateService.updateTemplate(
       editingTemplate.id,
-      editingTemplate,
+      editingTemplate
     );
     if (!savedTemplate) return;
 
     setTemplates(
-      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
+      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t))
     );
     setEditingTemplate(null);
     messageHandler.handleSuccess(t("templates.editSuccess"));
@@ -144,8 +144,9 @@ const Templates = () => {
     {
       title: t("templates.date"),
       dataIndex: "createdAt",
-      render: (template: GenesisTemplate) =>
+      render: (template: GenesisTemplate) => (
         <span>{new Date(template.createdAt).toLocaleDateString()}</span>
+      ),
     },
     {
       title: t("templates.preview"),
@@ -182,13 +183,13 @@ const Templates = () => {
                 className={styles.actionButton}
                 style={{ marginRight: "4vh" }}
               >
-                <FaEdit style={{ color: "#59DBBC" }} />
+                <FaEdit style={{ color: "var(--primary)" }} />
               </button>
               <button
                 onClick={() => handleDelete(template.id)}
                 className={styles.actionButton}
               >
-                <FaTrash style={{ color: "#e53e3e" }} />
+                <FaTrash style={{ color: "var(---danger)" }} />
               </button>
             </>
           )}

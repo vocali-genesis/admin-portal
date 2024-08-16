@@ -30,7 +30,7 @@ const Auth = () => {
   }
   return (
     <div className="flex flex-col h-screen bg-white">
-      <nav className="custom:flex hidden justify-center items-center bg-[#1C364B] h-16">
+      <nav className="custom:flex hidden justify-center items-center bg-[var(--secondary)] h-16">
         <div className="flex items-center">
           <Image src="/logo.svg" alt="Logo" width={120} height={40} />
         </div>

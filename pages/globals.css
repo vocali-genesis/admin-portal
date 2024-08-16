@@ -3,16 +3,207 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb:255, 255, 255;
+  --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+}
+
+:root {
+  --transparent: transparent;
+  --current: currentColor;
+  --black: #000;
+  --white: #fff;
+  --black-alpha-900: rgba(0, 0, 0, 0.04);
+  --black-alpha-800: rgba(0, 0, 0, 0.06);
+  --black-alpha-700: rgba(0, 0, 0, 0.08);
+  --black-alpha-600: rgba(0, 0, 0, 0.16);
+  --black-alpha-500: rgba(0, 0, 0, 0.24);
+  --black-alpha-400: rgba(0, 0, 0, 0.36);
+  --black-alpha-300: rgba(0, 0, 0, 0.48);
+  --black-alpha-200: rgba(0, 0, 0, 0.64);
+  --black-alpha-100: rgba(0, 0, 0, 0.8);
+  --black-alpha-50: rgba(0, 0, 0, 0.92);
+  --blue-900: #000a21;
+  --blue-800: #001d51;
+  --blue-700: #003182;
+  --blue-600: #0045b4;
+  --blue-500: #0058e6;
+  --blue-400: #1a72ff;
+  --blue-300: #4b91ff;
+  --blue-200: #7db1ff;
+  --blue-100: #afd0ff;
+  --blue-50: #def0ff;
+  --indigo-900: #0c001e;
+  --indigo-800: #1e024c;
+  --indigo-700: #32057b;
+  --indigo-600: #4608aa;
+  --indigo-500: #5a0cda;
+  --indigo-400: #7425f3;
+  --indigo-300: #9356f7;
+  --indigo-200: #b285fa;
+  --indigo-100: #d2b5ff;
+  --indigo-50: #f2e5ff;
+  --yellow-900: #1d1300;
+  --yellow-800: #4e3900;
+  --yellow-700: #806000;
+  --yellow-600: #b38600;
+  --yellow-500: #e6ac00;
+  --yellow-400: #ffc61a;
+  --yellow-300: #ffd24b;
+  --yellow-200: #ffdf7d;
+  --yellow-100: #ffecad;
+  --yellow-50: #fff9da;
+  --red-900: #1e0001;
+  --red-800: #44070e;
+  --red-700: #6e101a;
+  --red-600: #991826;
+  --red-500: #c42231;
+  --red-400: #dd3b4b;
+  --red-300: #e66673;
+  --red-200: #ee919a;
+  --red-100: #f9bcc2;
+  --red-50: #ffe5e9;
+  --orange-900: #1f0900;
+  --orange-800: #4e2200;
+  --orange-700: #7f3900;
+  --orange-600: #b25100;
+  --orange-500: #e46902;
+  --orange-400: #fd821b;
+  --orange-300: #fe9e4d;
+  --orange-200: #ffba7f;
+  --orange-100: #ffd4ae;
+  --orange-50: #ffefdc;
+  --green-900: #001506;
+  --green-800: #0f3921;
+  --green-700: #1f5d3a;
+  --green-600: #2e8251;
+  --green-500: #3ea76a;
+  --green-400: #58c184;
+  --green-300: #7ccf9e;
+  --green-200: #9fddb9;
+  --green-100: #c2ebd4;
+  --green-50: #e2fbed;
+  --teal-900: #001a11;
+  --teal-800: #004a34;
+  --teal-700: #007957;
+  --teal-600: #00aa7b;
+  --teal-500: #0bdb9e;
+  --teal-400: #24f4b7;
+  --teal-300: #52f7c7;
+  --teal-200: #82fad7;
+  --teal-100: #affce6;
+  --teal-50: #dbfff6;
+  --gray-900: #020e17;
+  --gray-800: #20262d;
+  --gray-700: #394046;
+  --gray-600: #525a61;
+  --gray-500: #6a737b;
+  --gray-400: #848d95;
+  --gray-300: #9ea6ad;
+  --gray-200: #b9c0c6;
+  --gray-100: #d2dae1;
+  --gray-50: #e9f3fe;
+}
+:root {
+  --radii-none: 0;
+  --radii-sm: 0.125rem;
+  --radii-md: 0.25rem;
+  --radii-lg: 0.5rem;
+  --radii-full: 9999px;
+}
+:root {
+  --opacity-0: 0;
+  --opacity-xs: 0.2;
+  --opacity-sm: 0.4;
+  --opacity-md: 0.5;
+  --opacity-lg: 0.6;
+  --opacity-xl: 0.8;
+  --opacity-full: 1;
+}
+:root {
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-outline: 0 0 0 3px rgba(66, 153, 225, 0.6);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --shadow-none: none;
+}
+:root {
+  --border-none: 0;
+  --border-thin: 1px solid;
+  --border-standard: 2px solid;
+  --border-bold: 4px solid;
+}
+@font-face {
+  font-family: Montserrat, sans-serif;
+  font-display: swap;
+  src: url("/assets/fonts/Rubik-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+:root {
+  --font-sans: "Montserrat", sans-serif;
+  --font-light: 300;
+  --font-regular: 400;
+  --font-bold: 700;
+}
+:root {
+  --size-2xs: 0.25rem;
+  --size-xs: 0.5rem;
+  --size-sm: 0.75rem;
+  --size-standard: 1rem;
+  --size-md: 1.25rem;
+  --size-2md: 1.5rem;
+  --size-lg: 1.7rem;
+  --size-xl: 2rem;
+  --size-2xl: 2.5rem;
+  --size-3xl: 3rem;
+  --size-4xl: 4rem;
+  --size-5xl: 5rem;
+  --size-6xl: 6rem;
+  --size-7xl: 8rem;
+  --size-8xl: 10rem;
+  --size-10xl: 12rem;
+  --size-11xl: 14rem;
+  --size-12xl: 16rem;
+}
+:root {
+  --hide: -1;
+  --auto: auto;
+  --base: 0;
+  --docked: 10;
+  --dropdown: 1000;
+  --sticky: 1100;
+  --banner: 1200;
+  --overlay: 1300;
+  --modal: 1400;
+  --popover: 1500;
+  --skipLink: 1600;
+  --toast: 1700;
+  --tooltip: 180;
+}
+:root {
+  --primary: #59dbbc;
+  --secondary: #2c394b;
+
+  --warning: var(--yellow-400);
+  --success: var(--green-500);
+  --danger: var(--red-400);
+  --dark: var(--gray-800);
+  --info: var(--blue-200);
+  --light: var(--gray-50);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb:255, 255, 255;
-    --background-end-rgb:255, 255, 255;
+    --background-start-rgb: 255, 255, 255;
+    --background-end-rgb: 255, 255, 255;
   }
 }
 
