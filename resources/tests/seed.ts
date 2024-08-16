@@ -1,4 +1,8 @@
-import { GenesisReport, GenesisUser } from "@/core/module/core.types";
+import {
+  GenesisReport,
+  GenesisUser,
+  GenesisTemplate,
+} from "@/core/module/core.types";
 import { CENTS, GenesisInvoice } from "@/core/module/core.types";
 import { faker } from "@faker-js/faker";
 import moment from "moment";
@@ -47,7 +51,7 @@ export class Seed {
             ...report,
             [faker.word.words()]: paragraph,
           }),
-          {} as Record<string, string>
+          {} as Record<string, string>,
         );
 
       return {
@@ -98,6 +102,23 @@ export class Seed {
     // Create a fake audio file
 
     return audioBlob;
+  }
+
+  public template(
+    props: Partial<GenesisTemplate> = {},
+  ): SeedBuilder<GenesisTemplate> {
+    function template(props: Partial<GenesisTemplate>): GenesisTemplate {
+      return {
+        id: faker.number.int(),
+        ownerId: faker.string.uuid(),
+        name: faker.company.name(),
+        createdAt: faker.date.past().toISOString(),
+        preview: faker.image.imageUrl(),
+        fields: {},
+        ...props,
+      };
+    }
+    return new SeedBuilder<GenesisTemplate>(template, props);
   }
 }
 
