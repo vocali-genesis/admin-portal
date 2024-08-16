@@ -5,7 +5,7 @@ import quill_styles from "./text-editor.module.css";
 import Spinner from "@/resources/containers/spinner";
 
 interface EditorProps {
-  content?: { [key: string]: string };
+  content?: { [key: string]: string | object }; // Allow object values
   onContentChange: (content: { [key: string]: string }) => void;
 }
 
@@ -37,28 +37,52 @@ const Editor: React.FC<EditorProps> = ({ content = {}, onContentChange }) => {
     "image",
   ];
 
-  const handleChange = (value: string) => {
+  // Convert object to HTML with bold headers
+  const objectToHtml = (content: { [key: string]: string | object }) => {
+    const formatObject = (obj: any, indent = 0): string => {
+      return Object.entries(obj)
+        .map(([key, value]) => {
+          const formattedKey = `${" ".repeat(indent * 2)}${key}:`;
+          if (typeof value === "object" && value !== null) {
+            return `${formattedKey}\n${formatObject(value, indent + 1)}`;
+          }
+          return `${formattedKey} ${value}`;
+        })
+        .join("\n");
+    };
+
+    return Object.entries(content)
+      .map(([key, value]) => {
+        if (typeof value === "object") {
+          value = formatObject(value); // Format nested objects
+        }
+        return `<h3><strong>${key}</strong></h3><p>${value}</p>`;
+      })
+      .join("");
+  };
+
+  // Convert HTML to object
+  const htmlToObject = (html: string) => {
     const parser = new DOMParser();
-    const doc = parser.parseFromString(value, "text/html");
+    const doc = parser.parseFromString(html, "text/html");
     const updatedContent: { [key: string]: string } = {};
 
-    doc.body.childNodes.forEach((node: any) => {
-      if (node.nodeName !== "P") return;
-
-      const strong = node.querySelector("strong");
-      if (!strong) return;
-
-      const key = strong.textContent;
-      const textValue = node.textContent.replace(strong.textContent, "").trim();
-      updatedContent[key] = textValue;
+    doc.querySelectorAll("h3").forEach((header) => {
+      const key = header.textContent || "";
+      const nextParagraph = header.nextElementSibling as HTMLParagraphElement;
+      const value = nextParagraph ? nextParagraph.textContent || "" : "";
+      updatedContent[key] = value;
     });
 
+    return updatedContent;
+  };
+
+  const handleChange = (value: string) => {
+    const updatedContent = htmlToObject(value);
     onContentChange(updatedContent);
   };
 
-  const htmlContent = Object.entries(content)
-    .map(([key, value]) => `<p><strong>${key}</strong> ${value}</p>`)
-    .join("");
+  const htmlContent = objectToHtml(content);
 
   return (
     <div className={quill_styles.editor}>

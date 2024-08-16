@@ -6,7 +6,6 @@ interface ViewContentProps {
 }
 
 const renderObject = (obj: object) => {
-  console.log(obj);
   return Object.entries(obj).map(([key, val]) => (
     <div key={key}>
       {key}:{" "}
@@ -28,8 +27,6 @@ const ViewContent: React.FC<ViewContentProps> = ({ content }) => {
       </div>
     );
   }
-
-  console.log(typeof content);
 
   if (typeof content === "object") {
     return (
