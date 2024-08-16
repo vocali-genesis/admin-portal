@@ -259,7 +259,7 @@ const TemplateDetail = () => {
                 onClick={() => handleDeleteField(record.key)}
                 className={styles.actionButton}
               >
-                <FaTrash style={{ color: "#e53e3e" }} />
+                <FaTrash style={{ color: "var(--danger)" }} />
               </button>
             </>
           )}

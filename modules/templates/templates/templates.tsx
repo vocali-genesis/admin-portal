@@ -189,7 +189,7 @@ const Templates = () => {
                 onClick={() => handleDelete(template.id)}
                 className={styles.actionButton}
               >
-                <FaTrash style={{ color: "var(---danger)" }} />
+                <FaTrash style={{ color: "var(--danger)" }} />
               </button>
             </>
           )}
