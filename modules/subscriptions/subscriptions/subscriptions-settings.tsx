@@ -42,7 +42,7 @@ const PaymentHistory: React.FC = () => {
     },
   ];
 
-  const [data, setData] = useState<[InvoiceResponse] | []>([]);
+  const [data, setData] = useState<InvoiceResponse[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -53,7 +53,7 @@ const PaymentHistory: React.FC = () => {
   const totalPages = Math.ceil(totalRecords / itemsPerPage);
 
   const loadData = () => {
-    (async () => {
+    void (async () => {
       setIsLoading(true);
       const { invoices, count } = await Service.require(
         "subscriptions"

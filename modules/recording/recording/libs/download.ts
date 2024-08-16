@@ -1,4 +1,4 @@
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 import { saveAs } from "file-saver";
 import MessageHandler from "@/core/message-handler";
 
