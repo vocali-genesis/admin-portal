@@ -216,8 +216,7 @@ const Templates = () => {
       <DeleteConfirmation
         isOpen={templateToDelete ? true : isModalOpen}
         onRequestClose={() => setTemplateToDelete(null)}
-        onConfirm={confirmDelete}
-        isLeavingPage={false}
+        onConfirm={() => confirmDelete}
       />
     </div>
   );
