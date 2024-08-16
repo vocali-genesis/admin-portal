@@ -5,7 +5,7 @@ interface ViewContentProps {
   content: object | string[];
 }
 
-const parseText = (text: string) => text.replace("\n", "<br/>");
+const parseText = (text: string) => text.replaceAll("\n", "<br/>");
 const renderObject = (obj: object | string) => {
   if (!obj) {
     return "";

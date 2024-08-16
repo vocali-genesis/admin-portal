@@ -15,6 +15,7 @@ const Report = () => {
   const { audioUrl } = router.query;
   const [activeTab, setActiveTab] = useState("report");
   const [reportContent, setReportContent] = useState({});
+  const [editedReportContent, setEditedReportContent] = useState({});
   const [transcriptionContent, setTranscriptionContent] = useState<string[]>(
     []
   );
@@ -46,8 +47,17 @@ const Report = () => {
     setActiveTab(tab);
   };
 
-  const toggleEditMode = () => {
-    setIsEditing(!isEditing);
+  const openEditor = () => {
+    setEditedReportContent(reportContent);
+    setIsEditing(true);
+  };
+  const closeEditor = () => {
+    setIsEditing(false);
+  };
+  const saveEditor = () => {
+    setIsEditing(false);
+    console.log({ editedReportContent });
+    setReportContent(editedReportContent);
   };
 
   // TODO: Refactor as a resource
@@ -112,7 +122,7 @@ const Report = () => {
           {isEditing ? (
             <Editor
               content={reportContent}
-              onContentChange={(content) => setReportContent(content)}
+              onContentChange={(content) => setEditedReportContent(content)}
             />
           ) : (
             <ViewContent content={reportContent} />
@@ -259,18 +269,35 @@ const Report = () => {
             ? t("recording.pause-audio")
             : t("recording.replay-audio")}
         </Button>
-        <div>
-          {activeTab === "report" && (
-            <Button
-              onClick={toggleEditMode}
-              variant={isEditing ? "primary" : "secondary"}
-              className={
-                isEditing ? report_styles.editButton : report_styles.saveButton
-              }
-            >
-              {isEditing ? t("common.save") : t("common.edit")}
-            </Button>
-          )}
+        <div className="flex" style={{ gap: "8px" }}>
+          {activeTab === "report" &&
+            (!isEditing ? (
+              <Button
+                onClick={openEditor}
+                variant={"secondary"}
+                className={report_styles.editButton}
+              >
+                {t("common.edit")}
+              </Button>
+            ) : (
+              <>
+                <Button
+                  onClick={saveEditor}
+                  variant={"secondary"}
+                  className={report_styles.saveButton}
+                >
+                  {t("common.save")}
+                </Button>
+                <Button
+                  onClick={closeEditor}
+                  variant={"secondary"}
+                  className={report_styles.saveButton}
+                >
+                  {t("common.cancel")}
+                </Button>
+              </>
+            ))}
+
           <Button
             onClick={() => void router.push("/app/dashboard")}
             variant="primary"
