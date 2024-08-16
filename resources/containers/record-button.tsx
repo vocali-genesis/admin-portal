@@ -18,12 +18,13 @@ const RecordButton: React.FC<RecordButtonProps> = ({
   return (
     <>
       <button
+        data-testid="record-button"
         className={`${record_btn_styles.recordButton} ${
           recordingState === "recording"
             ? record_btn_styles.recording
             : recordingState === "paused"
-              ? record_btn_styles.paused
-              : ""
+            ? record_btn_styles.paused
+            : ""
         }`}
         onClick={onClick}
         style={{

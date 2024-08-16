@@ -8,27 +8,22 @@ interface DeleteConfirmationModalProps {
   onRequestClose: () => void;
   onConfirm: () => void;
   isLeavingPage?: boolean;
+  title?: string;
+  message?: string;
+  confirmButtonText?: string;
+  cancelButtonText?: string;
 }
 
 const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
   isOpen,
   onRequestClose,
   onConfirm,
-  isLeavingPage = false,
+  confirmButtonText,
+  cancelButtonText,
+  message,
+  title,
 }) => {
   const { t } = useTranslation();
-
-  const title = isLeavingPage
-    ? t("resources.leave-page-title")
-    : t("resources.confirm-delete");
-
-  const message = isLeavingPage
-    ? t("resources.leave-page-confirm")
-    : t("resources.are-you-sure");
-
-  const confirmButtonText = isLeavingPage
-    ? t("common.leave")
-    : t("common.delete");
 
   return (
     <Modal
@@ -37,14 +32,17 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
       className={modal_styles.modal}
       overlayClassName={modal_styles.overlay}
     >
-      <h2>{title}</h2>
-      <p>{message}</p>
-      <div className={modal_styles.modalButtons}>
+      <h2>{title || t("resources.confirm-delete")}</h2>
+      <p>{message || t("resources.are-you-sure")}</p>
+      <div
+        className={modal_styles.modalButtons}
+        data-testid="delete-confirmation"
+      >
         <button onClick={onConfirm} className={modal_styles.deleteButton}>
-          {confirmButtonText}
+          {confirmButtonText || t("common.delete")}
         </button>
         <button onClick={onRequestClose} className={modal_styles.cancelButton}>
-          {t("common.cancel")}
+          {cancelButtonText || t("common.cancel")}
         </button>
       </div>
     </Modal>

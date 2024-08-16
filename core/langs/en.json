@@ -7,7 +7,17 @@
     "leave-page-confirm": "Are you sure you want to leave this page? Your recording progress will be lost.",
     "total-records": "Total Records",
     "page": "Page",
-    "of": "of"
+    "of": "of",
+    "allow-permissions": "Click to allow permissions",
+    "max-size": "Max Size",
+    "file-too-large": "File too large! Max size is {{size}}MB",
+    "upload": "Upload",
+    "drag-and-drop": "Drag & Drop Or",
+    "browse": "Browse",
+    "supported-format": "Supported Formats: MP3",
+    "upload-files": "Upload Files",
+    "submit": "Submit",
+    "uploading": "Uploading..."
   },
   "navbar": {
     "upgrade": "Upgrade",

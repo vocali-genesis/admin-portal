@@ -23,13 +23,13 @@
 
 .h2 {
   font-size: 1.9vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .p {
   color: #666;
   font-size: 1.75vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .audioPlayerContainer {
@@ -51,110 +51,6 @@
   font-size: 2vh;
 }
 
-.audioPlayer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.seekBar {
-  width: 100%;
-  margin-bottom: 10px;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 2px;
-  background: #ddd;
-  outline: none;
-  opacity: 0.7;
-  transition: opacity .2s;
-}
-
-.seekBar:hover {
-  opacity: 1;
-}
-
-.seekBar::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background: var(--primary);
-  cursor: pointer;
-  border-radius: 50%;
-}
-
-.seekBar::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  background: var(--primary);
-  cursor: pointer;
-  border-radius: 50%;
-  border: none;
-}
-
-/* For Firefox */
-/* .seekBar::-moz-range-progress {
-  background-color: var(--primary);
-  height: 2px;
-} */
-
-/* For Chrome and others */
-/* .seekBar::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: var(--seek-before-width);
-  height: 2px;
-  background-color: var(--primary);
-  cursor: pointer;
-  transform: translateY(-50%);
-} */
-
-.timeDisplay {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  color: black;
-
-  font-family: "Montserrat", sans-serif;
-  font-size: 2vh;
-}
-
-.controlsContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5vh;
-  margin-bottom: 20px;
-}
-
-.playPauseButton, .skipButton, .actionButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.playPauseContainer {
-  display: flex;
-  gap: 10px;
-}
-
-.playPauseButton {
-  padding: 0;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .submitButton {
   background-color: var(--primary);
   color: white;
@@ -172,5 +68,5 @@
 }
 
 .submitButton:hover {
-  background-color: #4DBCAA;
+  background-color: #4dbcaa;
 }

@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CoreComponent, GlobalCore } from "@/core/module/module.types";
 import "./index";
@@ -59,7 +59,10 @@ describe("===== SAAS LOGIN =====", () => {
       const googleButton = screen.getByTestId("google");
       googleButton.click();
 
-      await waitFor(() => expect(window.open).toHaveBeenCalledWith(url));
+      await waitFor(() =>
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(window.location.assign).toHaveBeenCalledWith(url)
+      );
     });
 
     it("Login Fields are required", async () => {
@@ -121,7 +124,6 @@ describe("===== SAAS LOGIN =====", () => {
         MessageHandler.get().handleError("User Don`t exists");
         return Promise.resolve(null);
       });
-      const toastSpy = jest.spyOn(ToastMock, "error");
 
       const { container } = render(<Login />);
 
@@ -137,7 +139,7 @@ describe("===== SAAS LOGIN =====", () => {
       screen.getByTestId("submitLogin").click();
 
       await waitFor(() =>
-        expect(toastSpy).toHaveBeenCalledWith("User Don`t exists")
+        expect(ToastMock.error).toHaveBeenCalledWith("User Don`t exists")
       );
     });
   });
@@ -193,7 +195,6 @@ describe("===== SAAS LOGIN =====", () => {
 
     it("Reset Password Success full", async () => {
       const spy = jest.spyOn(RouterMock, "push");
-      const toastSpy = jest.spyOn(ToastMock, "success");
 
       const { container } = render(<ResetPassword />);
 
@@ -207,7 +208,7 @@ describe("===== SAAS LOGIN =====", () => {
 
       await waitFor(() => {
         expect(spy).toHaveBeenCalledWith("/auth/login");
-        expect(toastSpy).toHaveBeenCalledTimes(1);
+        expect(ToastMock.success).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -216,8 +217,6 @@ describe("===== SAAS LOGIN =====", () => {
         MessageHandler.get().handleError("Email Not Found");
         return Promise.resolve(false);
       });
-
-      const toastSpy = jest.spyOn(ToastMock, "error");
 
       const { container } = render(<ResetPassword />);
       const emailInput = container.querySelector(
@@ -228,7 +227,7 @@ describe("===== SAAS LOGIN =====", () => {
 
       screen.getByTestId("resetPassword").click();
       await waitFor(() =>
-        expect(toastSpy).toHaveBeenCalledWith("Email Not Found")
+        expect(ToastMock.error).toHaveBeenCalledWith("Email Not Found")
       );
     });
   });
@@ -269,7 +268,10 @@ describe("===== SAAS LOGIN =====", () => {
       const googleButton = screen.getByTestId("google");
       googleButton.click();
 
-      await waitFor(() => expect(window.open).toHaveBeenCalledWith(url));
+      await waitFor(() =>
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(window.location.assign).toHaveBeenCalledWith(url)
+      );
     });
 
     it("Register Fields are required", async () => {
@@ -329,7 +331,6 @@ describe("===== SAAS LOGIN =====", () => {
         MessageHandler.get().handleError("User already registered");
         return Promise.resolve(null);
       });
-      const toastSpy = jest.spyOn(ToastMock, "error");
 
       const { container } = render(<Register />);
       const emailInput = getInput(container, "email");
@@ -343,7 +344,7 @@ describe("===== SAAS LOGIN =====", () => {
 
       screen.getByTestId("submitRegistration").click();
       await waitFor(() =>
-        expect(toastSpy).toHaveBeenCalledWith("User already registered")
+        expect(ToastMock.error).toHaveBeenCalledWith("User already registered")
       );
     });
   });
@@ -358,11 +359,11 @@ describe("===== SAAS LOGIN =====", () => {
       expect(SettingsComponent).not.toBeUndefined();
       Settings = SettingsComponent as CoreComponent;
 
-      login(authService);
+      void login(authService);
     });
 
     afterAll(() => {
-      authService.logout();
+      void authService.logout();
     });
 
     it("Register is Mounted", () => {
@@ -377,7 +378,7 @@ describe("===== SAAS LOGIN =====", () => {
       expect(container.querySelector('select[name="language"]')).not.toBeNull();
     });
 
-    it.skip("Rovoke SSO Google", async () => {});
+    it.todo("Revoke SSO Google");
 
     it("Update Settings Fields are required", async () => {
       render(<Settings />);
@@ -414,8 +415,6 @@ describe("===== SAAS LOGIN =====", () => {
     });
 
     it("Update Settings Successful", async () => {
-      const toastSpy = jest.spyOn(ToastMock, "success");
-
       const { container } = render(<Settings />);
       const emailInput = getInput(container, "email");
       const passwordInput = getInput(container, "password");
@@ -428,7 +427,7 @@ describe("===== SAAS LOGIN =====", () => {
       await userEvent.type(confirmPassword, password);
 
       screen.getByTestId("updateSettings").click();
-      await waitFor(() => expect(toastSpy).toHaveBeenCalledTimes(1));
+      await waitFor(() => expect(ToastMock.success).toHaveBeenCalledTimes(1));
     });
 
     it("Update Settings Api Error", async () => {
@@ -436,7 +435,6 @@ describe("===== SAAS LOGIN =====", () => {
         MessageHandler.get().handleError("Error Updating the user");
         return Promise.resolve(null);
       });
-      const toastSpy = jest.spyOn(ToastMock, "error");
 
       const { container } = render(<Settings />);
       const emailInput = getInput(container, "email");
@@ -452,7 +450,7 @@ describe("===== SAAS LOGIN =====", () => {
       screen.getByTestId("updateSettings").click();
 
       await waitFor(() =>
-        expect(toastSpy).toHaveBeenCalledWith("Error Updating the user")
+        expect(ToastMock.error).toHaveBeenCalledWith("Error Updating the user")
       );
     });
 

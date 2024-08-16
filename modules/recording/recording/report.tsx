@@ -4,12 +4,10 @@ import { GlobalCore } from "@/core/module/module.types";
 import Editor from "@/resources/inputs/text-editor";
 import report_styles from "./styles/report.module.css";
 import ViewContent from "@/resources/containers/view-content";
-import MessageHandler from "@/core/message-handler";
 import { FaRegNewspaper, FaRegMessage, FaPlay, FaPause } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import Button from "@/resources/containers/button";
-
-const messageHandler = MessageHandler.get();
+import { ProgressBar } from "@/resources/containers/progress-bar";
 
 const Report = () => {
   const router = useRouter();
@@ -18,7 +16,7 @@ const Report = () => {
   const [activeTab, setActiveTab] = useState("report");
   const [reportContent, setReportContent] = useState({});
   const [transcriptionContent, setTranscriptionContent] = useState<string[]>(
-    [],
+    []
   );
 
   const [isEditing, setIsEditing] = useState(false);
@@ -26,7 +24,7 @@ const Report = () => {
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [audioLength, setAudioLength] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
 
   useEffect(() => {
     if (
@@ -35,92 +33,67 @@ const Report = () => {
       !router.query.time ||
       !router.query.audioUrl
     ) {
-      router.push("/app/dashboard");
+      void router.push("/app/dashboard");
       return;
     }
-
     setReportContent(JSON.parse(router.query.report as string));
     setTranscriptionContent(router.query.transcription as string[]);
     setTime(JSON.parse(router.query.time as string));
-
-    if (audioRef.current) {
-      audioRef.current.onloadedmetadata = () => {
-        setAudioLength(audioRef.current!.duration);
-      };
-    }
   }, [router]);
 
   const handleTabChange = (tab: string) => {
+    console.log({ tab });
     setActiveTab(tab);
-  };
-
-  const handleReportChange = (content: any) => {
-    setReportContent(content);
   };
 
   const toggleEditMode = () => {
     setIsEditing(!isEditing);
   };
 
+  // TODO: Refactor as a resource
   const renderProgressBar = () => {
     const totalTime = time.transcription + time.report;
     const transcriptionWidth = (time.transcription / totalTime) * 100;
     const reportWidth = (time.report / totalTime) * 100;
-    const audioWidth = ((audioLength * 1000) / totalTime) * 100;
-
     return (
-      <div className={report_styles.progressBarContainer}>
-        <div className={report_styles.progressBar}>
-          <div
-            className={report_styles.progressSegment}
-            style={{
-              width: `7.5px`,
-              backgroundColor: "var(--primary)",
-              borderTopLeftRadius: "20px",
-              borderBottomLeftRadius: "20px",
-            }}
-            title={`Audio Length: ${Math.round(audioLength)} seconds`}
-          ></div>
-          <div
-            className={report_styles.progressSegment}
-            style={{
-              width: `${audioWidth}%`,
-              backgroundColor: "var(--primary)",
-            }}
-            title={`Audio Length: ${Math.round(audioLength)} seconds`}
-          >
-            {audioLength !== Infinity && (
-              <span className={report_styles.timeLabel}>
-                {Math.round(audioLength)} s
-              </span>
-            )}
-          </div>
-          <div
-            className={report_styles.progressSegment}
-            style={{
-              width: `${transcriptionWidth}%`,
-              backgroundColor: "#FF6B6B",
-            }}
-            title={`Transcription Time: ${Math.round(time.transcription / 1000)} seconds`}
-          >
-            <span className={report_styles.timeLabel}>
-              {Math.round(time.transcription / 1000)} s
-            </span>
-          </div>
-          <div
-            className={report_styles.progressSegment}
-            style={{
-              width: `${reportWidth}%`,
-              backgroundColor: "#8359DB",
-              borderTopRightRadius: "20px",
-              borderBottomRightRadius: "20px",
-            }}
-            title={`Report Generation Time: ${Math.round(time.report / 1000)} seconds`}
-          >
-            <span className={report_styles.timeLabel}>
-              {Math.round(time.report / 1000)} s
-            </span>
-          </div>
+      <div className="w-full">
+        <ProgressBar
+          segments={[
+            {
+              percentage: 100,
+              color: "#59DBB",
+              label: t("recording.audio-time", {
+                seconds: audioDuration.toFixed(2),
+              }),
+            },
+          ]}
+        />
+        <div style={{ height: "24px" }} />
+
+        <ProgressBar
+          displayLabelMinPercentage={10}
+          testId="time-bar"
+          segments={[
+            {
+              percentage: transcriptionWidth,
+              color: "#FF6B6B",
+              label: t("recording.transcription-time", {
+                seconds: (time.transcription / 1000).toFixed(2),
+              }),
+            },
+            {
+              percentage: reportWidth,
+              color: "#8359DB",
+              label: t("recording.report-time", {
+                seconds: (time.report / 1000).toFixed(2),
+              }),
+            },
+          ]}
+        />
+        <div className={report_styles.totalTime}>
+          <span>{t("recording.total-time")}</span>:{" "}
+          <span>{totalTime / 1000}</span> {"s"}
+          <span>{t("recording.seconds")}</span>
         </div>
       </div>
     );
@@ -139,7 +112,7 @@ const Report = () => {
           {isEditing ? (
             <Editor
               content={reportContent}
-              onContentChange={handleReportChange}
+              onContentChange={(content) => setReportContent(content)}
             />
           ) : (
             <ViewContent content={reportContent} />
@@ -186,49 +159,54 @@ const Report = () => {
   };
 
   const handleReplayAudio = () => {
-    if (audioRef.current) {
-      if (isAudioPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsAudioPlaying(!isAudioPlaying);
+    if (!audioRef.current) {
+      return;
     }
-  };
 
-  return (
-    <div className={report_styles.reportContainer}>
-      <h1 className={report_styles.title}> {t("recording.statistics")}</h1>
-      <div className={report_styles.progressContainer}>
-        {renderProgressBar()}
-        <div className={report_styles.downloadButton}>
-          <button onClick={() => setIsDownloadOpen(!isDownloadOpen)}>
-            <span>{t("recording.download")}</span>
-            <span className={report_styles.dropdownArrow}>▼</span>
-          </button>
-          {isDownloadOpen && (
-            <div className={report_styles.downloadDropdown}>
-              <button onClick={() => handleDownload("audio")}>
-                {t("recording.download-audio")}
-              </button>
-              <button onClick={() => handleDownload("report")}>
-                {t("recording.download-report")}
-              </button>
-              <button onClick={() => handleDownload("transcription")}>
-                {t("recording.download-transcription")}
-              </button>
-            </div>
-          )}
-        </div>
+    void (isAudioPlaying ? audioRef.current.pause() : audioRef.current.play());
+
+    setIsAudioPlaying(!isAudioPlaying);
+  };
+  // TODO: Create a button select for this in resources
+  function renderDownloadButton() {
+    return (
+      <div className={report_styles.downloadButton}>
+        <button onClick={() => setIsDownloadOpen(!isDownloadOpen)}>
+          <span>{t("recording.download")}</span>
+          <span className={report_styles.dropdownArrow}>▼</span>
+        </button>
+        {isDownloadOpen && (
+          <div className={report_styles.downloadDropdown}>
+            <button onClick={() => handleDownload("audio")}>
+              {t("recording.download-audio")}
+            </button>
+            <button onClick={() => handleDownload("report")}>
+              {t("recording.download-report")}
+            </button>
+            <button onClick={() => handleDownload("transcription")}>
+              {t("recording.download-transcription")}
+            </button>
+          </div>
+        )}
       </div>
+    );
+  }
+
+  // TODO: We shall have a generic tab resource (including the visualization)
+  function renderTabs() {
+    return (
       <div className={report_styles.tabs}>
         <div
-          className={`${activeTab === "report" ? report_styles.activeTab : ""} ${report_styles.tabContainer}`}
+          className={`${
+            activeTab === "report" ? report_styles.activeTab : ""
+          } ${report_styles.tabContainer}`}
         >
           <FaRegNewspaper
             size={25}
             style={{ paddingTop: "1.15vh" }}
-            className={`${activeTab === "report" ? report_styles.activeTabIcon : ""}`}
+            className={`${
+              activeTab === "report" ? report_styles.activeTabIcon : ""
+            }`}
           />
           <button
             className={`${report_styles.tabButton}`}
@@ -238,12 +216,16 @@ const Report = () => {
           </button>
         </div>
         <div
-          className={`${activeTab === "transcription" ? report_styles.activeTab : ""} ${report_styles.tabContainer}`}
+          className={`${
+            activeTab === "transcription" ? report_styles.activeTab : ""
+          } ${report_styles.tabContainer}`}
         >
           <FaRegMessage
             size={25}
             style={{ paddingTop: "1.5vh" }}
-            className={`${activeTab === "transcription" ? report_styles.activeTabIcon : ""}`}
+            className={`${
+              activeTab === "transcription" ? report_styles.activeTabIcon : ""
+            }`}
           />
           <button
             className={`${report_styles.tabButton}`}
@@ -253,15 +235,29 @@ const Report = () => {
           </button>
         </div>
       </div>
+    );
+  }
+  return (
+    <div className={report_styles.reportContainer}>
+      <div className={report_styles.topContainer}>
+        {renderProgressBar()}
+        {renderDownloadButton()}
+      </div>
+      {renderTabs()}
       {renderContent()}
       <div className={report_styles.actionButtons}>
         <Button
+          testId="replay-audio"
           onClick={handleReplayAudio}
           variant="primary"
-          className={`${report_styles.replayButton} ${isAudioPlaying ? report_styles.playing : ""}`}
+          className={`${report_styles.replayButton} ${
+            isAudioPlaying ? report_styles.playing : ""
+          }`}
         >
           {isAudioPlaying ? <FaPause /> : <FaPlay />}
-          {isAudioPlaying ? "Pause Audio" : "Replay Audio"}
+          {isAudioPlaying
+            ? t("recording.pause-audio")
+            : t("recording.replay-audio")}
         </Button>
         <div>
           {activeTab === "report" && (
@@ -276,7 +272,7 @@ const Report = () => {
             </Button>
           )}
           <Button
-            onClick={() => router.push("/app/dashboard")}
+            onClick={() => void router.push("/app/dashboard")}
             variant="primary"
             className={report_styles.newRecordingButton}
           >
@@ -287,6 +283,10 @@ const Report = () => {
       <audio
         ref={audioRef}
         src={audioUrl as string}
+        onLoadedMetadata={() => {
+          console.log({ duration: audioRef.current?.duration });
+          setAudioDuration(audioRef.current?.duration || 0);
+        }}
         style={{ display: "none" }}
         onEnded={() => setIsAudioPlaying(false)}
         onPause={() => setIsAudioPlaying(false)}

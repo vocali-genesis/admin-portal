@@ -14,44 +14,11 @@
   font-family: "Montserrat", sans-serif;
 }
 
-.progressContainer {
-  display: flex;
-  gap: 1rem;
-  padding: 0 1.25rem;
-}
-
-.progressBarContainer {
-  position: relative;
-  width: 100%;
-  margin-top: 1.25vh;
-}
-
-.progressBar {
-  background-color: #f0f0f0;
-  height: 12.5px;
-  border-radius: 10px;
-  display: flex;
-}
-
-.progressSegment {
-  height: 100%;
-  transition: width 0.5s ease-in-out;
-  position: relative;
-}
-
-.timeLabel {
-  position: absolute;
-  top: -20px;
-  left: 5px;
+.totalTime {
+  margin-top: 0.4rem;
   font-size: 12px;
   color: black;
-  white-space: nowrap;
-  font-family: "Montserrat", sans-serif;
-}
-
-.progressSegment:last-child .timeLabel {
-  left: auto;
-  right: 5px;
+  min-width: 80px;
 }
 
 .downloadButton {
@@ -138,7 +105,7 @@
 .actionButtons {
   display: flex;
   justify-content: flex-end;
-  margin-top: 10px;
+  margin-top: 24px;
   margin-right: 2.5vh;
 }
 
@@ -293,4 +260,9 @@
   margin-top: 10px;
   margin-right: 2.5vh;
   margin-left: 2.5vh;
+}
+.topContainer {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1.25rem;
 }
