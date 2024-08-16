@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { GlobalCore } from "@/core/module/module.types";
-import { GenesisTemplate } from "@/core/module/core.types";
+import {
+  GenesisTemplate,
+  GenesisTemplateField,
+} from "@/core/module/core.types";
 import styles from "./styles/templates.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import {
@@ -70,7 +73,7 @@ const Templates = () => {
     if (!resp) return;
 
     setTemplates(
-      templates.filter((template) => template.id !== templateToDelete)
+      templates.filter((template) => template.id !== templateToDelete),
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
     setIsModalOpen(false);
@@ -101,15 +104,30 @@ const Templates = () => {
 
     const savedTemplate = await templateService.updateTemplate(
       editingTemplate.id,
-      editingTemplate
+      editingTemplate,
     );
     if (!savedTemplate) return;
 
     setTemplates(
-      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t))
+      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
     );
     setEditingTemplate(null);
     messageHandler.handleSuccess(t("templates.editSuccess"));
+  };
+
+  const formatPreview = (
+    fields: { [key: string]: GenesisTemplateField },
+    maxLength: number = 25,
+  ) => {
+    const previewString = Object.entries(fields)
+      .map(([key, value]) => `${key}: ${value.type}`)
+      .join(", ");
+
+    if (previewString.length > maxLength) {
+      return `${previewString.substring(0, maxLength - 3)}...`;
+    }
+
+    return previewString;
   };
 
   const columns: ColumnConfig<GenesisTemplate>[] = [
@@ -151,21 +169,9 @@ const Templates = () => {
     {
       title: t("templates.preview"),
       dataIndex: "preview",
-      render: (template: GenesisTemplate) =>
-        editingTemplate?.id === template.id ? (
-          <BasicInput
-            value={editingTemplate.preview}
-            onChange={(value) =>
-              setEditingTemplate({
-                ...editingTemplate,
-                preview: value.target.value,
-              })
-            }
-            placeholder={t("templates.previewPlaceholder")}
-          />
-        ) : (
-          <span>{template.preview}</span>
-        ),
+      render: (template: GenesisTemplate) => (
+        <span>{formatPreview(template.fields)}</span>
+      ),
     },
     {
       title: t("templates.action"),
@@ -223,3 +229,9 @@ const Templates = () => {
 };
 
 GlobalCore.manager.app("templates", Templates);
+GlobalCore.manager.menu({
+  label: "templates.menu",
+  icon: "/templates.svg",
+  url: "templates",
+  order: 0,
+});

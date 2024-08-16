@@ -24,6 +24,10 @@
   font-size: 2vh;
 }
 
+.modalButtons {
+  margin-top: 1vh;
+}
+
 .button {
   @apply px-4 py-2 rounded-md text-sm font-medium;
 }

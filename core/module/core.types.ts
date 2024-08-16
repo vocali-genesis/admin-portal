@@ -30,7 +30,7 @@ export type GenesisInvoice = {
 export interface GenesisTemplateField {
   type: "text" | "number" | "multiselect";
   description: string;
-  options?: string[];
+  options?: Record<string, string>;
 }
 
 export interface GenesisTemplate {
