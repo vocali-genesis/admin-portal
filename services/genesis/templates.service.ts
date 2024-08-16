@@ -32,7 +32,10 @@ class TemplateService {
     let { data: templates, error } = await this.supabase
       .from("templates")
       .select("*");
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
     return templates as Template[];
   }
 
@@ -42,31 +45,40 @@ class TemplateService {
       .select("*")
       .eq("id", id)
       .single();
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
     return data as Template;
   }
 
   async createTemplate(
-    template: Omit<Template, "id" | "createdAt">,
+    template: Omit<Template, "id" | "createdAt">
   ): Promise<Template | null> {
     const { data, error } = await this.supabase
       .from("templates")
       .insert(template)
       .select();
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
     return data[0] as Template;
   }
 
   async updateTemplate(
     id: number,
-    updates: Partial<Template>,
+    updates: Partial<Template>
   ): Promise<Template | null> {
     const { data, error } = await this.supabase
       .from("templates")
       .update(updates)
       .eq("id", id)
       .select();
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
     return data[0] as Template;
   }
 
@@ -75,7 +87,10 @@ class TemplateService {
       .from("templates")
       .delete()
       .eq("id", id);
-    if (error) return messageHandler.handleError(error.message);
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
     return true;
   }
 }
