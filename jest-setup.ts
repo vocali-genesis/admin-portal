@@ -13,6 +13,7 @@ export const RouterMock = {
   replace: jest.fn(),
   query: { slug: "" },
   isReady: true,
+  beforePopState: (callback: () => void) => callback(),
 };
 jest.mock("next/router", () => ({
   useRouter: jest.fn().mockReturnValue(RouterMock),

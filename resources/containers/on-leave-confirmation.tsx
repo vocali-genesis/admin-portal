@@ -5,10 +5,11 @@ import { useRouter } from "next/router";
 
 interface Props {
   allowedRoutes: string[];
+  testId?: string;
 }
 
 // TODO : Check on router change event aswell, except for allowedRoutes
-const OnLeaveConfirmation: React.FC<Props> = ({ allowedRoutes }) => {
+const OnLeaveConfirmation: React.FC<Props> = ({ allowedRoutes, testId }) => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -34,6 +35,7 @@ const OnLeaveConfirmation: React.FC<Props> = ({ allowedRoutes }) => {
   }, []);
 
   useEffect(() => {
+    // TODO: If is allow url don't give the error
     router.beforePopState(() => {
       setIsLeavingPage(true);
       return false;
@@ -46,6 +48,7 @@ const OnLeaveConfirmation: React.FC<Props> = ({ allowedRoutes }) => {
 
   return (
     <DeleteConfirmation
+      testId={testId}
       title={t("resources.leave-page-title")}
       message={t("resources.leave-page-confirm")}
       confirmButtonText={t("common.leave")}

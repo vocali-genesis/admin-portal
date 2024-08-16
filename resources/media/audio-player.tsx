@@ -216,6 +216,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
           <FaFloppyDisk size={16} style={{ color: "blue" }} />
         </IconButton>
         <DeleteConfirmation
+          testId="audio-delete"
           isOpen={isDeleteModalOpen}
           onRequestClose={cancelDelete}
           onConfirm={confirmDelete}

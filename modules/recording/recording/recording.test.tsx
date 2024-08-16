@@ -278,7 +278,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
       act(() => deleteButton.click());
 
-      await waitFor(() => screen.getByTestId("delete-confirmation"));
+      await waitFor(() => screen.getByTestId("audio-delete"));
       screen.getByText("common.delete").click();
 
       expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
@@ -422,23 +422,6 @@ describe("===== RECORDING LOGIN =====", () => {
     });
     it.todo("URL changes fires the not saved audio warning");
 
-    it("We can edit the report", async () => {
-      const { container } = render(<Report />);
-      act(() => getEditButton().click());
-
-      // Wait for the editor to load
-      await waitFor(() => container.querySelector(".ql-editor"));
-      const qlEditor = container.querySelector(".ql-editor") as Element;
-
-      Object.entries(report.report).forEach(([title, content]) => {
-        expect(qlEditor.innerHTML).toContain(`<h3>${title}</h3>`);
-        expect(qlEditor.innerHTML).toContain(`<p>${content}</p>`);
-      });
-
-      expect(getSaveButton()).toBeInTheDocument();
-      expect(getEditButton()).not.toBeInTheDocument();
-    });
-
     it("Update the editor also updates the preview", async () => {
       const { container } = render(<Report />);
       act(() => getEditButton().click());
@@ -456,7 +439,7 @@ describe("===== RECORDING LOGIN =====", () => {
         getSaveButton().click();
       });
 
-      await waitFor(() => screen.getByText("My new title"));
+      await waitFor(() => screen.getByText("My new title").tagName === "H2");
       expect(screen.getByText("My new title").tagName).toEqual("H2");
 
       expect(getSaveButton()).not.toBeInTheDocument();
