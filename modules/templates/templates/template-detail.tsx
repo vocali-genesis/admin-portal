@@ -340,7 +340,11 @@ const TemplateDetail = () => {
           }
           setIsFieldModalOpen(false);
         }}
-        fieldType={editingField ? editedValues[editingField]?.type : ""}
+        fieldType={
+          (editingField &&
+            (editedValues[editingField]?.type as TYPE_OPTIONS)) ||
+          TYPE_OPTIONS.TEXT
+        }
       />
     </div>
   );
