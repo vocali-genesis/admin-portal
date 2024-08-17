@@ -5,7 +5,17 @@
     "microphone-error": "Error al obtener los dispositivos de audio. Asegúrate de haber concedido permisos al micrófono.",
     "total-records": "Registros totales",
     "page": "Página",
-    "of": "de"
+    "of": "de",
+    "allow-permissions": "Haz clic para permitir los permisos",
+    "max-size": "Tamaño máximo",
+    "file-too-large": "¡Archivo demasiado grande! El tamaño máximo es {{size}}MB",
+    "upload": "Subir",
+    "drag-and-drop": "Arrastrar y soltar o",
+    "browse": "Explorar",
+    "supported-format": "Formatos admitidos: MP3",
+    "upload-files": "Subir archivos",
+    "submit": "Enviar",
+    "uploading": "Subiendo..."
   },
   "navbar": {
     "upgrade": "Actualizar",

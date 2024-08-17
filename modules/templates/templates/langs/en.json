@@ -1,5 +1,6 @@
 {
   "templates": {
+    "menu": "Templates",
     "title": "Templates",
     "date": "Date",
     "preview": "Preview",
@@ -35,6 +36,9 @@
     "noTemplatesFoundDescription": "You don't have any templates yet. Create one now.",
     "noTemplatesFoundCreate": "Create a template",
     "noTemplatesFoundCreateDescription": "You don't have any templates yet. Create one now.",
-    "noTemplatesFoundEdit": "Edit a template"
+    "noTemplatesFoundEdit": "Edit a template",
+    "unsavedChangesTitle": "Unsaved Changes",
+    "unsavedChangesMessage": "You have some unsaved changes you may loose. Do you want to continue?",
+    "discardChanges": "Discard Changes"
   }
 }

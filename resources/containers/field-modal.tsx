@@ -19,35 +19,37 @@ const FieldModal: React.FC<FieldModalProps> = ({
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [newOption, setNewOption] = useState<string>("");
 
-  // Convert enum to array of values and omit the fieldType
-  const options = Object.values(TYPE_OPTIONS).filter(
+  const typeOptions = Object.values(TYPE_OPTIONS).filter(
     (option) => option !== fieldType,
   );
 
-  useEffect(() => {
-    setSelectedOptions([]);
-  }, [isOpen]);
+  const handleSave = () => {
+    if (fieldType === TYPE_OPTIONS.NUMBER && selectedOptions.length > 0) {
+      onSave({ maxValue: parseInt(selectedOptions[0]) });
+    } else if (
+      [TYPE_OPTIONS.SELECT, TYPE_OPTIONS.MULTISELECT].includes(
+        fieldType as TYPE_OPTIONS,
+      )
+    ) {
+      onSave({ options: selectedOptions });
+    }
 
-  // Hash map to handle different field types for saving
-  const fieldTypeHandlers: { [key: string]: () => void } = {
-    [TYPE_OPTIONS.NUMBER]: () =>
-      onSave({ maxValue: parseInt(selectedOptions[0] || "0") }),
-    [TYPE_OPTIONS.MULTISELECT]: () => onSave({ options: selectedOptions }),
-    [TYPE_OPTIONS.SELECT]: () => onSave({ options: selectedOptions }),
+    setSelectedOptions([]);
+    onClose();
   };
 
-  const handleSave = () => {
-    const handler = fieldTypeHandlers[fieldType];
-    if (!handler) return;
-    
-    handler();
-    onClose();
+  const addOption = () => {
+    if (newOption.trim() !== "") {
+      setSelectedOptions([...selectedOptions, newOption]);
+      setNewOption("");
+    }
   };
 
   const handleOptionSelect = (option: string) => {
     if (selectedOptions.includes(option)) return;
-    
+
     setSelectedOptions([...selectedOptions, option]);
     setIsDropdownOpen(false);
   };
@@ -58,59 +60,88 @@ const FieldModal: React.FC<FieldModalProps> = ({
     );
   };
 
-  const renderMultiSelect = () => (
-    <div className={styles.multiselectContainer}>
-      <div
-        className={styles.selectedOptions}
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-      >
-        {selectedOptions.map((option, index) => (
-          <div key={index} className={styles.optionTag}>
-            {option}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRemoveOption(option);
-              }}
-            >
-              ×
-            </button>
-          </div>
-        ))}
-        <input
-          type="text"
-          readOnly
-          placeholder="Select options..."
-          className={styles.input}
+  const renderContent = () => {
+    if (fieldType === TYPE_OPTIONS.NUMBER) {
+      return (
+        <BasicInput
+          type="number"
+          value={selectedOptions[0] || ""}
+          onChange={(e) => setSelectedOptions([e.target.value])}
+          placeholder="Enter max value"
         />
-      </div>
-      {isDropdownOpen && (
-        <div className={styles.dropdown}>
-          {options.map((option) => (
-            <div
-              key={option}
-              className={styles.dropdownOption}
-              onClick={() => handleOptionSelect(option)}
-            >
-              {option}
+      );
+    } else if (fieldType === TYPE_OPTIONS.SELECT) {
+      return (
+        <div className={styles.multiselectContainer}>
+          <div
+            className={styles.selectedOptions}
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            {selectedOptions.map((option, index) => (
+              <div key={index} className={styles.optionTag}>
+                {option}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveOption(option);
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            <input
+              type="text"
+              readOnly
+              placeholder="Select options..."
+              className={styles.input}
+            />
+          </div>
+          {isDropdownOpen && (
+            <div className={styles.dropdown}>
+              {typeOptions.map((option) => (
+                <div
+                  key={option}
+                  className={styles.dropdownOption}
+                  onClick={() => handleOptionSelect(option)}
+                >
+                  {option}
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      )}
-    </div>
-  );
-
-  const fieldTypeRenderers: { [key: string]: JSX.Element } = {
-    [TYPE_OPTIONS.NUMBER]: (
-      <BasicInput
-        type="number"
-        value={selectedOptions[0] || ""}
-        onChange={(e) => setSelectedOptions([e.target.value])}
-        placeholder="Enter max value"
-      />
-    ),
-    [TYPE_OPTIONS.MULTISELECT]: renderMultiSelect(),
-    [TYPE_OPTIONS.SELECT]: renderMultiSelect(),
+      );
+    } else if (fieldType === TYPE_OPTIONS.MULTISELECT) {
+      return (
+        <div className={styles.multiselectContainer}>
+          <div className={styles.selectedOptions}>
+            {selectedOptions.map((option, index) => (
+              <div key={index} className={styles.optionTag}>
+                {option}
+                <button
+                  onClick={() =>
+                    setSelectedOptions(
+                      selectedOptions.filter((item) => item !== option),
+                    )
+                  }
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            <input
+              value={newOption}
+              onChange={(e) => setNewOption(e.target.value)}
+              placeholder="Add new option"
+              className={styles.input}
+              onKeyDown={(e) => e.key === "Enter" && addOption()}
+            />
+          </div>
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
@@ -120,26 +151,31 @@ const FieldModal: React.FC<FieldModalProps> = ({
       className={styles.modalContent}
       overlayClassName={styles.modalOverlay}
     >
-      <div className={`items-center ${styles.title}`}>
-        <h2 className="text-xl font-semibold">Edit Config</h2>
+      <div className={styles.title}>
+        <h2>Edit {fieldType} Config</h2>
       </div>
-      {/* Render the appropriate UI based on the fieldType */}
-      {fieldTypeRenderers[fieldType]}
-      <div
-        className="flex justify-end space-x-2"
-        style={{ marginTop: "1.5vh" }}
-      >
+      {renderContent()}
+      <div className={styles.modalButtons}>
         <button
           onClick={onClose}
-          className={`${styles.button} ${styles.cancelButton}`}
+          className={`${styles.cancelButton} ${styles.button}`}
         >
           Cancel
         </button>
+        {fieldType === TYPE_OPTIONS.MULTISELECT && (
+          <button
+            onClick={addOption}
+            className={` ${styles.createButton} ${styles.button}`}
+            style={{ marginRight: "1vh" }}
+          >
+            Add
+          </button>
+        )}
         <button
           onClick={handleSave}
-          className={`${styles.button} ${styles.createButton}`}
+          className={` ${styles.createButton} ${styles.button}`}
         >
-          Create
+          Save
         </button>
       </div>
     </Modal>

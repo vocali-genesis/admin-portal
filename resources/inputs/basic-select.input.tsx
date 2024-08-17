@@ -32,7 +32,7 @@ export const BasicSelect = (props: Props) => {
 
 const Select = styled.select`
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--gray-200);
   border-radius: 4px;
   height: 6vh;
   color: black;

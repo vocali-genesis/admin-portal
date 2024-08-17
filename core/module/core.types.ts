@@ -2,10 +2,10 @@
  * Basic User Model common to all the Auth providers
  */
 export interface GenesisUser {
-    id: string;
-    created_at: string;
-    email?: string;
-    email_confirmed_at?: string;
+  id: string;
+  created_at: string;
+  email?: string;
+  email_confirmed_at?: string;
 }
 
 /**
@@ -16,6 +16,9 @@ export interface GenesisUser {
 export type GenesisOauthProvider = "google" | "facebook";
 
 export type CENTS = number & { __brand: "cents" }; // 100 => 1.00
+export function centsToNumber(value: CENTS): number {
+  return value / 100;
+}
 
 export type GenesisInvoice = {
   invoice_id: string;
@@ -25,16 +28,32 @@ export type GenesisInvoice = {
 };
 
 export interface GenesisTemplateField {
-    type: "text" | "number" | "multiselect";
-    description: string;
-    options?: string[];
+  type: "text" | "number" | "multiselect";
+  description: string;
+  options?: Record<string, string>;
 }
 
 export interface GenesisTemplate {
-    id: number;
-    ownerId: string;
-    name: string;
-    createdAt: string;
-    preview: string;
-    fields: { [key: string]: GenesisTemplateField };
+  id: number;
+  ownerId: string;
+  name: string;
+  createdAt: string;
+  preview: string;
+  fields: { [key: string]: GenesisTemplateField };
 }
+export type SubscriptionResponse = Record<string, string | number>;
+export type GenesisReport = {
+  report: Record<string, string>;
+  transcription: string[];
+  time: {
+    transcription: number;
+    report: number;
+  };
+};
+
+// Refactor, we only need the count, not the page
+export type GenesisPagination<T> = {
+  data: T[];
+  totalCount: number;
+  totalPages: number;
+};

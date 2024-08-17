@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { GlobalCore } from "@/core/module/module.types";
-import { GenesisTemplate } from "@/core/module/core.types";
+import {
+  GenesisTemplate,
+  GenesisTemplateField,
+} from "@/core/module/core.types";
 import styles from "./styles/templates.module.css";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import {
@@ -37,7 +40,7 @@ const Templates = () => {
   }>({ currentPage: 1, totalPages: 1, totalRecords: 0 });
 
   useEffect(() => {
-    fetchTemplates(pagination.currentPage);
+    void fetchTemplates(pagination.currentPage);
   }, [pagination.currentPage]);
 
   const fetchTemplates = async (page: number) => {
@@ -70,7 +73,7 @@ const Templates = () => {
     if (!resp) return;
 
     setTemplates(
-      templates.filter((template) => template.id !== templateToDelete),
+      templates.filter((template) => template.id !== templateToDelete)
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
     setIsModalOpen(false);
@@ -101,15 +104,30 @@ const Templates = () => {
 
     const savedTemplate = await templateService.updateTemplate(
       editingTemplate.id,
-      editingTemplate,
+      editingTemplate
     );
     if (!savedTemplate) return;
 
     setTemplates(
-      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
+      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t))
     );
     setEditingTemplate(null);
     messageHandler.handleSuccess(t("templates.editSuccess"));
+  };
+
+  const formatPreview = (
+    fields: { [key: string]: GenesisTemplateField },
+    maxLength: number = 25
+  ) => {
+    const previewString = Object.entries(fields)
+      .map(([key, value]) => `${key}: ${value.type}`)
+      .join(", ");
+
+    if (previewString.length > maxLength) {
+      return `${previewString.substring(0, maxLength - 3)}...`;
+    }
+
+    return previewString;
   };
 
   const columns: ColumnConfig<GenesisTemplate>[] = [
@@ -144,27 +162,16 @@ const Templates = () => {
     {
       title: t("templates.date"),
       dataIndex: "createdAt",
-      render: (template: GenesisTemplate) =>
+      render: (template: GenesisTemplate) => (
         <span>{new Date(template.createdAt).toLocaleDateString()}</span>
+      ),
     },
     {
       title: t("templates.preview"),
       dataIndex: "preview",
-      render: (template: GenesisTemplate) =>
-        editingTemplate?.id === template.id ? (
-          <BasicInput
-            value={editingTemplate.preview}
-            onChange={(value) =>
-              setEditingTemplate({
-                ...editingTemplate,
-                preview: value.target.value,
-              })
-            }
-            placeholder={t("templates.previewPlaceholder")}
-          />
-        ) : (
-          <span>{template.preview}</span>
-        ),
+      render: (template: GenesisTemplate) => (
+        <span>{formatPreview(template.fields)}</span>
+      ),
     },
     {
       title: t("templates.action"),
@@ -182,13 +189,13 @@ const Templates = () => {
                 className={styles.actionButton}
                 style={{ marginRight: "4vh" }}
               >
-                <FaEdit style={{ color: "#59DBBC" }} />
+                <FaEdit style={{ color: "var(--primary)" }} />
               </button>
               <button
                 onClick={() => handleDelete(template.id)}
                 className={styles.actionButton}
               >
-                <FaTrash style={{ color: "#e53e3e" }} />
+                <FaTrash style={{ color: "var(--danger)" }} />
               </button>
             </>
           )}
@@ -215,11 +222,16 @@ const Templates = () => {
       <DeleteConfirmation
         isOpen={templateToDelete ? true : isModalOpen}
         onRequestClose={() => setTemplateToDelete(null)}
-        onConfirm={confirmDelete}
-        isLeavingPage={false}
+        onConfirm={() => confirmDelete}
       />
     </div>
   );
 };
 
 GlobalCore.manager.app("templates", Templates);
+GlobalCore.manager.menu({
+  label: "templates.menu",
+  icon: "/templates.svg",
+  url: "templates",
+  order: 0,
+});

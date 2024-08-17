@@ -20,7 +20,8 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
 }) => {
   return (
     <StyledButton data-testid={testId} onClick={onClick}>
-      <FaTrash size={16} style={{ color: "#DF4949", marginTop: 4 }} />
+      <FaTrash style={{ color: "var(--danger)", marginTop: 4 }} />
+
       {label}
     </StyledButton>
   );

@@ -1,8 +1,8 @@
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { saveAs } from "file-saver";
+import MessageHandler from "@/core/message-handler";
 
 class Download {
-
   static async downloadAudio(audioUrl: string) {
     try {
       const response = await fetch(audioUrl);
@@ -20,10 +20,10 @@ class Download {
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("Failed to download audio file:", error);
-      throw error;
+      MessageHandler.get().handleError("Failed to download audio file");
     }
   }
-  
+
   static async downloadTranscription(content: string[]) {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([600, 800]);
@@ -46,7 +46,7 @@ class Download {
     const pdfBytes = await pdfDoc.save();
     saveAs(
       new Blob([pdfBytes], { type: "application/pdf" }),
-      "transcription.pdf",
+      "transcription.pdf"
     );
   }
 

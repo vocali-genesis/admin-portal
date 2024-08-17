@@ -34,7 +34,7 @@
 }
 
 .addFieldButton {
-  background-color: #59DBBC;
+  background-color: var(--primary);
 }
 
 .addFieldButton:hover {
@@ -63,7 +63,7 @@
 }
 
 .editButton:hover, .saveButton:hover {
-  background-color: #59DBBC;
+  background-color: var(--primary);
 }
 
 .actionButton {

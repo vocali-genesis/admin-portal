@@ -1,10 +1,12 @@
 import {
   GenesisInvoice,
   GenesisOauthProvider,
+  GenesisReport,
   GenesisUser,
   GenesisTemplate,
+  GenesisPagination,
+  SubscriptionResponse,
 } from "./core.types";
-import { PaginatedResponse } from "@/services/templates/supabase-templates.service";
 
 export type ComponentName =
   | "subscriptions"
@@ -27,38 +29,13 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? SubscriptionService
   : never;
 
-export type CENTS = number & { __brand: "cents" }; // 100 => 1.00
-export function centsToNumber(value: CENTS): number {
-  return value / 100;
-}
-
-export type InvoiceResponse = {
-  invoice_id: string;
-  created_at: string;
-  amount: CENTS;
-  invoice_url: string;
-};
-export type SubscriptionResponse = Record<string, string | number>;
-
 export interface MedicalTranscription {
-  transcribeAudio(audioFile: File): Promise<string>;
-  generateReport(
-    transcription: string,
-    template?: string,
-    language?: string
-  ): Promise<string>;
+  transcribeAudio(audioFile: File): Promise<GenesisReport["transcription"]>;
   processAudioAndGenerateReport(
     audioFile: File,
     template?: string,
     language?: string
-  ): Promise<{
-    report: string;
-    transcription: string;
-    time: {
-      transcription: number;
-      report: number;
-    };
-  } | null>;
+  ): Promise<GenesisReport | null>;
 }
 
 export interface AuthService {
@@ -90,7 +67,7 @@ export interface SupabaseTemplateService {
   getTemplates(
     page: number,
     pageSize: number
-  ): Promise<PaginatedResponse<GenesisTemplate> | null>;
+  ): Promise<GenesisPagination<GenesisTemplate> | null>;
   getTemplate(id: number): Promise<GenesisTemplate | null>;
   createTemplate(
     template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">

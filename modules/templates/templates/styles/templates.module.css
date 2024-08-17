@@ -1,7 +1,7 @@
 .container {
   padding: 20px;
   background-color: #f8f9fa;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: black;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .addButton {
-  background-color: #1C364B;
+  background-color: var(--secondary);
   padding: 5px 15px;
   color: white;
   border: none;

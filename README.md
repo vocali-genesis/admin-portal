@@ -74,7 +74,15 @@ To Test an error you can access to the rout `/sentry`  (TODO: Hide it in product
 
 Follow our tutorial of [How to test](https://jestjs.io/docs/getting-started)
 
-Before running the test the `jest-setup.ts` where we declarate some usefull mocks that help you to validate some actions (Like the toast, the navigation, i18n).
+Recommend install the [Jest Plugin](https://marketplace.cursorapi.com/items?itemName=Orta.vscode-jest) while allow
+to execute specific test from Visual Studio.
 
-Create a Mock for each service that return positive, we can just the mock to return error in a specific action.
+Before running the test the `jest-setup.ts` where we declare some use-full mocks that help you to validate some actions (Like the toast, the navigation, i18n).
+
+Important Notes:
+
+-> Create a Seed function for each business element.
+-> Create a Mock for each service that return positive, we can just the mock to return error in a specific action.
+-> Check the TestUtils classes that will save you some time and simplify the test cases
+
 

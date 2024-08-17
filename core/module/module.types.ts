@@ -12,6 +12,7 @@ export type MenuItem<T = object> = {
 
 export type CoreComponent = () => React.ReactNode;
 
+export type ModuleComponentsTypes = "app" | "auth" | "settings" | "service";
 export interface ModuleSubscriber {
   auth: (key: string, component: CoreComponent) => void;
   app: (
@@ -28,7 +29,7 @@ export interface ModuleSubscriber {
     service: ServiceInterface<T>
   ) => void;
   // For Testing
-  getComponent<T extends "app" | "auth" | "settings" | "service">(
+  getComponent<T extends ModuleComponentsTypes>(
     type: T,
     name: T extends "service" ? ServiceName : string
   ): T extends "service"

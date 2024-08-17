@@ -9,14 +9,11 @@ import moment from "moment";
 import Table from "@/resources/table";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-import {
-  InvoiceResponse,
-  SubscriptionResponse,
-} from "@/core/module/services.types";
+import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
-  const columns: ColumnConfig<InvoiceResponse>[] = [
+  const columns: ColumnConfig<GenesisInvoice>[] = [
     {
       title: t("invoice-history.invoice-id-th"),
       dataIndex: "invoice_id",
@@ -42,7 +39,7 @@ const PaymentHistory: React.FC = () => {
     },
   ];
 
-  const [data, setData] = useState<InvoiceResponse[]>([]);
+  const [data, setData] = useState<GenesisInvoice[] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -74,7 +71,7 @@ const PaymentHistory: React.FC = () => {
 
   return (
     <div className="container mx-auto">
-      <Table<InvoiceResponse>
+      <Table<GenesisInvoice>
         data={data}
         columns={columns}
         onSort={handleSort}
@@ -100,7 +97,7 @@ const Subscriptions = () => {
   const [subscription, setSubscription] = useState<SubscriptionResponse>();
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const data = await Service.require(
         "subscriptions"
       ).getActiveSubscription();

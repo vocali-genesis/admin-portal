@@ -19,16 +19,18 @@ export const MicrophoneSelect = ({
   const [permissionGranted, setPermissionGranted] = useState<boolean | "">("");
 
   const setUpDevices = useCallback(async () => {
-    setPermissionGranted(true);
     const devices = await navigator.mediaDevices.enumerateDevices();
     const audioInputDevices = devices.filter(
       (device) => device.kind === "audioinput",
     );
     // If no granted is undefined
     const defaultDevice = !!audioInputDevices[0]?.deviceId;
+
     setPermissionGranted(!!defaultDevice);
     setDevices(audioInputDevices);
-    defaultDevice && onChange(audioInputDevices[0].deviceId);
+    if (defaultDevice) {
+      onChange(audioInputDevices[0].deviceId);
+    }
   }, [onChange, setPermissionGranted]);
 
   const requestPermissions = useCallback(() => {
@@ -71,11 +73,10 @@ export const MicrophoneSelect = ({
   if (permissionGranted === "") {
     return;
   }
-
   if (!permissionGranted) {
     return (
       <PermissionButton onClick={requestPermissions}>
-        {t("recording.allow-permissions")}
+        {t("resources.allow-permissions")}
       </PermissionButton>
     );
   }

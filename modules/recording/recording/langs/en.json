@@ -1,6 +1,7 @@
 {
   "recording": {
     "menu": "Recording",
+    "upload": "Upload",
     "started": "Recording started",
     "stopped": "Recording stopped",
     "record-title": "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
@@ -11,18 +12,13 @@
     "click-to-start": "Click To Start Recording",
     "click-to-pause": "Click To Pause Recording",
     "click-to-resume": "Click To Resume Recording",
+    "pause-audio": "Pause Audio",
+    "replay-audio": "Replay Audio",
     "permission-required": "Please allow microphone permissions before recording",
     "stop": "Stop recording",
     "paused": "Recording paused",
     "resumed": "Recording resumed",
-    "upload": "Upload",
-    "drag-and-drop": "Drag & Drop Or",
-    "browse": "Browse",
-    "supported-format": "Supported Formats: MP3",
-    "upload-files": "Upload Files",
     "submit": "Submit",
-    "uploading": "Uploading...",
-    "allow-permissions": "Click to allow permissions",
     "transcription": "Transcription",
     "report": "Report",
     "download": "Download",
@@ -32,6 +28,14 @@
     "statistics": "Statistics",
     "new-recording": "New Recording",
     "back": "Back",
-    "add_field": "Add field"
+    "add_field": "Add field",
+    "api-error": "Failed to generate report",
+    "error-no-audio-file": "Audio file expired",
+    "total": "Total",
+    "total-time": "Total Time",
+    "seconds": "seconds",
+    "audio-time": "Audio Length: {{seconds}} seconds",
+    "transcription-time": "Transcription: {{seconds}} seconds",
+    "report-time": "Report: {{seconds}} seconds"
   }
 }

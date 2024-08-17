@@ -3,26 +3,17 @@ import Modal from "react-modal";
 import modal_styles from "./styles/delete-confirmation.module.css";
 import { useTranslation } from "react-i18next";
 
-interface DeleteConfirmationModalProps {
+interface UnsavedChangesModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   onConfirm: () => void;
-  isLeavingPage?: boolean;
-  title?: string;
-  message?: string;
-  confirmButtonText?: string;
-  cancelButtonText?: string;
   testId?: string;
 }
 
-const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
+const UnsavedChanges: React.FC<UnsavedChangesModalProps> = ({
   isOpen,
   onRequestClose,
   onConfirm,
-  confirmButtonText,
-  cancelButtonText,
-  message,
-  title,
   testId,
 }) => {
   const { t } = useTranslation();
@@ -34,18 +25,18 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
       className={modal_styles.modal}
       overlayClassName={modal_styles.overlay}
     >
-      <h2>{title || t("resources.confirm-delete")}</h2>
-      <p>{message || t("resources.are-you-sure")}</p>
+      <h2>{t("templates.unsavedChangesTitle")}</h2>
+      <p>{t("templates.unsavedChangesMessage")}</p>
       <div className={modal_styles.modalButtons} data-testid={testId}>
         <button onClick={onConfirm} className={modal_styles.deleteButton}>
-          {confirmButtonText || t("common.delete")}
+          {t("templates.discardChanges")}
         </button>
         <button onClick={onRequestClose} className={modal_styles.cancelButton}>
-          {cancelButtonText || t("common.cancel")}
+          {t("common.cancel")}
         </button>
       </div>
     </Modal>
   );
 };
 
-export default DeleteConfirmation;
+export default UnsavedChanges;

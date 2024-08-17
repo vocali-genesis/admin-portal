@@ -51,21 +51,44 @@ class SupabaseTemplateService {
     };
   }
 
-  async getTemplate(id: number): Promise<GenesisTemplate | null> {
+  async getTemplate(
+    id: number,
+    page: number = 1,
+    pageSize: number = 8,
+  ): Promise<PaginatedResponse<GenesisTemplate> | null> {
     const userData = await Service.require("oauth").getLoggedUser();
-
     const { data, error } = await this.supabase
       .from("templates")
       .select("*")
       .eq("id", id)
       .eq("ownerId", userData?.id)
-      .select();
+      .single();
+
     if (error) {
       messageHandler.handleError(error.message);
       return null;
     }
 
-    return data[0] as GenesisTemplate;
+    const entries = Object.entries(data.fields);
+    const totalCount = entries.length;
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    const paginatedEntries = entries.slice(
+      (page - 1) * pageSize,
+      page * pageSize,
+    );
+    const paginatedFields = Object.fromEntries(paginatedEntries);
+
+    const paginatedTemplate = {
+      ...data,
+      fields: paginatedFields,
+    };
+
+    return {
+      data: [paginatedTemplate] as GenesisTemplate[],
+      totalCount,
+      totalPages,
+    };
   }
 
   async createTemplate(

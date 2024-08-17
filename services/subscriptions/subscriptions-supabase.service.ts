@@ -1,9 +1,6 @@
-import {
-  InvoiceResponse,
-  SubscriptionResponse,
-  SubscriptionService,
-} from "./../../core/module/services.types";
-import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
+import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
+import { SubscriptionService } from "@/core/module/services.types";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
 import { GlobalCore } from "@/core/module/module.types";
@@ -57,7 +54,7 @@ class SubscriptionSupabase implements SubscriptionService {
   public async getInvoices(
     from: number,
     to: number
-  ): Promise<{ invoices: [InvoiceResponse] | []; count: number }> {
+  ): Promise<{ invoices: [GenesisInvoice] | []; count: number }> {
     const { data: invoices, error } = await this.supabase
       .from("invoices")
       .select("*")
@@ -70,7 +67,7 @@ class SubscriptionSupabase implements SubscriptionService {
       .from("invoices")
       .select("*", { count: "exact", head: true });
     return { invoices, count } as {
-      invoices: [InvoiceResponse];
+      invoices: [GenesisInvoice];
       count: number;
     };
   }

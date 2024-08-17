@@ -3,7 +3,7 @@
 .uploadArea {
   width: 50vh;
   height: 50vh;
-  border: 2px dashed #ccc;
+  border: 2px dashed var(--gray-200);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -15,7 +15,7 @@
   text-align: center;
 
   background: #f8f8ff;
-  border: 2px dashed #ccc;
+  border: 2px dashed var(--gray-200);
   padding: 20px;
   text-align: center;
   transition: all 0.3s ease;
@@ -26,7 +26,7 @@
 }
 
 .uploadButton {
-  background-color: #59dbbc;
+  background-color: var(--primary);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -54,12 +54,12 @@
 }
 
 .uploadArea.dragging {
-  border-color: #59dbbc;
+  border-color: var(--primary);
   background-color: rgba(89, 219, 188, 0.1);
 }
 
 .browseLink {
-  color: #59dbbc;
+  color: var(--primary);
   cursor: pointer;
   text-decoration: none;
 }
