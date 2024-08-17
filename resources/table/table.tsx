@@ -3,6 +3,7 @@ import Spinner from "./spinner";
 import Image from "next/image";
 import styled from "styled-components";
 
+// TODO: Move pagination here
 interface TableProps<T> {
   data: T[];
   columns: ColumnConfig<T>[];

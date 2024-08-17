@@ -1,6 +1,5 @@
 import React from "react";
-import Modal from "react-modal";
-import modal_styles from "./styles/delete-confirmation.module.css";
+import ConfirmationModal from "./confirm-modal";
 import { useTranslation } from "react-i18next";
 
 interface DeleteConfirmationModalProps {
@@ -12,7 +11,6 @@ interface DeleteConfirmationModalProps {
   message?: string;
   confirmButtonText?: string;
   cancelButtonText?: string;
-  testId?: string;
 }
 
 const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
@@ -20,31 +18,20 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
   onRequestClose,
   onConfirm,
   confirmButtonText,
-  cancelButtonText,
   message,
   title,
-  testId,
 }) => {
   const { t } = useTranslation();
 
   return (
-    <Modal
+    <ConfirmationModal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      className={modal_styles.modal}
-      overlayClassName={modal_styles.overlay}
-    >
-      <h2>{title || t("resources.confirm-delete")}</h2>
-      <p>{message || t("resources.are-you-sure")}</p>
-      <div className={modal_styles.modalButtons} data-testid={testId}>
-        <button onClick={onConfirm} className={modal_styles.deleteButton}>
-          {confirmButtonText || t("common.delete")}
-        </button>
-        <button onClick={onRequestClose} className={modal_styles.cancelButton}>
-          {cancelButtonText || t("common.cancel")}
-        </button>
-      </div>
-    </Modal>
+      onConfirm={onConfirm}
+      title={title || t("resources.confirm-delete")}
+      message={message || t("resources.are-you-sure")}
+      confirmButtonText={confirmButtonText || t("common.delete")}
+    />
   );
 };
 

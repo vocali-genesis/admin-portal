@@ -3,6 +3,8 @@ import Modal from "react-modal";
 import modal_styles from "./styles/confirmation.module.css";
 import { useTranslation } from "react-i18next";
 
+Modal.setAppElement("body");
+
 interface ConfirmationModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
@@ -10,6 +12,7 @@ interface ConfirmationModalProps {
   title: string;
   message: string;
   confirmButtonText: string;
+  testId?: string;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -19,9 +22,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   title,
   message,
   confirmButtonText,
+  testId,
 }) => {
   const { t } = useTranslation();
-
   return (
     <Modal
       isOpen={isOpen}
@@ -31,7 +34,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     >
       <h2>{title}</h2>
       <p>{message}</p>
-      <div className={modal_styles.modalButtons}>
+      <div className={modal_styles.modalButtons} data-testid={testId}>
         <button onClick={onConfirm} className={modal_styles.confirmButton}>
           {confirmButtonText}
         </button>

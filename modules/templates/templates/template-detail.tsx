@@ -1,5 +1,5 @@
 import { GlobalCore } from "@/core/module/module.types";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import {
   GenesisTemplate,
@@ -25,6 +25,8 @@ import BasicInput from "@/resources/inputs/basic-input";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import { TYPE_OPTIONS } from "@/core/constants";
 import Pagination from "@/resources/table/pagination";
+import Button from "@/resources/containers/button";
+import IconButton from "@/resources/containers/icon-button";
 
 const messageHandler = MessageHandler.get();
 type TableDataType = GenesisTemplateField & { key: string; name: string };
@@ -34,15 +36,14 @@ const TemplateDetail = () => {
   const { t } = useTranslation();
   const templateService = Service.require("templates");
   const { id } = router.query;
+
   const [template, setTemplate] = useState<GenesisTemplate | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
-  const [editedValues, setEditedValues] = useState<{
-    [key: string]: GenesisTemplateField & { name: string };
-  }>({});
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [editedValues, setEditedValues] = useState<
+    Record<string, GenesisTemplateField & { name: string }>
+  >({});
   const [fieldToDelete, setFieldToDelete] = useState<string | null>(null);
   const [isFieldModalOpen, setIsFieldModalOpen] = useState(false);
-  const [currentFieldKey, setCurrentFieldKey] = useState<string | null>(null);
   const [unsavedChangesModalOpen, setUnsavedChangesModalOpen] = useState(false);
   const [pendingEditField, setPendingEditField] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
@@ -52,30 +53,36 @@ const TemplateDetail = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
+  const fetchTemplate = useCallback(
+    async (page: number) => {
+      if (typeof id !== "string") return;
+      setIsLoading(true);
+      try {
+        const fetchedTemplate = await templateService.getTemplate(+id, page, 5);
+        if (fetchedTemplate) {
+          setTemplate(fetchedTemplate.data[0]);
+          setPagination({
+            currentPage: page,
+            totalPages: fetchedTemplate.totalPages,
+            totalRecords: fetchedTemplate.totalCount,
+          });
+        }
+      } catch (error) {
+        messageHandler.handleError(t("templates.fetchError"));
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [id, templateService, t],
+  );
+
   useEffect(() => {
     if (!id) router.push("/app/templates");
-    fetchTemplate(pagination.currentPage);
-  }, [id, pagination.currentPage]);
+    else fetchTemplate(pagination.currentPage);
+  }, [id, pagination.currentPage, fetchTemplate, router]);
 
-  const fetchTemplate = async (page: number) => {
-    if (!(typeof id === "string")) return;
-    setIsLoading(true);
-    const fetchedTemplate = await templateService.getTemplate(+id, page, 5);
-    if (!fetchedTemplate) return;
-
-    setTemplate(fetchedTemplate.data[0]);
-    setPagination({
-      currentPage: page,
-      totalPages: fetchedTemplate.totalPages,
-      totalRecords: fetchedTemplate.totalCount,
-    });
-
-    setIsLoading(false);
-  };
-
-  const handlePageChange = (page: number) => {
-    setPagination({ ...pagination, currentPage: page });
-  };
+  const handlePageChange = (page: number) =>
+    setPagination((prev) => ({ ...prev, currentPage: page }));
 
   const handleEdit = (fieldKey: string) => {
     if (editingField && editingField !== fieldKey) {
@@ -85,39 +92,37 @@ const TemplateDetail = () => {
       setEditingField(fieldKey);
       const field = template?.fields[fieldKey];
       if (field)
-        setEditedValues({
-          ...editedValues,
+        setEditedValues((prev) => ({
+          ...prev,
           [fieldKey]: { name: fieldKey, ...field },
-        });
+        }));
     }
   };
 
   const handleSave = async (fieldKey: string) => {
     if (!template) return;
     const { name, ...fieldData } = editedValues[fieldKey];
-    if (
-      !name.trim() ||
-      !fieldData.type.trim() ||
-      !fieldData.description.trim()
-    ) {
-      return messageHandler.handleError(t("templates.fieldEmptyError"));
-    }
     const updatedFields = { ...template.fields };
+
     if (name !== fieldKey) {
       delete updatedFields[fieldKey];
       updatedFields[name] = fieldData;
     } else {
       updatedFields[fieldKey] = fieldData;
     }
-    const updatedTemplate = await templateService.updateTemplate(template.id, {
-      fields: updatedFields,
-    });
-    if (updatedTemplate) {
-      setTemplate(updatedTemplate);
-      setEditingField(null);
-      setEditedValues({});
-      messageHandler.handleSuccess(t("templates.editSuccess"));
-    } else {
+
+    try {
+      const updatedTemplate = await templateService.updateTemplate(
+        template.id,
+        { fields: updatedFields },
+      );
+      if (updatedTemplate) {
+        setTemplate(updatedTemplate);
+        setEditingField(null);
+        setEditedValues({});
+        messageHandler.handleSuccess(t("templates.editSuccess"));
+      }
+    } catch (error) {
       messageHandler.handleError(t("templates.editError"));
     }
   };
@@ -127,10 +132,10 @@ const TemplateDetail = () => {
     property: string,
     value: string,
   ) => {
-    setEditedValues({
-      ...editedValues,
-      [fieldKey]: { ...editedValues[fieldKey], [property]: value },
-    });
+    setEditedValues((prev) => ({
+      ...prev,
+      [fieldKey]: { ...prev[fieldKey], [property]: value },
+    }));
   };
 
   const handleAddField = () => {
@@ -140,32 +145,35 @@ const TemplateDetail = () => {
       type: "text",
       description: "New field description",
     };
-    setTemplate({
-      ...template,
-      fields: { ...template.fields, [newFieldKey]: newField },
-    });
+    setTemplate((prev) => ({
+      ...prev!,
+      fields: { ...prev!.fields, [newFieldKey]: newField },
+    }));
     setEditingField(newFieldKey);
-    setEditedValues({
-      ...editedValues,
+    setEditedValues((prev) => ({
+      ...prev,
       [newFieldKey]: { name: newFieldKey, ...newField },
-    });
+    }));
   };
 
   const confirmDelete = async () => {
     if (!template || !fieldToDelete) return;
     const updatedFields = { ...template.fields };
     delete updatedFields[fieldToDelete];
-    const updatedTemplate = await templateService.updateTemplate(template.id, {
-      fields: updatedFields,
-    });
-    if (updatedTemplate) {
-      setTemplate(updatedTemplate);
-      messageHandler.handleSuccess(t("templates.fieldDeleteSuccess"));
-    } else {
+    try {
+      const updatedTemplate = await templateService.updateTemplate(
+        template.id,
+        { fields: updatedFields },
+      );
+      if (updatedTemplate) {
+        setTemplate(updatedTemplate);
+        messageHandler.handleSuccess(t("templates.fieldDeleteSuccess"));
+      }
+    } catch (error) {
       messageHandler.handleError(t("templates.fieldDeleteError"));
+    } finally {
+      setFieldToDelete(null);
     }
-    setIsDeleteModalOpen(false);
-    setFieldToDelete(null);
   };
 
   const columns: ColumnConfig<TableDataType>[] = [
@@ -228,37 +236,33 @@ const TemplateDetail = () => {
       render: (record: TableDataType) => (
         <>
           {editingField === record.key ? (
-            <>
-              <button
-                onClick={() => handleSave(record.key)}
-                className={styles.actionButton}
-              >
+            <div style={{ display: "flex", gap: "3vh" }}>
+              <IconButton onClick={() => handleSave(record.key)} size="small">
                 <FaSave style={{ color: "var(--primary)" }} />
-              </button>
-              {["number", "select", "multiselect"].includes(record.type) && (
-                <button
+              </IconButton>
+              {["number", "select", "multiselect"].includes(
+                editedValues[record.key]?.type,
+              ) && (
+                <IconButton
                   onClick={() => setIsFieldModalOpen(true)}
-                  className={styles.actionButton}
+                  size="small"
                 >
                   <FaCog style={{ color: "var(--primary)" }} />
-                </button>
+                </IconButton>
               )}
-            </>
+            </div>
           ) : (
-            <>
-              <button
-                onClick={() => handleEdit(record.key)}
-                className={styles.actionButton}
-              >
+            <div style={{ display: "flex", gap: "3vh" }}>
+              <IconButton onClick={() => handleEdit(record.key)} size="small">
                 <FaEdit style={{ color: "var(--primary)" }} />
-              </button>
-              <button
+              </IconButton>
+              <IconButton
                 onClick={() => setFieldToDelete(record.key)}
-                className={styles.actionButton}
+                size="small"
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
-              </button>
-            </>
+              </IconButton>
+            </div>
           )}
         </>
       ),
@@ -276,15 +280,20 @@ const TemplateDetail = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <button
+        <Button
           onClick={() => router.push("/app/templates")}
+          variant="secondary"
           className={styles.backButton}
         >
           <FaArrowLeft /> {t("templates.back")}
-        </button>
-        <button onClick={handleAddField} className={styles.addFieldButton}>
+        </Button>
+        <Button
+          onClick={handleAddField}
+          variant="primary"
+          className={styles.addFieldButton}
+        >
           <FaPlus /> {t("templates.addField")}
-        </button>
+        </Button>
       </div>
       <h1 className={styles.title}>{template?.name}</h1>
       <p className={styles.preview}>{template?.preview}</p>
@@ -308,7 +317,17 @@ const TemplateDetail = () => {
         onRequestClose={() => setUnsavedChangesModalOpen(false)}
         onConfirm={() => {
           setUnsavedChangesModalOpen(false);
-          if (pendingEditField) handleEdit(pendingEditField);
+          if (pendingEditField) {
+            setEditingField(pendingEditField);
+            const field = template?.fields[pendingEditField];
+            if (field) {
+              setEditedValues((prev) => ({
+                ...prev,
+                [pendingEditField]: { name: pendingEditField, ...field },
+              }));
+            }
+            setPendingEditField(null);
+          }
         }}
       />
 
@@ -316,11 +335,12 @@ const TemplateDetail = () => {
         isOpen={isFieldModalOpen}
         onClose={() => setIsFieldModalOpen(false)}
         onSave={(data) => {
-          if (currentFieldKey)
-            handleInputChange(currentFieldKey, "config", JSON.stringify(data));
+          if (editingField) {
+            handleInputChange(editingField, "config", JSON.stringify(data));
+          }
           setIsFieldModalOpen(false);
         }}
-        fieldType={currentFieldKey ? editedValues[currentFieldKey]?.type : ""}
+        fieldType={editingField ? editedValues[editingField]?.type : ""}
       />
     </div>
   );

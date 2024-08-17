@@ -31,16 +31,6 @@
   font-size: 2vh;
 }
 
-.actionButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.editButton {
-  margin-right: 4vh;
-}
-
 .pagination {
   display: flex;
   justify-content: flex-end;
