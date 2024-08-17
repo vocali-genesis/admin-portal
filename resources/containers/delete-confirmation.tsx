@@ -11,6 +11,7 @@ interface DeleteConfirmationModalProps {
   message?: string;
   confirmButtonText?: string;
   cancelButtonText?: string;
+  testId?: string;
 }
 
 const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
@@ -20,6 +21,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
   confirmButtonText,
   message,
   title,
+  testId,
 }) => {
   const { t } = useTranslation();
 
@@ -31,6 +33,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
       title={title || t("resources.confirm-delete")}
       message={message || t("resources.are-you-sure")}
       confirmButtonText={confirmButtonText || t("common.delete")}
+      testId={testId}
     />
   );
 };

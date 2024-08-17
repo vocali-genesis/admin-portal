@@ -68,6 +68,7 @@ const Recording = () => {
             onClick={() => void handleSubmit()}
             variant="primary"
             className={recording_styles.submitButton}
+            testId="submit-button"
           >
             {t("recording.submit")}
           </Button>

@@ -36,7 +36,7 @@ describe("===== RECORDING LOGIN =====", () => {
   beforeAll(() => {
     genesisService = GlobalCore.manager.getComponent(
       "service",
-      "medical-api"
+      "medical-api",
     ) as MedicalTranscription;
   });
 
@@ -73,7 +73,7 @@ describe("===== RECORDING LOGIN =====", () => {
       act(() => screen.getByTestId("record-button").click());
 
       expect(ToastMock.error).toHaveBeenCalledWith(
-        "recording.permission-required"
+        "recording.permission-required",
       );
     });
 
@@ -123,7 +123,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "audio.mp3", type: "audio/mp3" })
+        Seed.new().file({ name: "audio.mp3", type: "audio/mp3" }),
       );
 
       await waitFor(() => screen.getByText("audio.mp3"));
@@ -135,7 +135,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "image.mp3", type: "image/mp3" })
+        Seed.new().file({ name: "image.mp3", type: "image/mp3" }),
       );
 
       expect(screen.queryByText("image.png")).not.toBeInTheDocument();
@@ -163,7 +163,7 @@ describe("===== RECORDING LOGIN =====", () => {
       expect(screen.getByText("recording.upload-files")).toBeDisabled();
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "audio.png", type: "audio/png" })
+        Seed.new().file({ name: "audio.png", type: "audio/png" }),
       );
 
       expect(screen.getByText("recording.upload-files")).not.toBeDisabled();
@@ -185,7 +185,7 @@ describe("===== RECORDING LOGIN =====", () => {
       jest
         .spyOn(FetchMock, "blob")
         .mockResolvedValueOnce(
-          Seed.new().file({ name: "audio.mp3", type: "audio/mp3" })
+          Seed.new().file({ name: "audio.mp3", type: "audio/mp3" }),
         );
     });
     beforeEach(() => {
@@ -209,9 +209,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
       await act(() => render(<Recording />));
 
-      const submitButton = await screen.findByRole("button", {
-        name: "recording.submit",
-      });
+      const submitButton = await screen.findByTestId("submit-button");
 
       act(() => submitButton.click());
       await waitFor(() => {
@@ -234,14 +232,12 @@ describe("===== RECORDING LOGIN =====", () => {
       });
       await act(() => render(<Recording />));
 
-      const submitButton = await screen.findByRole("button", {
-        name: "recording.submit",
-      });
+      const submitButton = await screen.findByTestId("submit-button");
 
       act(() => submitButton.click());
       await waitFor(() => {
         expect(ToastMock.error).toHaveBeenCalledWith(
-          "recording.error-no-audio-file"
+          "recording.error-no-audio-file",
         );
         expect(RouterMock.replace).toHaveBeenCalledWith("/app/dashboard");
       });
@@ -257,9 +253,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
       await act(() => render(<Recording />));
 
-      const submitButton = await screen.findByRole("button", {
-        name: "recording.submit",
-      });
+      const submitButton = await screen.findByTestId("submit-button");
 
       act(() => submitButton.click());
       await waitFor(() => {
@@ -272,7 +266,7 @@ describe("===== RECORDING LOGIN =====", () => {
       const { container } = await act(() => render(<Recording />));
 
       const deleteButton = container.querySelector(
-        "button[name='delete']"
+        "button[name='delete']",
       ) as HTMLButtonElement;
       expect(deleteButton).toBeDefined();
 
@@ -288,7 +282,7 @@ describe("===== RECORDING LOGIN =====", () => {
       const { container } = await act(() => render(<Recording />));
 
       const saveButton = container.querySelector(
-        "button[name='save']"
+        "button[name='save']",
       ) as HTMLButtonElement;
 
       expect(saveButton).toBeDefined();
@@ -369,7 +363,7 @@ describe("===== RECORDING LOGIN =====", () => {
       });
       // Transcription is hidden
       expect(
-        screen.getByText(report.transcription[0]).closest(".hiddenContent")
+        screen.getByText(report.transcription[0]).closest(".hiddenContent"),
       ).toBeTruthy();
     });
 
@@ -387,7 +381,7 @@ describe("===== RECORDING LOGIN =====", () => {
       expect(
         screen
           .getByText(Object.values(report.report)[0])
-          .closest(".hiddenContent")
+          .closest(".hiddenContent"),
       ).toBeTruthy();
     });
 
@@ -476,7 +470,7 @@ describe("===== RECORDING LOGIN =====", () => {
       render(<Report />);
       getDownloadButton().click();
 
-      const button = await screen.findByText("recording.download-audio");
+      const button = await screen.findByTestId("report.download-audio");
 
       act(() => button.click());
 
@@ -487,7 +481,7 @@ describe("===== RECORDING LOGIN =====", () => {
       render(<Report />);
       getDownloadButton().click();
 
-      const button = await screen.findByText("recording.download-report");
+      const button = await screen.findByTestId("report.download-report");
 
       const download = mockDownload();
       act(() => button.click());
@@ -502,9 +496,7 @@ describe("===== RECORDING LOGIN =====", () => {
       render(<Report />);
       getDownloadButton().click();
 
-      const button = await screen.findByText(
-        "recording.download-transcription"
-      );
+      const button = await screen.findByTestId("report.download-transcription");
 
       const download = mockDownload();
       act(() => button.click());
@@ -518,7 +510,7 @@ describe("===== RECORDING LOGIN =====", () => {
       getDownloadButton().click();
 
       const button = await screen.findByText(
-        "recording.download-transcription"
+        "recording.download-transcription",
       );
 
       const download = mockDownload();
@@ -537,7 +529,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
       const bar = screen.getByTestId("time-bar");
       const segments = bar.querySelectorAll(
-        ".progressSegment"
+        ".progressSegment",
       ) as unknown as HTMLDivElement[];
 
       expect(segments[0].style.width).toEqual(transcriptionWidth + "%");
@@ -545,7 +537,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
       const totalTime = screen.getByText("recording.total-time");
       expect(totalTime.parentElement?.textContent).toContain(
-        (total / 1000).toString()
+        (total / 1000).toString(),
       );
     });
   });

@@ -120,7 +120,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
 
     const progressPercent = (currentTime / duration) * 100;
     const seekBar = document.querySelector(
-      `.${audioPlayer.seekBar}`
+      `.${audioPlayer.seekBar}`,
     ) as HTMLInputElement;
     if (seekBar) {
       seekBar.style.setProperty("--seek-before-width", `${progressPercent}%`);
@@ -207,6 +207,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
           className={audioPlayer.actionButton}
           size="small"
           name="save"
+          testId="save-audio"
         >
           <FaFloppyDisk size={16} style={{ color: "blue" }} />
         </IconButton>
