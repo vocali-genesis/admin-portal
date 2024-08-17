@@ -2,6 +2,8 @@ import { PDFDocument, StandardFonts } from "pdf-lib";
 import { saveAs } from "file-saver";
 import MessageHandler from "@/core/message-handler";
 
+const messagehandler = MessageHandler.get();
+
 class Download {
   static async downloadAudio(audioUrl: string) {
     try {
@@ -20,7 +22,7 @@ class Download {
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("Failed to download audio file:", error);
-      MessageHandler.get().handleError("Failed to download audio file");
+      messagehandler.handleError((error as Error).message);
     }
   }
 
@@ -43,23 +45,29 @@ class Download {
       y -= lineHeight;
     }
 
-    const pdfBytes = await pdfDoc.save();
+    const downloadPDF = await pdfDoc.save();
     saveAs(
+<<<<<<< HEAD
       new Blob([pdfBytes], { type: "application/pdf" }),
       "transcription.pdf"
+=======
+      new Blob([downloadPDF], { type: "application/pdf" }),
+      "transcription.pdf",
+>>>>>>> 6d4e8a8d696aec8265eff0dd12be5512d234c634
     );
   }
 
-  static async downloadReport(content: object) {
+  static async downloadReport(content: Record<string, string>) {
     const pdfDoc = await PDFDocument.create();
     let page = pdfDoc.addPage([600, 800]);
-    const { height, width } = page.getSize();
+    const { height } = page.getSize();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     let y = height - 50;
     const fontSize = 12;
-    const headerFontSize = 16;
-    const lineHeight = fontSize * 1.5;
+    const headerFontSize = 14;
+    const lineHeight = fontSize * 1.25;
+    const headerSpacing = fontSize * 0.75; // Adjust spacing below headers
 
     const drawText = (text: string, options: any) => {
       if (y < 50) {
@@ -67,15 +75,19 @@ class Download {
         y = height - 50;
       }
       page.drawText(text, { ...options, y });
-      y -= lineHeight;
+      y -= options.spacing || lineHeight;
     };
 
-    const renderObject = (obj: any, level: number = 0) => {
-      Object.entries(obj).forEach(([key, val]) => {
+    const renderObject = (obj: Record<string, string>, level: number = 0) => {
+      Object.entries(obj).forEach(([key, val], index, array) => {
         const indent = 50 + level * 20;
         if (level === 0) {
-          drawText(key, { x: indent, size: headerFontSize, font: boldFont });
-          y -= lineHeight; // Extra space after header
+          drawText(key, {
+            x: indent,
+            size: headerFontSize,
+            font: boldFont,
+            spacing: lineHeight + headerSpacing, // Add space under headers
+          });
         } else {
           drawText(`${key}:`, { x: indent, size: fontSize, font });
         }
@@ -85,11 +97,19 @@ class Download {
         } else {
           drawText(String(val), { x: indent + 10, size: fontSize, font });
         }
+
+        if (level === 0) {
+          y -= lineHeight;
+
+          if (y < 50) {
+            page = pdfDoc.addPage([600, 800]);
+            y = height - 50;
+          }
+        }
       });
     };
 
     renderObject(content);
-
     const pdfBytes = await pdfDoc.save();
     saveAs(new Blob([pdfBytes], { type: "application/pdf" }), "report.pdf");
   }

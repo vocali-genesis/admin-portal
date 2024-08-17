@@ -36,6 +36,7 @@
     "seconds": "seconds",
     "audio-time": "Audio Length: {{seconds}} seconds",
     "transcription-time": "Transcription: {{seconds}} seconds",
-    "report-time": "Report: {{seconds}} seconds"
+    "report-time": "Report: {{seconds}} seconds",
+    "download_success": "Download Success"
   }
 }
