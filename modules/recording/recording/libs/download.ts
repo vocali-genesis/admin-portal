@@ -47,13 +47,8 @@ class Download {
 
     const downloadPDF = await pdfDoc.save();
     saveAs(
-<<<<<<< HEAD
-      new Blob([pdfBytes], { type: "application/pdf" }),
-      "transcription.pdf"
-=======
       new Blob([downloadPDF], { type: "application/pdf" }),
-      "transcription.pdf",
->>>>>>> 6d4e8a8d696aec8265eff0dd12be5512d234c634
+      "transcription.pdf"
     );
   }
 

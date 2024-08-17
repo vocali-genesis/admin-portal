@@ -68,7 +68,11 @@ export interface SupabaseTemplateService {
     page: number,
     pageSize: number
   ): Promise<GenesisPagination<GenesisTemplate> | null>;
-  getTemplate(id: number): Promise<GenesisTemplate | null>;
+  getTemplate(
+    id: number,
+    page: number,
+    pageSize: number
+  ): Promise<GenesisPagination<GenesisTemplate> | null>;
   createTemplate(
     template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">
   ): Promise<GenesisTemplate | null>;

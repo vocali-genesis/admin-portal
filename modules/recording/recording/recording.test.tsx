@@ -534,7 +534,7 @@ describe("===== RECORDING LOGIN =====", () => {
       const total = report.time.report + report.time.transcription;
       const reportWidth = (report.time.report / total) * 100;
       const transcriptionWidth = (report.time.transcription / total) * 100;
-      console.log({ total, reportWidth, transcriptionWidth });
+
       const bar = screen.getByTestId("time-bar");
       const segments = bar.querySelectorAll(
         ".progressSegment"
