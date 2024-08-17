@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Spinner from "./spinner";
+import Spinner from "@/resources/containers/spinner-svg";
 import Image from "next/image";
 
 interface TableProps<T> {

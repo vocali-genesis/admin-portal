@@ -7,9 +7,13 @@ import Service from "@/core/module/service.factory";
 import { useRouter } from "next/router";
 import moment from "moment";
 import Table from "@/resources/table";
+import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
+import MessageHandler from "@/core/message-handler";
+
+const messageHandler = MessageHandler.get();
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
@@ -30,11 +34,11 @@ const PaymentHistory: React.FC = () => {
     {
       title: t("invoice-history.action-th"),
       render: (item) => (
-        <>
+        <div style={{ display: "flex", justifyContent: "end" }}>
           <a href={item.invoice_url} className="text-blue-500" target="__blank">
             {t("invoice-history.view-receipt")}
           </a>
-        </>
+        </div>
       ),
     },
   ];
@@ -90,6 +94,48 @@ const PaymentHistory: React.FC = () => {
   );
 };
 
+const CancelSubscriptonBtn = () => {
+  const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
+  const onConfirm = async () => {
+    setIsLoading(true);
+    const data = await Service.require("subscriptions").cancelSubscription();
+    if(data.id) {
+      messageHandler.handleSuccess(t("Subscription cancelled successflly!"))
+      await router.push('/settings/subscriptions')
+    } else {
+      messageHandler.handleError(t("Failed to cancel subscription!"))
+    }
+    setIsOpen(false);
+    setIsLoading(false);
+  };
+
+  return (
+    <>
+      <button
+        className={styles.cancelBtn}
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        {t("subscription-settings.cancel-sub-btn")}
+      </button>
+      <DeleteConfirmation
+        isOpen={isOpen}
+        onRequestClose={() => setIsOpen(false)}
+        onConfirm={onConfirm}
+        title={t("subscription-settings.confirm-title")}
+        message={t("subscription-settings.confirm-message")}
+        cancelButtonText={t("subscription-settings.cancel-btn")}
+        confirmButtonText={t("subscription-settings.confirm-btn")}
+        isLoading={isLoading}
+      />
+    </>
+  );
+};
+
 const Subscriptions = () => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -102,10 +148,7 @@ const Subscriptions = () => {
         "subscriptions"
       ).getActiveSubscription();
       setIsLoading(false);
-      if (!data || !data.status || data.status !== "active") {
-        return router.push("/app/subscriptions");
-      }
-      setSubscription(data);
+      setSubscription(data || {});
     })();
   }, []);
 
@@ -113,9 +156,9 @@ const Subscriptions = () => {
     return <Spinner />;
   }
 
-  const validUntil = moment(subscription?.current_period_end || "").format(
-    "DD MMM, YYYY"
-  );
+  const validUntil = subscription?.id
+    ? moment(subscription?.current_period_end || "").format("DD MMM, YYYY")
+    : t("subscription-settings.inactive-label");
 
   return (
     <div className={styles.container}>
@@ -127,9 +170,16 @@ const Subscriptions = () => {
             </span>
           </div>
           <div className={styles.right}>
-            <button className={styles.cancelBtn}>
-              {t("subscription-settings.cancel-sub-btn")}
-            </button>
+            {subscription?.status === "active" ? <CancelSubscriptonBtn /> : (
+              <button
+                className={styles.subscribeBtn}
+                onClick={() => {
+                  router.push('/app/subscriptions');
+                }}
+              >
+                {t("subscription-settings.subscribe-btn")}
+              </button>
+            )}
           </div>
         </div>
         <div className={styles.content}>

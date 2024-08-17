@@ -1,6 +1,11 @@
 import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
 import { SubscriptionService } from "@/core/module/services.types";
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import {
+  createClient,
+  FunctionsFetchError,
+  FunctionsRelayError,
+  SupabaseClient,
+} from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
 import { GlobalCore } from "@/core/module/module.types";
@@ -20,16 +25,79 @@ class SubscriptionSupabase implements SubscriptionService {
   /**
    * retruns the subscription link, so that the users can subscribe to a plan
    */
-  public async getSubscriptionLink(): Promise<{ url: string | null }> {
-    const { data, error } = await this.supabase.functions.invoke(
-      "stripe-create-subscription"
-    );
-    if (error && error instanceof FunctionsHttpError) {
-      const errorResponse = await error.context.json();
-      messageHandler.handleError(errorResponse.message);
-      return { url: null };
+  public async getSubscriptionLink(): Promise<{ url: string | undefined }> {
+    try {
+      const { data, error } = await this.supabase.functions.invoke<{
+        checkoutUrl: string | undefined;
+      }>("stripe-create-subscription");
+      if (!error && data?.checkoutUrl) {
+        return { url: data?.checkoutUrl }
+      }
+      if (error instanceof FunctionsHttpError) {
+        const errorMessage = await error.context.json();
+        throw errorMessage?.message;
+      } else if (error instanceof FunctionsRelayError) {
+        throw error?.message;
+      } else if (error instanceof FunctionsFetchError) {
+        throw error?.message;
+      }
+      throw "Something went wrong!";
+    } catch (error) {
+      messageHandler.handleError(error?.message || error);
+      return { url: undefined };
     }
-    return { url: data?.checkoutUrl };
+  }
+
+    /**
+   * retruns the manage subscription link, so that the user can manage their subscription
+   */
+    public async getManageSubscriptionLink(): Promise<{ url: string | undefined }> {
+      try {
+        const { data, error } = await this.supabase.functions.invoke<{
+          manageUrl: string | undefined;
+        }>("stripe-manage-subscription");
+        if (!error && data?.manageUrl) {
+          return { url: data?.manageUrl }
+        }
+        if (error instanceof FunctionsHttpError) {
+          const errorMessage = await error.context.json();
+          throw errorMessage?.message;
+        } else if (error instanceof FunctionsRelayError) {
+          throw error?.message;
+        } else if (error instanceof FunctionsFetchError) {
+          throw error?.message;
+        }
+        throw "Something went wrong!";
+      } catch (error) {
+        messageHandler.handleError(error?.message || error);
+        return { url: undefined };
+      }
+    }
+
+  /**
+   * Cancels the current active subscription and returns the subscription data
+   */
+  public async cancelSubscription(): Promise<Record<string, string | number>> {
+    try {
+      const { data, error } = await this.supabase.functions.invoke(
+        "cancel-subscription"
+      );
+      if (!error) {
+        return data?.data as Record<string, string | number>;
+      }
+      if (error instanceof FunctionsHttpError) {
+        const errorMessage = await error.context.json();
+        throw errorMessage?.message;
+      } else if (error instanceof FunctionsRelayError) {
+        throw error?.message;
+      } else if (error instanceof FunctionsFetchError) {
+        throw error?.message;
+      }
+      throw "Something went wrong!";
+    } catch (error) {
+      messageHandler.handleError(error?.message || error);
+      return {};
+    }
   }
 
   /**
@@ -39,8 +107,9 @@ class SubscriptionSupabase implements SubscriptionService {
     const { data, error } = await this.supabase
       .from("subscriptions")
       .select(
-        "subscription_id, status, current_period_start, current_period_end"
-      );
+        "id, subscription_id, status, current_period_start, current_period_end"
+      )
+      .gt("current_period_end", new Date().toISOString());
     if (error) {
       messageHandler.handleError(error.message);
       return null;

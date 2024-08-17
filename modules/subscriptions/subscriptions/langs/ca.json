@@ -28,7 +28,13 @@
     "menu": "Subscripcions",
     "exp-label": "Caduca el:",
     "cancel-sub-btn": "Cancel·la la subscripció",
-    "payment-history": "Historial de pagaments"
+    "payment-history": "Historial de pagaments",
+    "confirm-title": "Cancel·la la subscripció",
+    "confirm-message": "Estàs segur que vols cancel·lar la teva subscripció?",
+    "cancel-btn": "Cancel·la",
+    "confirm-btn": "Confirma",
+    "inactive-label": "Inactiu",
+    "subscribe-btn": "Subscriu-te ara"
   },
   "invoice-history": {
     "invoice-id-th": "Factura Id",

@@ -54,10 +54,12 @@ export interface AuthService {
 }
 
 export interface SubscriptionService {
-  getSubscriptionLink(): Promise<{ url: string | null }>;
+  getSubscriptionLink(): Promise<{ url: string | undefined }>;
+  getManageSubscriptionLink(): Promise<{ url: string | undefined }>;
   getActiveSubscription(): Promise<SubscriptionResponse | null>;
   getInvoices(
     from: number,
     to: number
   ): Promise<{ invoices: GenesisInvoice[]; count: number }>;
+  cancelSubscription(): Promise<Record<string, string | number>>;
 }

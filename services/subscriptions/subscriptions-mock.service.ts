@@ -14,14 +14,14 @@ class SubscriptionsMock implements SubscriptionService {
   /**
    * retruns the subscription link, so that the users can subscribe to a plan
    */
-  public async getSubscriptionLink(): Promise<{ url: string | null }> {
+  public async getSubscriptionLink(): Promise<{ url: string | undefined }> {
     return Promise.resolve({ url: faker.internet.url() });
   }
 
   /**
    * Retruns the currently active user subscription, so that the users can subscribe to a plan
    */
-  public async getActiveSubscription(): Promise<SubscriptionResponse> {
+  public async getActiveSubscription(): Promise<SubscriptionResponse | null> {
     return Promise.resolve({
       status: "active",
       date: moment().add(1, "week").format(),
