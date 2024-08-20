@@ -23,10 +23,16 @@ import FieldModal from "@/resources/containers/field-modal";
 import Service from "@/core/module/service.factory";
 import BasicInput from "@/resources/inputs/basic-input";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
-import { TYPE_OPTIONS } from "@/core/constants";
+import {
+  TYPE_OPTIONS,
+  FieldConfig,
+  NumberFieldConfig,
+  SelectFieldConfig,
+} from "@/core/module/core.types";
 import Pagination from "@/resources/table/pagination";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
+import { FieldData } from "@/core/module/core.types";
 
 const messageHandler = MessageHandler.get();
 type TableDataType = GenesisTemplateField & { key: string; name: string };
@@ -52,6 +58,11 @@ const TemplateDetail = () => {
     totalRecords: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
+    null,
+  );
+
+  console.log("FieldModalConfig: ", fieldModalConfig);
 
   const fetchTemplate = useCallback(
     async (page: number) => {
@@ -125,6 +136,8 @@ const TemplateDetail = () => {
     } catch (error) {
       messageHandler.handleError(t("templates.editError"));
     }
+
+    setIsFieldModalOpen(false);
   };
 
   const handleInputChange = (
@@ -142,7 +155,7 @@ const TemplateDetail = () => {
     if (!template) return;
     const newFieldKey = `newField${Object.keys(template.fields).length + 1}`;
     const newField: GenesisTemplateField = {
-      type: "text",
+      type: "text" as TYPE_OPTIONS,
       description: "New field description",
     };
     setTemplate((prev) => ({
@@ -175,6 +188,18 @@ const TemplateDetail = () => {
       setFieldToDelete(null);
     }
   };
+
+  function isNumberFieldConfig(
+    config: FieldConfig,
+  ): config is NumberFieldConfig {
+    return "maxValue" in config;
+  }
+
+  function isSelectFieldConfig(
+    config: FieldConfig,
+  ): config is SelectFieldConfig {
+    return "options" in config;
+  }
 
   const columns: ColumnConfig<TableDataType>[] = [
     {
@@ -244,7 +269,35 @@ const TemplateDetail = () => {
                 editedValues[record.key]?.type,
               ) && (
                 <IconButton
-                  onClick={() => setIsFieldModalOpen(true)}
+                  onClick={() => {
+                    const fieldConfig = editedValues[record.key]?.config;
+                    console.log("Field Config", fieldConfig);
+                    let configToUse: FieldConfig;
+
+                    if (
+                      editedValues[record.key]?.type === TYPE_OPTIONS.NUMBER &&
+                      fieldConfig &&
+                      isNumberFieldConfig(fieldConfig)
+                    ) {
+                      configToUse = { maxValue: fieldConfig.maxValue };
+                    } else if (
+                      [TYPE_OPTIONS.SELECT, TYPE_OPTIONS.MULTISELECT].includes(
+                        editedValues[record.key]?.type,
+                      ) &&
+                      fieldConfig &&
+                      isSelectFieldConfig(fieldConfig)
+                    ) {
+                      configToUse = { options: fieldConfig.options };
+                    } else {
+                      configToUse =
+                        editedValues[record.key]?.type === TYPE_OPTIONS.NUMBER
+                          ? { maxValue: 0 }
+                          : { options: [] };
+                    }
+
+                    setFieldModalConfig(configToUse);
+                    setIsFieldModalOpen(true);
+                  }}
                   size="small"
                 >
                   <FaCog style={{ color: "var(--primary)" }} />
@@ -334,9 +387,32 @@ const TemplateDetail = () => {
       <FieldModal
         isOpen={isFieldModalOpen}
         onClose={() => setIsFieldModalOpen(false)}
-        onSave={(data) => {
-          if (editingField) {
-            handleInputChange(editingField, "config", JSON.stringify(data));
+        onSave={async (data) => {
+          if (editingField && template) {
+            const updatedField = {
+              ...editedValues[editingField],
+              config: data,
+            };
+            setEditedValues((prev) => ({
+              ...prev,
+              [editingField]: updatedField,
+            }));
+
+            const updatedFields = { ...template.fields };
+            updatedFields[editingField] = updatedField;
+
+            try {
+              await handleSave(editingField);
+
+              setTemplate((prev) => ({
+                ...prev!,
+                fields: updatedFields,
+              }));
+
+              messageHandler.handleSuccess(t("templates.fieldUpdateSuccess"));
+            } catch (error) {
+              messageHandler.handleError(t("templates.fieldUpdateError"));
+            }
           }
           setIsFieldModalOpen(false);
         }}
@@ -345,6 +421,7 @@ const TemplateDetail = () => {
             (editedValues[editingField]?.type as TYPE_OPTIONS)) ||
           TYPE_OPTIONS.TEXT
         }
+        initialConfig={fieldModalConfig}
       />
     </div>
   );

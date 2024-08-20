@@ -13,6 +13,7 @@ const StyledInput = styled.input`
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   background-color: #f8fafc;
+  height: 6vh;
 
   &:focus {
     outline: none;

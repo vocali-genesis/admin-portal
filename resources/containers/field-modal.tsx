@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { useForm, Controller } from "react-hook-form";
 import styles from "./styles/field-modal.module.css";
-import { TYPE_OPTIONS } from "@/core/constants";
+import { TYPE_OPTIONS } from "@/core/module/core.types";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
+import { FieldData } from "@/core/module/core.types";
 
 Modal.setAppElement("body");
 
@@ -14,9 +15,8 @@ interface FieldModalProps {
   onClose: () => void;
   onSave: (data: FieldData) => void;
   fieldType: TYPE_OPTIONS;
+  initialConfig: FieldData | null;
 }
-
-type FieldData = { maxValue: number } | { options: string[] };
 
 type FormData = {
   maxValue?: string;
@@ -28,21 +28,29 @@ const FieldModal: React.FC<FieldModalProps> = ({
   onClose,
   onSave,
   fieldType,
+  initialConfig,
 }) => {
   const { control, handleSubmit, setValue, watch, reset } = useForm<FormData>();
   const [newOption, setNewOption] = useState("");
   const selectedOptions = watch("options") || [];
 
-  const typeOptions = Object.values(TYPE_OPTIONS).filter(
-    (option) => option !== fieldType,
-  );
-
   useEffect(() => {
-    if (isOpen) {
+    console.log(initialConfig);
+    if (isOpen && initialConfig) {
+      if ("maxValue" in initialConfig) {
+        setValue("maxValue", initialConfig.maxValue.toString());
+      } else if ("options" in initialConfig) {
+        setValue("options", initialConfig.options);
+      }
+    } else if (isOpen) {
       reset();
       setNewOption("");
     }
-  }, [isOpen, reset]);
+  }, [isOpen, initialConfig, setValue, reset]);
+
+  const typeOptions = Object.values(TYPE_OPTIONS).filter(
+    (option) => option !== fieldType,
+  );
 
   const handleSave = (data: FormData) => {
     const saveData: FieldData = {
@@ -71,7 +79,12 @@ const FieldModal: React.FC<FieldModalProps> = ({
     }
   };
 
-  const removeOption = (optionToRemove: string) => {
+  const removeOption = (
+    optionToRemove: string,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+
     setValue(
       "options",
       selectedOptions.filter((option) => option !== optionToRemove),
@@ -104,7 +117,17 @@ const FieldModal: React.FC<FieldModalProps> = ({
               {(field.value || []).map((option: string, index: number) => (
                 <div key={index} className={styles.optionTag}>
                   {option}
-                  <button onClick={() => removeOption(option)}>×</button>
+                  <Button
+                    onClick={(event?) =>
+                      removeOption(
+                        option,
+                        event as React.MouseEvent<HTMLButtonElement>,
+                      )
+                    }
+                    variant="action"
+                  >
+                    ×
+                  </Button>
                 </div>
               ))}
             </div>
@@ -140,7 +163,15 @@ const FieldModal: React.FC<FieldModalProps> = ({
               {(field.value || []).map((option: string, index: number) => (
                 <div key={index} className={styles.optionTag}>
                   {option}
-                  <Button variant="action" onClick={() => removeOption(option)}>
+                  <Button
+                    variant="action"
+                    onClick={(event?) =>
+                      removeOption(
+                        option,
+                        event as React.MouseEvent<HTMLButtonElement>,
+                      )
+                    }
+                  >
                     ×
                   </Button>
                 </div>
