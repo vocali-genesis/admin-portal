@@ -7,11 +7,12 @@ import Service from "@/core/module/service.factory";
 import { useRouter } from "next/router";
 import moment from "moment";
 import Table from "@/resources/table";
-import DeleteConfirmation from "@/resources/containers/delete-confirmation";
+import ConfirmDialog from "@/resources/containers/delete-confirmation";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
 import MessageHandler from "@/core/message-handler";
+import Button from "@/resources/containers/button";
 
 const messageHandler = MessageHandler.get();
 
@@ -81,7 +82,7 @@ const PaymentHistory: React.FC = () => {
         onSort={handleSort}
         isLoading={isLoading}
         pagination={{
-          currentPage,
+          currentPage: totalPages ? currentPage : 0,
           totalPages,
           totalRecords,
           onPageChange: setCurrentPage,
@@ -105,8 +106,6 @@ const CancelSubscriptonBtn = () => {
     if(data.id) {
       messageHandler.handleSuccess(t("Subscription cancelled successflly!"))
       await router.push('/settings/subscriptions')
-    } else {
-      messageHandler.handleError(t("Failed to cancel subscription!"))
     }
     setIsOpen(false);
     setIsLoading(false);
@@ -114,15 +113,15 @@ const CancelSubscriptonBtn = () => {
 
   return (
     <>
-      <button
-        className={styles.cancelBtn}
+      <Button
         onClick={() => {
           setIsOpen(true);
         }}
+        variant="danger"
       >
         {t("subscription-settings.cancel-sub-btn")}
-      </button>
-      <DeleteConfirmation
+      </Button>
+      <ConfirmDialog
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
         onConfirm={onConfirm}
@@ -171,14 +170,13 @@ const Subscriptions = () => {
           </div>
           <div className={styles.right}>
             {subscription?.status === "active" ? <CancelSubscriptonBtn /> : (
-              <button
-                className={styles.subscribeBtn}
-                onClick={() => {
-                  router.push('/app/subscriptions');
-                }}
+              <Button onClick={() => {
+                router.push('/app/subscriptions');
+              }}
+              variant="primary"
               >
                 {t("subscription-settings.subscribe-btn")}
-              </button>
+              </Button>
             )}
           </div>
         </div>

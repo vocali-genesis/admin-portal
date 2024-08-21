@@ -23,7 +23,7 @@ const PriceCard = (props: { item: Price }) => {
     setIsLoading(true);
     const subscriptionLink =
       await Service.get("subscriptions")?.getSubscriptionLink();
-    if (subscriptionLink?.url) {
+    if (subscriptionLink) {
       window.location.href = subscriptionLink.url;
     }
     setIsLoading(false);

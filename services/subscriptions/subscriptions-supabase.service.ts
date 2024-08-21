@@ -2,14 +2,11 @@ import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
 import { SubscriptionService } from "@/core/module/services.types";
 import {
   createClient,
-  FunctionsFetchError,
-  FunctionsRelayError,
   SupabaseClient,
 } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
 import { GlobalCore } from "@/core/module/module.types";
-import { FunctionsHttpError } from "@supabase/supabase-js";
 
 const messageHandler = MessageHandler.get();
 
@@ -25,79 +22,46 @@ class SubscriptionSupabase implements SubscriptionService {
   /**
    * retruns the subscription link, so that the users can subscribe to a plan
    */
-  public async getSubscriptionLink(): Promise<{ url: string | undefined }> {
-    try {
-      const { data, error } = await this.supabase.functions.invoke<{
-        checkoutUrl: string | undefined;
-      }>("stripe-create-subscription");
-      if (!error && data?.checkoutUrl) {
-        return { url: data?.checkoutUrl }
-      }
-      if (error instanceof FunctionsHttpError) {
-        const errorMessage = await error.context.json();
-        throw errorMessage?.message;
-      } else if (error instanceof FunctionsRelayError) {
-        throw error?.message;
-      } else if (error instanceof FunctionsFetchError) {
-        throw error?.message;
-      }
-      throw "Something went wrong!";
-    } catch (error) {
-      messageHandler.handleError(error?.message || error);
-      return { url: undefined };
+  public async getSubscriptionLink(): Promise<{ url: string } | null> {
+    const { data, error } = await this.supabase.functions.invoke<{
+      checkoutUrl: string | undefined;
+    }>("stripe-create-subscription");
+    if (!error && data?.checkoutUrl) {
+      return { url: data?.checkoutUrl };
     }
+    await messageHandler.handleEdgeFunctionError(error);
+    return null;
   }
 
-    /**
+  /**
    * retruns the manage subscription link, so that the user can manage their subscription
    */
-    public async getManageSubscriptionLink(): Promise<{ url: string | undefined }> {
-      try {
-        const { data, error } = await this.supabase.functions.invoke<{
-          manageUrl: string | undefined;
-        }>("stripe-manage-subscription");
-        if (!error && data?.manageUrl) {
-          return { url: data?.manageUrl }
-        }
-        if (error instanceof FunctionsHttpError) {
-          const errorMessage = await error.context.json();
-          throw errorMessage?.message;
-        } else if (error instanceof FunctionsRelayError) {
-          throw error?.message;
-        } else if (error instanceof FunctionsFetchError) {
-          throw error?.message;
-        }
-        throw "Something went wrong!";
-      } catch (error) {
-        messageHandler.handleError(error?.message || error);
-        return { url: undefined };
-      }
+  public async getManageSubscriptionLink(): Promise<{ url: string } | null> {
+    const { data, error } = await this.supabase.functions.invoke<{
+      manageUrl: string | undefined;
+    }>("stripe-manage-subscription");
+    if (!error && data?.manageUrl) {
+      return { url: data?.manageUrl };
     }
+    await messageHandler.handleEdgeFunctionError(error);
+    return null;
+  }
 
   /**
    * Cancels the current active subscription and returns the subscription data
    */
-  public async cancelSubscription(): Promise<Record<string, string | number>> {
-    try {
-      const { data, error } = await this.supabase.functions.invoke(
-        "cancel-subscription"
-      );
-      if (!error) {
-        return data?.data as Record<string, string | number>;
-      }
-      if (error instanceof FunctionsHttpError) {
-        const errorMessage = await error.context.json();
-        throw errorMessage?.message;
-      } else if (error instanceof FunctionsRelayError) {
-        throw error?.message;
-      } else if (error instanceof FunctionsFetchError) {
-        throw error?.message;
-      }
-      throw "Something went wrong!";
-    } catch (error) {
-      messageHandler.handleError(error?.message || error);
-      return {};
+  public async cancelSubscription(): Promise<Record<
+    string,
+    string | number
+  > | null> {
+    const { data, error } = await this.supabase.functions.invoke(
+      "cancel-subscription"
+    );
+    if (!error) {
+      return data?.data as Record<string, string | number>;
     }
+    await messageHandler.handleEdgeFunctionError(error);
+    return null;
   }
 
   /**
@@ -127,6 +91,7 @@ class SubscriptionSupabase implements SubscriptionService {
     const { data: invoices, error } = await this.supabase
       .from("invoices")
       .select("*")
+      .order("id", { ascending: false })
       .range(from, to);
     if (error) {
       messageHandler.handleError(error.message);

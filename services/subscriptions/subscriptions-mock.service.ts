@@ -14,7 +14,7 @@ class SubscriptionsMock implements SubscriptionService {
   /**
    * retruns the subscription link, so that the users can subscribe to a plan
    */
-  public async getSubscriptionLink(): Promise<{ url: string | undefined }> {
+  public async getSubscriptionLink(): Promise<{ url: string } | null> {
     return Promise.resolve({ url: faker.internet.url() });
   }
 

@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 import modal_styles from "./styles/delete-confirmation.module.css";
 import { useTranslation } from "react-i18next";
-import Spinner from "@/resources/containers/spinner-svg";
+import Spinner from "@/resources/containers/spinner";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
@@ -39,7 +39,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
     >
     {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center">
-          <Spinner />
+          <Spinner maxHeight="2rem" />
         </div>
       )}
       <h2>{title || t("resources.confirm-delete")}</h2>

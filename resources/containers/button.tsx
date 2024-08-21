@@ -5,7 +5,7 @@ interface ButtonProps {
   onClick: () => void;
   className?: string;
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "action" | "icon";
+  variant?: "primary" | "secondary" | "action" | "icon" | "danger";
   testId?: string;
 }
 
