@@ -19,6 +19,23 @@ class SubscriptionsMock implements SubscriptionService {
   }
 
   /**
+   * retruns the manage subscription link, so that the users can manage subscription on Stripe dashbaoard
+   */
+  public async getManageSubscriptionLink(): Promise<{ url: string } | null> {
+    return Promise.resolve({ url: faker.internet.url() });
+  }
+
+  /**
+   * retruns the manage subscription link, so that the users can manage subscription on Stripe dashbaoard
+   */
+  public async cancelSubscription(): Promise<Record<
+    string,
+    string | number
+  > | null> {
+    return Promise.resolve({ id: faker.string.uuid() });
+  }
+
+  /**
    * Retruns the currently active user subscription, so that the users can subscribe to a plan
    */
   public async getActiveSubscription(): Promise<SubscriptionResponse | null> {
