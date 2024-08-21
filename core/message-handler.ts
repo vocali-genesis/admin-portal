@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { FunctionsFetchError, FunctionsHttpError, FunctionsRelayError } from "@supabase/supabase-js";
+import { FunctionsError, FunctionsFetchError, FunctionsHttpError, FunctionsRelayError } from "@supabase/supabase-js";
 
 class MessageHandler {
   private static instance: MessageHandler = new MessageHandler();
@@ -23,15 +23,16 @@ class MessageHandler {
     try {
       if (error instanceof FunctionsHttpError) {
         const errorMessage = await error.context.json();
-        throw errorMessage?.message;
+        throw new Error(errorMessage?.message || "Unknown HTTP error occurred");
       } else if (error instanceof FunctionsRelayError) {
-        throw error?.message;
+        throw new Error(error.message || "Relay error occurred");
       } else if (error instanceof FunctionsFetchError) {
-        throw error?.message;
+        throw new Error(error.message || "Fetch error occurred");
+      } else {
+        throw new Error("An unexpected error occurred");
       }
-      throw "Something went wrong!";
-    } catch (error) {
-      this.handleError(error?.message || error);
+    } catch (err: any) {
+      this.handleError(err.message || String(err));
     }
   }
 

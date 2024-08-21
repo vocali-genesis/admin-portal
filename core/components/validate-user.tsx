@@ -14,7 +14,6 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
   const router = useRouter();
   const { slug } = router.query as { slug: string };
   useEffect(() => {
-    // console.log('============= here ============', slug)
     async function checkLogin(): Promise<boolean> {
       const userService = Service.require("oauth");
 
