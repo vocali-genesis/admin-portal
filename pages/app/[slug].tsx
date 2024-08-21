@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
 import { ValidateUser } from "@/core/components/validate-user";
-import Service from "@/core/module/service.factory";
 
 const AppSlug = () => {
   const router = useRouter();
@@ -19,19 +18,6 @@ const AppSlug = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-
-  useEffect(() => {
-    void (async () => {
-      setIsLoading(true);
-      const data = await Service.require(
-        "subscriptions"
-      ).getActiveSubscription();
-      setIsLoading(false);
-      if (!data?.id) {
-        router.push("/app/subscriptions");
-      }
-    })();
-  }, [router.asPath]);
 
   const isSpinner = !router.isReady || isLoading;
 

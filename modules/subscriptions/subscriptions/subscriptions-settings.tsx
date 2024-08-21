@@ -103,8 +103,8 @@ const CancelSubscriptonBtn = () => {
   const onConfirm = async () => {
     setIsLoading(true);
     const data = await Service.require("subscriptions").cancelSubscription();
-    if(data.id) {
-      messageHandler.handleSuccess(t("Subscription cancelled successflly!"))
+    if(data?.id) {
+      messageHandler.handleSuccess(t("subscription-settings.success-message"))
       await router.push('/settings/subscriptions')
     }
     setIsOpen(false);

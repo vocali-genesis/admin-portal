@@ -31,6 +31,7 @@
     "payment-history": "Payment History",
     "confirm-title": "Cancel subscription",
     "confirm-message": "Are you sure you want to cancel your subscription?",
+    "success-message": "Subscription cancelled successflly!",
     "cancel-btn": "Cancel",
     "confirm-btn": "Confirm",
     "inactive-label": "Inactive",
