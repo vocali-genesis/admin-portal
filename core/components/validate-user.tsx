@@ -13,8 +13,8 @@ type InternalProps = {
 export const ValidateUser = ({ onReady }: InternalProps) => {
   const router = useRouter();
   const { slug } = router.query as { slug: string };
-
   useEffect(() => {
+    // console.log('============= here ============', slug)
     async function checkLogin(): Promise<boolean> {
       const userService = Service.require("oauth");
 
@@ -36,8 +36,7 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
         return true;
       }
       const subscription = await subscriptionService.getActiveSubscription();
-      const notValid = subscription?.current_period_end && moment(subscription?.current_period_end).isBefore()
-
+      const notValid = subscription?.current_period_end ? moment(subscription?.current_period_end).isBefore() : true
       if (subscription?.status !== "active" && notValid) {
         // Avoid infinite loop
         if (slug === "subscriptions") {
@@ -62,7 +61,7 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
         }
         onReady();
       });
-  }, [onReady, router, slug]);
+  }, [onReady, router, router.asPath, slug]);
 
   return null;
 };
