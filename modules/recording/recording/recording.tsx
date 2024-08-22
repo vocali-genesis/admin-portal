@@ -30,10 +30,10 @@ const Recording = () => {
   const fetchTemplates = async () => {
     setIsLoading(true);
     const response = await templateService.getTemplates(1);
-    console.log(response);
     if (!response) return;
 
     setTemplateOptions(response.data);
+    setTemplate(response.data[0]);
     setIsLoading(false);
   };
 
