@@ -1,5 +1,5 @@
 import MessageHandler from "@/core/message-handler";
-import { GenesisReport } from "@/core/module/core.types";
+import { GenesisReport, GenesisTemplate } from "@/core/module/core.types";
 import { GlobalCore } from "@/core/module/module.types";
 import { MedicalTranscription } from "@/core/module/services.types";
 import config from "@/resources/utils/config";
@@ -20,7 +20,7 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
   }
 
   private async handleResponse<T>(
-    response: Response | null
+    response: Response | null,
   ): Promise<T | null> {
     if (!response) {
       return null;
@@ -42,7 +42,7 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
   }
 
   async transcribeAudio(
-    audioFile: File
+    audioFile: File,
   ): Promise<GenesisReport["transcription"]> {
     const formData = new FormData();
     formData.append("audio_file", audioFile);
@@ -51,9 +51,8 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
         method: "POST",
         body: formData,
       });
-      const result = await this.handleResponse<GenesisReport["transcription"]>(
-        response
-      );
+      const result =
+        await this.handleResponse<GenesisReport["transcription"]>(response);
       return result || [];
     } catch (error) {
       this.handleError(error);
@@ -63,8 +62,8 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
 
   async generateReport(
     transcription: GenesisReport["transcription"],
-    template?: string,
-    language?: string
+    template?: GenesisTemplate,
+    language?: string,
   ): Promise<GenesisReport["report"]> {
     const response = await fetch(`${this.baseUrl}/api/generate_report`, {
       method: "POST",
@@ -86,8 +85,8 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
 
   async processAudioAndGenerateReport(
     audioFile: File,
-    template?: string,
-    language?: string
+    template?: GenesisTemplate,
+    language?: string,
   ): Promise<GenesisReport | null> {
     const transcriptionStart = Date.now();
     const transcription = await this.transcribeAudio(audioFile);
