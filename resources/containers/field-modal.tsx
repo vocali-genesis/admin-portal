@@ -16,6 +16,7 @@ interface FieldModalProps {
   onSave: (data: FieldData) => void;
   fieldType: TYPE_OPTIONS;
   initialConfig: FieldData | null;
+  testId?: string;
 }
 
 type FormData = {
@@ -29,13 +30,13 @@ const FieldModal: React.FC<FieldModalProps> = ({
   onSave,
   fieldType,
   initialConfig,
+  testId,
 }) => {
   const { control, handleSubmit, setValue, watch, reset } = useForm<FormData>();
   const [newOption, setNewOption] = useState("");
   const selectedOptions = watch("options") || [];
 
   useEffect(() => {
-    console.log(initialConfig);
     if (isOpen && initialConfig) {
       if ("maxValue" in initialConfig) {
         setValue("maxValue", initialConfig.maxValue.toString());
@@ -206,7 +207,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
       <div className={styles.title}>
         <h2>Edit {fieldType} Config</h2>
       </div>
-      <form onSubmit={handleSubmit(handleSave)}>
+      <form onSubmit={handleSubmit(handleSave)} data-testid={testId}>
         {renderMap[fieldType as keyof typeof renderMap]}
         <div className={styles.modalButtons}>
           <Button onClick={onClose} variant="action">

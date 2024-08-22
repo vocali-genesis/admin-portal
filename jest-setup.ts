@@ -1,4 +1,5 @@
 import { Mock } from "node:test";
+
 // Enable translations
 import "@/core/i18n";
 

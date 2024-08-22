@@ -147,6 +147,7 @@ const Templates = () => {
               })
             }
             placeholder={t("templates.namePlaceholder")}
+            testId="templates.name-edit-field"
           />
         ) : (
           <div
@@ -155,6 +156,7 @@ const Templates = () => {
             }
             className="flex items-center"
             style={{ gap: "1vh", cursor: "pointer" }}
+            data-testId="templates.title-cell"
           >
             <span>{template.name}</span>
             <FaRegFolderOpen size={17.5} />
@@ -181,17 +183,26 @@ const Templates = () => {
       render: (template: GenesisTemplate) => (
         <>
           {editingTemplate && editingTemplate.id === template.id ? (
-            <IconButton onClick={handleSave} size="small">
+            <IconButton
+              onClick={handleSave}
+              size="small"
+              testId="templates.save-template"
+            >
               <FaSave style={{ color: "#59DBBC" }} />
             </IconButton>
           ) : (
             <div style={{ display: "flex", gap: "3vh" }}>
-              <IconButton onClick={() => handleEdit(template)} size="small">
+              <IconButton
+                onClick={() => handleEdit(template)}
+                size="small"
+                testId="templates.edit"
+              >
                 <FaEdit style={{ color: "var(--primary)" }} />
               </IconButton>
               <IconButton
                 onClick={() => handleDelete(template.id)}
                 size="small"
+                testId="templates.delete"
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
               </IconButton>
@@ -205,16 +216,24 @@ const Templates = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>{t("templates.all_templates")}</h1>
+        <h1 className={styles.title} data-testid="templates.title">
+          {t("templates.all_templates")}
+        </h1>
         <Button
           onClick={handleAddTemplate}
           variant="primary"
           className={styles.addButton}
+          testId="templates.new-template"
         >
           <FaPlus /> {t("templates.create")}
         </Button>
       </div>
-      <Table data={templates} columns={columns} isLoading={isLoading} />
+      <Table
+        data={templates}
+        columns={columns}
+        isLoading={isLoading}
+        testId="templates.table"
+      />
       <Pagination
         currentPage={pagination.currentPage}
         totalPages={pagination.totalPages}
@@ -225,6 +244,7 @@ const Templates = () => {
         isOpen={templateToDelete ? true : isModalOpen}
         onRequestClose={() => setTemplateToDelete(null)}
         onConfirm={confirmDelete}
+        testId="templates.delete-confirmation"
       />
     </div>
   );

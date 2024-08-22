@@ -1,3 +1,4 @@
+import { GlobalCore } from "@/core/module/module.types";
 import { GenesisTemplate } from "@/core/module/core.types";
 import { PaginatedResponse } from "./supabase-templates.service";
 import { faker } from "@faker-js/faker";
@@ -41,7 +42,10 @@ class MockTemplateService {
     const totalCount = entries.length;
     const totalPages = Math.ceil(totalCount / pageSize);
 
-    const paginatedEntries = entries.slice((page - 1) * pageSize, page * pageSize);
+    const paginatedEntries = entries.slice(
+      (page - 1) * pageSize,
+      page * pageSize,
+    );
     const paginatedFields = Object.fromEntries(paginatedEntries);
 
     const paginatedTemplate = {
@@ -90,4 +94,4 @@ class MockTemplateService {
   }
 }
 
-export default new MockTemplateService();
+GlobalCore.manager.service("templates", new MockTemplateService());
