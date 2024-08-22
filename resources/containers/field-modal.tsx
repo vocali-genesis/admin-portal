@@ -148,6 +148,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
                   label: option,
                 })),
               ]}
+              testId="field-modal.select-options"
             />
           </div>
         )}
@@ -189,6 +190,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
                     addOption();
                   }
                 }}
+                testId="field-modal.multi-select-input"
               />
             </div>
           </div>
@@ -214,7 +216,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
             Cancel
           </Button>
           {fieldType === TYPE_OPTIONS.MULTISELECT && (
-            <Button onClick={addOption}>Add</Button>
+            <Button onClick={addOption} testId="field-modal.multi-select-add-option">Add</Button>
           )}
           <Button onClick={handleSubmit(handleSave)}>Save</Button>
         </div>

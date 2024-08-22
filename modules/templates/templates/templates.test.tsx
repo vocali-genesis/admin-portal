@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import Modal from "react-modal";
 import userEvent from "@testing-library/user-event";
 import { CoreComponent, GlobalCore } from "@/core/module/module.types";
@@ -493,6 +493,192 @@ describe("===== TEMPLATES =====", () => {
 
       const modal = await screen.findByTestId("template-detail.field-modal");
       expect(modal).toBeInTheDocument();
+    });
+
+    it("Checks select config modal is populated", async () => {
+      render(<TemplateDetail />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("table-row-0"));
+      });
+
+      const templateEdit = screen.getAllByTestId("template-detail.edit");
+      act(() => templateEdit[1].click());
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("template-detail.field-type-select"),
+        ).toBeInTheDocument();
+      });
+
+      const typeSelectElement = screen.getByTestId(
+        "template-detail.field-type-select",
+      );
+      expect(typeSelectElement).toHaveValue("select");
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("template-detail.edit-field-config"),
+        ).toBeInTheDocument();
+      });
+
+      const configButton = screen.getByTestId(
+        "template-detail.edit-field-config",
+      );
+      act(() => configButton.click());
+
+      const modal = await screen.findByTestId("template-detail.field-modal");
+      expect(modal).toBeInTheDocument();
+
+      const { getAllByText } = within(modal);
+      expect(getAllByText("number")[0]).toHaveClass("optionTag");
+      expect(getAllByText("text")[0]).toHaveClass("optionTag");
+    });
+
+    it("Checks multiselect config modal is populated", async () => {
+      render(<TemplateDetail />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("table-row-0"));
+      });
+
+      const templateEdit = screen.getAllByTestId("template-detail.edit");
+      act(() => templateEdit[2].click());
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("template-detail.field-type-select"),
+        ).toBeInTheDocument();
+      });
+
+      const typeSelectElement = screen.getByTestId(
+        "template-detail.field-type-select",
+      );
+      expect(typeSelectElement).toHaveValue("multiselect");
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("template-detail.edit-field-config"),
+        ).toBeInTheDocument();
+      });
+
+      const configButton = screen.getByTestId(
+        "template-detail.edit-field-config",
+      );
+      act(() => configButton.click());
+
+      const modal = await screen.findByTestId("template-detail.field-modal");
+      expect(modal).toBeInTheDocument();
+
+      const { getByText } = within(modal);
+      expect(getByText("integer")).toHaveClass("optionTag");
+      expect(getByText("string")).toHaveClass("optionTag");
+    });
+
+    it("Checks select option works", async () => {
+      render(<TemplateDetail />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("table-row-0"));
+      });
+
+      const templateEdit = screen.getAllByTestId("template-detail.edit");
+      act(() => templateEdit[1].click());
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("template-detail.field-type-select"),
+        ).toBeInTheDocument();
+      });
+
+      const typeSelectElement = screen.getByTestId(
+        "template-detail.field-type-select",
+      );
+      expect(typeSelectElement).toHaveValue("select");
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("template-detail.edit-field-config"),
+        ).toBeInTheDocument();
+      });
+
+      const configButton = screen.getByTestId(
+        "template-detail.edit-field-config",
+      );
+      act(() => configButton.click());
+
+      const modal = await screen.findByTestId("template-detail.field-modal");
+      expect(modal).toBeInTheDocument();
+
+      const { getAllByText } = within(modal);
+      expect(getAllByText("multiselect")).toHaveLength(1);
+      expect(getAllByText("multiselect")[0]).not.toHaveClass("optionTag");
+
+      const optionSelectElement = screen.getByTestId(
+        "field-modal.select-options",
+      );
+      await userEvent.selectOptions(optionSelectElement, "multiselect");
+
+      await waitFor(() => {
+        expect(getAllByText("multiselect")).toHaveLength(2);
+        expect(getAllByText("multiselect")[0]).toHaveClass("optionTag");
+      });
+    });
+
+    it("Checks multiselect option works", async () => {
+      render(<TemplateDetail />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("table-row-0"));
+      });
+
+      const templateEdit = screen.getAllByTestId("template-detail.edit");
+      act(() => templateEdit[2].click());
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("template-detail.field-type-select"),
+        ).toBeInTheDocument();
+      });
+
+      const typeSelectElement = screen.getByTestId(
+        "template-detail.field-type-select",
+      );
+      expect(typeSelectElement).toHaveValue("multiselect");
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("template-detail.edit-field-config"),
+        ).toBeInTheDocument();
+      });
+
+      const configButton = screen.getByTestId(
+        "template-detail.edit-field-config",
+      );
+      act(() => configButton.click());
+
+      const modal = await screen.findByTestId("template-detail.field-modal");
+      expect(modal).toBeInTheDocument();
+
+      const { getByText, queryByText } = within(modal);
+      expect(queryByText("test_type")).not.toBeInTheDocument();
+
+      const optionInputElement = screen.getByTestId(
+        "field-modal.multi-select-input",
+      );
+      await userEvent.type(optionInputElement, "test_type");
+
+      const addOption = screen.getByTestId(
+        "field-modal.multi-select-add-option",
+      );
+      expect(addOption).toBeInTheDocument();
+
+      act(() => addOption.click());
+
+      await waitFor(() => {
+        expect(getByText("test_type")).toBeInTheDocument();
+        expect(getByText("test_type")).toHaveClass("optionTag");
+      });
     });
 
     it("Checks modal pops up when delete icon clicked", async () => {
