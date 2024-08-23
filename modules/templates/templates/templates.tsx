@@ -11,7 +11,8 @@ import {
   FaEdit,
   FaPlus,
   FaSave,
-  FaRegFolderOpen,
+  FaEnvelopeOpen,
+  FaTimes,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
@@ -33,6 +34,7 @@ const Templates = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<number | null>(null);
+  const [newTemplate, setNewTemplate] = useState<GenesisTemplate | null>(null);
   const [editingTemplate, setEditingTemplate] =
     useState<GenesisTemplate | null>(null);
   const [pagination, setPagination] = useState<{
@@ -78,23 +80,27 @@ const Templates = () => {
       templates.filter((template) => template.id !== templateToDelete),
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
+
+    setPagination({
+      ...pagination,
+      totalRecords: pagination.totalRecords - 1,
+    });
     setIsModalOpen(false);
     setTemplateToDelete(null);
   };
 
-  const handleAddTemplate = async () => {
-    const newTemplate = {
+  const handleAddTemplate = () => {
+    const tempNewTemplate: GenesisTemplate = {
+      id: Date.now(), // Temporary ID
+      ownerId: "",
       name: "New Template",
       preview: "New template preview",
       createdAt: new Date().toISOString(),
       fields: {},
     };
-    const createdTemplate = await templateService.createTemplate(newTemplate);
-
-    if (!createdTemplate) return;
-    setTemplates([...templates, createdTemplate]);
-    setEditingTemplate(createdTemplate);
-    messageHandler.handleSuccess(t("templates.createSuccess"));
+    setTemplates([...templates, tempNewTemplate]);
+    setEditingTemplate(tempNewTemplate);
+    setNewTemplate(tempNewTemplate);
   };
 
   const handleEdit = (template: GenesisTemplate) => {
@@ -104,17 +110,39 @@ const Templates = () => {
   const handleSave = async () => {
     if (!editingTemplate) return;
 
-    const savedTemplate = await templateService.updateTemplate(
-      editingTemplate.id,
-      editingTemplate,
-    );
-    if (!savedTemplate) return;
+    if (newTemplate && editingTemplate.id === newTemplate.id) {
+      const createdTemplate =
+        await templateService.createTemplate(editingTemplate);
+      if (!createdTemplate) return;
+      setTemplates(
+        templates.map((t) => (t.id === newTemplate.id ? createdTemplate : t)),
+      );
+      setNewTemplate(null);
+    } else {
+      const savedTemplate = await templateService.updateTemplate(
+        editingTemplate.id,
+        editingTemplate,
+      );
+      if (!savedTemplate) return;
+      setTemplates(
+        templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
+      );
+    }
 
-    setTemplates(
-      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
-    );
+    setPagination({
+      ...pagination,
+      totalRecords: pagination.totalRecords + 1,
+    });
     setEditingTemplate(null);
     messageHandler.handleSuccess(t("templates.editSuccess"));
+  };
+
+  const handleCancel = () => {
+    if (newTemplate) {
+      setTemplates(templates.filter((t) => t.id !== newTemplate.id));
+      setNewTemplate(null);
+    }
+    setEditingTemplate(null);
   };
 
   const formatPreview = (
@@ -151,15 +179,11 @@ const Templates = () => {
           />
         ) : (
           <div
-            onClick={() =>
-              router.push(`/app/template-detail?id=${template.id}`)
-            }
             className="flex items-center"
             style={{ gap: "1vh", cursor: "pointer" }}
             data-testId="templates.title-cell"
           >
             <span>{template.name}</span>
-            <FaRegFolderOpen size={17.5} />
           </div>
         ),
     },
@@ -183,15 +207,33 @@ const Templates = () => {
       render: (template: GenesisTemplate) => (
         <>
           {editingTemplate && editingTemplate.id === template.id ? (
-            <IconButton
-              onClick={handleSave}
-              size="small"
-              testId="templates.save-template"
-            >
-              <FaSave style={{ color: "#59DBBC" }} />
-            </IconButton>
+            <div style={{ display: "flex", gap: "3vh" }}>
+              <IconButton
+                onClick={handleSave}
+                size="small"
+                testId="templates.save-template"
+              >
+                <FaSave style={{ color: "#59DBBC" }} />
+              </IconButton>
+              <IconButton
+                onClick={handleCancel}
+                size="small"
+                testId="templates.cancel-edit"
+              >
+                <FaTimes style={{ color: "var(--danger)" }} />
+              </IconButton>
+            </div>
           ) : (
             <div style={{ display: "flex", gap: "3vh" }}>
+              <IconButton
+                onClick={() =>
+                  router.push(`/app/template-detail?id=${template.id}`)
+                }
+                size="small"
+                testId="templates.edit"
+              >
+                <FaEnvelopeOpen style={{ color: "var(--primary)" }} />
+              </IconButton>
               <IconButton
                 onClick={() => handleEdit(template)}
                 size="small"
@@ -224,6 +266,7 @@ const Templates = () => {
           variant="primary"
           className={styles.addButton}
           testId="templates.new-template"
+          disabled={editingTemplate ? true : false}
         >
           <FaPlus /> {t("templates.create")}
         </Button>

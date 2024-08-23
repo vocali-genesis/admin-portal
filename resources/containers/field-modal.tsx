@@ -114,24 +114,26 @@ const FieldModal: React.FC<FieldModalProps> = ({
         defaultValue={[]}
         render={({ field }) => (
           <div className={styles.multiselectContainer}>
-            <div className={styles.selectedOptions}>
-              {(field.value || []).map((option: string, index: number) => (
-                <div key={index} className={styles.optionTag}>
-                  {option}
-                  <Button
-                    onClick={(event?) =>
-                      removeOption(
-                        option,
-                        event as React.MouseEvent<HTMLButtonElement>,
-                      )
-                    }
-                    variant="action"
-                  >
-                    ×
-                  </Button>
-                </div>
-              ))}
-            </div>
+            {field.value.length > 0 && (
+              <div className={styles.selectedOptions}>
+                {field.value.map((option: string, index: number) => (
+                  <div key={index} className={styles.optionTag}>
+                    {option}
+                    <Button
+                      onClick={(event?) =>
+                        removeOption(
+                          option,
+                          event as React.MouseEvent<HTMLButtonElement>,
+                        )
+                      }
+                      variant="action"
+                    >
+                      ×
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
             <BasicSelect
               name="selectOptions"
               value=""
@@ -161,24 +163,26 @@ const FieldModal: React.FC<FieldModalProps> = ({
         defaultValue={[]}
         render={({ field }) => (
           <div className={styles.multiselectContainer}>
-            <div className={styles.selectedOptions}>
-              {(field.value || []).map((option: string, index: number) => (
-                <div key={index} className={styles.optionTag}>
-                  {option}
-                  <Button
-                    variant="action"
-                    onClick={(event?) =>
-                      removeOption(
-                        option,
-                        event as React.MouseEvent<HTMLButtonElement>,
-                      )
-                    }
-                  >
-                    ×
-                  </Button>
-                </div>
-              ))}
-            </div>
+            {field.value.length > 0 && (
+              <div className={styles.selectedOptions}>
+                {field.value.map((option: string, index: number) => (
+                  <div key={index} className={styles.optionTag}>
+                    {option}
+                    <Button
+                      variant="action"
+                      onClick={(event?) =>
+                        removeOption(
+                          option,
+                          event as React.MouseEvent<HTMLButtonElement>,
+                        )
+                      }
+                    >
+                      ×
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
             <div>
               <BasicInput
                 value={newOption}
@@ -216,7 +220,12 @@ const FieldModal: React.FC<FieldModalProps> = ({
             Cancel
           </Button>
           {fieldType === TYPE_OPTIONS.MULTISELECT && (
-            <Button onClick={addOption} testId="field-modal.multi-select-add-option">Add</Button>
+            <Button
+              onClick={addOption}
+              testId="field-modal.multi-select-add-option"
+            >
+              Add
+            </Button>
           )}
           <Button onClick={handleSubmit(handleSave)}>Save</Button>
         </div>
