@@ -114,7 +114,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
         defaultValue={[]}
         render={({ field }) => (
           <div className={styles.multiselectContainer}>
-            {field.value.length > 0 && (
+            {field.value && field.value.length && field.value.length > 0 && (
               <div className={styles.selectedOptions}>
                 {field.value.map((option: string, index: number) => (
                   <div key={index} className={styles.optionTag}>
@@ -163,7 +163,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
         defaultValue={[]}
         render={({ field }) => (
           <div className={styles.multiselectContainer}>
-            {field.value.length > 0 && (
+            {field.value && field.value.length && field.value.length > 0 && (
               <div className={styles.selectedOptions}>
                 {field.value.map((option: string, index: number) => (
                   <div key={index} className={styles.optionTag}>
