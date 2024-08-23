@@ -125,9 +125,11 @@ describe("===== TEMPLATES =====", () => {
       const templateEdit = screen.getAllByTestId("templates.edit");
       act(() => templateEdit[0].click());
 
-      expect(
-        screen.getByTestId("templates.name-edit-field"),
-      ).toBeInTheDocument();
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("templates.name-edit-field"),
+        ).toBeInTheDocument();
+      });
     });
 
     it("Checks template can be edited", async () => {
@@ -217,7 +219,7 @@ describe("===== TEMPLATES =====", () => {
         expect(screen.getByTestId("table-row-0"));
       });
 
-      const headers = screen.getAllByTestId("templates.title-cell");
+      const headers = screen.getAllByTestId("templates.view-template");
       act(() => headers[1].click());
 
       expect(spy).toHaveBeenCalledTimes(1);

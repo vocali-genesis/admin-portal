@@ -12,6 +12,7 @@ import "./index";
 import Download from "./libs/download";
 import "@/services/auth/auth-mock.service";
 import "@/services/genesis/genesis-mock.service";
+import "@/services/templates/templates-mock.service";
 import { MedicalTranscription } from "@/core/module/services.types";
 
 import { faker } from "@faker-js/faker";
@@ -266,12 +267,10 @@ describe("===== RECORDING LOGIN =====", () => {
     });
 
     it("Click Delete Audio", async () => {
-      const { container } = await act(() => render(<Recording />));
+      await act(() => render(<Recording />));
 
-      const deleteButton = container.querySelector(
-        "button[name='delete']",
-      ) as HTMLButtonElement;
-      expect(deleteButton).toBeDefined();
+      const deleteButton = await screen.findByTestId("recording.audio-delete");
+      expect(deleteButton).toBeInTheDocument();
 
       act(() => deleteButton.click());
 
@@ -282,13 +281,10 @@ describe("===== RECORDING LOGIN =====", () => {
     });
 
     it("Click Save the Audio", async () => {
-      const { container } = await act(() => render(<Recording />));
+      await act(() => render(<Recording />));
 
-      const saveButton = container.querySelector(
-        "button[name='save']",
-      ) as HTMLButtonElement;
-
-      expect(saveButton).toBeDefined();
+      const saveButton = await screen.findByTestId("save-audio");
+      expect(saveButton).toBeInTheDocument();
 
       act(() => saveButton.click());
       expect(downloadAudioSpy).toHaveBeenCalledTimes(1);

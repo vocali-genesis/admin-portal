@@ -230,7 +230,7 @@ const Templates = () => {
                   router.push(`/app/template-detail?id=${template.id}`)
                 }
                 size="small"
-                testId="templates.edit"
+                testId="templates.view-template"
               >
                 <FaEnvelopeOpen style={{ color: "var(--primary)" }} />
               </IconButton>
