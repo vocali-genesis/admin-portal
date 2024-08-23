@@ -53,7 +53,7 @@ const PaymentHistory: React.FC = () => {
     void (async () => {
       setIsLoading(true);
       const { invoices, count } = await Service.require(
-        "subscriptions"
+        "subscriptions",
       ).getInvoices(fromRange, toRange);
       setTotalRecords(count);
       setData(invoices);
@@ -70,12 +70,13 @@ const PaymentHistory: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto" data-testid="payment-history.main">
       <Table<GenesisInvoice>
         data={data}
         columns={columns}
         onSort={handleSort}
         isLoading={isLoading}
+        data-testid="payment-history.main"
         pagination={{
           currentPage,
           totalPages,
@@ -98,9 +99,8 @@ const Subscriptions = () => {
 
   useEffect(() => {
     void (async () => {
-      const data = await Service.require(
-        "subscriptions"
-      ).getActiveSubscription();
+      const data =
+        await Service.require("subscriptions").getActiveSubscription();
       setIsLoading(false);
       if (!data || !data.status || data.status !== "active") {
         return router.push("/app/subscriptions");
@@ -114,12 +114,15 @@ const Subscriptions = () => {
   }
 
   const validUntil = moment(subscription?.current_period_end || "").format(
-    "DD MMM, YYYY"
+    "DD MMM, YYYY",
   );
 
   return (
     <div className={styles.container}>
-      <main className={styles.contentWrapper}>
+      <main
+        className={styles.contentWrapper}
+        data-testid="subscriptions-settings.main"
+      >
         <div className={styles.head}>
           <div className={styles.left}>
             <span>
