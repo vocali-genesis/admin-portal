@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
@@ -19,13 +19,17 @@ const AppSlug = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  useEffect(() => {
+    setIsLoading(true)
+  }, [router.asPath])
+
   const isSpinner = !router.isReady || isLoading;
 
-  // remove this line after the i18nfix
+  // remove this line after the i18n fix
   if (isSpinner) {
     return (
       <>
-        <ValidateUser onReady={() => setIsLoading(false)} />
+        <ValidateUser onReady={() => setIsLoading(false)}/>
         <Spinner maxHeight="100hv" />
       </>
     );
