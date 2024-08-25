@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Service from "../module/service.factory";
+import moment from "moment";
 
 type InternalProps = {
   onReady: () => void;
@@ -12,14 +13,13 @@ type InternalProps = {
 export const ValidateUser = ({ onReady }: InternalProps) => {
   const router = useRouter();
   const { slug } = router.query as { slug: string };
-
   useEffect(() => {
     async function checkLogin(): Promise<boolean> {
       const userService = Service.require("oauth");
 
       const user = await userService.getLoggedUser();
       if (!user) {
-        router.push("/auth/login");
+        void router.push("/auth/login");
         return false;
       }
       return true;
@@ -35,21 +35,19 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
         return true;
       }
       const subscription = await subscriptionService.getActiveSubscription();
-
-      if (
-        !subscription ||
-        !subscription.status ||
-        subscription.status !== "active"
-      ) {
+      const notValid = subscription?.current_period_end
+        ? moment(subscription.current_period_end).isBefore()
+        : true;
+      if (subscription?.status !== "active" && notValid) {
         // Avoid infinite loop
         if (slug === "subscriptions") return true;
-        router.push("/app/subscriptions");
+        void router.push("/app/subscriptions");
         return false;
       }
       return true;
     }
 
-    checkLogin()
+    void checkLogin()
       .then((result) => {
         if (!result) {
           return Promise.resolve(false);
@@ -62,7 +60,7 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
         }
         onReady();
       });
-  }, [onReady, router, slug]);
+  }, [onReady, router, router.asPath, slug]);
 
   return null;
 };

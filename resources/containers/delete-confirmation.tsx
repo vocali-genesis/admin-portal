@@ -1,6 +1,7 @@
 import React from "react";
 import ConfirmationModal from "./confirm-modal";
 import { useTranslation } from "react-i18next";
+import Spinner from "@/resources/containers/spinner";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface DeleteConfirmationModalProps {
   confirmButtonText?: string;
   cancelButtonText?: string;
   testId?: string;
+  isLoading?: boolean;
 }
 
 const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
@@ -22,6 +24,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
   message,
   title,
   testId,
+  isLoading,
 }) => {
   const { t } = useTranslation();
 
@@ -30,6 +33,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationModalProps> = ({
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       onConfirm={onConfirm}
+      isLoading={isLoading}
       title={title || t("resources.confirm-delete")}
       message={message || t("resources.are-you-sure")}
       confirmButtonText={confirmButtonText || t("common.delete")}
