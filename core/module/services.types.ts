@@ -55,12 +55,14 @@ export interface AuthService {
 }
 
 export interface SubscriptionService {
-  getSubscriptionLink(): Promise<{ url: string | null }>;
+  getSubscriptionLink(): Promise<{ url: string } | null>;
+  getManageSubscriptionLink(): Promise<{ url: string } | null>;
   getActiveSubscription(): Promise<SubscriptionResponse | null>;
   getInvoices(
     from: number,
     to: number
   ): Promise<{ invoices: GenesisInvoice[]; count: number }>;
+  cancelSubscription(): Promise<Record<string, string | number> | null>;
 }
 
 export interface SupabaseTemplateService {

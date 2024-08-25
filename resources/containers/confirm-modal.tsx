@@ -2,6 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 import modal_styles from "./styles/confirmation.module.css";
 import { useTranslation } from "react-i18next";
+import Spinner from "./spinner";
 
 Modal.setAppElement("body");
 
@@ -13,6 +14,7 @@ interface ConfirmationModalProps {
   message: string;
   confirmButtonText: string;
   testId?: string;
+  isLoading?: boolean;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -23,6 +25,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   message,
   confirmButtonText,
   testId,
+  isLoading,
 }) => {
   const { t } = useTranslation();
   return (
@@ -32,6 +35,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       className={modal_styles.modal}
       overlayClassName={modal_styles.overlay}
     >
+      {isLoading && (
+        <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center">
+          <Spinner maxHeight="2rem" />
+        </div>
+      )}
       <h2>{title}</h2>
       <p>{message}</p>
       <div className={modal_styles.modalButtons} data-testid={testId}>
