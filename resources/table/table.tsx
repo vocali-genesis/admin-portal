@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Spinner from "@/resources/containers/spinner-svg";
 import Image from "next/image";
+import styled from "styled-components";
 
+// TODO: Move pagination here
 interface TableProps<T> {
   data: T[];
   columns: ColumnConfig<T>[];
@@ -32,71 +34,135 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
   };
 
   return (
-    <div className="relative overflow-x-auto">
+    <Container>
       {isLoading && (
-        <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center">
+        <SpinnerOverlay>
           <Spinner />
-        </div>
+        </SpinnerOverlay>
       )}
-      <table className="w-full text-sm text-left">
-        <thead className="text-xs uppercase bg-white">
-          <tr>
+      <StyledTable>
+        <thead>
+          <TableHeader>
             {columns.map((column, index) => (
-              <th
+              <TableHeaderCell
                 key={index}
                 onClick={() => handleSort(column)}
-                className={`px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
-                  column.sorter ? "cursor-pointer" : ""
-                }`}
+                sortable={!!column.sorter}
               >
                 {column.title}
                 {column.sorter && column.dataIndex && (
-                  <span
-                    className={`ml-2 ${
-                      sortConfig?.key === column.dataIndex
-                        ? "text-blue-500"
-                        : ""
-                    }`}
+                  <SortIndicator
+                    active={sortConfig?.key === column.dataIndex}
+                    direction={sortConfig?.direction}
                   >
                     {sortConfig?.key === column.dataIndex
                       ? sortConfig.direction === "asc"
                         ? "▲"
                         : "▼"
                       : "▼"}
-                  </span>
+                  </SortIndicator>
                 )}
-              </th>
+              </TableHeaderCell>
             ))}
-          </tr>
+          </TableHeader>
         </thead>
         <tbody>
           {data.map((item, rowIndex) => (
-            <tr key={rowIndex} className="border-t-2 border-gray-100">
+            <TableRow key={rowIndex}>
               {columns.map((column, colIndex) => (
-                <td
-                  key={colIndex}
-                  className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700"
-                >
+                <TableCell key={colIndex}>
                   {column.render
                     ? column.render(item)
-                    : (item[column.dataIndex!] as React.ReactNode)}
-                </td>
+                    : column.dataIndex &&
+                        typeof item[column.dataIndex] !== "object"
+                      ? (item[column.dataIndex] as React.ReactNode)
+                      : column.dataIndex
+                        ? JSON.stringify(item[column.dataIndex])
+                        : ""}
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
           {!data.length && (
-            <tr className="border-t-2 border-gray-100">
-              <td colSpan={columns.length} className="px-8 py-6 w-full">
-                <div className="w-full flex justify-center">
+            <TableRow>
+              <TableCell colSpan={columns.length}>
+                <EmptyState>
                   <Image src="/empty.png" alt="empty" width={60} height={30} />
-                </div>
-              </td>
-            </tr>
+                </EmptyState>
+              </TableCell>
+            </TableRow>
           )}
         </tbody>
-      </table>
-    </div>
+      </StyledTable>
+    </Container>
   );
 };
 
 export default Table;
+
+// Styled Components
+const Container = styled.div`
+  position: relative;
+  overflow-x: auto;
+`;
+
+const SpinnerOverlay = styled.div`
+  inset: 0;
+  background-color: white;
+  background-opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+`;
+
+const StyledTable = styled.table`
+  width: 100%;
+  background-color: white;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1vh;
+`;
+
+const TableHeader = styled.tr`
+  background-color: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+`;
+
+const TableHeaderCell = styled.th<{ sortable: boolean }>`
+  padding: 2.5vh 16px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: ${(props) => (props.sortable ? "pointer" : "default")};
+`;
+
+const SortIndicator = styled.span<{ active?: boolean; direction?: Direction }>`
+  margin-left: 8px;
+  color: ${(props) => (props.active ? "blue" : "inherit")};
+  font-size: 12px;
+`;
+
+const TableRow = styled.tr`
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
+`;
+
+const TableCell = styled.td`
+  padding: 2.5vh 16px;
+  color: #333;
+  font-size: 14px;
+  border-bottom: 1px solid #e2e8f0;
+`;
+
+const EmptyState = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 2.5vh 16px;
+`;

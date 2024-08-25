@@ -1,4 +1,8 @@
-import { GenesisReport, GenesisUser } from "@/core/module/core.types";
+import {
+  GenesisReport,
+  GenesisUser,
+  GenesisTemplate,
+} from "@/core/module/core.types";
 import { CENTS, GenesisInvoice } from "@/core/module/core.types";
 import { faker } from "@faker-js/faker";
 import moment from "moment";
@@ -14,7 +18,6 @@ export class Seed {
         id: faker.string.uuid(),
         created_at: moment().format(),
         email: faker.internet.email(),
-        // Props override the data
         ...props,
       };
 
@@ -38,7 +41,6 @@ export class Seed {
   public report(props: Partial<GenesisReport> = {}) {
     function report(props: Partial<GenesisReport>): GenesisReport {
       const { time, ...mainProps } = props;
-      // The report are key-values, where key is the header, and the value is the content
       const reportJSON = faker.lorem
         .paragraphs({ min: 2, max: 5 }, "\n")
         .split("\n")
@@ -47,7 +49,7 @@ export class Seed {
             ...report,
             [faker.word.words()]: paragraph,
           }),
-          {} as Record<string, string>
+          {} as Record<string, string>,
         );
 
       return {
@@ -69,10 +71,8 @@ export class Seed {
   public file(props: { data?: Uint8Array; type?: string; name: string }): File {
     const type = props.type || "image/png";
 
-    // Convert the byte array to a Blob
     const audioBlob = this.blob({ data: props.data, type });
 
-    // Create a fake audio file
     const fakeAudioFile = new File([audioBlob], props.name, {
       type,
     });
@@ -87,17 +87,31 @@ export class Seed {
     const encoder = new TextEncoder();
     const sharedArrayBuffer = encoder.encode(JSON.stringify(randomData))
       .buffer as SharedArrayBuffer;
-    const fileData = props.data || new Uint8Array(sharedArrayBuffer); // This is just an example and doesn't represent real audio
+    const fileData = props.data || new Uint8Array(sharedArrayBuffer);
 
     const type = props.type || "image/png";
-    // Convert the byte array to a Blob
     const audioBlob = new Blob([fileData], {
       type,
     });
 
-    // Create a fake audio file
-
     return audioBlob;
+  }
+
+  public template(
+    props: Partial<GenesisTemplate> = {},
+  ): SeedBuilder<GenesisTemplate> {
+    function template(props: Partial<GenesisTemplate>): GenesisTemplate {
+      return {
+        id: faker.number.int(),
+        ownerId: faker.string.uuid(),
+        name: faker.company.name(),
+        createdAt: faker.date.past().toISOString(),
+        preview: faker.image.imageUrl(),
+        fields: {},
+        ...props,
+      };
+    }
+    return new SeedBuilder<GenesisTemplate>(template, props);
   }
 }
 
@@ -120,7 +134,6 @@ class SeedBuilder<T> {
     return Promise.resolve(this.builder(this.props));
   }
 
-  // You can pass the original props to all of them, or an array of props, (if 2 props and 4 items, they will get 2 each of them)
   array(count: number, arrayProps?: Array<Partial<T>>): T[] {
     return Array.from({ length: count }).map((_, index) => {
       const prop = arrayProps

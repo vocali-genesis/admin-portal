@@ -19,7 +19,7 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
 
       const user = await userService.getLoggedUser();
       if (!user) {
-        router.push("/auth/login");
+        void router.push("/auth/login");
         return false;
       }
       return true;
@@ -35,19 +35,19 @@ export const ValidateUser = ({ onReady }: InternalProps) => {
         return true;
       }
       const subscription = await subscriptionService.getActiveSubscription();
-      const notValid = subscription?.current_period_end ? moment(subscription?.current_period_end).isBefore() : true
+      const notValid = subscription?.current_period_end
+        ? moment(subscription.current_period_end).isBefore()
+        : true;
       if (subscription?.status !== "active" && notValid) {
         // Avoid infinite loop
-        if (slug === "subscriptions") {
-          return true;
-        }
-        router.push("/app/subscriptions");
+        if (slug === "subscriptions") return true;
+        void router.push("/app/subscriptions");
         return false;
       }
       return true;
     }
 
-    checkLogin()
+    void checkLogin()
       .then((result) => {
         if (!result) {
           return Promise.resolve(false);

@@ -29,9 +29,8 @@ const Recording = () => {
     const blob = await response.blob();
     const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
 
-    const api_response = await Service.require(
-      "medical-api"
-    ).processAudioAndGenerateReport(file);
+    const api_response =
+      await Service.require("medical-api").processAudioAndGenerateReport(file);
 
     if (!api_response) {
       setIsLoading(false);
@@ -69,12 +68,15 @@ const Recording = () => {
             onClick={() => void handleSubmit()}
             variant="primary"
             className={recording_styles.submitButton}
+            testId="submit-button"
           >
             {t("recording.submit")}
           </Button>
         </div>
       </main>
-      <OnLeaveConfirmation allowedRoutes={["/app/report"]} />
+      <OnLeaveConfirmation
+        allowedRoutes={["/app/report", "/app/dashboard", "settings/settings"]}
+      />
     </>
   );
 };

@@ -64,11 +64,16 @@ const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <div className="flex justify-between items-center mt-4 text-gray-500">
+    <div
+      className="flex justify-between items-center mt-4 text-gray-500"
+      style={{ marginTop: "1vh" }}
+    >
       <div>
-        {totalLabel || t("common.total-records")} {totalRecords},{" "}
-        {pageLabel || t("common.total-page")} {currentPage}{" "}
-        {ofLabel || t("common.of")} {totalPages}
+        <span style={{ fontSize: "1.75vh" }}>
+          {totalLabel || t("common.total-records")} {totalRecords},{" "}
+          {pageLabel || t("common.total-page")} {currentPage}{" "}
+          {ofLabel || t("common.of")} {totalPages}
+        </span>
       </div>
       <div className="flex items-center space-x-2">
         <PaginationButton

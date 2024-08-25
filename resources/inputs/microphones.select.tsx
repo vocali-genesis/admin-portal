@@ -21,7 +21,7 @@ export const MicrophoneSelect = ({
   const setUpDevices = useCallback(async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const audioInputDevices = devices.filter(
-      (device) => device.kind === "audioinput"
+      (device) => device.kind === "audioinput",
     );
     // If no granted is undefined
     const defaultDevice = !!audioInputDevices[0]?.deviceId;
@@ -64,7 +64,7 @@ export const MicrophoneSelect = ({
     return () => {
       navigator.mediaDevices.removeEventListener(
         "devicechange",
-        requestPermissions
+        requestPermissions,
       );
     };
   }, [permissionGranted, requestPermissions]);
@@ -90,6 +90,7 @@ export const MicrophoneSelect = ({
         value: device.deviceId,
         label: device.label || `Microphone ${device.deviceId.slice(0, 5)}`,
       }))}
+      width="55vh"
     ></BasicSelect>
   );
 };

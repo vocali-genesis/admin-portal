@@ -3,6 +3,8 @@ import {
   GenesisOauthProvider,
   GenesisReport,
   GenesisUser,
+  GenesisTemplate,
+  GenesisPagination,
   SubscriptionResponse,
 } from "./core.types";
 
@@ -21,9 +23,8 @@ export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? AuthService
   : T extends "medical-api"
   ? MedicalTranscription
-  : // TODO
-  T extends "templates"
-  ? never
+  : T extends "templates"
+  ? SupabaseTemplateService
   : T extends "subscriptions"
   ? SubscriptionService
   : never;
@@ -62,4 +63,24 @@ export interface SubscriptionService {
     to: number
   ): Promise<{ invoices: GenesisInvoice[]; count: number }>;
   cancelSubscription(): Promise<Record<string, string | number> | null>;
+}
+
+export interface SupabaseTemplateService {
+  getTemplates(
+    page: number,
+    pageSize: number
+  ): Promise<GenesisPagination<GenesisTemplate> | null>;
+  getTemplate(
+    id: number,
+    page: number,
+    pageSize: number
+  ): Promise<GenesisPagination<GenesisTemplate> | null>;
+  createTemplate(
+    template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">
+  ): Promise<GenesisTemplate | null>;
+  updateTemplate(
+    id: number,
+    updates: Partial<GenesisTemplate>
+  ): Promise<GenesisTemplate | null>;
+  deleteTemplate(id: number): Promise<boolean>;
 }

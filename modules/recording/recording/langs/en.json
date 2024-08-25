@@ -1,6 +1,8 @@
 {
   "recording": {
     "menu": "Recording",
+    "upload": "Upload",
+    "upload-files": "Upload File",
     "started": "Recording started",
     "stopped": "Recording stopped",
     "record-title": "Record your consultation or upload an audio with the previously recorded consultation to generate a report",
@@ -35,6 +37,7 @@
     "seconds": "seconds",
     "audio-time": "Audio Length: {{seconds}} seconds",
     "transcription-time": "Transcription: {{seconds}} seconds",
-    "report-time": "Report: {{seconds}} seconds"
+    "report-time": "Report: {{seconds}} seconds",
+    "download_success": "Download Success"
   }
 }

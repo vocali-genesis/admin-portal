@@ -10,6 +10,8 @@ import {
 import IconButton from "@/resources/containers/icon-button";
 import audioPlayer from "./audio-player.module.css";
 import DeleteConfirmation from "../containers/delete-confirmation";
+import MessageHandler from "@/core/message-handler";
+import Download from "@/modules/recording/recording/libs/download";
 
 interface Props {
   audioUrl: string;
@@ -66,14 +68,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
   const handleSave = () => {
     if (!(audioUrl && audioRef.current)) return;
 
-    const anchor = document.createElement("a");
-    anchor.href = audioUrl;
-
-    anchor.download = typeof audioUrl === "string" ? audioUrl : audioUrl[0];
-
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+    Download.downloadAudio(audioUrl as string);
   };
 
   const togglePlayPause = () => {
@@ -125,7 +120,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
 
     const progressPercent = (currentTime / duration) * 100;
     const seekBar = document.querySelector(
-      `.${audioPlayer.seekBar}`
+      `.${audioPlayer.seekBar}`,
     ) as HTMLInputElement;
     if (seekBar) {
       seekBar.style.setProperty("--seek-before-width", `${progressPercent}%`);
@@ -212,6 +207,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
           className={audioPlayer.actionButton}
           size="small"
           name="save"
+          testId="save-audio"
         >
           <FaFloppyDisk size={16} style={{ color: "blue" }} />
         </IconButton>

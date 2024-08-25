@@ -1,0 +1,82 @@
+.modalOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  font-family: 'Montserrat', sans-serif;
+  width: 60vh;
+}
+
+.title {
+  margin-left: 1vh;
+  margin-bottom: 1vh;
+}
+
+.modalContent {
+  @apply bg-white rounded-md shadow-xl p-6 max-w-md w-full;
+  font-size: 2.5vh;
+}
+
+.input {
+  @apply w-full rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500;
+  font-size: 2vh;
+}
+
+.modalButtons {
+  margin-top: 1vh;
+  display: flex;
+  gap: 1vh;
+}
+
+.multiselectContainer {
+  position: relative;
+  width: 100%;
+}
+
+.selectedOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.optionTag {
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+}
+
+.optionTag button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 16px;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  z-index: 10;
+}
+
+.dropdownOption {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdownOption:hover {
+  background-color: #f7fafc;
+}

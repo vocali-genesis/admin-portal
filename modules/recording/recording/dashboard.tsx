@@ -132,7 +132,6 @@ const Dashboard = () => {
   }, []);
 
   const handleUpload = (selectedFile: File) => {
-    console.log("AJAJAJAj");
     if (!selectedFile) {
       messageHandler.handleError(t("recording.select-file-upload"));
     }

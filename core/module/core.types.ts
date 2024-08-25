@@ -26,6 +26,38 @@ export type GenesisInvoice = {
   amount: CENTS;
   invoice_url: string;
 };
+
+export enum TYPE_OPTIONS {
+  TEXT = "text",
+  NUMBER = "number",
+  SELECT = "select",
+  MULTISELECT = "multiselect",
+}
+export interface NumberFieldConfig {
+  maxValue: number;
+}
+
+export interface SelectFieldConfig {
+  options: string[];
+}
+
+export type FieldConfig = NumberFieldConfig | SelectFieldConfig;
+export type FieldData = { maxValue: number } | { options: string[] };
+export interface GenesisTemplateField {
+  type: TYPE_OPTIONS;
+  description: string;
+  config?: FieldConfig;
+}
+
+export interface GenesisTemplate {
+  id: number;
+  ownerId: string;
+  name: string;
+  createdAt: string;
+  preview: string;
+  fields: { [key: string]: GenesisTemplateField };
+}
+
 export type SubscriptionResponse = Record<string, string | number>;
 export type GenesisReport = {
   report: Record<string, string>;
@@ -34,4 +66,11 @@ export type GenesisReport = {
     transcription: number;
     report: number;
   };
+};
+
+// Refactor, we only need the count, not the page
+export type GenesisPagination<T> = {
+  data: T[];
+  totalCount: number;
+  totalPages: number;
 };
