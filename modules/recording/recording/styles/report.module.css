@@ -14,11 +14,44 @@
   font-family: "Montserrat", sans-serif;
 }
 
-.totalTime {
-  margin-top: 0.4rem;
+.progressContainer {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1.25rem;
+}
+
+.progressBarContainer {
+  position: relative;
+  width: 100%;
+  margin-top: 1.25vh;
+}
+
+.progressBar {
+  background-color: #f0f0f0;
+  height: 12.5px;
+  border-radius: 10px;
+  display: flex;
+}
+
+.progressSegment {
+  height: 100%;
+  transition: width 0.5s ease-in-out;
+  position: relative;
+}
+
+.timeLabel {
+  position: absolute;
+  top: -20px;
+  left: 5px;
   font-size: 12px;
   color: black;
-  min-width: 80px;
+  white-space: nowrap;
+  font-family: "Montserrat", sans-serif;
+}
+
+.progressSegment:last-child .timeLabel {
+  left: auto;
+  right: 5px;
 }
 
 .downloadButton {
@@ -26,7 +59,7 @@
 }
 
 .downloadButton button {
-  background-color: var(--primary);
+  background-color: #59dbbc;
   border: none;
   padding: 5px 15px;
   border-radius: 5px;
@@ -60,13 +93,13 @@
 }
 
 .activeTab {
-  border-bottom: 2px solid var(--primary) !important;
-  color: var(--primary);
+  border-bottom: 2px solid #59dbbc !important;
+  color: #59dbbc;
   font-weight: bold;
 }
 
 .activeTabIcon {
-  color: var(--primary);
+  color: #59dbbc;
 }
 
 .editorContainer {
@@ -105,8 +138,34 @@
 .actionButtons {
   display: flex;
   justify-content: flex-end;
-  margin-top: 24px;
+  margin-top: 10px;
   margin-right: 2.5vh;
+}
+
+.saveButton,
+.newRecordingButton {
+  padding: 7.5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+
+  font-size: 1.8vh;
+  font-family: "Montserrat", sans-serif;
+}
+
+.saveButton {
+  background-color: #2c394b;
+  color: white;
+}
+
+.cancelButton {
+  background-color: #DF4949;
+  margin-left: 2vh;
+}
+
+.newRecordingButton {
+  background-color: #59dbbc;
 }
 
 .viewContainer {
@@ -139,6 +198,17 @@
   pointer-events: none;
 }
 
+.editButton {
+  padding: 7.5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 1.8vh;
+  font-family: "Montserrat", sans-serif;
+  background-color: #2c394b;
+}
+
 .downloadButton {
   position: relative;
 }
@@ -146,7 +216,7 @@
 .downloadButton button {
   display: flex;
   align-items: center;
-  background-color: var(--primary);
+  background-color: #59dbbc;
   border: none;
   padding: 5px 15px;
   border-radius: 5px;
@@ -166,7 +236,7 @@
   top: 100%;
   right: 0;
   background-color: white;
-  border: 1px solid var(--gray-200);
+  border: 1px solid #ccc;
   border-radius: 5px;
   padding: 5px;
   z-index: 1000;
@@ -199,7 +269,7 @@
   cursor: pointer;
   font-size: 1.8vh;
   font-family: "Montserrat", sans-serif;
-  background-color: var(--primary);
+  background-color: #59dbbc;
   color: white;
   transition: background-color 0.3s ease;
 }
@@ -228,9 +298,4 @@
   margin-top: 10px;
   margin-right: 2.5vh;
   margin-left: 2.5vh;
-}
-.topContainer {
-  display: flex;
-  gap: 1rem;
-  padding: 0 1.25rem;
 }

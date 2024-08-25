@@ -1,5 +1,4 @@
 .modalOverlay {
-  background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -26,18 +25,8 @@
 
 .modalButtons {
   margin-top: 1vh;
-}
-
-.button {
-  @apply px-4 py-2 rounded-md text-sm font-medium;
-}
-
-.cancelButton {
-  @apply text-gray-600 hover:bg-gray-100;
-}
-
-.createButton {
-  @apply bg-teal-500 text-white hover:bg-teal-600;
+  display: flex;
+  gap: 1vh;
 }
 
 .multiselectContainer {

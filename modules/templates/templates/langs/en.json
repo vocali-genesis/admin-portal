@@ -39,6 +39,8 @@
     "noTemplatesFoundEdit": "Edit a template",
     "unsavedChangesTitle": "Unsaved Changes",
     "unsavedChangesMessage": "You have some unsaved changes you may loose. Do you want to continue?",
-    "discardChanges": "Discard Changes"
+    "discardChanges": "Discard Changes",
+    "fieldUpdateSuccess": "Field updated successfully",
+    "fieldUpdateError": "Error updating field"
   }
 }

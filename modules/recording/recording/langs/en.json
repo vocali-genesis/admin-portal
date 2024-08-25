@@ -2,6 +2,7 @@
   "recording": {
     "menu": "Recording",
     "upload": "Upload",
+    "upload-files": "Upload File",
     "started": "Recording started",
     "stopped": "Recording stopped",
     "record-title": "Record your consultation or upload an audio with the previously recorded consultation to generate a report",

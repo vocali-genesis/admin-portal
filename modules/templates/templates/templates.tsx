@@ -20,6 +20,8 @@ import Table from "@/resources/table/table";
 import Service from "@/core/module/service.factory";
 import Pagination from "@/resources/table/pagination";
 import BasicInput from "@/resources/inputs/basic-input";
+import Button from "@/resources/containers/button";
+import IconButton from "@/resources/containers/icon-button";
 
 const messageHandler = MessageHandler.get();
 
@@ -73,7 +75,7 @@ const Templates = () => {
     if (!resp) return;
 
     setTemplates(
-      templates.filter((template) => template.id !== templateToDelete)
+      templates.filter((template) => template.id !== templateToDelete),
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
     setIsModalOpen(false);
@@ -104,12 +106,12 @@ const Templates = () => {
 
     const savedTemplate = await templateService.updateTemplate(
       editingTemplate.id,
-      editingTemplate
+      editingTemplate,
     );
     if (!savedTemplate) return;
 
     setTemplates(
-      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t))
+      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
     );
     setEditingTemplate(null);
     messageHandler.handleSuccess(t("templates.editSuccess"));
@@ -117,7 +119,7 @@ const Templates = () => {
 
   const formatPreview = (
     fields: { [key: string]: GenesisTemplateField },
-    maxLength: number = 25
+    maxLength: number = 25,
   ) => {
     const previewString = Object.entries(fields)
       .map(([key, value]) => `${key}: ${value.type}`)
@@ -179,25 +181,21 @@ const Templates = () => {
       render: (template: GenesisTemplate) => (
         <>
           {editingTemplate && editingTemplate.id === template.id ? (
-            <button onClick={handleSave} className={styles.actionButton}>
+            <IconButton onClick={handleSave} size="small">
               <FaSave style={{ color: "#59DBBC" }} />
-            </button>
+            </IconButton>
           ) : (
-            <>
-              <button
-                onClick={() => handleEdit(template)}
-                className={styles.actionButton}
-                style={{ marginRight: "4vh" }}
-              >
+            <div style={{ display: "flex", gap: "3vh" }}>
+              <IconButton onClick={() => handleEdit(template)} size="small">
                 <FaEdit style={{ color: "var(--primary)" }} />
-              </button>
-              <button
+              </IconButton>
+              <IconButton
                 onClick={() => handleDelete(template.id)}
-                className={styles.actionButton}
+                size="small"
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
-              </button>
-            </>
+              </IconButton>
+            </div>
           )}
         </>
       ),
@@ -208,9 +206,13 @@ const Templates = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>{t("templates.all_templates")}</h1>
-        <button className={styles.addButton} onClick={handleAddTemplate}>
+        <Button
+          onClick={handleAddTemplate}
+          variant="primary"
+          className={styles.addButton}
+        >
           <FaPlus /> {t("templates.create")}
-        </button>
+        </Button>
       </div>
       <Table data={templates} columns={columns} isLoading={isLoading} />
       <Pagination
@@ -222,7 +224,7 @@ const Templates = () => {
       <DeleteConfirmation
         isOpen={templateToDelete ? true : isModalOpen}
         onRequestClose={() => setTemplateToDelete(null)}
-        onConfirm={() => confirmDelete}
+        onConfirm={confirmDelete}
       />
     </div>
   );

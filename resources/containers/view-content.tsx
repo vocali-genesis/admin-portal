@@ -5,26 +5,19 @@ interface ViewContentProps {
   content: object | string[];
 }
 
-const parseText = (text: string) => text.replaceAll("\n", "<br/>");
-const renderObject = (obj: object | string) => {
-  if (!obj) {
-    return "";
-  }
-  if (typeof obj === "string") {
-    return parseText(obj);
-  }
-  return Object.entries(obj).map(([key, value]) => (
+const renderObject = (obj: object) => {
+  return Object.entries(obj).map(([key, val]) => (
     <div key={key}>
-      {key}: {renderObject(value as object | string)}
+      {key}:{" "}
+      {typeof val === "object" && val !== null
+        ? renderObject(val)
+        : String(val)}
       <br />
     </div>
   ));
 };
 
 const ViewContent: React.FC<ViewContentProps> = ({ content }) => {
-  if (content === null) {
-    return null;
-  }
   if (Array.isArray(content)) {
     return (
       <div className={styles.viewContent}>
@@ -41,11 +34,11 @@ const ViewContent: React.FC<ViewContentProps> = ({ content }) => {
         {Object.entries(content).map(([key, value], index) => (
           <React.Fragment key={index}>
             <h2>{key}</h2>
-            <p
-              dangerouslySetInnerHTML={{
-                __html: renderObject(value as string | object),
-              }}
-            ></p>
+            <p>
+              {typeof value === "object" && value !== null
+                ? renderObject(value)
+                : String(value)}
+            </p>
           </React.Fragment>
         ))}
       </div>
@@ -54,7 +47,7 @@ const ViewContent: React.FC<ViewContentProps> = ({ content }) => {
 
   return (
     <div className={styles.viewContent}>
-      <p>{parseText(content)}</p>
+      <p>{content}</p>
     </div>
   );
 };

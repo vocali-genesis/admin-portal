@@ -2,7 +2,7 @@ import React from "react";
 import btn_styles from "./styles/button.module.css";
 
 interface ButtonProps {
-  onClick: () => void;
+  onClick: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   children: React.ReactNode;
   variant?: "primary" | "secondary" | "action" | "icon" | "danger";

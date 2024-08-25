@@ -27,10 +27,26 @@ export type GenesisInvoice = {
   invoice_url: string;
 };
 
+export enum TYPE_OPTIONS {
+  TEXT = "text",
+  NUMBER = "number",
+  SELECT = "select",
+  MULTISELECT = "multiselect",
+}
+export interface NumberFieldConfig {
+  maxValue: number;
+}
+
+export interface SelectFieldConfig {
+  options: string[];
+}
+
+export type FieldConfig = NumberFieldConfig | SelectFieldConfig;
+export type FieldData = { maxValue: number } | { options: string[] };
 export interface GenesisTemplateField {
-  type: "text" | "number" | "multiselect";
+  type: TYPE_OPTIONS;
   description: string;
-  options?: Record<string, string>;
+  config?: FieldConfig;
 }
 
 export interface GenesisTemplate {
@@ -41,6 +57,7 @@ export interface GenesisTemplate {
   preview: string;
   fields: { [key: string]: GenesisTemplateField };
 }
+
 export type SubscriptionResponse = Record<string, string | number>;
 export type GenesisReport = {
   report: Record<string, string>;
