@@ -28,7 +28,13 @@
     "menu": "Assinaturas",
     "exp-label": "Expira em:",
     "cancel-sub-btn": "Cancelar assinatura",
-    "payment-history": "Histórico de pagamentos"
+    "payment-history": "Histórico de pagamentos",
+    "confirm-title": "Cancelar assinatura",
+    "confirm-message": "Tem certeza de que deseja cancelar sua assinatura?",
+    "cancel-btn": "Cancelar",
+    "confirm-btn": "Confirmar",
+    "inactive-label": "Inativo",
+    "subscribe-btn": "Assine agora"
   },
   "invoice-history": {
     "invoice-id-th": "ID da Fatura",

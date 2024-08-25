@@ -18,6 +18,11 @@
   color: white;
 }
 
+.danger {
+  background-color: var(--danger);
+  color: var(--white);
+}
+
 .action {
   background: none;
   padding: 5px;
