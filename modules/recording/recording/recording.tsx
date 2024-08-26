@@ -14,6 +14,8 @@ import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import { SupabaseTemplateService } from "@/core/module/services.types";
 import { GenesisTemplate } from "@/core/module/core.types";
 
+const messageHandler = MessageHandler.get();
+
 const Recording = () => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -87,14 +89,16 @@ const Recording = () => {
           />
           <BasicSelect
             name="template-select"
-            value="template"
+            value={template?.id.toString() as string}
             onChange={(value) => {
               const selectedTemplate = templateOptions.find(
                 (option) => option.id.toString() === value,
               );
-              if (selectedTemplate) {
-                setTemplate(selectedTemplate);
+              if (!selectedTemplate) {
+                messageHandler.handleError(t("error-no-template"));
+                return;
               }
+              setTemplate(selectedTemplate);
             }}
             options={templateOptions.map((template) => {
               return { value: template.id.toString(), label: template.name };
