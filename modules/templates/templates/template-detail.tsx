@@ -410,7 +410,7 @@ const TemplateDetail = () => {
         testId="template-detail.table"
       />
       <Pagination
-        currentPage={pagination.currentPage}
+        currentPage={pagination.totalPages === 0 ? 0 : pagination.currentPage}
         totalPages={pagination.totalPages}
         totalRecords={pagination.totalRecords}
         onPageChange={handlePageChange}

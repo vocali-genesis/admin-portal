@@ -103,7 +103,11 @@ class SupabaseTemplateService {
 
     const { data, error } = await this.supabase
       .from("templates")
-      .insert({ ...template, ownerId: userData?.id })
+      .insert({
+        ...template,
+        ownerId: userData?.id,
+        createdAt: new Date().toISOString(),
+      })
       .select();
     if (error) {
       messageHandler.handleError(error.message);
