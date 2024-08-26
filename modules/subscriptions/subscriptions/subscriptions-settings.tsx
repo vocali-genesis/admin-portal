@@ -7,9 +7,14 @@ import Service from "@/core/module/service.factory";
 import { useRouter } from "next/router";
 import moment from "moment";
 import Table from "@/resources/table";
+import ConfirmDialog from "@/resources/containers/delete-confirmation";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
+import MessageHandler from "@/core/message-handler";
+import Button from "@/resources/containers/button";
+
+const messageHandler = MessageHandler.get();
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
@@ -30,11 +35,11 @@ const PaymentHistory: React.FC = () => {
     {
       title: t("invoice-history.action-th"),
       render: (item) => (
-        <>
+        <div style={{ display: "flex", justifyContent: "end" }}>
           <a href={item.invoice_url} className="text-blue-500" target="__blank">
             {t("invoice-history.view-receipt")}
           </a>
-        </>
+        </div>
       ),
     },
   ];
@@ -77,7 +82,7 @@ const PaymentHistory: React.FC = () => {
         onSort={handleSort}
         isLoading={isLoading}
         pagination={{
-          currentPage,
+          currentPage: totalPages ? currentPage : 0,
           totalPages,
           totalRecords,
           onPageChange: setCurrentPage,
@@ -87,6 +92,46 @@ const PaymentHistory: React.FC = () => {
         }}
       />
     </div>
+  );
+};
+
+const CancelSubscriptonBtn = () => {
+  const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
+  const onConfirm = async () => {
+    setIsLoading(true);
+    const data = await Service.require("subscriptions").cancelSubscription();
+    if(data?.id) {
+      messageHandler.handleSuccess(t("subscription-settings.success-message"))
+      await router.push('/settings/subscriptions')
+    }
+    setIsOpen(false);
+    setIsLoading(false);
+  };
+
+  return (
+    <>
+      <Button
+        onClick={() => {
+          setIsOpen(true);
+        }}
+        variant="danger"
+      >
+        {t("subscription-settings.cancel-sub-btn")}
+      </Button>
+      <ConfirmDialog
+        isOpen={isOpen}
+        onRequestClose={() => setIsOpen(false)}
+        onConfirm={onConfirm}
+        title={t("subscription-settings.confirm-title")}
+        message={t("subscription-settings.confirm-message")}
+        cancelButtonText={t("subscription-settings.cancel-btn")}
+        confirmButtonText={t("subscription-settings.confirm-btn")}
+        isLoading={isLoading}
+      />
+    </>
   );
 };
 
@@ -102,10 +147,7 @@ const Subscriptions = () => {
         "subscriptions"
       ).getActiveSubscription();
       setIsLoading(false);
-      if (!data || !data.status || data.status !== "active") {
-        return router.push("/app/subscriptions");
-      }
-      setSubscription(data);
+      setSubscription(data || {});
     })();
   }, []);
 
@@ -113,9 +155,9 @@ const Subscriptions = () => {
     return <Spinner />;
   }
 
-  const validUntil = moment(subscription?.current_period_end || "").format(
-    "DD MMM, YYYY"
-  );
+  const validUntil = subscription?.id
+    ? moment(subscription?.current_period_end || "").format("DD MMM, YYYY")
+    : t("subscription-settings.inactive-label");
 
   return (
     <div className={styles.container}>
@@ -127,9 +169,15 @@ const Subscriptions = () => {
             </span>
           </div>
           <div className={styles.right}>
-            <button className={styles.cancelBtn}>
-              {t("subscription-settings.cancel-sub-btn")}
-            </button>
+            {subscription?.status === "active" ? <CancelSubscriptonBtn /> : (
+              <Button onClick={() => {
+                router.push('/app/subscriptions');
+              }}
+              variant="primary"
+              >
+                {t("subscription-settings.subscribe-btn")}
+              </Button>
+            )}
           </div>
         </div>
         <div className={styles.content}>

@@ -27,8 +27,15 @@
   "subscription-settings": {
     "menu": "Subscriptions",
     "exp-label": "Expires on:",
-    "cancel-sub-btn": "Cancel Subscription",
-    "payment-history": "Payment History"
+    "cancel-sub-btn": "Cancel subscription",
+    "payment-history": "Payment History",
+    "confirm-title": "Cancel subscription",
+    "confirm-message": "Are you sure you want to cancel your subscription?",
+    "success-message": "Subscription cancelled successflly!",
+    "cancel-btn": "Cancel",
+    "confirm-btn": "Confirm",
+    "inactive-label": "Inactive",
+    "subscribe-btn": "Subscribe now"
   },
   "invoice-history": {
     "invoice-id-th": "Invoice Id",
