@@ -121,7 +121,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder={t("templates.namePlaceholder")}
-        testId="new-template-name-input"
+        testId="templates.new-template-name-input"
         className={`${styles.input} ${styles.name_input}`}
       />
       {fieldNames.map((fieldName, index) => (
@@ -195,7 +195,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
         </Button>
         <Button
           onClick={handleSubmit}
-          testId="submit-new-template"
+          testId="templates.submit-new-template"
           className={styles.button}
         >
           {t("templates.create")}

@@ -67,15 +67,14 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("templates.name-edit-field"),
+          screen.getByTestId("templates.new-template-name-input"),
         ).toBeInTheDocument();
       });
 
-      const inputElement = screen.getByTestId("templates.name-edit-field");
-      expect(inputElement).toHaveValue("New Template");
-      expect(
-        screen.getByText(new Date().toLocaleDateString()),
-      ).toBeInTheDocument();
+      const inputElement = screen.getByTestId(
+        "templates.new-template-name-input",
+      );
+      expect(inputElement).toHaveValue("");
     });
 
     it("Checks template can be created", async () => {
@@ -90,24 +89,26 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("templates.name-edit-field"),
+          screen.getByTestId("templates.new-template-name-input"),
         ).toBeInTheDocument();
       });
 
-      const inputElement = screen.getByTestId("templates.name-edit-field");
+      const inputElement = screen.getByTestId(
+        "templates.new-template-name-input",
+      );
       await userEvent.clear(inputElement);
       await userEvent.type(inputElement, "Test Template");
 
       expect(inputElement).toHaveValue("Test Template");
 
-      const saveButton = screen.getByTestId("templates.save-template");
+      const saveButton = screen.getByTestId("templates.submit-new-template");
       expect(saveButton).toBeInTheDocument();
 
       act(() => saveButton.click());
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("templates.name-edit-field"),
+          screen.queryByTestId("templates.new-template-name-input"),
         ).not.toBeInTheDocument();
       });
 
