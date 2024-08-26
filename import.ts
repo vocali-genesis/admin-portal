@@ -7,6 +7,6 @@ import '@/modules/subscriptions/subscriptions'
 import '@/modules/templates/templates'
 // Services
 import '@/services/auth/auth-supabase.service'
-import '@/services/genesis/transcription.service'
+import '@/services/genesis/client-transcription.service'
 import '@/services/subscriptions/subscriptions-supabase.service'
 import '@/services/templates/supabase-templates.service'
