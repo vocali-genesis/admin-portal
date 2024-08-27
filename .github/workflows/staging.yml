@@ -36,5 +36,8 @@ jobs:
       - name: run test cases
         run: pnpm run test
 
+      - name: Load modules config
+        run: pnpm load modules.config.json   
+
       - name: Build the Next.js application
         run: pnpm run build

@@ -7,7 +7,7 @@
   ],
   "services": [
     "auth/auth-supabase.service",
-    "genesis/transcription.service",
+    "genesis/transcription-staging-mock.service",
     "subscriptions/subscriptions-supabase.service",
     "templates/supabase-templates.service"
   ]

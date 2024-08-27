@@ -11,7 +11,7 @@ import { CoreComponent, GlobalCore } from "@/core/module/module.types";
 import "./index";
 import Download from "./libs/download";
 import "@/services/auth/auth-mock.service";
-import "@/services/genesis/genesis-mock.service";
+import "@/services/genesis/transcription-mock.service";
 import "@/services/templates/templates-mock.service";
 import { MedicalTranscription } from "@/core/module/services.types";
 

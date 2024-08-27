@@ -7,7 +7,7 @@
   ],
   "services": [
     "auth/auth-supabase.service",
-    "genesis/client-transcription.service",
+    "genesis/transcription.service",
     "subscriptions/subscriptions-supabase.service",
     "templates/supabase-templates.service"
   ]
