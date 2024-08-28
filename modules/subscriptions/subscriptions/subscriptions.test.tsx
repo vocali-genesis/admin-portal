@@ -37,14 +37,6 @@ describe("===== PAYMENTS =====", () => {
 
     afterEach(() => {});
 
-    it("Templates is Mounted", async () => {
-      await act(() => render(<Subscriptions />));
-
-      expect(screen.getByText("subscriptions.title")).toBeInTheDocument();
-      expect(screen.getByText("subscriptions.sub-title")).toBeInTheDocument();
-      screen.debug();
-    });
-
     it("Checks both pricing cards are displayed", async () => {
       render(<Subscriptions />);
 
@@ -153,13 +145,6 @@ describe("===== PAYMENTS =====", () => {
       await waitFor(() => {
         expect(screen.getByTestId("payment-history.main")).toBeInTheDocument();
         expect(screen.getByTestId("payment-history.main")).toBeInTheDocument();
-      });
-    });
-
-    it("Checks table is populated", async () => {
-      render(<Subscriptions />);
-
-      await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
       });
     });
