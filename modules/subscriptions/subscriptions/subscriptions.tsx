@@ -24,7 +24,7 @@ const PriceCard = (props: { item: Price }) => {
     const subscriptionLink =
       await Service.get("subscriptions")?.getSubscriptionLink();
     if (subscriptionLink) {
-      window.location.href = subscriptionLink.url as string;
+      window.location.href = subscriptionLink.url;
     }
     setIsLoading(false);
   };
@@ -50,7 +50,7 @@ const PriceCard = (props: { item: Price }) => {
         </ul>
         <button
           onClick={() => {
-            buttonAction ? customAction() : handleSubscribe();
+            void (buttonAction ? customAction() : handleSubscribe());
           }}
           disabled={isLoading}
           className={styles.priceButton}
