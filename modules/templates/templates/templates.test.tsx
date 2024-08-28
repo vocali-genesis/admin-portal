@@ -1,32 +1,34 @@
 import "@testing-library/jest-dom";
 import { render, screen, waitFor, within } from "@testing-library/react";
-import Modal from "react-modal";
 import userEvent from "@testing-library/user-event";
 import { CoreComponent, GlobalCore } from "@/core/module/module.types";
 import "./index";
 import "@/services/auth/auth-mock.service";
 import "@/services/templates/templates-mock.service";
-import { SupabaseTemplateService } from "@/core/module/services.types";
 
 import React, { act } from "react";
+import { jest } from "@jest/globals";
 import { RouterMock } from "@/jest-setup";
 import { getComponent, setRouteQuery } from "@/resources/tests/test.utils";
-import { Seed } from "@/resources/tests/seed";
-import {
-  GenesisTemplate,
-  GenesisTemplateField,
-  TYPE_OPTIONS,
-} from "@/core/module/core.types";
+
+import { GenesisTemplateField, TYPE_OPTIONS } from "@/core/module/core.types";
+import MessageHandler from "@/core/message-handler";
+
+jest.mock("@/core/message-handler", () => {
+  return {
+    __esModule: true,
+    default: {
+      get: jest.fn(() => ({
+        handleSuccess: jest.fn(),
+        handleError: jest.fn(),
+        info: jest.fn(),
+      })),
+    },
+  };
+});
 
 describe("===== TEMPLATES =====", () => {
-  let templatesService: SupabaseTemplateService;
-
-  beforeAll(() => {
-    templatesService = GlobalCore.manager.getComponent(
-      "service",
-      "templates",
-    ) as SupabaseTemplateService;
-  });
+  beforeAll(() => {});
 
   describe("Templates Page", () => {
     let Templates: CoreComponent;
@@ -43,58 +45,59 @@ describe("===== TEMPLATES =====", () => {
       expect(screen.getByTestId("templates.title")).toBeInTheDocument();
       expect(screen.getByTestId("templates.new-template")).toBeInTheDocument();
       expect(screen.queryByText("templates.table")).not.toBeInTheDocument();
+
+      // Check templates tabke is populated
+      await waitFor(() => {
+        expect(screen.getByTestId("table-row-0"));
+      });
       screen.debug();
     });
 
-    it("Checks table is populated", async () => {
-      render(<Templates />);
-
-      // Wait for the table to be fully rendered (at least one row is filled)
-      await waitFor(() => {
-        expect(screen.getByTestId("table-row-0"));
-      });
-    });
-
-    it("Checks new entry is created in edit mode when add template", async () => {
+    it("New entry is created in edit mode when add template", async () => {
       render(<Templates />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
       });
 
-      const templateEdit = screen.getByTestId("templates.new-template");
+      const templateEdit = screen.getByRole("button", {
+        name: "templates.create",
+      });
       act(() => templateEdit.click());
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId("templates.name-edit-field"),
-        ).toBeInTheDocument();
+        expect(screen.getByRole("textbox")).toBeInTheDocument();
       });
 
-      const inputElement = screen.getByTestId("templates.name-edit-field");
+      const inputElement = screen.getByRole("textbox");
       expect(inputElement).toHaveValue("New Template");
       expect(
         screen.getByText(new Date().toLocaleDateString()),
       ).toBeInTheDocument();
     });
 
-    it("Checks template can be created", async () => {
+    it("Template can be created", async () => {
+      const handleSuccessSpy = jest.spyOn(
+        MessageHandler.get(),
+        "handleSuccess",
+      );
+
       render(<Templates />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
       });
 
-      const templateEdit = screen.getByTestId("templates.new-template");
+      const templateEdit = screen.getByRole("button", {
+        name: "templates.create",
+      });
       act(() => templateEdit.click());
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId("templates.name-edit-field"),
-        ).toBeInTheDocument();
+        expect(screen.getByRole("textbox")).toBeInTheDocument();
       });
 
-      const inputElement = screen.getByTestId("templates.name-edit-field");
+      const inputElement = screen.getByRole("textbox");
       await userEvent.clear(inputElement);
       await userEvent.type(inputElement, "Test Template");
 
@@ -106,15 +109,16 @@ describe("===== TEMPLATES =====", () => {
       act(() => saveButton.click());
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("templates.name-edit-field"),
-        ).not.toBeInTheDocument();
+        expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
       });
 
+      expect(handleSuccessSpy).toHaveBeenCalledWith("templates.createSuccess");
       expect(screen.getByText("Test Template"));
+
+      handleSuccessSpy.mockRestore();
     });
 
-    it("Checks input field when edit button is pressed", async () => {
+    it("Input field when edit button is pressed", async () => {
       render(<Templates />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
@@ -125,12 +129,15 @@ describe("===== TEMPLATES =====", () => {
       const templateEdit = screen.getAllByTestId("templates.edit");
       act(() => templateEdit[0].click());
 
-      expect(
-        screen.getByTestId("templates.name-edit-field"),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("textbox")).toBeInTheDocument();
     });
 
-    it("Checks template can be edited", async () => {
+    it("Template can be edited", async () => {
+      const handleSuccessSpy = jest.spyOn(
+        MessageHandler.get(),
+        "handleSuccess",
+      );
+
       render(<Templates />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
@@ -141,7 +148,7 @@ describe("===== TEMPLATES =====", () => {
       const templateEdit = screen.getAllByTestId("templates.edit");
       act(() => templateEdit[0].click());
 
-      const inputElement = screen.getByTestId("templates.name-edit-field");
+      const inputElement = screen.getByRole("textbox");
       await userEvent.clear(inputElement);
       await userEvent.type(inputElement, "New Template Name");
 
@@ -153,15 +160,16 @@ describe("===== TEMPLATES =====", () => {
       act(() => saveButton.click());
 
       await waitFor(() => {
-        expect(
-          screen.queryByTestId("templates.name-edit-field"),
-        ).not.toBeInTheDocument();
+        expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
       });
 
+      expect(handleSuccessSpy).toHaveBeenCalledWith("templates.editSuccess");
       expect(screen.getByText("New Template Name"));
+
+      handleSuccessSpy.mockRestore();
     });
 
-    it("Checks modal pops up when delete icon clicked", async () => {
+    it("Modal pops up when delete icon clicked", async () => {
       render(<Templates />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
@@ -179,7 +187,12 @@ describe("===== TEMPLATES =====", () => {
       });
     });
 
-    it("Checks template delete function", async () => {
+    it("Template delete function", async () => {
+      const handleSuccessSpy = jest.spyOn(
+        MessageHandler.get(),
+        "handleSuccess",
+      );
+
       render(<Templates />);
 
       await waitFor(() => {
@@ -191,10 +204,11 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("templates.delete-confirmation"),
+          screen.getByText("resources.confirm-delete"),
         ).toBeInTheDocument();
       });
 
+      // screen.queryByRole("button", { name: "common.delete"}); doesn't work. I can't find out why
       const confirmButton = screen.getByTestId("modal.confirm-button");
       expect(confirmButton).toBeInTheDocument();
       act(() => confirmButton.click());
@@ -205,11 +219,15 @@ describe("===== TEMPLATES =====", () => {
         ).not.toBeInTheDocument();
       });
 
+      expect(handleSuccessSpy).toHaveBeenCalledWith("templates.deleteSuccess");
+
       // TODO: Make this check dynamic
       expect(screen.queryByText("New Template Name")).not.toBeInTheDocument();
+
+      handleSuccessSpy.mockRestore();
     });
 
-    it("Checks template redirect on select", async () => {
+    it("Template redirect on select", async () => {
       const spy = jest.spyOn(RouterMock, "push");
       render(<Templates />);
 
@@ -229,6 +247,9 @@ describe("===== TEMPLATES =====", () => {
 
   describe("Templates Detail Page", () => {
     let TemplateDetail: CoreComponent;
+    const getModal = async () => {
+      return await screen.findByTestId("template-detail.field-modal");
+    };
     beforeAll(() => {
       TemplateDetail = getComponent("app", "template-detail");
     });
@@ -241,48 +262,48 @@ describe("===== TEMPLATES =====", () => {
     it("Templates Detail is Mounted", async () => {
       await act(() => render(<TemplateDetail />));
 
+      // Don't know the template name as yet
       expect(screen.getByTestId("template-detail.title")).toBeInTheDocument();
       expect(
-        screen.getByTestId("template-detail.add-field"),
+        screen.getByRole("button", { name: "templates.addField" }),
       ).toBeInTheDocument();
-      expect(
-        screen.queryByText("template-detail.table"),
-      ).not.toBeInTheDocument();
-      screen.debug();
-    });
-
-    it("Checks table is populated", async () => {
-      render(<TemplateDetail />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
       });
+      screen.debug();
     });
 
-    it("Checks new entry is created in edit mode when add template", async () => {
+    it("New entry is created in edit mode when add template", async () => {
       render(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
       });
 
-      const templateEdit = screen.getByTestId("template-detail.add-field");
+      const templateEdit = screen.getByRole("button", {
+        name: "templates.addField",
+      });
       act(() => templateEdit.click());
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.field-name-input"),
+          screen.getByPlaceholderText("templates.fieldNamePlaceholder"),
         ).toBeInTheDocument();
       });
 
-      const inputElement = screen.getByTestId(
-        "template-detail.field-name-input",
+      const inputElement = screen.getByPlaceholderText(
+        "templates.fieldNamePlaceholder",
       );
       expect((inputElement as HTMLInputElement).value).toMatch(/newField.*/i);
     });
 
-    it("Checks template can be created", async () => {
+    it("Template field can be created", async () => {
+      const handleSuccessSpy = jest.spyOn(
+        MessageHandler.get(),
+        "handleSuccess",
+      );
       const NewField: GenesisTemplateField & { name: string } = {
         name: "Test Field",
         type: "text" as TYPE_OPTIONS,
@@ -294,30 +315,30 @@ describe("===== TEMPLATES =====", () => {
         expect(screen.getByTestId("table-row-0"));
       });
 
-      const templateEdit = screen.getByTestId("template-detail.add-field");
+      const templateEdit = screen.getByRole("button", {
+        name: "templates.addField",
+      });
       act(() => templateEdit.click());
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.field-name-input"),
+          screen.getByPlaceholderText("templates.fieldNamePlaceholder"),
         ).toBeInTheDocument();
       });
 
-      const nameInputElement = screen.getByTestId(
-        "template-detail.field-name-input",
+      const nameInputElement = screen.getByPlaceholderText(
+        "templates.fieldNamePlaceholder",
       );
       await userEvent.clear(nameInputElement);
       await userEvent.type(nameInputElement, NewField.name);
       expect(nameInputElement).toHaveValue(NewField.name);
 
-      const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
-      );
+      const typeSelectElement = await screen.findByRole("combobox");
       await userEvent.selectOptions(typeSelectElement, NewField.type);
       expect(typeSelectElement).toHaveValue(NewField.type);
 
-      const descriptionInputElement = screen.getByTestId(
-        "template-detail.field-description-input",
+      const descriptionInputElement = screen.getByPlaceholderText(
+        "templates.descriptionPlaceholder",
       );
       await userEvent.clear(descriptionInputElement);
       await userEvent.type(descriptionInputElement, NewField.description);
@@ -330,14 +351,17 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.field-name-input"),
+          screen.queryByPlaceholderText("templates.fieldNamePlaceholder"),
         ).not.toBeInTheDocument();
       });
 
+      expect(handleSuccessSpy).toHaveBeenCalledWith("templates.editSuccess");
       expect(screen.getByText("Test Field"));
+
+      handleSuccessSpy.mockRestore();
     });
 
-    it("Checks input field when edit button is pressed", async () => {
+    it("Input field when edit button is pressed", async () => {
       render(<TemplateDetail />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
@@ -349,17 +373,19 @@ describe("===== TEMPLATES =====", () => {
       act(() => templateEdit[0].click());
 
       expect(
-        screen.getByTestId("template-detail.field-name-input"),
+        screen.getByPlaceholderText("templates.fieldNamePlaceholder"),
       ).toBeInTheDocument();
+      expect(screen.getByRole("combobox")).toBeInTheDocument();
       expect(
-        screen.getByTestId("template-detail.field-type-select"),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId("template-detail.field-description-input"),
+        screen.getByPlaceholderText("templates.descriptionPlaceholder"),
       ).toBeInTheDocument();
     });
 
-    it("Checks template can be edited", async () => {
+    it("Template can be edited", async () => {
+      const handleSuccessSpy = jest.spyOn(
+        MessageHandler.get(),
+        "handleSuccess",
+      );
       const AlteredField: GenesisTemplateField & { name: string } = {
         name: "Altered Test Field",
         type: "number" as TYPE_OPTIONS,
@@ -375,21 +401,19 @@ describe("===== TEMPLATES =====", () => {
       const templateEdit = screen.getAllByTestId("template-detail.edit");
       act(() => templateEdit[0].click());
 
-      const nameInputElement = screen.getByTestId(
-        "template-detail.field-name-input",
+      const nameInputElement = screen.getByPlaceholderText(
+        "templates.fieldNamePlaceholder",
       );
       await userEvent.clear(nameInputElement);
       await userEvent.type(nameInputElement, AlteredField.name);
       expect(nameInputElement).toHaveValue(AlteredField.name);
 
-      const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
-      );
+      const typeSelectElement = screen.getByRole("combobox");
       await userEvent.selectOptions(typeSelectElement, AlteredField.type);
       expect(typeSelectElement).toHaveValue(AlteredField.type);
 
-      const descriptionInputElement = screen.getByTestId(
-        "template-detail.field-description-input",
+      const descriptionInputElement = screen.getByPlaceholderText(
+        "templates.descriptionPlaceholder",
       );
       await userEvent.clear(descriptionInputElement);
       await userEvent.type(descriptionInputElement, AlteredField.description);
@@ -402,32 +426,33 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("templates.name-edit-field"),
+          screen.queryByPlaceholderText("templates.fieldNamePlaceholder"),
         ).not.toBeInTheDocument();
       });
 
+      expect(handleSuccessSpy).toHaveBeenCalledWith("templates.editSuccess");
       expect(screen.getByText("Altered Test Field"));
+
+      handleSuccessSpy.mockRestore();
     });
 
-    it("Checks config modal button when type != text", async () => {
+    it("Config modal button when type != text", async () => {
       render(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
       });
 
-      const templateEdit = screen.getByTestId("template-detail.add-field");
+      const templateEdit = screen.getByRole("button", {
+        name: "templates.addField",
+      });
       act(() => templateEdit.click());
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId("template-detail.field-type-select"),
-        ).toBeInTheDocument();
+        expect(screen.getByRole("combobox")).toBeInTheDocument();
       });
 
-      const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
-      );
+      const typeSelectElement = screen.getByRole("combobox");
       expect(typeSelectElement).toHaveValue("text");
       expect(
         screen.queryByTestId("template-detail.edit-field-config"),
@@ -458,25 +483,23 @@ describe("===== TEMPLATES =====", () => {
       });
     });
 
-    it("Checks config modal opens when config button clicked", async () => {
+    it("Config modal opens when config button clicked", async () => {
       render(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
       });
 
-      const templateEdit = screen.getByTestId("template-detail.add-field");
+      const templateEdit = screen.getByRole("button", {
+        name: "templates.addField",
+      });
       act(() => templateEdit.click());
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId("template-detail.field-type-select"),
-        ).toBeInTheDocument();
+        expect(screen.getByRole("combobox")).toBeInTheDocument();
       });
 
-      const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
-      );
+      const typeSelectElement = screen.getByRole("combobox");
 
       await userEvent.selectOptions(typeSelectElement, "number");
       expect(typeSelectElement).toHaveValue("number");
@@ -491,11 +514,11 @@ describe("===== TEMPLATES =====", () => {
       );
       act(() => configButton.click());
 
-      const modal = await screen.findByTestId("template-detail.field-modal");
+      const modal = await screen.findByText("Edit number Config");
       expect(modal).toBeInTheDocument();
     });
 
-    it("Checks select config modal is populated", async () => {
+    it("Select config modal is populated", async () => {
       render(<TemplateDetail />);
 
       await waitFor(() => {
@@ -506,14 +529,10 @@ describe("===== TEMPLATES =====", () => {
       act(() => templateEdit[1].click());
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId("template-detail.field-type-select"),
-        ).toBeInTheDocument();
+        expect(screen.getByRole("combobox")).toBeInTheDocument();
       });
 
-      const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
-      );
+      const typeSelectElement = screen.getByRole("combobox");
       expect(typeSelectElement).toHaveValue("select");
 
       await waitFor(() => {
@@ -527,15 +546,14 @@ describe("===== TEMPLATES =====", () => {
       );
       act(() => configButton.click());
 
-      const modal = await screen.findByTestId("template-detail.field-modal");
-      expect(modal).toBeInTheDocument();
+      const modal = await getModal();
 
       const { getAllByText } = within(modal);
       expect(getAllByText("number")[0]).toHaveClass("optionTag");
       expect(getAllByText("text")[0]).toHaveClass("optionTag");
     });
 
-    it("Checks multiselect config modal is populated", async () => {
+    it("Multiselect config modal is populated", async () => {
       render(<TemplateDetail />);
 
       await waitFor(() => {
@@ -546,14 +564,10 @@ describe("===== TEMPLATES =====", () => {
       act(() => templateEdit[2].click());
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId("template-detail.field-type-select"),
-        ).toBeInTheDocument();
+        expect(screen.getByRole("combobox")).toBeInTheDocument();
       });
 
-      const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
-      );
+      const typeSelectElement = screen.getByRole("combobox");
       expect(typeSelectElement).toHaveValue("multiselect");
 
       await waitFor(() => {
@@ -567,15 +581,14 @@ describe("===== TEMPLATES =====", () => {
       );
       act(() => configButton.click());
 
-      const modal = await screen.findByTestId("template-detail.field-modal");
-      expect(modal).toBeInTheDocument();
+      const modal = await getModal();
 
       const { getByText } = within(modal);
       expect(getByText("integer")).toHaveClass("optionTag");
       expect(getByText("string")).toHaveClass("optionTag");
     });
 
-    it("Checks select option works", async () => {
+    it("Select option", async () => {
       render(<TemplateDetail />);
 
       await waitFor(() => {
@@ -586,14 +599,10 @@ describe("===== TEMPLATES =====", () => {
       act(() => templateEdit[1].click());
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId("template-detail.field-type-select"),
-        ).toBeInTheDocument();
+        expect(screen.getByRole("combobox")).toBeInTheDocument();
       });
 
-      const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
-      );
+      const typeSelectElement = screen.getByRole("combobox");
       expect(typeSelectElement).toHaveValue("select");
 
       await waitFor(() => {
@@ -607,8 +616,7 @@ describe("===== TEMPLATES =====", () => {
       );
       act(() => configButton.click());
 
-      const modal = await screen.findByTestId("template-detail.field-modal");
-      expect(modal).toBeInTheDocument();
+      const modal = await getModal();
 
       const { getAllByText } = within(modal);
       expect(getAllByText("multiselect")).toHaveLength(1);
@@ -625,7 +633,7 @@ describe("===== TEMPLATES =====", () => {
       });
     });
 
-    it("Checks multiselect option works", async () => {
+    it("Multiselect option", async () => {
       render(<TemplateDetail />);
 
       await waitFor(() => {
@@ -636,14 +644,10 @@ describe("===== TEMPLATES =====", () => {
       act(() => templateEdit[2].click());
 
       await waitFor(() => {
-        expect(
-          screen.getByTestId("template-detail.field-type-select"),
-        ).toBeInTheDocument();
+        expect(screen.getByRole("combobox")).toBeInTheDocument();
       });
 
-      const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
-      );
+      const typeSelectElement = screen.getByRole("combobox");
       expect(typeSelectElement).toHaveValue("multiselect");
 
       await waitFor(() => {
@@ -657,8 +661,7 @@ describe("===== TEMPLATES =====", () => {
       );
       act(() => configButton.click());
 
-      const modal = await screen.findByTestId("template-detail.field-modal");
-      expect(modal).toBeInTheDocument();
+      const modal = await getModal();
 
       const { getByText, queryByText } = within(modal);
       expect(queryByText("test_type")).not.toBeInTheDocument();
@@ -681,7 +684,7 @@ describe("===== TEMPLATES =====", () => {
       });
     });
 
-    it("Checks modal pops up when delete icon clicked", async () => {
+    it("Modal pops up when delete icon clicked", async () => {
       render(<TemplateDetail />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
@@ -699,7 +702,11 @@ describe("===== TEMPLATES =====", () => {
       });
     });
 
-    it("Checks template delete function", async () => {
+    it("Template delete function", async () => {
+      const handleSuccessSpy = jest.spyOn(
+        MessageHandler.get(),
+        "handleSuccess",
+      );
       render(<TemplateDetail />);
 
       await waitFor(() => {
@@ -725,8 +732,13 @@ describe("===== TEMPLATES =====", () => {
         ).not.toBeInTheDocument();
       });
 
+      expect(handleSuccessSpy).toHaveBeenCalledWith(
+        "templates.fieldDeleteSuccess",
+      );
       // TODO: Make this check dynamic
       expect(screen.queryByText("Age")).not.toBeInTheDocument();
+
+      handleSuccessSpy.mockRestore();
     });
   });
 });

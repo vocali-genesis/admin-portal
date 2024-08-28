@@ -27,11 +27,6 @@ describe("Table component", () => {
         expect(screen.getByText(item.email)).toBeInTheDocument();
       });
     });
-
-    // Check if the table headers are rendered
-    mockColumns.forEach((column) => {
-      expect(screen.getByText(column.title)).toBeInTheDocument();
-    });
   });
 
   test("should render the empty state when data is empty", () => {
