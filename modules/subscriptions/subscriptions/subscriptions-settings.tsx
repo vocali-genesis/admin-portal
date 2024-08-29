@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import Table from "@/resources/table";
 import ConfirmDialog from "@/resources/containers/delete-confirmation";
+import Badge from '@/resources/badge'
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
@@ -27,6 +28,10 @@ const PaymentHistory: React.FC = () => {
     {
       title: t("invoice-history.date-th"),
       render: (item) => <>{moment(item.created_at).format("DD MMM, YYYY")}</>,
+    },
+    {
+      title: t("invoice-history.validity-th"),
+      render: (item) => <>{moment(+item.metadata.period_end * 1000).format("DD MMM, YYYY")}</>,
     },
     {
       title: t("invoice-history.amount-th"),
@@ -158,15 +163,16 @@ const Subscriptions = () => {
   const validUntil = subscription?.id
     ? moment(subscription?.current_period_end || "").format("DD MMM, YYYY")
     : t("subscription-settings.inactive-label");
+  const badgeClass = subscription?.id ? 'success' : 'warning'
 
   return (
     <div className={styles.container}>
       <main className={styles.contentWrapper}>
         <div className={styles.head}>
           <div className={styles.left}>
-            <span>
-              {t("subscription-settings.exp-label")} {validUntil}
-            </span>
+            <h2>
+              {t("subscription-settings.exp-label")} <Badge variant={badgeClass}>{validUntil}</Badge>
+            </h2>
           </div>
           <div className={styles.right}>
             {subscription?.status === "active" ? <CancelSubscriptonBtn /> : (
@@ -181,9 +187,9 @@ const Subscriptions = () => {
           </div>
         </div>
         <div className={styles.content}>
-          <h2 className={styles.title}>
+          <h3 className={styles.title}>
             {t("subscription-settings.payment-history")}
-          </h2>
+          </h3>
           <PaymentHistory />
         </div>
       </main>
