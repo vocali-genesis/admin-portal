@@ -23,8 +23,8 @@ const RecordButton: React.FC<RecordButtonProps> = ({
           recordingState === "recording"
             ? record_btn_styles.recording
             : recordingState === "paused"
-            ? record_btn_styles.paused
-            : ""
+              ? record_btn_styles.paused
+              : ""
         }`}
         onClick={onClick}
         style={{
@@ -35,7 +35,7 @@ const RecordButton: React.FC<RecordButtonProps> = ({
         {recordingState === "recording" ? (
           <FaPause size={40} />
         ) : recordingState === "paused" ? (
-          <FaPlay size={40} />
+          <FaMicrophone size={40} />
         ) : (
           <FaMicrophone size={40} />
         )}

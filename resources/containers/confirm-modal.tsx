@@ -43,7 +43,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       <h2>{title}</h2>
       <p>{message}</p>
       <div className={modal_styles.modalButtons} data-testid={testId}>
-        <button onClick={onConfirm} className={modal_styles.confirmButton}>
+        <button
+          onClick={onConfirm}
+          className={modal_styles.confirmButton}
+          data-testid="modal.confirm-button"
+        >
           {confirmButtonText}
         </button>
         <button onClick={onRequestClose} className={modal_styles.cancelButton}>

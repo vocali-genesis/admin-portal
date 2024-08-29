@@ -9,11 +9,18 @@ interface TableProps<T> {
   columns: ColumnConfig<T>[];
   onSort?: (key: string, column: string) => void;
   isLoading?: boolean;
+  testId?: string;
 }
 
 type Direction = "asc" | "desc";
 
-const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
+const Table = <T,>({
+  data,
+  columns,
+  onSort,
+  isLoading,
+  testId,
+}: TableProps<T>) => {
   const [sortConfig, setSortConfig] = useState<{
     key: keyof T;
     direction: Direction;
@@ -40,7 +47,7 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
           <Spinner />
         </SpinnerOverlay>
       )}
-      <StyledTable>
+      <StyledTable data-testid={testId}>
         <thead>
           <TableHeader>
             {columns.map((column, index) => (
@@ -68,7 +75,7 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
         </thead>
         <tbody>
           {data.map((item, rowIndex) => (
-            <TableRow key={rowIndex}>
+            <TableRow key={rowIndex} data-testid={`table-row-${rowIndex}`}>
               {columns.map((column, colIndex) => (
                 <TableCell key={colIndex}>
                   {column.render
@@ -87,7 +94,13 @@ const Table = <T,>({ data, columns, onSort, isLoading }: TableProps<T>) => {
             <TableRow>
               <TableCell colSpan={columns.length}>
                 <EmptyState>
-                  <Image src="/empty.png" alt="empty" width={60} height={30} />
+                  <Image
+                    src="/empty.png"
+                    alt="empty"
+                    width={60}
+                    height={30}
+                    data-testid="table.no-data"
+                  />
                 </EmptyState>
               </TableCell>
             </TableRow>

@@ -33,7 +33,7 @@ export interface MedicalTranscription {
   transcribeAudio(audioFile: File): Promise<GenesisReport["transcription"]>;
   processAudioAndGenerateReport(
     audioFile: File,
-    template?: string,
+    template?: GenesisTemplate,
     language?: string
   ): Promise<GenesisReport | null>;
 }
@@ -68,7 +68,7 @@ export interface SubscriptionService {
 export interface SupabaseTemplateService {
   getTemplates(
     page: number,
-    pageSize: number
+    pageSize?: number
   ): Promise<GenesisPagination<GenesisTemplate> | null>;
   getTemplate(
     id: number,

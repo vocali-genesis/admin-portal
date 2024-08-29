@@ -14,6 +14,7 @@ import {
   FaArrowLeft,
   FaPlus,
   FaCog,
+  FaTimes,
 } from "react-icons/fa";
 import MessageHandler from "@/core/message-handler";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
@@ -21,6 +22,7 @@ import Table from "@/resources/table/table";
 import UnsavedChanges from "@/resources/containers/unsaved-changes-warning";
 import FieldModal from "@/resources/containers/field-modal";
 import Service from "@/core/module/service.factory";
+import { SupabaseTemplateService } from "@/core/module/services.types";
 import BasicInput from "@/resources/inputs/basic-input";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import {
@@ -40,7 +42,7 @@ type TableDataType = GenesisTemplateField & { key: string; name: string };
 const TemplateDetail = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const templateService = Service.require("templates");
+  const templateService: SupabaseTemplateService = Service.require("templates");
   const { id } = router.query;
 
   const [template, setTemplate] = useState<GenesisTemplate | null>(null);
@@ -48,6 +50,7 @@ const TemplateDetail = () => {
   const [editedValues, setEditedValues] = useState<
     Record<string, GenesisTemplateField & { name: string }>
   >({});
+  const [newField, setNewField] = useState<string | null>(null);
   const [fieldToDelete, setFieldToDelete] = useState<string | null>(null);
   const [isFieldModalOpen, setIsFieldModalOpen] = useState(false);
   const [unsavedChangesModalOpen, setUnsavedChangesModalOpen] = useState(false);
@@ -61,8 +64,6 @@ const TemplateDetail = () => {
   const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
     null,
   );
-
-  console.log("FieldModalConfig: ", fieldModalConfig);
 
   const fetchTemplate = useCallback(
     async (page: number) => {
@@ -110,6 +111,24 @@ const TemplateDetail = () => {
     }
   };
 
+  const handleCancel = (fieldKey: string) => {
+    setEditingField(null);
+    setEditedValues((prev) => {
+      const newValues = { ...prev };
+      delete newValues[fieldKey];
+      return newValues;
+    });
+    if (newField === fieldKey) {
+      setNewField(null);
+      setTemplate((prev) => {
+        if (!prev) return prev;
+        const newFields = { ...prev.fields };
+        delete newFields[fieldKey];
+        return { ...prev, fields: newFields };
+      });
+    }
+  };
+
   const handleSave = async (fieldKey: string) => {
     if (!template) return;
     const { name, ...fieldData } = editedValues[fieldKey];
@@ -137,6 +156,10 @@ const TemplateDetail = () => {
       messageHandler.handleError(t("templates.editError"));
     }
 
+    setPagination({
+      ...pagination,
+      totalRecords: pagination.totalRecords + 1,
+    });
     setIsFieldModalOpen(false);
   };
 
@@ -167,6 +190,7 @@ const TemplateDetail = () => {
       ...prev,
       [newFieldKey]: { name: newFieldKey, ...newField },
     }));
+    setNewField(newFieldKey);
   };
 
   const confirmDelete = async () => {
@@ -187,6 +211,11 @@ const TemplateDetail = () => {
     } finally {
       setFieldToDelete(null);
     }
+
+    setPagination({
+      ...pagination,
+      totalRecords: pagination.totalRecords - 1,
+    });
   };
 
   function isNumberFieldConfig(
@@ -208,11 +237,12 @@ const TemplateDetail = () => {
       render: (record: TableDataType) =>
         editingField === record.key ? (
           <BasicInput
-            value={editedValues[record.key]?.name || record.name}
+            value={editedValues[record.key]?.name}
             onChange={(e) =>
               handleInputChange(record.key, "name", e.target.value)
             }
             placeholder={t("templates.fieldNamePlaceholder")}
+            testId="template-detail.field-name-input"
           />
         ) : (
           <span>{record.name}</span>
@@ -234,6 +264,7 @@ const TemplateDetail = () => {
               label: t(`templates.type-${option}`),
             }))}
             disabled={false}
+            testId="template-detail.field-type-select"
           />
         ) : (
           <span>{record.type}</span>
@@ -245,11 +276,12 @@ const TemplateDetail = () => {
       render: (record: TableDataType) =>
         editingField === record.key ? (
           <BasicInput
-            value={editedValues[record.key]?.description || record.description}
+            value={editedValues[record.key]?.description}
             onChange={(e) =>
               handleInputChange(record.key, "description", e.target.value)
             }
             placeholder={t("templates.descriptionPlaceholder")}
+            testId="template-detail.field-description-input"
           />
         ) : (
           <span>{record.description}</span>
@@ -262,8 +294,19 @@ const TemplateDetail = () => {
         <>
           {editingField === record.key ? (
             <div style={{ display: "flex", gap: "3vh" }}>
-              <IconButton onClick={() => handleSave(record.key)} size="small">
+              <IconButton
+                onClick={() => handleSave(record.key)}
+                size="small"
+                testId="template-detail.save-field"
+              >
                 <FaSave style={{ color: "var(--primary)" }} />
+              </IconButton>
+              <IconButton
+                onClick={() => handleCancel(record.key)}
+                size="small"
+                testId="template-detail.cancel-edit"
+              >
+                <FaTimes style={{ color: "var(--danger)" }} />
               </IconButton>
               {["number", "select", "multiselect"].includes(
                 editedValues[record.key]?.type,
@@ -271,7 +314,6 @@ const TemplateDetail = () => {
                 <IconButton
                   onClick={() => {
                     const fieldConfig = editedValues[record.key]?.config;
-                    console.log("Field Config", fieldConfig);
                     let configToUse: FieldConfig;
 
                     if (
@@ -299,6 +341,7 @@ const TemplateDetail = () => {
                     setIsFieldModalOpen(true);
                   }}
                   size="small"
+                  testId="template-detail.edit-field-config"
                 >
                   <FaCog style={{ color: "var(--primary)" }} />
                 </IconButton>
@@ -306,12 +349,17 @@ const TemplateDetail = () => {
             </div>
           ) : (
             <div style={{ display: "flex", gap: "3vh" }}>
-              <IconButton onClick={() => handleEdit(record.key)} size="small">
+              <IconButton
+                onClick={() => handleEdit(record.key)}
+                size="small"
+                testId="template-detail.edit"
+              >
                 <FaEdit style={{ color: "var(--primary)" }} />
               </IconButton>
               <IconButton
                 onClick={() => setFieldToDelete(record.key)}
                 size="small"
+                testId="template-detail.delete"
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
               </IconButton>
@@ -337,6 +385,7 @@ const TemplateDetail = () => {
           onClick={() => router.push("/app/templates")}
           variant="secondary"
           className={styles.backButton}
+          testId="template-detail.back-button"
         >
           <FaArrowLeft /> {t("templates.back")}
         </Button>
@@ -344,16 +393,24 @@ const TemplateDetail = () => {
           onClick={handleAddField}
           variant="primary"
           className={styles.addFieldButton}
+          disabled={editingField ? true : false}
+          testId="template-detail.add-field"
         >
           <FaPlus /> {t("templates.addField")}
         </Button>
       </div>
-      <h1 className={styles.title}>{template?.name}</h1>
-      <p className={styles.preview}>{template?.preview}</p>
+      <h1 className={styles.title} data-testid="template-detail.title">
+        {template?.name}
+      </h1>
 
-      <Table data={tableData} columns={columns} isLoading={isLoading} />
+      <Table
+        data={tableData}
+        columns={columns}
+        isLoading={isLoading}
+        testId="template-detail.table"
+      />
       <Pagination
-        currentPage={pagination.currentPage}
+        currentPage={pagination.totalPages === 0 ? 0 : pagination.currentPage}
         totalPages={pagination.totalPages}
         totalRecords={pagination.totalRecords}
         onPageChange={handlePageChange}
@@ -363,6 +420,7 @@ const TemplateDetail = () => {
         isOpen={!!fieldToDelete}
         onRequestClose={() => setFieldToDelete(null)}
         onConfirm={confirmDelete}
+        testId="template-detail.delete-confirmation"
       />
 
       <UnsavedChanges
@@ -400,19 +458,6 @@ const TemplateDetail = () => {
 
             const updatedFields = { ...template.fields };
             updatedFields[editingField] = updatedField;
-
-            try {
-              await handleSave(editingField);
-
-              setTemplate((prev) => ({
-                ...prev!,
-                fields: updatedFields,
-              }));
-
-              messageHandler.handleSuccess(t("templates.fieldUpdateSuccess"));
-            } catch (error) {
-              messageHandler.handleError(t("templates.fieldUpdateError"));
-            }
           }
           setIsFieldModalOpen(false);
         }}
@@ -422,6 +467,7 @@ const TemplateDetail = () => {
           TYPE_OPTIONS.TEXT
         }
         initialConfig={fieldModalConfig}
+        testId="template-detail.field-modal"
       />
     </div>
   );

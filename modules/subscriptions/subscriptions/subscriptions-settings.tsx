@@ -104,13 +104,13 @@ const CancelSubscriptonBtn = () => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const onConfirm = async () => {
     setIsLoading(true);
     const data = await Service.require("subscriptions").cancelSubscription();
-    if(data?.id) {
-      messageHandler.handleSuccess(t("subscription-settings.success-message"))
-      await router.push('/settings/subscriptions')
+    if (data?.id) {
+      messageHandler.handleSuccess(t("subscription-settings.success-message"));
+      await router.push("/settings/subscriptions");
     }
     setIsOpen(false);
     setIsLoading(false);
@@ -175,11 +175,14 @@ const Subscriptions = () => {
             </h2>
           </div>
           <div className={styles.right}>
-            {subscription?.status === "active" ? <CancelSubscriptonBtn /> : (
-              <Button onClick={() => {
-                router.push('/app/subscriptions');
-              }}
-              variant="primary"
+            {subscription?.status === "active" ? (
+              <CancelSubscriptonBtn />
+            ) : (
+              <Button
+                onClick={() => {
+                  router.push("/app/subscriptions");
+                }}
+                variant="primary"
               >
                 {t("subscription-settings.subscribe-btn")}
               </Button>

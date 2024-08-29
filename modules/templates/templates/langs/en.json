@@ -9,6 +9,7 @@
     "type": "Type",
     "description": "Description",
     "create": "Add Template",
+    "newTemplate": "New Template",
     "back": "Back",
     "addField": "Add Field",
     "all_templates": "All Templates",

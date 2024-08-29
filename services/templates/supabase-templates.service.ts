@@ -24,17 +24,22 @@ class SupabaseTemplateService {
 
   async getTemplates(
     page: number = 1,
-    pageSize: number = 8,
+    pageSize?: number,
   ): Promise<PaginatedResponse<GenesisTemplate> | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize - 1;
 
-    const { data, error, count } = await this.supabase
+    let query = this.supabase
       .from("templates")
       .select("*", { count: "exact" })
-      .eq("ownerId", userData?.id)
-      .range(from, to);
+      .eq("ownerId", userData?.id);
+
+    if (pageSize) {
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+    }
+
+    const { data, error, count } = await query;
 
     if (error) {
       messageHandler.handleError(error.message);
@@ -42,7 +47,7 @@ class SupabaseTemplateService {
     }
 
     const totalCount = count || 0;
-    const totalPages = Math.ceil(totalCount / pageSize);
+    const totalPages = pageSize ? Math.ceil(totalCount / pageSize) : 1;
 
     return {
       data: data as GenesisTemplate[],
@@ -98,7 +103,11 @@ class SupabaseTemplateService {
 
     const { data, error } = await this.supabase
       .from("templates")
-      .insert({ ...template, ownerId: userData?.id })
+      .insert({
+        ...template,
+        ownerId: userData?.id,
+        createdAt: new Date().toISOString(),
+      })
       .select();
     if (error) {
       messageHandler.handleError(error.message);

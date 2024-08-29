@@ -10,12 +10,34 @@ import Button from "@/resources/containers/button";
 import { AudioPlayer } from "@/resources/media/audio-player";
 import MessageHandler from "@/core/message-handler";
 import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
+import { BasicSelect } from "@/resources/inputs/basic-select.input";
+import { SupabaseTemplateService } from "@/core/module/services.types";
+import { GenesisTemplate } from "@/core/module/core.types";
+
+const messageHandler = MessageHandler.get();
 
 const Recording = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const templateService: SupabaseTemplateService = Service.require("templates");
+  const [template, setTemplate] = useState<GenesisTemplate | null>(null);
+  const [templateOptions, setTemplateOptions] = useState<GenesisTemplate[]>([]);
   const { audioUrl } = router.query as { audioUrl: string };
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    void fetchTemplates();
+  }, []);
+
+  const fetchTemplates = async () => {
+    setIsLoading(true);
+    const response = await templateService.getTemplates(1);
+    if (!response) return;
+
+    setTemplateOptions(response.data);
+    setTemplate(response.data[0]);
+    setIsLoading(false);
+  };
 
   const handleSubmit = async () => {
     if (!audioUrl) {
@@ -29,8 +51,9 @@ const Recording = () => {
     const blob = await response.blob();
     const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
 
-    const api_response =
-      await Service.require("medical-api").processAudioAndGenerateReport(file);
+    const api_response = await Service.require(
+      "medical-api",
+    ).processAudioAndGenerateReport(file, template as GenesisTemplate, "en");
 
     if (!api_response) {
       setIsLoading(false);
@@ -63,6 +86,23 @@ const Recording = () => {
             testId="audio-player"
             audioUrl={audioUrl}
             onDelete={() => void router.push("/app/dashboard")}
+          />
+          <BasicSelect
+            name="template-select"
+            value={template?.id.toString() as string}
+            onChange={(value) => {
+              const selectedTemplate = templateOptions.find(
+                (option) => option.id.toString() === value,
+              );
+              if (!selectedTemplate) {
+                messageHandler.handleError(t("error-no-template"));
+                return;
+              }
+              setTemplate(selectedTemplate);
+            }}
+            options={templateOptions.map((template) => {
+              return { value: template.id.toString(), label: template.name };
+            })}
           />
           <Button
             onClick={() => void handleSubmit()}

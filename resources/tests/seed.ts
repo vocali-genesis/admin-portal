@@ -7,11 +7,23 @@ import { CENTS, GenesisInvoice } from "@/core/module/core.types";
 import { faker } from "@faker-js/faker";
 import moment from "moment";
 import { TextEncoder } from "util";
+import {
+  TYPE_OPTIONS,
+  NumberFieldConfig,
+  SelectFieldConfig,
+} from "@/core/module/core.types";
 
 export class Seed {
+  private static idCounter = 0;
+
   public static new() {
     return new Seed();
   }
+
+  private static getNextId() {
+    return Seed.idCounter++;
+  }
+
   public user(props: Partial<GenesisUser> = {}) {
     function user(props: Partial<GenesisUser>) {
       const user = {
@@ -105,12 +117,38 @@ export class Seed {
   ): SeedBuilder<GenesisTemplate> {
     function template(props: Partial<GenesisTemplate>): GenesisTemplate {
       return {
-        id: faker.number.int(),
+        id: Seed.getNextId(),
         ownerId: faker.string.uuid(),
         name: faker.company.name(),
         createdAt: faker.date.past().toISOString(),
-        preview: faker.image.imageUrl(),
-        fields: {},
+        preview: faker.string.sample(),
+        fields: {
+          name: {
+            type: TYPE_OPTIONS.TEXT,
+            description: "Patient name",
+          },
+          Age: {
+            type: TYPE_OPTIONS.NUMBER,
+            description: "Patient Age",
+            config: {
+              maxValue: 100,
+            } as NumberFieldConfig,
+          },
+          "Test Field No.1": {
+            type: TYPE_OPTIONS.SELECT,
+            description: "First test field",
+            config: {
+              options: ["number", "text"],
+            } as SelectFieldConfig,
+          },
+          "Test Field No.2": {
+            type: TYPE_OPTIONS.MULTISELECT,
+            description: "Second test field",
+            config: {
+              options: ["integer", "string", "list"],
+            } as SelectFieldConfig,
+          },
+        },
         ...props,
       };
     }
