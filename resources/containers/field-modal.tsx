@@ -216,7 +216,12 @@ const FieldModal: React.FC<FieldModalProps> = ({
             Cancel
           </Button>
           {fieldType === TYPE_OPTIONS.MULTISELECT && (
-            <Button onClick={addOption} testId="field-modal.multi-select-add-option">Add</Button>
+            <Button
+              onClick={addOption}
+              testId="field-modal.multi-select-add-option"
+            >
+              Add
+            </Button>
           )}
           <Button onClick={handleSubmit(handleSave)}>Save</Button>
         </div>
