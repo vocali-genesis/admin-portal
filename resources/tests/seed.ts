@@ -42,6 +42,9 @@ export class Seed {
       return {
         invoice_id: faker.string.uuid(),
         created_at: faker.date.past().toISOString(),
+        metadata: {
+          period_end: faker.date.future().toISOString(),
+        },
         amount: (+faker.finance.amount({ min: 10, max: 300 }) * 100) as CENTS,
         invoice_url: faker.internet.url(),
         ...props,
