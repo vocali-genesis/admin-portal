@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import Table from "@/resources/table";
 import ConfirmDialog from "@/resources/containers/delete-confirmation";
+import Badge from '@/resources/badge'
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
@@ -27,6 +28,10 @@ const PaymentHistory: React.FC = () => {
     {
       title: t("invoice-history.date-th"),
       render: (item) => <>{moment(item.created_at).format("DD MMM, YYYY")}</>,
+    },
+    {
+      title: t("invoice-history.validity-th"),
+      render: (item) => <>{moment(+item.metadata.period_end * 1000).format("DD MMM, YYYY")}</>,
     },
     {
       title: t("invoice-history.amount-th"),
@@ -75,12 +80,13 @@ const PaymentHistory: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto" data-testid="payment-history.main">
       <Table<GenesisInvoice>
         data={data}
         columns={columns}
         onSort={handleSort}
         isLoading={isLoading}
+        data-testid="payment-history.main"
         pagination={{
           currentPage: totalPages ? currentPage : 0,
           totalPages,
@@ -99,13 +105,13 @@ const CancelSubscriptonBtn = () => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const onConfirm = async () => {
     setIsLoading(true);
     const data = await Service.require("subscriptions").cancelSubscription();
-    if(data?.id) {
-      messageHandler.handleSuccess(t("subscription-settings.success-message"))
-      await router.push('/settings/subscriptions')
+    if (data?.id) {
+      messageHandler.handleSuccess(t("subscription-settings.success-message"));
+      await router.push("/settings/subscriptions");
     }
     setIsOpen(false);
     setIsLoading(false);
@@ -158,22 +164,29 @@ const Subscriptions = () => {
   const validUntil = subscription?.id
     ? moment(subscription?.current_period_end || "").format("DD MMM, YYYY")
     : t("subscription-settings.inactive-label");
+  const badgeClass = subscription?.id ? 'success' : 'warning'
 
   return (
     <div className={styles.container}>
-      <main className={styles.contentWrapper}>
+      <main
+        className={styles.contentWrapper}
+        data-testid="subscriptions-settings.main"
+      >
         <div className={styles.head}>
           <div className={styles.left}>
-            <span>
-              {t("subscription-settings.exp-label")} {validUntil}
-            </span>
+            <h2>
+              {t("subscription-settings.exp-label")} <Badge variant={badgeClass}>{validUntil}</Badge>
+            </h2>
           </div>
           <div className={styles.right}>
-            {subscription?.status === "active" ? <CancelSubscriptonBtn /> : (
-              <Button onClick={() => {
-                router.push('/app/subscriptions');
-              }}
-              variant="primary"
+            {subscription?.status === "active" ? (
+              <CancelSubscriptonBtn />
+            ) : (
+              <Button
+                onClick={() => {
+                  router.push("/app/subscriptions");
+                }}
+                variant="primary"
               >
                 {t("subscription-settings.subscribe-btn")}
               </Button>
@@ -181,9 +194,9 @@ const Subscriptions = () => {
           </div>
         </div>
         <div className={styles.content}>
-          <h2 className={styles.title}>
+          <h3 className={styles.title}>
             {t("subscription-settings.payment-history")}
-          </h2>
+          </h3>
           <PaymentHistory />
         </div>
       </main>

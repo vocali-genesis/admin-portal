@@ -91,7 +91,7 @@ class SubscriptionSupabase implements SubscriptionService {
     const { data: invoices, error } = await this.supabase
       .from("invoices")
       .select("*")
-      .order("id", { ascending: false })
+      .order("created_at", { ascending: false })
       .range(from, to);
     if (error) {
       messageHandler.handleError(error.message);

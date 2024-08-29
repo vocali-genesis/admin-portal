@@ -35,7 +35,10 @@ const PriceCard = (props: { item: Price }) => {
   };
   return (
     <>
-      <div className={styles.pricingCard}>
+      <div
+        className={styles.pricingCard}
+        data-testid="subscriptions.pricing-card"
+      >
         <div className={styles.priceTitle}>{t(title)}</div>
         <div className={styles.priceTag}>
           <span className={styles.priceCurrency}>{t(currency)}</span>
