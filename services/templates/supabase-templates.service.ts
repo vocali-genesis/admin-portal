@@ -33,7 +33,7 @@ class SupabaseTemplateService {
     const { data, error, count } = await this.supabase
       .from("templates")
       .select("*", { count: "exact" })
-      .eq("ownerId", userData?.id)
+      .eq("owner_id", userData?.id)
       .range(from, to);
 
     if (error) {
@@ -52,7 +52,7 @@ class SupabaseTemplateService {
   }
 
   async getTemplate(
-    id: number,
+    id: string,
     page: number = 1,
     pageSize: number = 8,
   ): Promise<PaginatedResponse<GenesisTemplate> | null> {
@@ -61,7 +61,7 @@ class SupabaseTemplateService {
       .from("templates")
       .select("*")
       .eq("id", id)
-      .eq("ownerId", userData?.id)
+      .eq("owner_id", userData?.id)
       .single();
 
     if (error) {
@@ -92,13 +92,13 @@ class SupabaseTemplateService {
   }
 
   async createTemplate(
-    template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">,
+    template: Omit<GenesisTemplate, "id" | "created_at" | "owner_id">,
   ): Promise<GenesisTemplate | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
 
     const { data, error } = await this.supabase
       .from("templates")
-      .insert({ ...template, ownerId: userData?.id })
+      .insert({ ...template, owner_id: userData?.id })
       .select();
     if (error) {
       messageHandler.handleError(error.message);
@@ -109,7 +109,7 @@ class SupabaseTemplateService {
   }
 
   async updateTemplate(
-    id: number,
+    id: string,
     updates: Partial<GenesisTemplate>,
   ): Promise<GenesisTemplate | null> {
     const { data, error } = await this.supabase
@@ -125,7 +125,7 @@ class SupabaseTemplateService {
     return data[0] as GenesisTemplate;
   }
 
-  async deleteTemplate(id: number): Promise<boolean> {
+  async deleteTemplate(id: string): Promise<boolean> {
     const { error } = await this.supabase
       .from("templates")
       .delete()

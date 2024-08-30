@@ -50,10 +50,10 @@ export interface GenesisTemplateField {
 }
 
 export interface GenesisTemplate {
-  id: number;
-  ownerId: string;
+  id: string;
+  owner_id: string;
   name: string;
-  createdAt: string;
+  created_at: string;
   preview: string;
   fields: { [key: string]: GenesisTemplateField };
 }

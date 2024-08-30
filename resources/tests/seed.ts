@@ -102,10 +102,10 @@ export class Seed {
   ): SeedBuilder<GenesisTemplate> {
     function template(props: Partial<GenesisTemplate>): GenesisTemplate {
       return {
-        id: faker.number.int(),
-        ownerId: faker.string.uuid(),
+        id: faker.string.uuid(),
+        owner_id: faker.string.uuid(),
         name: faker.company.name(),
-        createdAt: faker.date.past().toISOString(),
+        created_at: faker.date.past().toISOString(),
         preview: faker.image.imageUrl(),
         fields: {},
         ...props,

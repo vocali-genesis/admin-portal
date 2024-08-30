@@ -69,7 +69,7 @@ const TemplateDetail = () => {
       if (typeof id !== "string") return;
       setIsLoading(true);
       try {
-        const fetchedTemplate = await templateService.getTemplate(+id, page, 5);
+        const fetchedTemplate = await templateService.getTemplate(id, page, 5);
         if (fetchedTemplate) {
           setTemplate(fetchedTemplate.data[0]);
           setPagination({

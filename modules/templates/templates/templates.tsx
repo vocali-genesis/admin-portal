@@ -32,7 +32,7 @@ const Templates = () => {
   const [templates, setTemplates] = useState<GenesisTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [templateToDelete, setTemplateToDelete] = useState<number | null>(null);
+  const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
   const [editingTemplate, setEditingTemplate] =
     useState<GenesisTemplate | null>(null);
   const [pagination, setPagination] = useState<{
@@ -64,7 +64,7 @@ const Templates = () => {
     setPagination({ ...pagination, currentPage: page });
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     setTemplateToDelete(id);
   };
 
@@ -86,7 +86,7 @@ const Templates = () => {
     const newTemplate = {
       name: "New Template",
       preview: "New template preview",
-      createdAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
       fields: {},
     };
     const createdTemplate = await templateService.createTemplate(newTemplate);
@@ -163,9 +163,9 @@ const Templates = () => {
     },
     {
       title: t("templates.date"),
-      dataIndex: "createdAt",
+      dataIndex: "created_at",
       render: (template: GenesisTemplate) => (
-        <span>{new Date(template.createdAt).toLocaleDateString()}</span>
+        <span>{new Date(template.created_at).toLocaleDateString()}</span>
       ),
     },
     {
