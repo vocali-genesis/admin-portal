@@ -14,7 +14,7 @@ import {
 } from "@/core/module/core.types";
 
 export class Seed {
-  private static idCounter = 0;
+  private static idCounter = 65;
 
   public static new() {
     return new Seed();
@@ -117,10 +117,10 @@ export class Seed {
   ): SeedBuilder<GenesisTemplate> {
     function template(props: Partial<GenesisTemplate>): GenesisTemplate {
       return {
-        id: Seed.getNextId(),
-        ownerId: faker.string.uuid(),
+        id: String.fromCharCode(Seed.getNextId()),
+        owner_id: faker.string.uuid(),
         name: faker.company.name(),
-        createdAt: faker.date.past().toISOString(),
+        created_at: faker.date.past().toISOString(),
         preview: faker.string.sample(),
         fields: {
           name: {

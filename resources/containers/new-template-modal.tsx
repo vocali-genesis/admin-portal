@@ -21,7 +21,7 @@ interface NewTemplateModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (
-    template: Omit<GenesisTemplate, "id" | "ownerId" | "createdAt">,
+    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">,
   ) => void;
 }
 

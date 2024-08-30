@@ -35,7 +35,7 @@ const Templates = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewTemplateModalOpen, setIsNewTemplateModalOpen] = useState(false);
-  const [templateToDelete, setTemplateToDelete] = useState<number | null>(null);
+  const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
   const [newTemplate, setNewTemplate] = useState<GenesisTemplate | null>(null);
   const [editingTemplate, setEditingTemplate] =
     useState<GenesisTemplate | null>(null);
@@ -68,7 +68,7 @@ const Templates = () => {
     setPagination({ ...pagination, currentPage: page });
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     setTemplateToDelete(id);
   };
 
@@ -125,7 +125,7 @@ const Templates = () => {
   };
 
   const handleNewTemplateSubmit = async (
-    template: Omit<GenesisTemplate, "id" | "ownerId" | "createdAt">,
+    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">,
   ) => {
     setIsNewTemplateModalOpen(false);
 
@@ -192,9 +192,9 @@ const Templates = () => {
     },
     {
       title: t("templates.date"),
-      dataIndex: "createdAt",
+      dataIndex: "created_at",
       render: (template: GenesisTemplate) => (
-        <span>{new Date(template.createdAt).toLocaleDateString()}</span>
+        <span>{new Date(template.created_at).toLocaleDateString()}</span>
       ),
     },
     {
