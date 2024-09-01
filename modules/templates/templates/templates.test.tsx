@@ -237,7 +237,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     beforeEach(() => {
-      setRouteQuery({ id: "2" });
+      setRouteQuery({ id: "C" });
     });
     afterEach(() => {});
 

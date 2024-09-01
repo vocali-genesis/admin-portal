@@ -25,7 +25,7 @@ export type GenesisInvoice = {
   created_at: string;
   amount: CENTS;
   invoice_url: string;
-  metadata: Record<string, number | string>
+  metadata: Record<string, number | string>;
 };
 
 export enum TYPE_OPTIONS {
@@ -51,10 +51,10 @@ export interface GenesisTemplateField {
 }
 
 export interface GenesisTemplate {
-  id: number;
-  ownerId: string;
+  id: string;
+  owner_id: string;
   name: string;
-  createdAt: string;
+  created_at: string;
   preview: string;
   fields: { [key: string]: GenesisTemplateField };
 }

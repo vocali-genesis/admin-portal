@@ -30,7 +30,7 @@ class MockTemplateService {
   }
 
   async getTemplate(
-    id: number,
+    id: string,
     page: number = 1,
     pageSize: number = 8,
   ): Promise<PaginatedResponse<GenesisTemplate> | null> {
@@ -61,12 +61,12 @@ class MockTemplateService {
   }
 
   async createTemplate(
-    template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">,
+    template: Omit<GenesisTemplate, "id" | "created_at" | "owner_id">,
   ): Promise<GenesisTemplate> {
     const newTemplate: GenesisTemplate = {
-      id: faker.number.int(),
-      createdAt: faker.date.past().toISOString(),
-      ownerId: faker.string.uuid(),
+      id: faker.string.uuid(),
+      created_at: faker.date.past().toISOString(),
+      owner_id: faker.string.uuid(),
       ...template,
     };
     this.templates.push(newTemplate);
@@ -74,7 +74,7 @@ class MockTemplateService {
   }
 
   async updateTemplate(
-    id: number,
+    id: string,
     updates: Partial<GenesisTemplate>,
   ): Promise<GenesisTemplate | null> {
     const index = this.templates.findIndex((template) => template.id === id);
@@ -85,7 +85,7 @@ class MockTemplateService {
     return updatedTemplate;
   }
 
-  async deleteTemplate(id: number): Promise<boolean> {
+  async deleteTemplate(id: string): Promise<boolean> {
     const index = this.templates.findIndex((template) => template.id === id);
     if (index === -1) return false;
 
