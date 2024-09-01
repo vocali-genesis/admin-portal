@@ -34,7 +34,8 @@
     "cancel-btn": "Cancel·la",
     "confirm-btn": "Confirma",
     "inactive-label": "Inactiu",
-    "subscribe-btn": "Subscriu-te ara"
+    "subscribe-btn": "Subscriu-te ara",
+    "success-message": "Subscripció cancel·lada correctament!"
   },
   "invoice-history": {
     "invoice-id-th": "Factura Id",
@@ -44,6 +45,7 @@
     "total-label": "Total de registres:",
     "page-label": "Pàgina",
     "of-label": "de",
-    "view-receipt": "Veure rebut"
+    "view-receipt": "Veure rebut",
+    "validity-th": "Vàlid fins"
   }
 }

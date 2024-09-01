@@ -15,7 +15,9 @@
     "supported-format": "Formats compatibles: MP3",
     "upload-files": "Pujar fitxers",
     "submit": "Enviar",
-    "uploading": "Pujant..."
+    "uploading": "Pujant...",
+    "leave-page-title": "Sortir de la pàgina",
+    "leave-page-confirm": "Esteu segur que voleu sortir d'aquesta pàgina? El progrés de gravació es perdrà."
   },
   "navbar": {
     "upgrade": "Actualitzar",
@@ -32,6 +34,10 @@
     "cancel": "Cancel·lar",
     "home": "Inici",
     "save": "Desar",
-    "edit": "Editar"
+    "edit": "Editar",
+    "leave": "Sortir",
+    "total-records": "Registres totals",
+    "total-page": "Pàgines totals",
+    "of": "de"
   }
 }
