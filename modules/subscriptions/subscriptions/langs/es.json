@@ -15,7 +15,7 @@
     "price-2": {
       "title": "Pro",
       "currency": "€",
-      "amount": "100",
+      "amount": "30",
       "interval": "/mes",
       "features": {
         "feature-1": "Beneficio 1",
