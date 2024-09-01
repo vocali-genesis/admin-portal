@@ -6,7 +6,6 @@ import { GlobalCore } from "@/core/module/module.types";
 import auth_style from "./auth.module.css";
 import { useTranslation } from "react-i18next";
 import { OauthButtons } from "./forms/oauth-buttons";
-import { SettingsInputField } from "@/resources/inputs/settings-input-field";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import { LANGUAGES } from "@/core/constants";
 
