@@ -23,7 +23,7 @@ const Login = () => {
       <OauthButtons
         label={
           <>
-            <strong>{t("auth.login")}</strong> {t("auth.with-others")}:
+            <strong>{t("auth.login")}</strong> {t("auth.with-others")}
           </>
         }
       />
