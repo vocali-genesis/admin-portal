@@ -37,7 +37,7 @@ describe("===== RECORDING AUDIO =====", () => {
   beforeAll(() => {
     genesisService = GlobalCore.manager.getComponent(
       "service",
-      "medical-api"
+      "medical-api",
     ) as MedicalTranscription;
   });
 
@@ -61,9 +61,11 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Dashboard is Mounted", async () => {
       await act(() => render(<Dashboard />));
 
-      expect(screen.getByTestId("record-button")).toBeInTheDocument();
-      expect(screen.getByTestId("upload-recording")).toBeInTheDocument();
-      expect(screen.queryByText("recording.stop")).not.toBeInTheDocument();
+      expect(await screen.findByTestId("record-button")).toBeInTheDocument();
+      expect(await screen.findByTestId("upload-recording")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.queryByText("recording.stop")).not.toBeInTheDocument();
+      });
       screen.debug();
     });
 
@@ -71,10 +73,11 @@ describe("===== RECORDING AUDIO =====", () => {
       mediaSpy.mockReturnValueOnce([]);
       await act(() => render(<Dashboard />));
 
-      act(() => screen.getByTestId("record-button").click());
+      const recordButton = await screen.findByTestId("record-button");
+      act(() => recordButton.click());
 
       expect(ToastMock.error).toHaveBeenCalledWith(
-        "recording.permission-required"
+        "recording.permission-required",
       );
     });
 
@@ -120,11 +123,11 @@ describe("===== RECORDING AUDIO =====", () => {
 
     it("Upload an audio file", async () => {
       await act(() => render(<Dashboard />));
-      const input = screen.getByTestId("upload-recording");
+      const input = await screen.findByTestId("upload-recording");
 
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "audio.mp3", type: "audio/mp3" })
+        Seed.new().file({ name: "audio.mp3", type: "audio/mp3" }),
       );
 
       await waitFor(() => screen.getByText("audio.mp3"));
@@ -132,11 +135,11 @@ describe("===== RECORDING AUDIO =====", () => {
 
     it("File error: Wrong format file", async () => {
       await act(() => render(<Dashboard />));
-      const input = screen.getByTestId("upload-recording");
+      const input = await screen.findByTestId("upload-recording");
 
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "image.mp3", type: "image/mp3" })
+        Seed.new().file({ name: "image.mp3", type: "image/mp3" }),
       );
 
       expect(screen.queryByText("image.png")).not.toBeInTheDocument();
@@ -144,7 +147,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
     it("File error: File too big", async () => {
       await act(() => render(<Dashboard />));
-      const input = screen.getByTestId("upload-recording");
+      const input = await screen.findByTestId("upload-recording");
 
       const file = Seed.new().file({ name: "audio.mp3", type: "audio/mp3" });
       jest.spyOn(file, "size", "get").mockReturnValue(500 * 1024 * 1024);
@@ -159,12 +162,12 @@ describe("===== RECORDING AUDIO =====", () => {
       const spy = jest.spyOn(RouterMock, "push");
 
       await act(() => render(<Dashboard />));
-      const input = screen.getByTestId("upload-recording");
+      const input = await screen.findByTestId("upload-recording");
 
       expect(screen.getByText("recording.upload-files")).toBeDisabled();
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "audio.png", type: "audio/png" })
+        Seed.new().file({ name: "audio.png", type: "audio/png" }),
       );
 
       expect(screen.getByText("recording.upload-files")).not.toBeDisabled();
@@ -186,7 +189,7 @@ describe("===== RECORDING AUDIO =====", () => {
       jest
         .spyOn(FetchMock, "blob")
         .mockResolvedValueOnce(
-          Seed.new().file({ name: "audio.mp3", type: "audio/mp3" })
+          Seed.new().file({ name: "audio.mp3", type: "audio/mp3" }),
         );
     });
     beforeEach(() => {
@@ -238,7 +241,7 @@ describe("===== RECORDING AUDIO =====", () => {
       act(() => submitButton.click());
       await waitFor(() => {
         expect(ToastMock.error).toHaveBeenCalledWith(
-          "recording.error-no-audio-file"
+          "recording.error-no-audio-file",
         );
         expect(RouterMock.replace).toHaveBeenCalledWith("/app/dashboard");
       });
@@ -362,7 +365,7 @@ describe("===== RECORDING AUDIO =====", () => {
       });
       // Transcription is hidden
       expect(
-        screen.getByText(report.transcription[0]).closest(".hiddenContent")
+        screen.getByText(report.transcription[0]).closest(".hiddenContent"),
       ).toBeTruthy();
     });
 
@@ -380,7 +383,7 @@ describe("===== RECORDING AUDIO =====", () => {
       expect(
         screen
           .getByText(Object.values(report.report)[0])
-          .closest(".hiddenContent")
+          .closest(".hiddenContent"),
       ).toBeTruthy();
     });
 
@@ -495,7 +498,7 @@ describe("===== RECORDING AUDIO =====", () => {
       getDownloadButton().click();
 
       const button = await screen.findByText(
-        "recording.download-transcription"
+        "recording.download-transcription",
       );
 
       act(() => button.click());
@@ -508,7 +511,7 @@ describe("===== RECORDING AUDIO =====", () => {
       getDownloadButton().click();
 
       const button = await screen.findByText(
-        "recording.download-transcription"
+        "recording.download-transcription",
       );
 
       act(() => button.click());
@@ -526,7 +529,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
       const bar = screen.getByTestId("time-bar");
       const segments = bar.querySelectorAll(
-        ".progressSegment"
+        ".progressSegment",
       ) as unknown as HTMLDivElement[];
 
       expect(segments[0].style.width).toEqual(transcriptionWidth + "%");
@@ -534,7 +537,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
       const totalTime = screen.getByText("recording.total-time");
       expect(totalTime.parentElement?.textContent).toContain(
-        (total / 1000).toString()
+        (total / 1000).toString(),
       );
     });
   });

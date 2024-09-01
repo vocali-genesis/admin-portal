@@ -11,7 +11,7 @@ import {
   FaEdit,
   FaPlus,
   FaSave,
-  FaFolder,
+  FaRegEye,
   FaTimes,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
@@ -235,7 +235,7 @@ const Templates = () => {
                 size="small"
                 testId="templates.view-template"
               >
-                <FaFolder style={{ color: "var(--primary)" }} />
+                <FaRegEye style={{ color: "var(--primary)" }} />
               </IconButton>
               <IconButton
                 onClick={() => handleEdit(template)}

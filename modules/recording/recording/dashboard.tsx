@@ -9,12 +9,15 @@ import { useTranslation } from "react-i18next";
 import { MicrophoneSelect } from "../../../resources/inputs/microphones.select";
 import { UploadFile } from "@/resources/inputs/upload-file.input";
 import RecordButton from "@/resources/containers/record-button";
+import Spinner from "@/resources/containers/spinner";
+import Service from "@/core/module/service.factory";
 
 const messageHandler = MessageHandler.get();
 
 const Dashboard = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const templateService = Service.require("templates");
   const [recordingState, setRecordingState] = useState<
     "inactive" | "recording" | "paused"
   >("inactive");
@@ -23,6 +26,26 @@ const Dashboard = () => {
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasTemplates, setHasTemplates] = useState(true);
+
+  useEffect(() => {
+    void fetchTemplates();
+  }, []);
+
+  const fetchTemplates = async () => {
+    setIsLoading(true);
+    const response = await templateService.getTemplates(1);
+    if (!response) return;
+
+    if (response.data.length > 0) {
+      setHasTemplates(true);
+    } else {
+      messageHandler.handleError(t("recording.error-no-templates"));
+      setHasTemplates(false);
+    }
+    setIsLoading(false);
+  };
 
   const toggleRecording = async () => {
     if (!microphone) {
@@ -49,7 +72,6 @@ const Dashboard = () => {
 
     if (recordingState === "recording") {
       audioRecorderRef.current.pauseRecording();
-      messageHandler.info(t("recording.paused"));
       setRecordingState("paused");
       stopVisualization();
       return;
@@ -152,6 +174,8 @@ const Dashboard = () => {
 
     return message[recordingState];
   };
+
+  if (isLoading) return <Spinner />;
   return (
     <div className="p-5">
       <h2 className={dash_styles.h2}>{t("recording.record-title")}</h2>
@@ -165,6 +189,7 @@ const Dashboard = () => {
             audioLevel={audioLevel}
             onClick={toggleRecording}
             statusMessage={getStatusMessage()}
+            disabled={!hasTemplates}
           />
           {recordingState !== "inactive" && (
             <button className={dash_styles.stopButton} onClick={stopRecording}>

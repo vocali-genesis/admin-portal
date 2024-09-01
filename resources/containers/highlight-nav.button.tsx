@@ -7,22 +7,23 @@ interface highlightNavButtonProps {
   onClick: () => void;
 }
 
-const HighlightNavButton: React.FC<highlightNavButtonProps> = ({ label, onClick }) => {
+const HighlightNavButton: React.FC<highlightNavButtonProps> = ({
+  label,
+  onClick,
+}) => {
   const { t } = useTranslation();
 
   return (
-    <button
-      className={settings_btn_styles.settingsButton}
-      onClick={onClick}
-    >
-      <Image
-        className={"pt-1"}
-        src="/settings.svg"
-        alt="Settings"
-        width={13}
-        height={13}
-      />
-      <span>{t(label)}</span>
+    <button className={settings_btn_styles.settingsButton} onClick={onClick}>
+      <div className={settings_btn_styles.buttonContent}>
+        <Image
+          src="/settings.svg"
+          alt="Settings"
+          width={16}
+          height={16}
+        />
+        <span>{t(label)}</span>
+      </div>
     </button>
   );
 };

@@ -92,71 +92,8 @@ const FieldModal: React.FC<FieldModalProps> = ({
     );
   };
 
-  const renderMap = {
-    [TYPE_OPTIONS.NUMBER]: (
-      <Controller
-        name="maxValue"
-        control={control}
-        render={({ field }) => (
-          <BasicInput
-            type="number"
-            {...field}
-            placeholder="Enter max value"
-            value={field.value || ""}
-          />
-        )}
-      />
-    ),
-    [TYPE_OPTIONS.SELECT]: (
-      <Controller
-        name="options"
-        control={control}
-        defaultValue={[]}
-        render={({ field }) => (
-          <div className={styles.multiselectContainer}>
-            {field.value && field.value.length > 0 && (
-              <div className={styles.selectedOptions}>
-                {field.value.map((option: string, index: number) => (
-                  <div key={index} className={styles.optionTag}>
-                    {option}
-                    <Button
-                      onClick={(event?) =>
-                        removeOption(
-                          option,
-                          event as React.MouseEvent<HTMLButtonElement>,
-                        )
-                      }
-                      variant="action"
-                    >
-                      ×
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-            <BasicSelect
-              name="selectOptions"
-              value=""
-              width="52vh"
-              onChange={(value) => {
-                if (!field.value?.includes(value)) {
-                  setValue("options", [...(field.value || []), value]);
-                }
-              }}
-              options={[
-                { value: "", label: "Select Option ..." },
-                ...typeOptions.map((option) => ({
-                  value: option,
-                  label: option,
-                })),
-              ]}
-              testId="field-modal.select-options"
-            />
-          </div>
-        )}
-      />
-    ),
-    [TYPE_OPTIONS.MULTISELECT]: (
+  const renderMultiselect = () => {
+    return (
       <Controller
         name="options"
         control={control}
@@ -200,7 +137,26 @@ const FieldModal: React.FC<FieldModalProps> = ({
           </div>
         )}
       />
+    );
+  };
+
+  const renderMap = {
+    [TYPE_OPTIONS.NUMBER]: (
+      <Controller
+        name="maxValue"
+        control={control}
+        render={({ field }) => (
+          <BasicInput
+            type="number"
+            {...field}
+            placeholder="Enter max value"
+            value={field.value || ""}
+          />
+        )}
+      />
     ),
+    [TYPE_OPTIONS.SELECT]: renderMultiselect(),
+    [TYPE_OPTIONS.MULTISELECT]: renderMultiselect(),
   };
 
   return (
@@ -219,14 +175,6 @@ const FieldModal: React.FC<FieldModalProps> = ({
           <Button onClick={onClose} variant="action">
             Cancel
           </Button>
-          {fieldType === TYPE_OPTIONS.MULTISELECT && (
-            <Button
-              onClick={addOption}
-              testId="field-modal.multi-select-add-option"
-            >
-              Add
-            </Button>
-          )}
           <Button onClick={handleSubmit(handleSave)}>Save</Button>
         </div>
       </form>
