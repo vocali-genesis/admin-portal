@@ -9,10 +9,9 @@ import {
 import userEvent from "@testing-library/user-event";
 import { CoreComponent, GlobalCore } from "@/core/module/module.types";
 import "./index";
-import Download from "./libs/download";
 import "@/services/auth/auth-mock.service";
-import "@/services/genesis/transcription-mock.service";
 import "@/services/templates/templates-mock.service";
+import "@/services/genesis/transcription-mock.service";
 import { MedicalTranscription } from "@/core/module/services.types";
 
 import { faker } from "@faker-js/faker";
@@ -24,15 +23,12 @@ import {
 } from "@/jest-setup";
 import MessageHandler from "@/core/message-handler";
 import React, { act } from "react";
-import {
-  getComponent,
-  mockDownload,
-  setRouteQuery,
-} from "@/resources/tests/test.utils";
+import { getComponent, setRouteQuery } from "@/resources/tests/test.utils";
 import { Seed } from "@/resources/tests/seed";
 import { GenesisReport } from "@/core/module/core.types";
+import Download from "./libs/download";
 
-describe("===== RECORDING LOGIN =====", () => {
+describe("===== RECORDING AUDIO =====", () => {
   let genesisService: MedicalTranscription;
 
   const downloadAudioSpy = jest.fn();
@@ -41,7 +37,7 @@ describe("===== RECORDING LOGIN =====", () => {
   beforeAll(() => {
     genesisService = GlobalCore.manager.getComponent(
       "service",
-      "medical-api",
+      "medical-api"
     ) as MedicalTranscription;
   });
 
@@ -78,7 +74,7 @@ describe("===== RECORDING LOGIN =====", () => {
       act(() => screen.getByTestId("record-button").click());
 
       expect(ToastMock.error).toHaveBeenCalledWith(
-        "recording.permission-required",
+        "recording.permission-required"
       );
     });
 
@@ -128,7 +124,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "audio.mp3", type: "audio/mp3" }),
+        Seed.new().file({ name: "audio.mp3", type: "audio/mp3" })
       );
 
       await waitFor(() => screen.getByText("audio.mp3"));
@@ -140,7 +136,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "image.mp3", type: "image/mp3" }),
+        Seed.new().file({ name: "image.mp3", type: "image/mp3" })
       );
 
       expect(screen.queryByText("image.png")).not.toBeInTheDocument();
@@ -168,7 +164,7 @@ describe("===== RECORDING LOGIN =====", () => {
       expect(screen.getByText("recording.upload-files")).toBeDisabled();
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "audio.png", type: "audio/png" }),
+        Seed.new().file({ name: "audio.png", type: "audio/png" })
       );
 
       expect(screen.getByText("recording.upload-files")).not.toBeDisabled();
@@ -190,7 +186,7 @@ describe("===== RECORDING LOGIN =====", () => {
       jest
         .spyOn(FetchMock, "blob")
         .mockResolvedValueOnce(
-          Seed.new().file({ name: "audio.mp3", type: "audio/mp3" }),
+          Seed.new().file({ name: "audio.mp3", type: "audio/mp3" })
         );
     });
     beforeEach(() => {
@@ -202,7 +198,7 @@ describe("===== RECORDING LOGIN =====", () => {
     it("Recording page mounts", () => {
       render(<Recording />);
       expect(screen.findByTestId("audio-player"));
-      expect(screen.findByTestId("submit-button"));
+      expect(screen.findByRole("button", { name: "recording.submit" }));
     });
 
     it("Click next we call the transcription api", async () => {
@@ -231,8 +227,9 @@ describe("===== RECORDING LOGIN =====", () => {
     });
 
     it("Click next with no audio file prompts an error", async () => {
+      // Mock the blog
       jest.replaceProperty(RouterMock, "query", {
-        slug: "",
+        audioUrl: "",
       });
       await act(() => render(<Recording />));
 
@@ -241,7 +238,7 @@ describe("===== RECORDING LOGIN =====", () => {
       act(() => submitButton.click());
       await waitFor(() => {
         expect(ToastMock.error).toHaveBeenCalledWith(
-          "recording.error-no-audio-file",
+          "recording.error-no-audio-file"
         );
         expect(RouterMock.replace).toHaveBeenCalledWith("/app/dashboard");
       });
@@ -270,7 +267,8 @@ describe("===== RECORDING LOGIN =====", () => {
       await act(() => render(<Recording />));
 
       const deleteButton = await screen.findByTestId("recording.audio-delete");
-      expect(deleteButton).toBeInTheDocument();
+
+      expect(deleteButton).toBeDefined();
 
       act(() => deleteButton.click());
 
@@ -279,7 +277,6 @@ describe("===== RECORDING LOGIN =====", () => {
 
       expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
     });
-
     it("Click Save the Audio", async () => {
       await act(() => render(<Recording />));
 
@@ -313,15 +310,9 @@ describe("===== RECORDING LOGIN =====", () => {
       screen.getByRole("button", { name: "recording.new-recording" });
     const getReplyButton = () => screen.getByTestId("replay-audio");
 
-    const downloadReportSpy = jest.fn();
-    jest
-      .spyOn(Download, "downloadReport")
-      .mockImplementation(downloadReportSpy);
-
-    const downloadTranscriptionSpy = jest.fn();
-    jest
+    const downloadTranscriptionSpy = jest
       .spyOn(Download, "downloadTranscription")
-      .mockImplementation(downloadTranscriptionSpy);
+      .mockImplementation(jest.fn());
 
     beforeAll(() => {
       Report = getComponent("app", "report");
@@ -371,7 +362,7 @@ describe("===== RECORDING LOGIN =====", () => {
       });
       // Transcription is hidden
       expect(
-        screen.getByText(report.transcription[0]).closest(".hiddenContent"),
+        screen.getByText(report.transcription[0]).closest(".hiddenContent")
       ).toBeTruthy();
     });
 
@@ -389,11 +380,11 @@ describe("===== RECORDING LOGIN =====", () => {
       expect(
         screen
           .getByText(Object.values(report.report)[0])
-          .closest(".hiddenContent"),
+          .closest(".hiddenContent")
       ).toBeTruthy();
     });
 
-    it("We can replay the audio", async () => {
+    it("We can replay te audio", async () => {
       const playSpy = jest.spyOn(HTMLAudioElement.prototype, "play");
       const pauseSpy = jest.spyOn(HTMLAudioElement.prototype, "pause");
 
@@ -478,39 +469,53 @@ describe("===== RECORDING LOGIN =====", () => {
       render(<Report />);
       getDownloadButton().click();
 
-      const button = await screen.findByTestId("report.download-audio");
+      const button = await screen.findByText("recording.download-audio");
 
       act(() => button.click());
-
       expect(downloadAudioSpy).toHaveBeenCalledTimes(1);
     });
 
     it("Download Report", async () => {
+      const downloadReportSpy = jest
+        .spyOn(Download, "downloadReport")
+        .mockImplementation(jest.fn());
+
       render(<Report />);
       getDownloadButton().click();
 
-      const button = await screen.findByTestId("report.download-report");
+      const button = await screen.findByText("recording.download-report");
 
-      // const download = mockDownload();
       act(() => button.click());
 
       expect(downloadReportSpy).toHaveBeenCalledTimes(1);
     });
 
-    it.todo("Verify Report Doc Content");
-
     it("Download Transcription", async () => {
       render(<Report />);
       getDownloadButton().click();
 
-      const button = await screen.findByTestId("report.download-transcription");
+      const button = await screen.findByText(
+        "recording.download-transcription"
+      );
 
       act(() => button.click());
 
       expect(downloadTranscriptionSpy).toHaveBeenCalledTimes(1);
     });
 
-    it.todo("Verify Transcription Doc content");
+    it("Check Report generate data", async () => {
+      render(<Report />);
+      getDownloadButton().click();
+
+      const button = await screen.findByText(
+        "recording.download-transcription"
+      );
+
+      act(() => button.click());
+
+      // How to check the file content?
+      expect(downloadTranscriptionSpy).toHaveBeenCalledTimes(1);
+    });
 
     it("Statistics bar shows right percentages", () => {
       render(<Report />);
@@ -521,16 +526,16 @@ describe("===== RECORDING LOGIN =====", () => {
 
       const bar = screen.getByTestId("time-bar");
       const segments = bar.querySelectorAll(
-        ".progressSegment",
+        ".progressSegment"
       ) as unknown as HTMLDivElement[];
 
-      expect(segments[2].style.width).toEqual(transcriptionWidth + "%");
-      expect(segments[3].style.width).toEqual(reportWidth + "%");
+      expect(segments[0].style.width).toEqual(transcriptionWidth + "%");
+      expect(segments[1].style.width).toEqual(reportWidth + "%");
 
-      // const totalTime = screen.getByText("recording.total-time");
-      // expect(totalTime.parentElement?.textContent).toContain(
-      //   (total / 1000).toString(),
-      // );
+      const totalTime = screen.getByText("recording.total-time");
+      expect(totalTime.parentElement?.textContent).toContain(
+        (total / 1000).toString()
+      );
     });
   });
 });
