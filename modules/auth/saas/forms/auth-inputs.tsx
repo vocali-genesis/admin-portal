@@ -2,7 +2,8 @@ import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { InputField } from "@/resources/inputs/input-field";
 import { useTranslation } from "react-i18next";
 import form_style from "./form.module.css";
-import React from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import React, { useState } from "react";
 type AuthFormData =
   | {
       email: string;
@@ -56,11 +57,19 @@ const InputConfig = {
  */
 const AuthInputs: React.FC<AuthInputProps> = ({ register, errors, action }) => {
   const { t } = useTranslation();
+  const [showPassword, setShowPassword] = useState<{
+    [key: string]: boolean;
+  }>({});
+
   const fieldsToShow = {
     register: ["email", "password", "confirm_password"],
     "reset-password": ["email"],
     "confirm-reset-password": ["password", "confirm_password"],
     login: ["email", "password"],
+  };
+
+  const togglePasswordVisibility = (field: string) => {
+    setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
   return (
@@ -71,17 +80,32 @@ const AuthInputs: React.FC<AuthInputProps> = ({ register, errors, action }) => {
         if (!config) {
           return null;
         }
+
+        const isPasswordField = config.type === "password";
+        const fieldType =
+          isPasswordField && showPassword[name] ? "text" : config.type;
+
         return (
-          <InputField<AuthFormData>
-            type={config.type}
-            validation={config.validation}
-            key={name}
-            register={register}
-            errors={errors}
-            name={nameKey}
-            icon={`${form_style[config.icon]}`}
-            placeholder={t(`auth.${name}`)}
-          />
+          <div key={name} className={form_style.inputWrapper}>
+            <InputField<AuthFormData>
+              type={fieldType}
+              validation={config.validation}
+              register={register}
+              errors={errors}
+              name={nameKey}
+              icon={`${form_style[config.icon]}`}
+              placeholder={t(`auth.${name}`)}
+            />
+            {isPasswordField && (
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility(name)}
+                className={form_style.passwordToggle}
+              >
+                {showPassword[name] ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            )}
+          </div>
         );
       })}
     </>
