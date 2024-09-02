@@ -1,5 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
@@ -10,6 +13,7 @@ import {
   GenesisTemplateField,
   TYPE_OPTIONS,
   FieldData,
+  FieldConfig,
 } from "@/core/module/core.types";
 import styles from "./styles/new-template-modal.module.css";
 import { FaCog, FaTrash } from "react-icons/fa";
@@ -25,87 +29,101 @@ interface NewTemplateModalProps {
   ) => void;
 }
 
+interface FormValues {
+  name: string;
+  fields: {
+    name: string;
+    type: TYPE_OPTIONS;
+    description: string;
+    config?: FieldConfig;
+  }[];
+}
+
+const schema = yup.object().shape({
+  name: yup.string().required("Template name is required"),
+  fields: yup
+    .array()
+    .of(
+      yup.object().shape({
+        name: yup.string().required("Field name is required"),
+        type: yup.string().required("Field type is required"),
+        description: yup.string().required("Field description is required"),
+        config: yup.object().optional(),
+      }),
+    )
+    .min(1, "At least one field is required"),
+});
+
 const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
 }) => {
   const { t } = useTranslation();
-  const [name, setName] = useState("");
-  const [fields, setFields] = useState<Record<string, GenesisTemplateField>>(
-    {},
-  );
-  const [fieldNames, setFieldNames] = useState<string[]>([]);
   const [isFieldModalOpen, setIsFieldModalOpen] = useState(false);
-  const [currentFieldKey, setCurrentFieldKey] = useState<string | null>(null);
+  const [currentFieldIndex, setCurrentFieldIndex] = useState<number | null>(
+    null,
+  );
   const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
     null,
   );
-  const fieldNameRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
-  useEffect(() => {
-    if (isOpen && fieldNames.length === 0) {
-      addField();
-    }
-  }, [isOpen]);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    getValues,
+    reset,
+    watch,
+  } = useForm<FormValues>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      fields: [{ name: "field1", type: TYPE_OPTIONS.TEXT, description: "" }],
+    },
+  });
 
-  const handleSubmit = () => {
-    onSubmit({
-      name,
-      preview: `Fields: ${fieldNames.join(", ")}`,
-      fields,
-    });
-    setName("");
-    setFields({});
-    setFieldNames([]);
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "fields",
+  });
+
+  const onFormSubmit = (data: FormValues) => {
+    const template = {
+      name: data.name,
+      preview: `Fields: ${data.fields.map((f) => f.name).join(", ")}`,
+      fields: data.fields.reduce(
+        (acc, field) => {
+          acc[field.name] = {
+            type: field.type,
+            description: field.description,
+            config: field.config,
+          };
+          return acc;
+        },
+        {} as Record<string, GenesisTemplateField>,
+      ),
+    };
+    onSubmit(template);
+    onClose();
+    reset();
   };
 
   const addField = () => {
-    const fieldName = `field${fieldNames.length + 1}`;
-    setFields((prev) => ({
-      ...prev,
-      [fieldName]: { type: TYPE_OPTIONS.TEXT, description: "" },
-    }));
-    setFieldNames((prev) => [...prev, fieldName]);
-  };
-
-  const updateFieldName = (index: number, newName: string) => {
-    setFieldNames((prev) => {
-      const updated = [...prev];
-      updated[index] = newName;
-      return updated;
+    append({
+      name: `field${fields.length + 1}`,
+      type: TYPE_OPTIONS.TEXT,
+      description: "",
     });
   };
 
-  const updateField = (
-    oldName: string,
-    newName: string,
-    updates: Partial<GenesisTemplateField>,
-  ) => {
-    setFields((prev) => {
-      const newFields = { ...prev };
-      if (oldName !== newName) {
-        newFields[newName] = { ...newFields[oldName], ...updates };
-        delete newFields[oldName];
-      } else {
-        newFields[oldName] = { ...newFields[oldName], ...updates };
-      }
-      return newFields;
-    });
-  };
-
-  const removeField = (fieldName: string) => {
-    setFields((prev) => {
-      const newFields = { ...prev };
-      delete newFields[fieldName];
-      return newFields;
-    });
-    setFieldNames((prev) => prev.filter((name) => name !== fieldName));
-  };
-
-  const openFieldConfigModal = (fieldKey: string) => {
-    setCurrentFieldKey(fieldKey);
-    setFieldModalConfig(fields[fieldKey].config || null);
+  const openFieldConfigModal = (index: number) => {
+    setCurrentFieldIndex(index);
+    const fieldConfig = getValues(`fields.${index}.config`) as
+      | FieldConfig
+      | undefined;
+    setFieldModalConfig(fieldConfig || null);
     setIsFieldModalOpen(true);
   };
 
@@ -117,101 +135,145 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
       overlayClassName={styles.modalOverlay}
     >
       <h2 className={styles.modalTitle}>{t("templates.newTemplate")}</h2>
-      <BasicInput
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder={t("templates.namePlaceholder")}
-        testId="templates.new-template-name-input"
-        className={`${styles.input} ${styles.name_input}`}
-      />
-      {fieldNames.map((fieldName, index) => (
-        <div key={index} className={styles.fieldContainer}>
-          <div className={styles.fieldInputs}>
-            <BasicInput
-              value={fieldName}
-              onChange={(e) => {
-                const newName = e.target.value;
-                updateFieldName(index, newName);
-                updateField(fieldName, newName, {});
-              }}
-              placeholder={t("templates.fieldNamePlaceholder")}
-              className={styles.input}
-              ref={(el) => {
-                fieldNameRefs.current[fieldName] = el;
-                return () => {};
-              }}
-            />
-            <BasicSelect
-              name={`${fieldName}-type`}
-              value={fields[fieldName].type}
-              onChange={(value) =>
-                updateField(fieldName, fieldName, {
-                  type: value as TYPE_OPTIONS,
-                })
-              }
-              options={Object.values(TYPE_OPTIONS).map((option) => ({
-                value: option,
-                label: t(`templates.type-${option}`),
-              }))}
-            />
-            <BasicInput
-              value={fields[fieldName].description}
-              onChange={(e) =>
-                updateField(fieldName, fieldName, {
-                  description: e.target.value,
-                })
-              }
-              placeholder={t("templates.descriptionPlaceholder")}
-              className={styles.input}
-            />
-          </div>
-          <div className={styles.actionButtons}>
-            {fields[fieldName].type !== TYPE_OPTIONS.TEXT && (
-              <IconButton
-                onClick={() => openFieldConfigModal(fieldName)}
-                size="small"
-                testId="template-detail.edit-field-config"
-              >
-                <FaCog style={{ color: "var(--primary)" }} />
-              </IconButton>
-            )}
-            <IconButton
-              onClick={() => removeField(fieldName)}
-              size="small"
-              testId="template-detail.remove-field"
-            >
-              <FaTrash style={{ color: "var(--danger)" }} />
-            </IconButton>
-          </div>
+      <form onSubmit={handleSubmit(onFormSubmit)}>
+        <Controller
+          name="name"
+          control={control}
+          render={({ field }) => (
+            <div className={"flex flex-col"}>
+              <BasicInput
+                {...field}
+                placeholder={t("templates.namePlaceholder")}
+                testId="templates.new-template-name-input"
+                className={`${styles.input} ${styles.name_input}`}
+              />
+              {errors.name && (
+                <span className={styles.errorMessage}>
+                  {errors.name.message}
+                </span>
+              )}
+            </div>
+          )}
+        />
+
+        {fields.map((field, index) => {
+          const fieldType = watch(`fields.${index}.type`);
+          return (
+            <div key={field.id} className={styles.fieldContainer}>
+              <div className={styles.fieldInputs}>
+                <Controller
+                  name={`fields.${index}.name`}
+                  control={control}
+                  render={({ field }) => (
+                    <div className={"flex flex-col"}>
+                      <BasicInput
+                        {...field}
+                        placeholder={t("templates.fieldNamePlaceholder")}
+                        className={styles.input}
+                      />
+                      {errors.fields?.[index]?.name && (
+                        <span className={styles.errorMessage}>
+                          {errors.fields?.[index]?.name?.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                />
+                <Controller
+                  name={`fields.${index}.type`}
+                  control={control}
+                  render={({ field }) => (
+                    <BasicSelect
+                      {...field}
+                      options={Object.values(TYPE_OPTIONS).map((option) => ({
+                        value: option,
+                        label: t(`templates.type-${option}`),
+                      }))}
+                    />
+                  )}
+                />
+                <Controller
+                  name={`fields.${index}.description`}
+                  control={control}
+                  render={({ field }) => (
+                    <div>
+                      <BasicInput
+                        {...field}
+                        placeholder={t("templates.descriptionPlaceholder")}
+                        className={styles.input}
+                      />
+                      {errors.fields?.[index]?.description && (
+                        <span className={styles.errorMessage}>
+                          {errors.fields?.[index]?.description?.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
+              <div className={styles.actionButtons}>
+                {fieldType !== TYPE_OPTIONS.TEXT && (
+                  <IconButton
+                    onClick={() => openFieldConfigModal(index)}
+                    size="small"
+                    testId="template-detail.edit-field-config"
+                  >
+                    <FaCog style={{ color: "var(--primary)" }} />
+                  </IconButton>
+                )}
+                <IconButton
+                  onClick={() => remove(index)}
+                  size="small"
+                  testId="template-detail.remove-field"
+                >
+                  <FaTrash style={{ color: "var(--danger)" }} />
+                </IconButton>
+              </div>
+            </div>
+          );
+        })}
+
+        <div className={styles.buttonContainer}>
+          <Button
+            onClick={addField}
+            testId="add-field-button"
+            className={styles.button}
+          >
+            {t("templates.addField")}
+          </Button>
+          <Button
+            data-testid="templates.submit-new-template"
+            className={styles.button}
+            onClick={() => {}}
+            type="submit"
+          >
+            {t("templates.create")}
+          </Button>
         </div>
-      ))}
-      <div className={styles.buttonContainer}>
-        <Button
-          onClick={addField}
-          testId="add-field-button"
-          className={styles.button}
-        >
-          {t("templates.addField")}
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          testId="templates.submit-new-template"
-          className={styles.button}
-        >
-          {t("templates.create")}
-        </Button>
-      </div>
+      </form>
       <FieldModal
         isOpen={isFieldModalOpen}
         onClose={() => setIsFieldModalOpen(false)}
-        onSave={(data) => {
-          if (currentFieldKey) {
-            updateField(currentFieldKey, currentFieldKey, { config: data });
+        onSave={(data: FieldData) => {
+          if (currentFieldIndex !== null) {
+            const currentFields = getValues("fields");
+            if (currentFields) {
+              setValue("fields", [
+                ...currentFields.slice(0, currentFieldIndex),
+                {
+                  ...currentFields[currentFieldIndex],
+                  config: data,
+                },
+                ...currentFields.slice(currentFieldIndex + 1),
+              ]);
+            }
           }
           setIsFieldModalOpen(false);
         }}
         fieldType={
-          currentFieldKey ? fields[currentFieldKey]?.type : TYPE_OPTIONS.TEXT
+          currentFieldIndex !== null
+            ? getValues(`fields.${currentFieldIndex}.type`)
+            : TYPE_OPTIONS.TEXT
         }
         initialConfig={fieldModalConfig}
         testId="new-template-field-modal"
