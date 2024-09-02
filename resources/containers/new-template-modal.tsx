@@ -170,6 +170,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
                         {...field}
                         placeholder={t("templates.fieldNamePlaceholder")}
                         className={styles.input}
+                        testId="templates.new-template-field-name-input"
                       />
                       {errors.fields?.[index]?.name && (
                         <span className={styles.errorMessage}>
@@ -201,6 +202,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
                         {...field}
                         placeholder={t("templates.descriptionPlaceholder")}
                         className={styles.input}
+                        testId="templates.new-template-field-description-input"
                       />
                       {errors.fields?.[index]?.description && (
                         <span className={styles.errorMessage}>
@@ -242,7 +244,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
             {t("templates.addField")}
           </Button>
           <Button
-            data-testid="templates.submit-new-template"
+            testId="templates.submit-new-template"
             className={styles.button}
             onClick={() => {}}
             type="submit"

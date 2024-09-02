@@ -93,13 +93,25 @@ describe("===== TEMPLATES =====", () => {
         ).toBeInTheDocument();
       });
 
-      const inputElement = screen.getByTestId(
+      const nameInputElement = screen.getByTestId(
         "templates.new-template-name-input",
       );
-      await userEvent.clear(inputElement);
-      await userEvent.type(inputElement, "Test Template");
+      await userEvent.clear(nameInputElement);
+      await userEvent.type(nameInputElement, "Test Template");
 
-      expect(inputElement).toHaveValue("Test Template");
+      expect(nameInputElement).toHaveValue("Test Template");
+
+      const fieldInputElement = screen.getByTestId(
+        "templates.new-template-field-name-input",
+      );
+      await userEvent.clear(fieldInputElement);
+      await userEvent.type(fieldInputElement, "Test Field");
+
+      const descriptionInputElement = screen.getByTestId(
+        "templates.new-template-field-description-input",
+      );
+      await userEvent.clear(descriptionInputElement);
+      await userEvent.type(descriptionInputElement, "Test Description");
 
       const saveButton = screen.getByTestId("templates.submit-new-template");
       expect(saveButton).toBeInTheDocument();
