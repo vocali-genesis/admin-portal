@@ -390,10 +390,13 @@ const TemplateDetail = () => {
           <FaArrowLeft /> {t("templates.back")}
         </Button>
         <Button
-          onClick={handleAddField}
+          onClick={
+            editingField
+              ? () => messageHandler.handleError(t("templates.finish-editing"))
+              : handleAddField
+          }
           variant="primary"
           className={styles.addFieldButton}
-          disabled={editingField ? true : false}
           testId="template-detail.add-field"
         >
           <FaPlus /> {t("templates.addField")}

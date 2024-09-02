@@ -265,11 +265,14 @@ const Templates = () => {
           {t("templates.all_templates")}
         </h1>
         <Button
-          onClick={handleAddTemplate}
+          onClick={
+            editingTemplate
+              ? () => messageHandler.handleError(t("templates.finish-editing"))
+              : handleAddTemplate
+          }
           variant="primary"
           className={styles.addButton}
           testId="templates.new-template"
-          disabled={editingTemplate ? true : false}
         >
           <FaPlus /> {t("templates.create")}
         </Button>

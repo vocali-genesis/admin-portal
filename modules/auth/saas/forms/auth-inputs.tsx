@@ -1,5 +1,5 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { InputField } from "../../../../resources/inputs/input-field";
+import { InputField } from "@/resources/inputs/input-field";
 import { useTranslation } from "react-i18next";
 import form_style from "./form.module.css";
 import React from "react";

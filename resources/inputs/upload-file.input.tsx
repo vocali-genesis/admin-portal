@@ -12,6 +12,7 @@ interface Props {
   errorLabel: string;
   accept: string;
   maxSizeMB: number;
+  disabled?: boolean;
 }
 export const UploadFile = ({
   onFile,
@@ -19,6 +20,7 @@ export const UploadFile = ({
   accept,
   errorLabel,
   maxSizeMB,
+  disabled,
 }: Props) => {
   const { t } = useTranslation();
   const [isUploading, setIsUploading] = useState(false);
@@ -40,14 +42,14 @@ export const UploadFile = ({
       const maxSizeBytes = maxSizeMB * 1024 * 1024;
       if (file.size > maxSizeBytes) {
         messageHandler.handleError(
-          t("resources.file-too-large", { size: maxSizeMB })
+          t("resources.file-too-large", { size: maxSizeMB }),
         );
         return;
       }
 
       const formats = accept.split(",");
       const accepted = formats.find((format) =>
-        file.type.includes(format.replace("/*", ""))
+        file.type.includes(format.replace("/*", "")),
       );
 
       console.log({ accepted });
@@ -57,7 +59,7 @@ export const UploadFile = ({
       }
       setSelectedFile(file);
     },
-    [accept, t]
+    [accept, t],
   );
 
   const handleBrowseClick = () => {
@@ -94,7 +96,7 @@ export const UploadFile = ({
       }
       setIsUploading(false);
     },
-    [handleFileSelection]
+    [handleFileSelection],
   );
 
   return (
@@ -102,11 +104,11 @@ export const UploadFile = ({
       <div
         className={`
           ${dash_styles.uploadArea} ${isDragging ? dash_styles.dragging : ""}`}
-        onDragEnter={handleDragEnter}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={handleBrowseClick}
+        onDragEnter={disabled ? () => {} : handleDragEnter}
+        onDragOver={disabled ? () => {} : handleDragOver}
+        onDragLeave={disabled ? () => {} : handleDragLeave}
+        onDrop={disabled ? () => {} : handleDrop}
+        onClick={disabled ? () => {} : handleBrowseClick}
       >
         <Image
           src="/cloud-avatar.svg"

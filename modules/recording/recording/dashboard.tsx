@@ -38,12 +38,7 @@ const Dashboard = () => {
     const response = await templateService.getTemplates(1);
     if (!response) return;
 
-    if (response.data.length > 0) {
-      setHasTemplates(true);
-    } else {
-      messageHandler.handleError(t("recording.error-no-templates"));
-      setHasTemplates(false);
-    }
+    response.data.length > 0 ? setHasTemplates(true) : setHasTemplates(false);
     setIsLoading(false);
   };
 
@@ -56,7 +51,6 @@ const Dashboard = () => {
     if (!audioRecorderRef.current) {
       audioRecorderRef.current = new AudioRecorder();
     }
-    console.log({ audioRecorderRef, recordingState });
     if (recordingState === "inactive") {
       try {
         await audioRecorderRef.current.startRecording(microphone);
@@ -177,42 +171,56 @@ const Dashboard = () => {
 
   if (isLoading) return <Spinner />;
   return (
-    <div className="p-5">
-      <h2 className={dash_styles.h2}>{t("recording.record-title")}</h2>
-      <p className={dash_styles.p}>{t("recording.activate-audio")}</p>
-
-      <div className={dash_styles.contentColumns}>
-        <div className={dash_styles.recordSection}>
-          <MicrophoneSelect value={microphone} onChange={setMicrophone} />
-          <RecordButton
-            recordingState={recordingState}
-            audioLevel={audioLevel}
-            onClick={toggleRecording}
-            statusMessage={getStatusMessage()}
-            disabled={!hasTemplates}
-          />
-          {recordingState !== "inactive" && (
-            <button className={dash_styles.stopButton} onClick={stopRecording}>
-              <FaStop size={20} style={{ marginRight: "10px" }} />
-              {t("recording.stop")}
-            </button>
-          )}
+    <>
+      {!hasTemplates && (
+        <div className={dash_styles.warning}>
+          <h2>
+            {t("recording.error-no-templates")}{" "}
+            <a href="/app/templates">{t("common.here")}</a>
+          </h2>
         </div>
+      )}
+      <div className="p-5">
+        <h2 className={dash_styles.h2}>{t("recording.record-title")}</h2>
+        <p className={dash_styles.p}>{t("recording.activate-audio")}</p>
 
-        <div className={dash_styles.divider}></div>
+        <div className={dash_styles.contentColumns}>
+          <div className={dash_styles.recordSection}>
+            <MicrophoneSelect value={microphone} onChange={setMicrophone} />
+            <RecordButton
+              recordingState={recordingState}
+              audioLevel={audioLevel}
+              onClick={toggleRecording}
+              statusMessage={getStatusMessage()}
+              disabled={!hasTemplates}
+            />
+            {recordingState !== "inactive" && (
+              <button
+                className={dash_styles.stopButton}
+                onClick={stopRecording}
+              >
+                <FaStop size={20} style={{ marginRight: "10px" }} />
+                {t("recording.stop")}
+              </button>
+            )}
+          </div>
 
-        <div className={dash_styles.uploadSection}>
-          <h3 className={dash_styles.h3}>{t("recording.upload")}</h3>
-          <UploadFile
-            accept="audio/*"
-            errorLabel={t("recording.select-file")}
-            onFile={(file) => handleUpload(file)}
-            testId="upload-recording"
-            maxSizeMB={30}
-          />
+          <div className={dash_styles.divider}></div>
+
+          <div className={dash_styles.uploadSection}>
+            <h3 className={dash_styles.h3}>{t("recording.upload")}</h3>
+            <UploadFile
+              accept="audio/*"
+              errorLabel={t("recording.select-file")}
+              onFile={(file) => handleUpload(file)}
+              testId="upload-recording"
+              maxSizeMB={30}
+              disabled={!hasTemplates}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
