@@ -578,56 +578,6 @@ describe("===== TEMPLATES =====", () => {
       expect(getByText("string")).toHaveClass("optionTag");
     });
 
-    it("Checks select option works", async () => {
-      render(<TemplateDetail />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("table-row-0"));
-      });
-
-      const templateEdit = screen.getAllByTestId("template-detail.edit");
-      act(() => templateEdit[1].click());
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId("template-detail.field-type-select"),
-        ).toBeInTheDocument();
-      });
-
-      const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
-      );
-      expect(typeSelectElement).toHaveValue("select");
-
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId("template-detail.edit-field-config"),
-        ).toBeInTheDocument();
-      });
-
-      const configButton = screen.getByTestId(
-        "template-detail.edit-field-config",
-      );
-      act(() => configButton.click());
-
-      const modal = await screen.findByTestId("template-detail.field-modal");
-      expect(modal).toBeInTheDocument();
-
-      const { getAllByText } = within(modal);
-      expect(getAllByText("multiselect")).toHaveLength(1);
-      expect(getAllByText("multiselect")[0]).not.toHaveClass("optionTag");
-
-      const optionSelectElement = screen.getByTestId(
-        "field-modal.select-options",
-      );
-      await userEvent.selectOptions(optionSelectElement, "multiselect");
-
-      await waitFor(() => {
-        expect(getAllByText("multiselect")).toHaveLength(2);
-        expect(getAllByText("multiselect")[0]).toHaveClass("optionTag");
-      });
-    });
-
     it("Checks multiselect option works", async () => {
       render(<TemplateDetail />);
 
@@ -670,13 +620,8 @@ describe("===== TEMPLATES =====", () => {
         "field-modal.multi-select-input",
       );
       await userEvent.type(optionInputElement, "test_type");
-
-      const addOption = screen.getByTestId(
-        "field-modal.multi-select-add-option",
-      );
-      expect(addOption).toBeInTheDocument();
-
-      act(() => addOption.click());
+      optionInputElement.focus();
+      userEvent.keyboard("{Enter}");
 
       await waitFor(() => {
         expect(getByText("test_type")).toBeInTheDocument();

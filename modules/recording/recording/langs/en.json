@@ -38,6 +38,7 @@
     "audio-time": "Audio Length: {{seconds}} seconds",
     "transcription-time": "Transcription: {{seconds}} seconds",
     "report-time": "Report: {{seconds}} seconds",
-    "download_success": "Download Success"
+    "download_success": "Download Success",
+    "error-no-templates": "You have no templates set up. Please set one up before recording"
   }
 }
