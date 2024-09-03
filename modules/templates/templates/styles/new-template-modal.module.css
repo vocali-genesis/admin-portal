@@ -22,7 +22,7 @@
   max-width: 800px;
   width: 90%;
   color: black;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 2.5vh;
   max-height: 80vh;
   overflow-y: auto;
@@ -95,13 +95,13 @@
   margin-bottom: 0.5rem;
 }
 
-
 @media (max-width: 768px) {
   .fieldInputs {
     flex-direction: column;
   }
 
-  .input, .select {
+  .input,
+  .select {
     margin-right: 0;
     margin-bottom: 1rem;
   }

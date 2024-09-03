@@ -25,18 +25,18 @@ interface NewTemplateModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (
-    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">,
+    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">
   ) => void;
 }
 
 interface FormValues {
   name: string;
-  fields: {
+  fields: Array<{
     name: string;
     type: TYPE_OPTIONS;
     description: string;
     config?: FieldConfig;
-  }[];
+  }>;
 }
 
 const schema = yup.object().shape({
@@ -46,12 +46,16 @@ const schema = yup.object().shape({
     .of(
       yup.object().shape({
         name: yup.string().required("Field name is required"),
-        type: yup.string().required("Field type is required"),
+        type: yup
+          .mixed<TYPE_OPTIONS>()
+          .oneOf(Object.values(TYPE_OPTIONS))
+          .required("Field type is required"),
         description: yup.string().required("Field description is required"),
-        config: yup.object().optional(),
-      }),
+        config: yup.mixed<FieldConfig>().optional(),
+      })
     )
-    .min(1, "At least one field is required"),
+    .min(1, "At least one field is required")
+    .required(),
 });
 
 const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
@@ -62,10 +66,10 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
   const { t } = useTranslation();
   const [isFieldModalOpen, setIsFieldModalOpen] = useState(false);
   const [currentFieldIndex, setCurrentFieldIndex] = useState<number | null>(
-    null,
+    null
   );
   const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
-    null,
+    null
   );
 
   const {
@@ -93,17 +97,14 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
     const template = {
       name: data.name,
       preview: `Fields: ${data.fields.map((f) => f.name).join(", ")}`,
-      fields: data.fields.reduce(
-        (acc, field) => {
-          acc[field.name] = {
-            type: field.type,
-            description: field.description,
-            config: field.config,
-          };
-          return acc;
-        },
-        {} as Record<string, GenesisTemplateField>,
-      ),
+      fields: data.fields.reduce((acc, field) => {
+        acc[field.name] = {
+          type: field.type,
+          description: field.description,
+          config: field.config,
+        };
+        return acc;
+      }, {} as Record<string, GenesisTemplateField>),
     };
     onSubmit(template);
     onClose();
@@ -120,9 +121,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
 
   const openFieldConfigModal = (index: number) => {
     setCurrentFieldIndex(index);
-    const fieldConfig = getValues(`fields.${index}.config`) as
-      | FieldConfig
-      | undefined;
+    const fieldConfig = getValues(`fields.${index}.config`);
     setFieldModalConfig(fieldConfig || null);
     setIsFieldModalOpen(true);
   };
@@ -135,7 +134,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
       overlayClassName={styles.modalOverlay}
     >
       <h2 className={styles.modalTitle}>{t("templates.newTemplate")}</h2>
-      <form onSubmit={handleSubmit(onFormSubmit)}>
+      <form onSubmit={() => handleSubmit(onFormSubmit)}>
         <Controller
           name="name"
           control={control}

@@ -23,7 +23,7 @@ import Pagination from "@/resources/table/pagination";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
-import NewTemplateModal from "@/resources/containers/new-template-modal";
+import NewTemplateModal from "@/modules/templates/templates/new-template-modal";
 
 const messageHandler = MessageHandler.get();
 
