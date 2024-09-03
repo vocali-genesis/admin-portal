@@ -20,12 +20,13 @@ const PriceCard = (props: { item: Price }) => {
     buttonAction,
   } = props.item;
   const handleSubscribe = async () => {
+    console.log(">>>>>>", await Service.get("subscriptions")?.getSubscriptionLink())
     setIsLoading(true);
-    const subscriptionLink =
-      await Service.get("subscriptions")?.getSubscriptionLink();
-    if (subscriptionLink) {
-      window.location.href = subscriptionLink.url;
-    }
+    // const subscriptionLink =
+    //   await Service.get("subscriptions")?.getSubscriptionLink();
+    // if (subscriptionLink) {
+    //   window.location.href = subscriptionLink.url;
+    // }
     setIsLoading(false);
   };
   const customAction = () => {

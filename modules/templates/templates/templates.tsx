@@ -12,6 +12,7 @@ import {
   FaPlus,
   FaSave,
   FaRegFolderOpen,
+  FaEye,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
@@ -80,6 +81,10 @@ const Templates = () => {
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
     setIsModalOpen(false);
     setTemplateToDelete(null);
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      totalRecords: prevPagination.totalRecords - 1,
+    }));
   };
 
   const handleAddTemplate = async () => {
@@ -94,6 +99,10 @@ const Templates = () => {
     if (!createdTemplate) return;
     setTemplates([...templates, createdTemplate]);
     setEditingTemplate(createdTemplate);
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      totalRecords: prevPagination.totalRecords + 1,
+    }));
     messageHandler.handleSuccess(t("templates.createSuccess"));
   };
 
@@ -150,9 +159,6 @@ const Templates = () => {
           />
         ) : (
           <div
-            onClick={() =>
-              router.push(`/app/template-detail?id=${template.id}`)
-            }
             className="flex items-center"
             style={{ gap: "1vh", cursor: "pointer" }}
           >
@@ -194,6 +200,14 @@ const Templates = () => {
                 size="small"
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
+              </IconButton>
+              <IconButton
+                onClick={() =>
+                  router.push(`/app/template-detail?id=${template.id}`)
+                }
+                size="small"
+              >
+                <FaEye style={{ color: "var(--primary)" }} />
               </IconButton>
             </div>
           )}

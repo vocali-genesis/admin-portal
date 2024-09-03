@@ -27,8 +27,9 @@ class SubscriptionSupabase implements SubscriptionService {
       checkoutUrl: string | undefined;
     }>("stripe-create-subscription");
     if (!error && data?.checkoutUrl) {
-      return { url: data?.checkoutUrl };
+      return { url: data };
     }
+    console.log(">>>>>>>data", data)
     await messageHandler.handleEdgeFunctionError(error);
     return null;
   }

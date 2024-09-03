@@ -49,7 +49,7 @@ const Report = () => {
 
     if (audioRef.current) {
       audioRef.current.onloadedmetadata = () => {
-        setAudioLength(audioRef.current!.duration);
+        setAudioLength(audioRef.current?.duration);
       };
     }
   }, [router]);
@@ -210,9 +210,8 @@ const Report = () => {
           testId="replay-audio"
           onClick={handleReplayAudio}
           variant="primary"
-          className={`${report_styles.replayButton} ${
-            isAudioPlaying ? report_styles.playing : ""
-          }`}
+          className={`${report_styles.replayButton} ${isAudioPlaying ? report_styles.playing : ""
+            }`}
         >
           {isAudioPlaying ? <FaPause /> : <FaPlay />}
           {isAudioPlaying
