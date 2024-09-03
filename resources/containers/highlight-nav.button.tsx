@@ -21,10 +21,10 @@ const HighlightNavButton: React.FC<highlightNavButtonProps> = ({
       <Image
         src="/settings.svg"
         alt="Settings"
-        width={23}
-        height={23}
+        width={21}
+        height={21}
       />
-      <span>{t(label)}</span>
+      <span className="ml-2">{t(label)}</span>
     </button>
   );
 };
