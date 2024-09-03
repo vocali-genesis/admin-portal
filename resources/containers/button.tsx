@@ -8,6 +8,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary" | "action" | "icon" | "danger";
   disabled?: boolean;
   testId?: string;
+  type?: "button" | "submit";
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -17,6 +18,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   disabled = false,
   testId,
+  type,
 }) => {
   return (
     <button
@@ -24,6 +26,7 @@ const Button: React.FC<ButtonProps> = ({
       data-testid={testId}
       className={`${btn_styles.button} ${btn_styles[variant]} ${className}`}
       disabled={disabled}
+      type={type}
     >
       {children}
     </button>

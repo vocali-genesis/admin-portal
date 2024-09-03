@@ -22,7 +22,7 @@
   max-width: 800px;
   width: 90%;
   color: black;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 2.5vh;
   max-height: 80vh;
   overflow-y: auto;
@@ -38,12 +38,14 @@
   margin-bottom: 1.25vh;
 }
 
-.input, .select {
+.input,
+.select {
   flex: 1;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 2vh;
+  max-height: 6vh;
 }
 
 .fieldContainer {
@@ -53,13 +55,16 @@
   padding: 1rem;
   border: 1px solid #eee;
   border-radius: 4px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .fieldInputs {
   display: flex;
   flex-grow: 1;
-  flex-wrap: wrap;
   gap: 3vh;
+  gap: 2vh;
+  flex-wrap: nowrap;
 }
 
 .buttonContainer {
@@ -84,12 +89,19 @@
   margin-left: 3vh;
 }
 
+.errorMessage {
+  color: red;
+  font-size: 1.8vh;
+  margin-bottom: 0.5rem;
+}
+
 @media (max-width: 768px) {
   .fieldInputs {
     flex-direction: column;
   }
 
-  .input, .select {
+  .input,
+  .select {
     margin-right: 0;
     margin-bottom: 1rem;
   }
