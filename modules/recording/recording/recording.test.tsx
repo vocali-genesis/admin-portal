@@ -426,10 +426,13 @@ describe("===== RECORDING AUDIO =====", () => {
       const qlEditor = container.querySelector(".ql-editor") as Element;
       // Get first title
       const firstTitle = qlEditor.querySelector("h3") as Element;
+      console.log(firstTitle.innerHTML);
       expect(firstTitle).toBeTruthy();
 
-      firstTitle.innerHTML = "My new title";
+      act(() => (firstTitle.innerHTML = "My new title"));
       await act(() => fireEvent.change(qlEditor, qlEditor.innerHTML));
+
+      console.log(firstTitle.innerHTML);
 
       act(() => {
         getSaveButton().click();

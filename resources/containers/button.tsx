@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import btn_styles from "./styles/button.module.css";
 
@@ -24,10 +24,6 @@ const Button: React.FC<ButtonProps> = ({
   type = "button",
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    console.log("isLoading changed:", isLoading);
-  }, [isLoading]);
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setIsLoading(true);
