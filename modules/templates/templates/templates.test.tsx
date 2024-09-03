@@ -1,32 +1,18 @@
 import "@testing-library/jest-dom";
 import { render, screen, waitFor, within } from "@testing-library/react";
-import Modal from "react-modal";
 import userEvent from "@testing-library/user-event";
-import { CoreComponent, GlobalCore } from "@/core/module/module.types";
+import { CoreComponent } from "@/core/module/module.types";
 import "./index";
 import "@/services/auth/auth-mock.service";
 import "@/services/templates/templates-mock.service";
-import { SupabaseTemplateService } from "@/core/module/services.types";
 
 import React, { act } from "react";
 import { RouterMock } from "@/jest-setup";
 import { getComponent, setRouteQuery } from "@/resources/tests/test.utils";
-import { Seed } from "@/resources/tests/seed";
-import {
-  GenesisTemplate,
-  GenesisTemplateField,
-  TYPE_OPTIONS,
-} from "@/core/module/core.types";
+import { GenesisTemplateField, TYPE_OPTIONS } from "@/core/module/core.types";
 
 describe("===== TEMPLATES =====", () => {
-  let templatesService: SupabaseTemplateService;
-
-  beforeAll(() => {
-    templatesService = GlobalCore.manager.getComponent(
-      "service",
-      "templates",
-    ) as SupabaseTemplateService;
-  });
+  beforeAll(() => {});
 
   describe("Templates Page", () => {
     let Templates: CoreComponent;
@@ -67,12 +53,12 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("templates.new-template-name-input"),
+          screen.getByTestId("templates.new-template-name-input")
         ).toBeInTheDocument();
       });
 
       const inputElement = screen.getByTestId(
-        "templates.new-template-name-input",
+        "templates.new-template-name-input"
       );
       expect(inputElement).toHaveValue("");
     });
@@ -89,12 +75,12 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("templates.new-template-name-input"),
+          screen.getByTestId("templates.new-template-name-input")
         ).toBeInTheDocument();
       });
 
       const nameInputElement = screen.getByTestId(
-        "templates.new-template-name-input",
+        "templates.new-template-name-input"
       );
       await userEvent.clear(nameInputElement);
       await userEvent.type(nameInputElement, "Test Template");
@@ -102,13 +88,13 @@ describe("===== TEMPLATES =====", () => {
       expect(nameInputElement).toHaveValue("Test Template");
 
       const fieldInputElement = screen.getByTestId(
-        "templates.new-template-field-name-input",
+        "templates.new-template-field-name-input"
       );
       await userEvent.clear(fieldInputElement);
       await userEvent.type(fieldInputElement, "Test Field");
 
       const descriptionInputElement = screen.getByTestId(
-        "templates.new-template-field-description-input",
+        "templates.new-template-field-description-input"
       );
       await userEvent.clear(descriptionInputElement);
       await userEvent.type(descriptionInputElement, "Test Description");
@@ -120,7 +106,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("templates.new-template-name-input"),
+          screen.queryByTestId("templates.new-template-name-input")
         ).not.toBeInTheDocument();
       });
 
@@ -140,7 +126,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("templates.name-edit-field"),
+          screen.getByTestId("templates.name-edit-field")
         ).toBeInTheDocument();
       });
     });
@@ -169,7 +155,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("templates.name-edit-field"),
+          screen.queryByTestId("templates.name-edit-field")
         ).not.toBeInTheDocument();
       });
 
@@ -189,7 +175,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("templates.delete-confirmation"),
+          screen.getByTestId("templates.delete-confirmation")
         ).toBeInTheDocument();
       });
     });
@@ -206,7 +192,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("templates.delete-confirmation"),
+          screen.getByTestId("templates.delete-confirmation")
         ).toBeInTheDocument();
       });
 
@@ -216,7 +202,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("templates.delete-confirmation"),
+          screen.queryByTestId("templates.delete-confirmation")
         ).not.toBeInTheDocument();
       });
 
@@ -237,7 +223,7 @@ describe("===== TEMPLATES =====", () => {
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(/\/app\/template-detail\?id=.*/),
+        expect.stringMatching(/\/app\/template-detail\?id=.*/)
       );
     });
   });
@@ -258,10 +244,10 @@ describe("===== TEMPLATES =====", () => {
 
       expect(screen.getByTestId("template-detail.title")).toBeInTheDocument();
       expect(
-        screen.getByTestId("template-detail.add-field"),
+        screen.getByTestId("template-detail.add-field")
       ).toBeInTheDocument();
       expect(
-        screen.queryByText("template-detail.table"),
+        screen.queryByText("template-detail.table")
       ).not.toBeInTheDocument();
       screen.debug();
     });
@@ -287,12 +273,12 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.field-name-input"),
+          screen.getByTestId("template-detail.field-name-input")
         ).toBeInTheDocument();
       });
 
       const inputElement = screen.getByTestId(
-        "template-detail.field-name-input",
+        "template-detail.field-name-input"
       );
       expect((inputElement as HTMLInputElement).value).toMatch(/newField.*/i);
     });
@@ -314,25 +300,25 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.field-name-input"),
+          screen.getByTestId("template-detail.field-name-input")
         ).toBeInTheDocument();
       });
 
       const nameInputElement = screen.getByTestId(
-        "template-detail.field-name-input",
+        "template-detail.field-name-input"
       );
       await userEvent.clear(nameInputElement);
       await userEvent.type(nameInputElement, NewField.name);
       expect(nameInputElement).toHaveValue(NewField.name);
 
       const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
+        "template-detail.field-type-select"
       );
       await userEvent.selectOptions(typeSelectElement, NewField.type);
       expect(typeSelectElement).toHaveValue(NewField.type);
 
       const descriptionInputElement = screen.getByTestId(
-        "template-detail.field-description-input",
+        "template-detail.field-description-input"
       );
       await userEvent.clear(descriptionInputElement);
       await userEvent.type(descriptionInputElement, NewField.description);
@@ -345,7 +331,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.field-name-input"),
+          screen.queryByTestId("template-detail.field-name-input")
         ).not.toBeInTheDocument();
       });
 
@@ -364,13 +350,13 @@ describe("===== TEMPLATES =====", () => {
       act(() => templateEdit[0].click());
 
       expect(
-        screen.getByTestId("template-detail.field-name-input"),
+        screen.getByTestId("template-detail.field-name-input")
       ).toBeInTheDocument();
       expect(
-        screen.getByTestId("template-detail.field-type-select"),
+        screen.getByTestId("template-detail.field-type-select")
       ).toBeInTheDocument();
       expect(
-        screen.getByTestId("template-detail.field-description-input"),
+        screen.getByTestId("template-detail.field-description-input")
       ).toBeInTheDocument();
     });
 
@@ -391,20 +377,20 @@ describe("===== TEMPLATES =====", () => {
       act(() => templateEdit[0].click());
 
       const nameInputElement = screen.getByTestId(
-        "template-detail.field-name-input",
+        "template-detail.field-name-input"
       );
       await userEvent.clear(nameInputElement);
       await userEvent.type(nameInputElement, AlteredField.name);
       expect(nameInputElement).toHaveValue(AlteredField.name);
 
       const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
+        "template-detail.field-type-select"
       );
       await userEvent.selectOptions(typeSelectElement, AlteredField.type);
       expect(typeSelectElement).toHaveValue(AlteredField.type);
 
       const descriptionInputElement = screen.getByTestId(
-        "template-detail.field-description-input",
+        "template-detail.field-description-input"
       );
       await userEvent.clear(descriptionInputElement);
       await userEvent.type(descriptionInputElement, AlteredField.description);
@@ -417,7 +403,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("templates.name-edit-field"),
+          screen.queryByTestId("templates.name-edit-field")
         ).not.toBeInTheDocument();
       });
 
@@ -436,23 +422,23 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.field-type-select"),
+          screen.getByTestId("template-detail.field-type-select")
         ).toBeInTheDocument();
       });
 
       const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
+        "template-detail.field-type-select"
       );
       expect(typeSelectElement).toHaveValue("text");
       expect(
-        screen.queryByTestId("template-detail.edit-field-config"),
+        screen.queryByTestId("template-detail.edit-field-config")
       ).not.toBeInTheDocument();
 
       await userEvent.selectOptions(typeSelectElement, "number");
       expect(typeSelectElement).toHaveValue("number");
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.edit-field-config"),
+          screen.queryByTestId("template-detail.edit-field-config")
         ).toBeInTheDocument();
       });
 
@@ -460,7 +446,7 @@ describe("===== TEMPLATES =====", () => {
       expect(typeSelectElement).toHaveValue("number");
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.edit-field-config"),
+          screen.queryByTestId("template-detail.edit-field-config")
         ).toBeInTheDocument();
       });
 
@@ -468,7 +454,7 @@ describe("===== TEMPLATES =====", () => {
       expect(typeSelectElement).toHaveValue("number");
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.edit-field-config"),
+          screen.queryByTestId("template-detail.edit-field-config")
         ).toBeInTheDocument();
       });
     });
@@ -485,24 +471,24 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.field-type-select"),
+          screen.getByTestId("template-detail.field-type-select")
         ).toBeInTheDocument();
       });
 
       const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
+        "template-detail.field-type-select"
       );
 
       await userEvent.selectOptions(typeSelectElement, "number");
       expect(typeSelectElement).toHaveValue("number");
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.edit-field-config"),
+          screen.queryByTestId("template-detail.edit-field-config")
         ).toBeInTheDocument();
       });
 
       const configButton = screen.getByTestId(
-        "template-detail.edit-field-config",
+        "template-detail.edit-field-config"
       );
       act(() => configButton.click());
 
@@ -522,32 +508,32 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.field-type-select"),
+          screen.getByTestId("template-detail.field-type-select")
         ).toBeInTheDocument();
       });
 
       const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
+        "template-detail.field-type-select"
       );
       expect(typeSelectElement).toHaveValue("select");
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.edit-field-config"),
+          screen.queryByTestId("template-detail.edit-field-config")
         ).toBeInTheDocument();
       });
 
       const configButton = screen.getByTestId(
-        "template-detail.edit-field-config",
+        "template-detail.edit-field-config"
       );
       act(() => configButton.click());
 
       const modal = await screen.findByTestId("template-detail.field-modal");
       expect(modal).toBeInTheDocument();
 
-      const { getAllByText } = within(modal);
-      expect(getAllByText("number")[0]).toHaveClass("optionTag");
-      expect(getAllByText("text")[0]).toHaveClass("optionTag");
+      const modalItem = within(modal);
+      expect(modalItem.getAllByText("number")[0]).toHaveClass("optionTag");
+      expect(modalItem.getAllByText("text")[0]).toHaveClass("optionTag");
     });
 
     it("Checks multiselect config modal is populated", async () => {
@@ -562,32 +548,32 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.field-type-select"),
+          screen.getByTestId("template-detail.field-type-select")
         ).toBeInTheDocument();
       });
 
       const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
+        "template-detail.field-type-select"
       );
       expect(typeSelectElement).toHaveValue("multiselect");
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.edit-field-config"),
+          screen.queryByTestId("template-detail.edit-field-config")
         ).toBeInTheDocument();
       });
 
       const configButton = screen.getByTestId(
-        "template-detail.edit-field-config",
+        "template-detail.edit-field-config"
       );
       act(() => configButton.click());
 
       const modal = await screen.findByTestId("template-detail.field-modal");
       expect(modal).toBeInTheDocument();
 
-      const { getByText } = within(modal);
-      expect(getByText("integer")).toHaveClass("optionTag");
-      expect(getByText("string")).toHaveClass("optionTag");
+      const modalItem = within(modal);
+      expect(modalItem.getByText("integer")).toHaveClass("optionTag");
+      expect(modalItem.getByText("string")).toHaveClass("optionTag");
     });
 
     it("Checks multiselect option works", async () => {
@@ -602,42 +588,42 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.field-type-select"),
+          screen.getByTestId("template-detail.field-type-select")
         ).toBeInTheDocument();
       });
 
       const typeSelectElement = screen.getByTestId(
-        "template-detail.field-type-select",
+        "template-detail.field-type-select"
       );
       expect(typeSelectElement).toHaveValue("multiselect");
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.edit-field-config"),
+          screen.queryByTestId("template-detail.edit-field-config")
         ).toBeInTheDocument();
       });
 
       const configButton = screen.getByTestId(
-        "template-detail.edit-field-config",
+        "template-detail.edit-field-config"
       );
       act(() => configButton.click());
 
       const modal = await screen.findByTestId("template-detail.field-modal");
       expect(modal).toBeInTheDocument();
 
-      const { getByText, queryByText } = within(modal);
-      expect(queryByText("test_type")).not.toBeInTheDocument();
+      const modalItem = within(modal);
+      expect(modalItem.queryByText("test_type")).not.toBeInTheDocument();
 
       const optionInputElement = screen.getByTestId(
-        "field-modal.multi-select-input",
+        "field-modal.multi-select-input"
       );
       await userEvent.type(optionInputElement, "test_type");
       optionInputElement.focus();
-      userEvent.keyboard("{Enter}");
+      await userEvent.keyboard("{Enter}");
 
       await waitFor(() => {
-        expect(getByText("test_type")).toBeInTheDocument();
-        expect(getByText("test_type")).toHaveClass("optionTag");
+        expect(modalItem.getByText("test_type")).toBeInTheDocument();
+        expect(modalItem.getByText("test_type")).toHaveClass("optionTag");
       });
     });
 
@@ -654,7 +640,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.delete-confirmation"),
+          screen.getByTestId("template-detail.delete-confirmation")
         ).toBeInTheDocument();
       });
     });
@@ -671,7 +657,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByTestId("template-detail.delete-confirmation"),
+          screen.getByTestId("template-detail.delete-confirmation")
         ).toBeInTheDocument();
       });
 
@@ -681,7 +667,7 @@ describe("===== TEMPLATES =====", () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId("template-detail.delete-confirmation"),
+          screen.queryByTestId("template-detail.delete-confirmation")
         ).not.toBeInTheDocument();
       });
 

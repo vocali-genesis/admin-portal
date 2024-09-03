@@ -23,6 +23,22 @@
     "download-report": "Descargar Informe",
     "download-transcription": "Descargar Transcripción",
     "statistics": "Estadísticas",
-    "new-recording": "Nueva Grabación"
+    "new-recording": "Nueva Grabación",
+    "upload": "Subir",
+    "pause-audio": "Pausar audio",
+    "replay-audio": "Repetir audio",
+    "submit": "Enviar",
+    "back": "Volver",
+    "add_field": "Agregar campo",
+    "api-error": "Error al generar el informe",
+    "error-no-audio-file": "Archivo de audio caducado",
+    "total": "Total",
+    "total-time": "Tiempo total",
+    "seconds": "segundos",
+    "audio-time": "Duración del audio: {{seconds}} segundos",
+    "transcription-time": "Transcripción: {{seconds}} segundos",
+    "report-time": "Informe: {{seconds}} segundos",
+    "download_success": "Descarga exitosa",
+    "error-no-templates": "No tienes plantillas configuradas. Por favor, configura una antes de grabar"
   }
 }

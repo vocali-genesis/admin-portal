@@ -23,6 +23,22 @@
     "download-report": "Descarregar informe",
     "download-transcription": "Descarregar transcripció",
     "statistics": "Estadístiques",
-    "new-recording": "Nou enregistrament"
+    "new-recording": "Nou enregistrament",
+    "upload": "Pujar",
+    "upload-files": "Pujar fitxer",
+    "pause-audio": "Pausa àudio",
+    "replay-audio": "Reproduir àudio",
+    "back": "Enrere",
+    "add_field": "Afegir camp",
+    "api-error": "Error en generar el informe",
+    "error-no-audio-file": "Fitxer d'àudio caducat",
+    "total": "Total",
+    "total-time": "Temps total",
+    "seconds": "segons",
+    "audio-time": "Durada de l'àudio: {{seconds}} segons",
+    "transcription-time": "Transcripció: {{seconds}} segons",
+    "report-time": "Informe: {{seconds}} segons",
+    "download_success": "Descàrrega realitzada amb èxit",
+    "error-no-templates": "No tens cap plantilla configurada. Si us plau, configura'n una abans d'enregistrar"
   }
 }
