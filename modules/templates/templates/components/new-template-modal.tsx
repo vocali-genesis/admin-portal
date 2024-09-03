@@ -15,9 +15,9 @@ import {
   FieldData,
   FieldConfig,
 } from "@/core/module/core.types";
-import styles from "./styles/new-template-modal.module.css";
+import styles from "./new-template-modal.module.css";
 import { FaCog, FaTrash } from "react-icons/fa";
-import FieldModal from "@/resources/containers/field-modal";
+import FieldModal from "@/modules/templates/templates/components/field-modal";
 
 Modal.setAppElement("body");
 
@@ -134,7 +134,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
       overlayClassName={styles.modalOverlay}
     >
       <h2 className={styles.modalTitle}>{t("templates.newTemplate")}</h2>
-      <form onSubmit={() => handleSubmit(onFormSubmit)}>
+      <form onSubmit={handleSubmit(onFormSubmit)}>
         <Controller
           name="name"
           control={control}

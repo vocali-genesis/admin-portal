@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { useForm, Controller } from "react-hook-form";
-import styles from "./styles/field-modal.module.css";
+import styles from "./field-modal.module.css";
 import { TYPE_OPTIONS } from "@/core/module/core.types";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
-import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import { FieldData } from "@/core/module/core.types";
 
 Modal.setAppElement("body");
@@ -50,7 +49,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
   }, [isOpen, initialConfig, setValue, reset]);
 
   const typeOptions = Object.values(TYPE_OPTIONS).filter(
-    (option) => option !== fieldType,
+    (option) => option !== fieldType
   );
 
   const handleSave = (data: FormData) => {
@@ -82,13 +81,13 @@ const FieldModal: React.FC<FieldModalProps> = ({
 
   const removeOption = (
     optionToRemove: string,
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
 
     setValue(
       "options",
-      selectedOptions.filter((option) => option !== optionToRemove),
+      selectedOptions.filter((option) => option !== optionToRemove)
     );
   };
 
@@ -110,7 +109,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
                       onClick={(event?) =>
                         removeOption(
                           option,
-                          event as React.MouseEvent<HTMLButtonElement>,
+                          event as React.MouseEvent<HTMLButtonElement>
                         )
                       }
                     >
