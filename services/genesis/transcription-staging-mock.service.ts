@@ -92,10 +92,10 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
   ): Promise<GenesisReport | null> {
     const transcriptionStart = Date.now();
     const transcription = await this.transcribeAudio(audioFile);
-    if (!transcription.length) {
+    const transcriptionTime = Date.now() - transcriptionStart;
+    if (!transcription) {
       return null;
     }
-    const transcriptionTime = Date.now() - transcriptionStart;
     const reportStart = Date.now();
     const report = await this.generateReport(transcription, template, language);
     const reportTime = Date.now() - reportStart;

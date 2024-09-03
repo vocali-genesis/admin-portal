@@ -15,7 +15,7 @@
     "price-2": {
       "title": "Pro",
       "currency": "€",
-      "amount": "100",
+      "amount": "30",
       "interval": "/month",
       "features": {
         "feature-1": "Benefit 1",
@@ -40,6 +40,7 @@
   "invoice-history": {
     "invoice-id-th": "Invoice Id",
     "date-th" : "Date",
+    "validity-th" : "Valid until",
     "amount-th" : "Amount",
     "action-th" : "Actions",
     "total-label" : "Total Records:",

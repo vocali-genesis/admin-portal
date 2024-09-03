@@ -17,6 +17,10 @@
   background-color: #4bc1a4;
 }
 
+.recordButton:disabled {
+  opacity: 0.5;
+}
+
 .recordButton.recording {
   background-color: #ff6b6b;
 }

@@ -26,3 +26,9 @@
 .login_text strong {
   color: black;
 }
+
+.language_select {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}

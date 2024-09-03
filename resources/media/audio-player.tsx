@@ -151,6 +151,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
           className={audioPlayer.actionButton}
           size="small"
           name="delete"
+          testId="recording.audio-delete"
         >
           <FaTrash size={16} style={{ color: "#DF4949" }} />
         </IconButton>

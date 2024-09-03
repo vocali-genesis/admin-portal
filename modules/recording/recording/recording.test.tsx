@@ -9,9 +9,9 @@ import {
 import userEvent from "@testing-library/user-event";
 import { CoreComponent, GlobalCore } from "@/core/module/module.types";
 import "./index";
-import Download from "./libs/download";
 import "@/services/auth/auth-mock.service";
-import "@/services/genesis/genesis-mock.service";
+import "@/services/templates/templates-mock.service";
+import "@/services/genesis/transcription-mock.service";
 import { MedicalTranscription } from "@/core/module/services.types";
 
 import { faker } from "@faker-js/faker";
@@ -23,15 +23,12 @@ import {
 } from "@/jest-setup";
 import MessageHandler from "@/core/message-handler";
 import React, { act } from "react";
-import {
-  getComponent,
-  mockDownload,
-  setRouteQuery,
-} from "@/resources/tests/test.utils";
+import { getComponent, setRouteQuery } from "@/resources/tests/test.utils";
 import { Seed } from "@/resources/tests/seed";
 import { GenesisReport } from "@/core/module/core.types";
+import Download from "./libs/download";
 
-describe("===== RECORDING LOGIN =====", () => {
+describe("===== RECORDING AUDIO =====", () => {
   let genesisService: MedicalTranscription;
 
   const downloadAudioSpy = jest.fn();
@@ -64,9 +61,11 @@ describe("===== RECORDING LOGIN =====", () => {
     it("Dashboard is Mounted", async () => {
       await act(() => render(<Dashboard />));
 
-      expect(screen.getByTestId("record-button")).toBeInTheDocument();
-      expect(screen.getByTestId("upload-recording")).toBeInTheDocument();
-      expect(screen.queryByText("recording.stop")).not.toBeInTheDocument();
+      expect(await screen.findByTestId("record-button")).toBeInTheDocument();
+      expect(await screen.findByTestId("upload-recording")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.queryByText("recording.stop")).not.toBeInTheDocument();
+      });
       screen.debug();
     });
 
@@ -74,7 +73,8 @@ describe("===== RECORDING LOGIN =====", () => {
       mediaSpy.mockReturnValueOnce([]);
       await act(() => render(<Dashboard />));
 
-      act(() => screen.getByTestId("record-button").click());
+      const recordButton = await screen.findByTestId("record-button");
+      act(() => recordButton.click());
 
       expect(ToastMock.error).toHaveBeenCalledWith(
         "recording.permission-required",
@@ -123,7 +123,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
     it("Upload an audio file", async () => {
       await act(() => render(<Dashboard />));
-      const input = screen.getByTestId("upload-recording");
+      const input = await screen.findByTestId("upload-recording");
 
       await userEvent.upload(
         input,
@@ -135,7 +135,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
     it("File error: Wrong format file", async () => {
       await act(() => render(<Dashboard />));
-      const input = screen.getByTestId("upload-recording");
+      const input = await screen.findByTestId("upload-recording");
 
       await userEvent.upload(
         input,
@@ -147,7 +147,7 @@ describe("===== RECORDING LOGIN =====", () => {
 
     it("File error: File too big", async () => {
       await act(() => render(<Dashboard />));
-      const input = screen.getByTestId("upload-recording");
+      const input = await screen.findByTestId("upload-recording");
 
       const file = Seed.new().file({ name: "audio.mp3", type: "audio/mp3" });
       jest.spyOn(file, "size", "get").mockReturnValue(500 * 1024 * 1024);
@@ -162,7 +162,7 @@ describe("===== RECORDING LOGIN =====", () => {
       const spy = jest.spyOn(RouterMock, "push");
 
       await act(() => render(<Dashboard />));
-      const input = screen.getByTestId("upload-recording");
+      const input = await screen.findByTestId("upload-recording");
 
       expect(screen.getByText("recording.upload-files")).toBeDisabled();
       await userEvent.upload(
@@ -201,7 +201,7 @@ describe("===== RECORDING LOGIN =====", () => {
     it("Recording page mounts", () => {
       render(<Recording />);
       expect(screen.findByTestId("audio-player"));
-      expect(screen.findByTestId("submit-button"));
+      expect(screen.findByRole("button", { name: "recording.submit" }));
     });
 
     it("Click next we call the transcription api", async () => {
@@ -230,8 +230,9 @@ describe("===== RECORDING LOGIN =====", () => {
     });
 
     it("Click next with no audio file prompts an error", async () => {
+      // Mock the blog
       jest.replaceProperty(RouterMock, "query", {
-        slug: "",
+        audioUrl: "",
       });
       await act(() => render(<Recording />));
 
@@ -266,11 +267,10 @@ describe("===== RECORDING LOGIN =====", () => {
     });
 
     it("Click Delete Audio", async () => {
-      const { container } = await act(() => render(<Recording />));
+      await act(() => render(<Recording />));
 
-      const deleteButton = container.querySelector(
-        "button[name='delete']",
-      ) as HTMLButtonElement;
+      const deleteButton = await screen.findByTestId("recording.audio-delete");
+
       expect(deleteButton).toBeDefined();
 
       act(() => deleteButton.click());
@@ -280,15 +280,11 @@ describe("===== RECORDING LOGIN =====", () => {
 
       expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
     });
-
     it("Click Save the Audio", async () => {
-      const { container } = await act(() => render(<Recording />));
+      await act(() => render(<Recording />));
 
-      const saveButton = container.querySelector(
-        "button[name='save']",
-      ) as HTMLButtonElement;
-
-      expect(saveButton).toBeDefined();
+      const saveButton = await screen.findByTestId("save-audio");
+      expect(saveButton).toBeInTheDocument();
 
       act(() => saveButton.click());
       expect(downloadAudioSpy).toHaveBeenCalledTimes(1);
@@ -317,15 +313,9 @@ describe("===== RECORDING LOGIN =====", () => {
       screen.getByRole("button", { name: "recording.new-recording" });
     const getReplyButton = () => screen.getByTestId("replay-audio");
 
-    const downloadReportSpy = jest.fn();
-    jest
-      .spyOn(Download, "downloadReport")
-      .mockImplementation(downloadReportSpy);
-
-    const downloadTranscriptionSpy = jest.fn();
-    jest
+    const downloadTranscriptionSpy = jest
       .spyOn(Download, "downloadTranscription")
-      .mockImplementation(downloadTranscriptionSpy);
+      .mockImplementation(jest.fn());
 
     beforeAll(() => {
       Report = getComponent("app", "report");
@@ -397,7 +387,7 @@ describe("===== RECORDING LOGIN =====", () => {
       ).toBeTruthy();
     });
 
-    it("We can replay the audio", async () => {
+    it("We can replay te audio", async () => {
       const playSpy = jest.spyOn(HTMLAudioElement.prototype, "play");
       const pauseSpy = jest.spyOn(HTMLAudioElement.prototype, "pause");
 
@@ -482,39 +472,53 @@ describe("===== RECORDING LOGIN =====", () => {
       render(<Report />);
       getDownloadButton().click();
 
-      const button = await screen.findByTestId("report.download-audio");
+      const button = await screen.findByText("recording.download-audio");
 
       act(() => button.click());
-
       expect(downloadAudioSpy).toHaveBeenCalledTimes(1);
     });
 
     it("Download Report", async () => {
+      const downloadReportSpy = jest
+        .spyOn(Download, "downloadReport")
+        .mockImplementation(jest.fn());
+
       render(<Report />);
       getDownloadButton().click();
 
-      const button = await screen.findByTestId("report.download-report");
+      const button = await screen.findByText("recording.download-report");
 
-      // const download = mockDownload();
       act(() => button.click());
 
       expect(downloadReportSpy).toHaveBeenCalledTimes(1);
     });
 
-    it.todo("Verify Report Doc Content");
-
     it("Download Transcription", async () => {
       render(<Report />);
       getDownloadButton().click();
 
-      const button = await screen.findByTestId("report.download-transcription");
+      const button = await screen.findByText(
+        "recording.download-transcription",
+      );
 
       act(() => button.click());
 
       expect(downloadTranscriptionSpy).toHaveBeenCalledTimes(1);
     });
 
-    it.todo("Verify Transcription Doc content");
+    it("Check Report generate data", async () => {
+      render(<Report />);
+      getDownloadButton().click();
+
+      const button = await screen.findByText(
+        "recording.download-transcription",
+      );
+
+      act(() => button.click());
+
+      // How to check the file content?
+      expect(downloadTranscriptionSpy).toHaveBeenCalledTimes(1);
+    });
 
     it("Statistics bar shows right percentages", () => {
       render(<Report />);
@@ -528,13 +532,13 @@ describe("===== RECORDING LOGIN =====", () => {
         ".progressSegment",
       ) as unknown as HTMLDivElement[];
 
-      expect(segments[2].style.width).toEqual(transcriptionWidth + "%");
-      expect(segments[3].style.width).toEqual(reportWidth + "%");
+      expect(segments[0].style.width).toEqual(transcriptionWidth + "%");
+      expect(segments[1].style.width).toEqual(reportWidth + "%");
 
-      // const totalTime = screen.getByText("recording.total-time");
-      // expect(totalTime.parentElement?.textContent).toContain(
-      //   (total / 1000).toString(),
-      // );
+      const totalTime = screen.getByText("recording.total-time");
+      expect(totalTime.parentElement?.textContent).toContain(
+        (total / 1000).toString(),
+      );
     });
   });
 });

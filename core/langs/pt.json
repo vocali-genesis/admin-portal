@@ -15,7 +15,9 @@
     "supported-format": "Formatos Suportados: MP3",
     "upload-files": "Carregar arquivos",
     "submit": "Enviar",
-    "uploading": "Carregando..."
+    "uploading": "Carregando...",
+    "leave-page-title": "Sair da Página",
+    "leave-page-confirm": "Tem certeza de que deseja sair desta página? Seu progresso de gravação será perdido."
   },
   "navbar": {
     "upgrade": "Atualizar",
@@ -32,6 +34,10 @@
     "cancel": "Cancelar",
     "home": "Inicio",
     "save": "Salvar",
-    "edit": "Editar"
+    "edit": "Editar",
+    "leave": "Sair",
+    "total-records": "Registros Totais",
+    "total-page": "Páginas Totais",
+    "of": "de"
   }
 }

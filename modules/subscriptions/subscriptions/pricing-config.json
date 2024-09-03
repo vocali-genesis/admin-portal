@@ -5,7 +5,7 @@
     "amount": "subscriptions.price-1.amount",
     "interval": "subscriptions.price-1.interval",
     "features": ["subscriptions.price-1.features.feature-1"],
-    "bttonText": "subscriptions.price-1.btn-text",
+    "buttonText": "subscriptions.price-1.btn-text",
     "buttonAction": "https://invoxmedical.typeform.com/invox-genesis?typeform-source=genesismedical.ai"
   },
   {
@@ -17,7 +17,7 @@
       "subscriptions.price-2.features.feature-1",
       "subscriptions.price-2.features.feature-2"
     ],
-    "bttonText": "subscriptions.price-2.btn-text",
+    "buttonText": "subscriptions.price-2.btn-text",
     "buttonAction": null
   }
 ]

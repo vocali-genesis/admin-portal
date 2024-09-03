@@ -10,7 +10,14 @@
   border-radius: 10px;
   display: flex;
 }
-
+.progressBar .progressSegment:last-child {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+.progressBar .progressSegment:first-child {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
 .progressSegment {
   height: 100%;
   transition: width 0.5s ease-in-out;

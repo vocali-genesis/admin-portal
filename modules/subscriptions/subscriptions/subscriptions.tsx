@@ -16,13 +16,14 @@ const PriceCard = (props: { item: Price }) => {
     amount,
     interval,
     features,
-    bttonText,
+    buttonText,
     buttonAction,
   } = props.item;
   const handleSubscribe = async () => {
     setIsLoading(true);
-    const subscriptionLink =
-      await Service.get("subscriptions")?.getSubscriptionLink();
+    const subscriptionLink = await Service.get(
+      "subscriptions"
+    )?.getSubscriptionLink();
     if (subscriptionLink) {
       window.location.href = subscriptionLink.url;
     }
@@ -55,7 +56,7 @@ const PriceCard = (props: { item: Price }) => {
           disabled={isLoading}
           className={styles.priceButton}
         >
-          {t(bttonText)}
+          {t(buttonText as string)}
         </button>
       </div>
     </>

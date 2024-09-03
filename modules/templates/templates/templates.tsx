@@ -13,6 +13,8 @@ import {
   FaSave,
   FaRegFolderOpen,
   FaEye,
+  FaRegEye,
+  FaTimes,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
@@ -23,6 +25,7 @@ import Pagination from "@/resources/table/pagination";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
+import NewTemplateModal from "@/resources/containers/new-template-modal";
 
 const messageHandler = MessageHandler.get();
 
@@ -33,7 +36,9 @@ const Templates = () => {
   const [templates, setTemplates] = useState<GenesisTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [templateToDelete, setTemplateToDelete] = useState<number | null>(null);
+  const [isNewTemplateModalOpen, setIsNewTemplateModalOpen] = useState(false);
+  const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
+  const [newTemplate, setNewTemplate] = useState<GenesisTemplate | null>(null);
   const [editingTemplate, setEditingTemplate] =
     useState<GenesisTemplate | null>(null);
   const [pagination, setPagination] = useState<{
@@ -65,7 +70,7 @@ const Templates = () => {
     setPagination({ ...pagination, currentPage: page });
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     setTemplateToDelete(id);
   };
 
@@ -79,6 +84,11 @@ const Templates = () => {
       templates.filter((template) => template.id !== templateToDelete),
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
+
+    setPagination({
+      ...pagination,
+      totalRecords: pagination.totalRecords - 1,
+    });
     setIsModalOpen(false);
     setTemplateToDelete(null);
     setPagination((prevPagination) => ({
@@ -87,23 +97,8 @@ const Templates = () => {
     }));
   };
 
-  const handleAddTemplate = async () => {
-    const newTemplate = {
-      name: "New Template",
-      preview: "New template preview",
-      createdAt: new Date().toISOString(),
-      fields: {},
-    };
-    const createdTemplate = await templateService.createTemplate(newTemplate);
-
-    if (!createdTemplate) return;
-    setTemplates([...templates, createdTemplate]);
-    setEditingTemplate(createdTemplate);
-    setPagination((prevPagination) => ({
-      ...prevPagination,
-      totalRecords: prevPagination.totalRecords + 1,
-    }));
-    messageHandler.handleSuccess(t("templates.createSuccess"));
+  const handleAddTemplate = () => {
+    setIsNewTemplateModalOpen(true);
   };
 
   const handleEdit = (template: GenesisTemplate) => {
@@ -113,17 +108,50 @@ const Templates = () => {
   const handleSave = async () => {
     if (!editingTemplate) return;
 
-    const savedTemplate = await templateService.updateTemplate(
-      editingTemplate.id,
-      editingTemplate,
-    );
-    if (!savedTemplate) return;
+    try {
+      const savedTemplate = await templateService.updateTemplate(
+        editingTemplate.id,
+        editingTemplate,
+      );
 
-    setTemplates(
-      templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
-    );
+      if (!savedTemplate) {
+        messageHandler.handleError(t("templates.updateError"));
+        return;
+      }
+
+      setTemplates(
+        templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
+      );
+      setEditingTemplate(null);
+      messageHandler.handleSuccess(t("templates.updateSuccess"));
+    } catch (error) {
+      console.error("Error updating template:", error);
+      messageHandler.handleError(t("templates.updateError"));
+    }
+  };
+
+  const handleNewTemplateSubmit = async (
+    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">,
+  ) => {
+    setIsNewTemplateModalOpen(false);
+
+    const createdTemplate = await templateService.createTemplate(template);
+    if (!createdTemplate) return;
+
+    setTemplates([...templates, createdTemplate]);
+    setPagination({
+      ...pagination,
+      totalRecords: pagination.totalRecords + 1,
+    });
+    messageHandler.handleSuccess(t("templates.createSuccess"));
+  };
+
+  const handleCancel = () => {
+    if (newTemplate) {
+      setTemplates(templates.filter((t) => t.id !== newTemplate.id));
+      setNewTemplate(null);
+    }
     setEditingTemplate(null);
-    messageHandler.handleSuccess(t("templates.editSuccess"));
   };
 
   const formatPreview = (
@@ -156,22 +184,23 @@ const Templates = () => {
               })
             }
             placeholder={t("templates.namePlaceholder")}
+            testId="templates.name-edit-field"
           />
         ) : (
           <div
             className="flex items-center"
             style={{ gap: "1vh", cursor: "pointer" }}
+            data-testId="templates.title-cell"
           >
             <span>{template.name}</span>
-            <FaRegFolderOpen size={17.5} />
           </div>
         ),
     },
     {
       title: t("templates.date"),
-      dataIndex: "createdAt",
+      dataIndex: "created_at",
       render: (template: GenesisTemplate) => (
-        <span>{new Date(template.createdAt).toLocaleDateString()}</span>
+        <span>{new Date(template.created_at).toLocaleDateString()}</span>
       ),
     },
     {
@@ -187,17 +216,44 @@ const Templates = () => {
       render: (template: GenesisTemplate) => (
         <>
           {editingTemplate && editingTemplate.id === template.id ? (
-            <IconButton onClick={handleSave} size="small">
-              <FaSave style={{ color: "#59DBBC" }} />
-            </IconButton>
+            <div style={{ display: "flex", gap: "3vh" }}>
+              <IconButton
+                onClick={handleSave}
+                size="small"
+                testId="templates.save-template"
+              >
+                <FaSave style={{ color: "#59DBBC" }} />
+              </IconButton>
+              <IconButton
+                onClick={handleCancel}
+                size="small"
+                testId="templates.cancel-edit"
+              >
+                <FaTimes style={{ color: "var(--danger)" }} />
+              </IconButton>
+            </div>
           ) : (
             <div style={{ display: "flex", gap: "3vh" }}>
-              <IconButton onClick={() => handleEdit(template)} size="small">
+              <IconButton
+                onClick={() =>
+                  router.push(`/app/template-detail?id=${template.id}`)
+                }
+                size="small"
+                testId="templates.view-template"
+              >
+                <FaRegEye style={{ color: "var(--primary)" }} />
+              </IconButton>
+              <IconButton
+                onClick={() => handleEdit(template)}
+                size="small"
+                testId="templates.edit"
+              >
                 <FaEdit style={{ color: "var(--primary)" }} />
               </IconButton>
               <IconButton
                 onClick={() => handleDelete(template.id)}
                 size="small"
+                testId="templates.delete"
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
               </IconButton>
@@ -219,26 +275,41 @@ const Templates = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>{t("templates.all_templates")}</h1>
+        <h1 className={styles.title} data-testid="templates.title">
+          {t("templates.all_templates")}
+        </h1>
         <Button
           onClick={handleAddTemplate}
           variant="primary"
           className={styles.addButton}
+          testId="templates.new-template"
+          disabled={editingTemplate ? true : false}
         >
           <FaPlus /> {t("templates.create")}
         </Button>
       </div>
-      <Table data={templates} columns={columns} isLoading={isLoading} />
+      <Table
+        data={templates}
+        columns={columns}
+        isLoading={isLoading}
+        testId="templates.table"
+      />
       <Pagination
-        currentPage={pagination.currentPage}
+        currentPage={pagination.totalPages === 0 ? 0 : pagination.currentPage}
         totalPages={pagination.totalPages}
         totalRecords={pagination.totalRecords}
         onPageChange={handlePageChange}
+      />
+      <NewTemplateModal
+        isOpen={isNewTemplateModalOpen}
+        onClose={() => setIsNewTemplateModalOpen(false)}
+        onSubmit={handleNewTemplateSubmit}
       />
       <DeleteConfirmation
         isOpen={templateToDelete ? true : isModalOpen}
         onRequestClose={() => setTemplateToDelete(null)}
         onConfirm={confirmDelete}
+        testId="templates.delete-confirmation"
       />
     </div>
   );

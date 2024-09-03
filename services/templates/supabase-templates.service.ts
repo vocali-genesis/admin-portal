@@ -24,17 +24,22 @@ class SupabaseTemplateService {
 
   async getTemplates(
     page: number = 1,
-    pageSize: number = 8,
+    pageSize?: number,
   ): Promise<PaginatedResponse<GenesisTemplate> | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize - 1;
 
-    const { data, error, count } = await this.supabase
+    let query = this.supabase
       .from("templates")
       .select("*", { count: "exact" })
-      .eq("ownerId", userData?.id)
-      .range(from, to);
+      .eq("owner_id", userData?.id);
+
+    if (pageSize) {
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+    }
+
+    const { data, error, count } = await query;
 
     if (error) {
       messageHandler.handleError(error.message);
@@ -42,7 +47,7 @@ class SupabaseTemplateService {
     }
 
     const totalCount = count || 0;
-    const totalPages = Math.ceil(totalCount / pageSize);
+    const totalPages = pageSize ? Math.ceil(totalCount / pageSize) : 1;
 
     return {
       data: data as GenesisTemplate[],
@@ -52,7 +57,7 @@ class SupabaseTemplateService {
   }
 
   async getTemplate(
-    id: number,
+    id: string,
     page: number = 1,
     pageSize: number = 8,
   ): Promise<PaginatedResponse<GenesisTemplate> | null> {
@@ -61,7 +66,7 @@ class SupabaseTemplateService {
       .from("templates")
       .select("*")
       .eq("id", id)
-      .eq("ownerId", userData?.id)
+      .eq("owner_id", userData?.id)
       .single();
 
     if (error) {
@@ -92,13 +97,17 @@ class SupabaseTemplateService {
   }
 
   async createTemplate(
-    template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">,
+    template: Omit<GenesisTemplate, "id" | "created_at" | "owner_id">,
   ): Promise<GenesisTemplate | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
 
     const { data, error } = await this.supabase
       .from("templates")
-      .insert({ ...template, ownerId: userData?.id })
+      .insert({
+        ...template,
+        owner_id: userData?.id,
+        created_at: new Date().toISOString(),
+      })
       .select();
     if (error) {
       messageHandler.handleError(error.message);
@@ -109,7 +118,7 @@ class SupabaseTemplateService {
   }
 
   async updateTemplate(
-    id: number,
+    id: string,
     updates: Partial<GenesisTemplate>,
   ): Promise<GenesisTemplate | null> {
     const { data, error } = await this.supabase
@@ -125,7 +134,7 @@ class SupabaseTemplateService {
     return data[0] as GenesisTemplate;
   }
 
-  async deleteTemplate(id: number): Promise<boolean> {
+  async deleteTemplate(id: string): Promise<boolean> {
     const { error } = await this.supabase
       .from("templates")
       .delete()

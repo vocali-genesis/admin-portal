@@ -7,7 +7,10 @@ interface highlightNavButtonProps {
   onClick: () => void;
 }
 
-const HighlightNavButton: React.FC<highlightNavButtonProps> = ({ label, onClick }) => {
+const HighlightNavButton: React.FC<highlightNavButtonProps> = ({
+  label,
+  onClick,
+}) => {
   const { t } = useTranslation();
 
   return (

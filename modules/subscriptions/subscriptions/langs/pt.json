@@ -15,7 +15,7 @@
     "price-2": {
       "title": "Pró",
       "currency": "€",
-      "amount": "100",
+      "amount": "30",
       "interval": "/mês",
       "features": {
         "feature-1": "Benefício 1",
@@ -34,7 +34,8 @@
     "cancel-btn": "Cancelar",
     "confirm-btn": "Confirmar",
     "inactive-label": "Inativo",
-    "subscribe-btn": "Assine agora"
+    "subscribe-btn": "Assine agora",
+    "success-message": "Assinatura cancelada com sucesso!"
   },
   "invoice-history": {
     "invoice-id-th": "ID da Fatura",
@@ -44,6 +45,7 @@
     "total-label": "Total de Registros:",
     "page-label": "Página",
     "of-label": "de",
-    "view-receipt": "Ver Recibo"
+    "view-receipt": "Ver Recibo",
+    "validity-th": "Válido até"
   }
 }

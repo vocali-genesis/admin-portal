@@ -22,30 +22,30 @@ export type ServiceName =
 export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? AuthService
   : T extends "medical-api"
-  ? MedicalTranscription
-  : T extends "templates"
-  ? SupabaseTemplateService
-  : T extends "subscriptions"
-  ? SubscriptionService
-  : never;
+    ? MedicalTranscription
+    : T extends "templates"
+      ? SupabaseTemplateService
+      : T extends "subscriptions"
+        ? SubscriptionService
+        : never;
 
 export interface MedicalTranscription {
   transcribeAudio(audioFile: File): Promise<GenesisReport["transcription"]>;
   processAudioAndGenerateReport(
     audioFile: File,
-    template?: string,
-    language?: string
+    template?: GenesisTemplate,
+    language?: string,
   ): Promise<GenesisReport | null>;
 }
 
 export interface AuthService {
   registerUser(
     email: string,
-    password: string
+    password: string,
   ): Promise<{ user: GenesisUser | null; token: string | undefined } | null>;
   loginUser(
     email: string,
-    password: string
+    password: string,
   ): Promise<{ user: GenesisUser | null; token: string | undefined } | null>;
   oauth(provider: GenesisOauthProvider): Promise<string | null>;
   getLoggedUser(): Promise<GenesisUser | null>;
@@ -60,7 +60,7 @@ export interface SubscriptionService {
   getActiveSubscription(): Promise<SubscriptionResponse | null>;
   getInvoices(
     from: number,
-    to: number
+    to: number,
   ): Promise<{ invoices: GenesisInvoice[]; count: number }>;
   cancelSubscription(): Promise<Record<string, string | number> | null>;
 }
@@ -68,19 +68,19 @@ export interface SubscriptionService {
 export interface SupabaseTemplateService {
   getTemplates(
     page: number,
-    pageSize: number
+    pageSize?: number,
   ): Promise<GenesisPagination<GenesisTemplate> | null>;
   getTemplate(
-    id: number,
+    id: string,
     page: number,
-    pageSize: number
+    pageSize: number,
   ): Promise<GenesisPagination<GenesisTemplate> | null>;
   createTemplate(
-    template: Omit<GenesisTemplate, "id" | "createdAt" | "ownerId">
+    template: Omit<GenesisTemplate, "id" | "created_at" | "owner_id">,
   ): Promise<GenesisTemplate | null>;
   updateTemplate(
-    id: number,
-    updates: Partial<GenesisTemplate>
+    id: string,
+    updates: Partial<GenesisTemplate>,
   ): Promise<GenesisTemplate | null>;
-  deleteTemplate(id: number): Promise<boolean>;
+  deleteTemplate(id: string): Promise<boolean>;
 }

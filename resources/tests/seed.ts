@@ -7,11 +7,23 @@ import { CENTS, GenesisInvoice } from "@/core/module/core.types";
 import { faker } from "@faker-js/faker";
 import moment from "moment";
 import { TextEncoder } from "util";
+import {
+  TYPE_OPTIONS,
+  NumberFieldConfig,
+  SelectFieldConfig,
+} from "@/core/module/core.types";
 
 export class Seed {
+  private static idCounter = 65;
+
   public static new() {
     return new Seed();
   }
+
+  private static getNextId() {
+    return Seed.idCounter++;
+  }
+
   public user(props: Partial<GenesisUser> = {}) {
     function user(props: Partial<GenesisUser>) {
       const user = {
@@ -30,6 +42,9 @@ export class Seed {
       return {
         invoice_id: faker.string.uuid(),
         created_at: faker.date.past().toISOString(),
+        metadata: {
+          period_end: faker.date.future().toISOString(),
+        },
         amount: (+faker.finance.amount({ min: 10, max: 300 }) * 100) as CENTS,
         invoice_url: faker.internet.url(),
         ...props,
@@ -102,12 +117,38 @@ export class Seed {
   ): SeedBuilder<GenesisTemplate> {
     function template(props: Partial<GenesisTemplate>): GenesisTemplate {
       return {
-        id: faker.number.int(),
-        ownerId: faker.string.uuid(),
+        id: String.fromCharCode(Seed.getNextId()),
+        owner_id: faker.string.uuid(),
         name: faker.company.name(),
-        createdAt: faker.date.past().toISOString(),
-        preview: faker.image.imageUrl(),
-        fields: {},
+        created_at: faker.date.past().toISOString(),
+        preview: faker.string.sample(),
+        fields: {
+          name: {
+            type: TYPE_OPTIONS.TEXT,
+            description: "Patient name",
+          },
+          Age: {
+            type: TYPE_OPTIONS.NUMBER,
+            description: "Patient Age",
+            config: {
+              maxValue: 100,
+            } as NumberFieldConfig,
+          },
+          "Test Field No.1": {
+            type: TYPE_OPTIONS.SELECT,
+            description: "First test field",
+            config: {
+              options: ["number", "text"],
+            } as SelectFieldConfig,
+          },
+          "Test Field No.2": {
+            type: TYPE_OPTIONS.MULTISELECT,
+            description: "Second test field",
+            config: {
+              options: ["integer", "string", "list"],
+            } as SelectFieldConfig,
+          },
+        },
         ...props,
       };
     }

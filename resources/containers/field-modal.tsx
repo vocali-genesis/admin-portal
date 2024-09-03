@@ -16,6 +16,7 @@ interface FieldModalProps {
   onSave: (data: FieldData) => void;
   fieldType: TYPE_OPTIONS;
   initialConfig: FieldData | null;
+  testId?: string;
 }
 
 type FormData = {
@@ -29,13 +30,13 @@ const FieldModal: React.FC<FieldModalProps> = ({
   onSave,
   fieldType,
   initialConfig,
+  testId,
 }) => {
   const { control, handleSubmit, setValue, watch, reset } = useForm<FormData>();
   const [newOption, setNewOption] = useState("");
   const selectedOptions = watch("options") || [];
 
   useEffect(() => {
-    console.log(initialConfig);
     if (isOpen && initialConfig) {
       if ("maxValue" in initialConfig) {
         setValue("maxValue", initialConfig.maxValue.toString());
@@ -91,6 +92,54 @@ const FieldModal: React.FC<FieldModalProps> = ({
     );
   };
 
+  const renderMultiselect = () => {
+    return (
+      <Controller
+        name="options"
+        control={control}
+        defaultValue={[]}
+        render={({ field }) => (
+          <div className={styles.multiselectContainer}>
+            {field.value && field.value.length > 0 && (
+              <div className={styles.selectedOptions}>
+                {field.value.map((option: string, index: number) => (
+                  <div key={index} className={styles.optionTag}>
+                    {option}
+                    <Button
+                      variant="action"
+                      onClick={(event?) =>
+                        removeOption(
+                          option,
+                          event as React.MouseEvent<HTMLButtonElement>,
+                        )
+                      }
+                    >
+                      ×
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div>
+              <BasicInput
+                value={newOption}
+                onChange={(e) => setNewOption(e.target.value)}
+                placeholder="Add new option"
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addOption();
+                  }
+                }}
+                testId="field-modal.multi-select-input"
+              />
+            </div>
+          </div>
+        )}
+      />
+    );
+  };
+
   const renderMap = {
     [TYPE_OPTIONS.NUMBER]: (
       <Controller
@@ -106,94 +155,8 @@ const FieldModal: React.FC<FieldModalProps> = ({
         )}
       />
     ),
-    [TYPE_OPTIONS.SELECT]: (
-      <Controller
-        name="options"
-        control={control}
-        defaultValue={[]}
-        render={({ field }) => (
-          <div className={styles.multiselectContainer}>
-            <div className={styles.selectedOptions}>
-              {(field.value || []).map((option: string, index: number) => (
-                <div key={index} className={styles.optionTag}>
-                  {option}
-                  <Button
-                    onClick={(event?) =>
-                      removeOption(
-                        option,
-                        event as React.MouseEvent<HTMLButtonElement>,
-                      )
-                    }
-                    variant="action"
-                  >
-                    ×
-                  </Button>
-                </div>
-              ))}
-            </div>
-            <BasicSelect
-              name="selectOptions"
-              value=""
-              width="52vh"
-              onChange={(value) => {
-                if (!field.value?.includes(value)) {
-                  setValue("options", [...(field.value || []), value]);
-                }
-              }}
-              options={[
-                { value: "", label: "Select Option ..." },
-                ...typeOptions.map((option) => ({
-                  value: option,
-                  label: option,
-                })),
-              ]}
-            />
-          </div>
-        )}
-      />
-    ),
-    [TYPE_OPTIONS.MULTISELECT]: (
-      <Controller
-        name="options"
-        control={control}
-        defaultValue={[]}
-        render={({ field }) => (
-          <div className={styles.multiselectContainer}>
-            <div className={styles.selectedOptions}>
-              {(field.value || []).map((option: string, index: number) => (
-                <div key={index} className={styles.optionTag}>
-                  {option}
-                  <Button
-                    variant="action"
-                    onClick={(event?) =>
-                      removeOption(
-                        option,
-                        event as React.MouseEvent<HTMLButtonElement>,
-                      )
-                    }
-                  >
-                    ×
-                  </Button>
-                </div>
-              ))}
-            </div>
-            <div>
-              <BasicInput
-                value={newOption}
-                onChange={(e) => setNewOption(e.target.value)}
-                placeholder="Add new option"
-                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addOption();
-                  }
-                }}
-              />
-            </div>
-          </div>
-        )}
-      />
-    ),
+    [TYPE_OPTIONS.SELECT]: renderMultiselect(),
+    [TYPE_OPTIONS.MULTISELECT]: renderMultiselect(),
   };
 
   return (
@@ -206,15 +169,12 @@ const FieldModal: React.FC<FieldModalProps> = ({
       <div className={styles.title}>
         <h2>Edit {fieldType} Config</h2>
       </div>
-      <form onSubmit={handleSubmit(handleSave)}>
+      <form onSubmit={handleSubmit(handleSave)} data-testid={testId}>
         {renderMap[fieldType as keyof typeof renderMap]}
         <div className={styles.modalButtons}>
           <Button onClick={onClose} variant="action">
             Cancel
           </Button>
-          {fieldType === TYPE_OPTIONS.MULTISELECT && (
-            <Button onClick={addOption}>Add</Button>
-          )}
           <Button onClick={handleSubmit(handleSave)}>Save</Button>
         </div>
       </form>
