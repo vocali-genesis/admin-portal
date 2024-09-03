@@ -235,15 +235,6 @@ const Templates = () => {
           ) : (
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
-                onClick={() =>
-                  router.push(`/app/template-detail?id=${template.id}`)
-                }
-                size="small"
-                testId="templates.view-template"
-              >
-                <FaRegEye style={{ color: "var(--primary)" }} />
-              </IconButton>
-              <IconButton
                 onClick={() => handleEdit(template)}
                 size="small"
                 testId="templates.edit"
