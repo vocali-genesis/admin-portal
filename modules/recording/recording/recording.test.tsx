@@ -419,6 +419,8 @@ describe("===== RECORDING AUDIO =====", () => {
     it.todo("URL changes fires the not saved audio warning");
 
     it("Update the editor also updates the preview", async () => {
+      const user = userEvent.setup();
+
       const { container } = render(<Report />);
       act(() => getEditButton().click());
 
@@ -426,17 +428,24 @@ describe("===== RECORDING AUDIO =====", () => {
       const qlEditor = container.querySelector(".ql-editor") as Element;
       // Get first title
       const firstTitle = qlEditor.querySelector("h3") as Element;
+      console.log(firstTitle.innerHTML);
       expect(firstTitle).toBeTruthy();
 
-      firstTitle.innerHTML = "My new title";
-      await act(() => fireEvent.change(qlEditor, qlEditor.innerHTML));
+      // act(() => (firstTitle.innerHTML = "My new title"));
+      // await act(() => fireEvent.change(qlEditor, qlEditor.innerHTML));
+
+      await act(async () => {
+        await user.type(firstTitle, " My new title");
+      });
+
+      console.log(firstTitle.innerHTML);
 
       act(() => {
         getSaveButton().click();
       });
 
-      await waitFor(() => screen.getByText("My new title").tagName === "H2");
-      expect(screen.getByText("My new title").tagName).toEqual("H2");
+      await waitFor(() => screen.getByText(/My new title/i).tagName === "H2");
+      expect(screen.getByText(/My new title/i).tagName).toEqual("H2");
 
       expect(getSaveButton()).not.toBeInTheDocument();
       expect(getEditButton()).toBeInTheDocument();

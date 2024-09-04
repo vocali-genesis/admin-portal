@@ -62,7 +62,7 @@ const TemplateDetail = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
-    null
+    null,
   );
 
   const fetchTemplate = useCallback(
@@ -85,7 +85,7 @@ const TemplateDetail = () => {
         setIsLoading(false);
       }
     },
-    [id, templateService, t]
+    [id, templateService, t],
   );
 
   useEffect(() => {
@@ -144,7 +144,7 @@ const TemplateDetail = () => {
     try {
       const updatedTemplate = await templateService.updateTemplate(
         template.id,
-        { fields: updatedFields }
+        { fields: updatedFields },
       );
       if (updatedTemplate) {
         setTemplate(updatedTemplate);
@@ -166,7 +166,7 @@ const TemplateDetail = () => {
   const handleInputChange = (
     fieldKey: string,
     property: string,
-    value: string
+    value: string,
   ) => {
     setEditedValues((prev) => ({
       ...prev,
@@ -200,7 +200,7 @@ const TemplateDetail = () => {
     try {
       const updatedTemplate = await templateService.updateTemplate(
         template.id,
-        { fields: updatedFields }
+        { fields: updatedFields },
       );
       if (updatedTemplate) {
         setTemplate(updatedTemplate);
@@ -219,13 +219,13 @@ const TemplateDetail = () => {
   };
 
   function isNumberFieldConfig(
-    config: FieldConfig
+    config: FieldConfig,
   ): config is NumberFieldConfig {
     return "maxValue" in config;
   }
 
   function isSelectFieldConfig(
-    config: FieldConfig
+    config: FieldConfig,
   ): config is SelectFieldConfig {
     return "options" in config;
   }
@@ -309,7 +309,7 @@ const TemplateDetail = () => {
                 <FaTimes style={{ color: "var(--danger)" }} />
               </IconButton>
               {["number", "select", "multiselect"].includes(
-                editedValues[record.key]?.type
+                editedValues[record.key]?.type,
               ) && (
                 <IconButton
                   onClick={() => {
@@ -324,7 +324,7 @@ const TemplateDetail = () => {
                       configToUse = { maxValue: fieldConfig.maxValue };
                     } else if (
                       [TYPE_OPTIONS.SELECT, TYPE_OPTIONS.MULTISELECT].includes(
-                        editedValues[record.key]?.type
+                        editedValues[record.key]?.type,
                       ) &&
                       fieldConfig &&
                       isSelectFieldConfig(fieldConfig)
@@ -382,7 +382,7 @@ const TemplateDetail = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <Button
-          onClick={() => router.push("/app/templates")}
+          onClick={() => void router.push("/app/templates")}
           variant="secondary"
           className={styles.backButton}
           testId="template-detail.back-button"

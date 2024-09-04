@@ -4,6 +4,7 @@ import { GlobalCore } from "@/core/module/module.types";
 import prices from "./pricing-config.json";
 import Service from "@/core/module/service.factory";
 import styles from "./styles/subscriptions.module.css";
+import styled from "styled-components";
 
 type Price = (typeof prices)[0];
 
@@ -21,9 +22,8 @@ const PriceCard = (props: { item: Price }) => {
   } = props.item;
   const handleSubscribe = async () => {
     setIsLoading(true);
-    const subscriptionLink = await Service.get(
-      "subscriptions"
-    )?.getSubscriptionLink();
+    const subscriptionLink =
+      await Service.get("subscriptions")?.getSubscriptionLink();
     if (subscriptionLink) {
       window.location.href = subscriptionLink.url;
     }
@@ -56,7 +56,7 @@ const PriceCard = (props: { item: Price }) => {
           disabled={isLoading}
           className={styles.priceButton}
         >
-          {t(buttonText as string)}
+          {isLoading ? <Spinner /> : t(buttonText as string)}
         </button>
       </div>
     </>
@@ -79,5 +79,17 @@ const Subscriptions = () => {
     </>
   );
 };
+
+const Spinner = styled.span`
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--primary);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+`;
 
 GlobalCore.manager.app("subscriptions", Subscriptions);

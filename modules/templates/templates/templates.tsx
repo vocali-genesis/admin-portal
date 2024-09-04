@@ -81,7 +81,7 @@ const Templates = () => {
     if (!resp) return;
 
     setTemplates(
-      templates.filter((template) => template.id !== templateToDelete)
+      templates.filter((template) => template.id !== templateToDelete),
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
 
@@ -111,7 +111,7 @@ const Templates = () => {
     try {
       const savedTemplate = await templateService.updateTemplate(
         editingTemplate.id,
-        editingTemplate
+        editingTemplate,
       );
 
       if (!savedTemplate) {
@@ -120,7 +120,7 @@ const Templates = () => {
       }
 
       setTemplates(
-        templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t))
+        templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
       );
       setEditingTemplate(null);
       messageHandler.handleSuccess(t("templates.updateSuccess"));
@@ -131,7 +131,7 @@ const Templates = () => {
   };
 
   const handleNewTemplateSubmit = async (
-    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">
+    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">,
   ) => {
     setIsNewTemplateModalOpen(false);
 
@@ -156,7 +156,7 @@ const Templates = () => {
 
   const formatPreview = (
     fields: { [key: string]: GenesisTemplateField },
-    maxLength: number = 25
+    maxLength: number = 25,
   ) => {
     const previewString = Object.entries(fields)
       .map(([key, value]) => `${key}: ${value.type}`)

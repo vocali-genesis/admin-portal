@@ -99,7 +99,7 @@
 .passwordToggle {
   position: absolute;
   right: 3vh;
-  transform: translateY(-25%);
+  top: 3.5vh;
   background: none;
   border: none;
   cursor: pointer;
