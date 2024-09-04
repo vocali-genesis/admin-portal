@@ -63,6 +63,16 @@ class SupabaseAuthService implements AuthService {
     return data.url;
   }
 
+  public async revokeOAuth(): Promise<boolean> {
+    const { error } = await this.supabase.auth.signOut();
+    if (error) {
+      messageHandler.handleError(error.message);
+      return false;
+    }
+  
+    return true;
+  }
+  
   async getLoggedUser(): Promise<GenesisUser | null> {
     const { data } = await this.supabase.auth.getUser();
     return data.user;

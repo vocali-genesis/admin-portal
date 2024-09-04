@@ -13,13 +13,16 @@ import SubmitButton from "@/resources/containers/submit.button";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import OAuthButton from "@/resources/containers/oauth.button";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Service from "@/core/module/service.factory";
+import { GenesisOauthProvider } from "@/core/module/core.types";
 
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
   const authService = useService("oauth");
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -28,24 +31,13 @@ const Settings = () => {
     resolver: yupResolver(settings_schema(t)),
   });
 
-  const revokeGoogleAccess = async () => {
-    try {
-      // const response = await fetch('/api/revoke-google-access', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      // });
-
-      // if (!response.ok) {
-      //   throw new Error('Failed to revoke access');
-      // }
-      console.log('Google access revoked successfully');
-    } catch (error) {
-      console.error('Error revoking Google access:', error);
+  const handleRevokeOAuth = async () => {
+    const response: any = await Service.require("oauth").revokeOAuth();
+    if (response) {
+      return Service.require("oauth").logout();
     }
-  }
-
+    return
+  };
   const onSubmit = async (data: { email: string; password: string }) => {
     const updatedUser = await authService.updateUser(data.email, data.password);
 
@@ -133,13 +125,13 @@ const Settings = () => {
 
           <Divider />
 
-          {/* <SocialLoginWrapper>
+          <SocialLoginWrapper>
             <OAuthButton
               provider="google"
               label={t("settings.revoke")}
-              onClick={() => revokeGoogleAccess()}
+              onClick={handleRevokeOAuth}
             />
-          </SocialLoginWrapper> */}
+          </SocialLoginWrapper>
 
           <Divider />
 
