@@ -39,9 +39,9 @@ class AuthMockService implements AuthService {
     return Promise.resolve(faker.internet.url());
   }
 
-  // public async revokeOAuth(): Promise<string | null> {
-  //   return Promise.resolve(faker.internet.url());
-  // }
+  public async revokeOauth(): Promise<boolean> {
+    return Promise.resolve(true);
+  }
   async getLoggedUser(): Promise<GenesisUser | null> {
     return Promise.resolve(this.loggedUser);
   }

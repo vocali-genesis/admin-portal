@@ -32,7 +32,7 @@ const Settings = () => {
   });
 
   const handleRevokeOAuth = async (): Promise<void> => {
-    const response = await Service.require("oauth").revokeOAuth();
+    const response = await Service.require("oauth").revokeOauth();
     if (response) {
       await Service.require("oauth").logout();
     }

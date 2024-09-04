@@ -63,7 +63,7 @@ class SupabaseAuthService implements AuthService {
     return data.url;
   }
 
-  public async revokeOAuth(): Promise<boolean> {
+  public async revokeOauth(): Promise<boolean> {
     const { error } = await this.supabase.auth.signOut();
     if (error) {
       messageHandler.handleError(error.message);
