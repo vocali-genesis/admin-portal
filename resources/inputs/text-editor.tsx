@@ -5,8 +5,9 @@ import quill_styles from "./text-editor.module.css";
 import Spinner from "@/resources/containers/spinner";
 
 interface EditorProps {
-  content?: { [key: string]: string };
-  onContentChange: (content: { [key: string]: string }) => void;
+  content: string;
+  onContentChange: (content: string) => void;
+  height?: string;
 }
 
 const ReactQuill = dynamic(() => import("react-quill"), {
@@ -14,28 +15,31 @@ const ReactQuill = dynamic(() => import("react-quill"), {
   loading: () => <Spinner />,
 });
 
-const Editor: React.FC<EditorProps> = ({ content = {}, onContentChange }) => {
+const Editor: React.FC<EditorProps> = ({
+  content,
+  onContentChange,
+  height,
+}) => {
   const modules = {
     toolbar: [
-      [{ header: [3 /*1, 2, 3,  */, false] }],
-      // ["bold", "italic", "underline", "strike"],
-      // [{ list: "ordered" }, { list: "bullet" }],
-      // ["link", "image"],
+      [{ header: [2, 3 /* 1 */, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
       ["clean"],
     ],
   };
 
   const formats = [
     "header",
-    // TODO: Talk to the client, how we render the report?
-    // "bold",
-    // "italic",
-    // "underline",
-    // "strike",
-    // "list",
-    // "bullet",
-    // "link",
-    // "image",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "bullet",
+    "link",
+    "image",
   ];
 
   const handleChange = (value: string, delta: unknown, source: string) => {
@@ -43,51 +47,14 @@ const Editor: React.FC<EditorProps> = ({ content = {}, onContentChange }) => {
       return;
     }
 
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(value, "text/html");
-
-    const editorNodes = Array.from(doc.body.childNodes);
-    const updatedContent = editorNodes.reduce(
-      (json: Record<string, string>, node: ChildNode) => {
-        // Title
-        if (node.nodeName.toLocaleLowerCase() === "h3") {
-          if (node.textContent) {
-            json[node.textContent] = "";
-          }
-          return json;
-        }
-        // Paragraph, append to the last title
-        if (node.nodeName.toLocaleLowerCase() === "p") {
-          const lastKey = Object.keys(json).slice(-1)[0];
-          if (lastKey) {
-            json[lastKey] += node.textContent + "\n";
-          }
-          return json;
-        }
-        return json;
-      },
-      {} as Record<string, string>
-    );
-
-    onContentChange(updatedContent);
+    onContentChange(value);
   };
 
-  const htmlContent = useMemo(
-    () =>
-      Object.entries(content)
-        .map(
-          ([key, value]) =>
-            `<div><h3>${key}</h3></div><div>${value}</div><div><br/></div>`
-        )
-        .join(""),
-    [content]
-  );
-
   return (
-    <div className={quill_styles.editor}>
+    <div className={quill_styles.editor} style={{ height }}>
       <ReactQuill
         theme="snow"
-        defaultValue={htmlContent}
+        defaultValue={content}
         onChange={handleChange}
         modules={modules}
         formats={formats}

@@ -56,8 +56,15 @@ export const MediaDevicesMock = {
   enumerateDevices: jest.fn().mockReturnValue([]),
 };
 
+export const MockClipBoard = {
+  writeText: jest.fn(),
+};
+
 Object.defineProperty(global.navigator, "mediaDevices", {
   value: MediaDevicesMock,
+});
+Object.defineProperty(global.navigator, "clipboard", {
+  value: MockClipBoard,
 });
 
 // Window

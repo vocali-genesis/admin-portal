@@ -8,7 +8,7 @@ import { AuthService } from "@/core/module/services.types";
 import { faker } from "@faker-js/faker";
 import { RouterMock, ToastMock, TranslationMock } from "@/jest-setup";
 import MessageHandler from "@/core/message-handler";
-import React from "react";
+import React, { act } from "react";
 import { login } from "@/resources/tests/test.utils";
 
 const getInput = (container: HTMLElement, inputName: string) => {
@@ -447,7 +447,7 @@ describe("===== SAAS LOGIN =====", () => {
       await userEvent.type(passwordInput, password);
       await userEvent.type(confirmPassword, password);
 
-      screen.getByTestId("updateSettings").click();
+      act(() => screen.getByTestId("updateSettings").click());
 
       await waitFor(() =>
         expect(ToastMock.error).toHaveBeenCalledWith("Error Updating the user")
