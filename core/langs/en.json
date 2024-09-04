@@ -38,6 +38,8 @@
     "leave": "Leave",
     "total-records": "Total Records",
     "total-page": "Total Pages",
+    "copy": "Copy",
+    "copy-success": "Copied!",
     "of": "of",
     "here": "here"
   }

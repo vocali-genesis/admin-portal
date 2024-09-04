@@ -39,6 +39,8 @@
     "total-records": "Registres totals",
     "total-page": "Pàgines totals",
     "of": "de",
-    "here": "aquí"
+    "here": "aquí",
+    "copy": "Copiar",
+    "copy-success": "Copiat!"
   }
 }

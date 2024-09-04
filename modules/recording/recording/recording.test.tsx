@@ -1,6 +1,9 @@
 import "@testing-library/jest-dom";
 import {
   fireEvent,
+  getByTestId,
+  getByText,
+  queryByTestId,
   render,
   screen,
   waitFor,
@@ -37,7 +40,7 @@ describe("===== RECORDING AUDIO =====", () => {
   beforeAll(() => {
     genesisService = GlobalCore.manager.getComponent(
       "service",
-      "medical-api",
+      "medical-api"
     ) as MedicalTranscription;
   });
 
@@ -66,19 +69,19 @@ describe("===== RECORDING AUDIO =====", () => {
       await waitFor(() => {
         expect(screen.queryByText("recording.stop")).not.toBeInTheDocument();
       });
-      screen.debug();
     });
 
     it("Can't record without permissions", async () => {
-      mediaSpy.mockReturnValueOnce([]);
+      mediaSpy.mockReturnValue([]);
       await act(() => render(<Dashboard />));
 
       const recordButton = await screen.findByTestId("record-button");
       act(() => recordButton.click());
 
       expect(ToastMock.error).toHaveBeenCalledWith(
-        "recording.permission-required",
+        "recording.permission-required"
       );
+      mediaSpy.mockReturnValue([SampleMicrophone]);
     });
 
     it("I can start and pause the recording", async () => {
@@ -127,7 +130,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "audio.mp3", type: "audio/mp3" }),
+        Seed.new().file({ name: "audio.mp3", type: "audio/mp3" })
       );
 
       await waitFor(() => screen.getByText("audio.mp3"));
@@ -139,7 +142,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "image.mp3", type: "image/mp3" }),
+        Seed.new().file({ name: "image.mp3", type: "image/mp3" })
       );
 
       expect(screen.queryByText("image.png")).not.toBeInTheDocument();
@@ -167,7 +170,7 @@ describe("===== RECORDING AUDIO =====", () => {
       expect(screen.getByText("recording.upload-files")).toBeDisabled();
       await userEvent.upload(
         input,
-        Seed.new().file({ name: "audio.png", type: "audio/png" }),
+        Seed.new().file({ name: "audio.png", type: "audio/png" })
       );
 
       expect(screen.getByText("recording.upload-files")).not.toBeDisabled();
@@ -189,7 +192,7 @@ describe("===== RECORDING AUDIO =====", () => {
       jest
         .spyOn(FetchMock, "blob")
         .mockResolvedValueOnce(
-          Seed.new().file({ name: "audio.mp3", type: "audio/mp3" }),
+          Seed.new().file({ name: "audio.mp3", type: "audio/mp3" })
         );
     });
     beforeEach(() => {
@@ -241,7 +244,7 @@ describe("===== RECORDING AUDIO =====", () => {
       act(() => submitButton.click());
       await waitFor(() => {
         expect(ToastMock.error).toHaveBeenCalledWith(
-          "recording.error-no-audio-file",
+          "recording.error-no-audio-file"
         );
         expect(RouterMock.replace).toHaveBeenCalledWith("/app/dashboard");
       });
@@ -301,12 +304,7 @@ describe("===== RECORDING AUDIO =====", () => {
     const getRecordingTab = () => screen.getByText("recording.report");
     const getTranscriptionTab = () =>
       screen.getByText("recording.transcription");
-    const getEditButton = () =>
-      screen.queryByText("common.edit") as HTMLButtonElement;
-    const getSaveButton = () =>
-      screen.queryByText("common.save") as HTMLButtonElement;
-    const getCancelButton = () =>
-      screen.queryByText("common.cancel") as HTMLButtonElement;
+
     const getDownloadButton = () => screen.getByText("recording.download");
 
     const getNewRecordingButton = () =>
@@ -339,8 +337,6 @@ describe("===== RECORDING AUDIO =====", () => {
       expect(getRecordingTab()).toBeInTheDocument();
       expect(getTranscriptionTab()).toBeInTheDocument();
       expect(getNewRecordingButton()).toBeInTheDocument();
-      expect(getEditButton()).toBeInTheDocument();
-      expect(getSaveButton()).not.toBeInTheDocument();
       expect(getDownloadButton()).toBeInTheDocument();
       expect(getReplyButton()).toBeInTheDocument();
     });
@@ -365,7 +361,7 @@ describe("===== RECORDING AUDIO =====", () => {
       });
       // Transcription is hidden
       expect(
-        screen.getByText(report.transcription[0]).closest(".hiddenContent"),
+        screen.getByText(report.transcription[0]).closest(".hiddenContent")
       ).toBeTruthy();
     });
 
@@ -383,7 +379,7 @@ describe("===== RECORDING AUDIO =====", () => {
       expect(
         screen
           .getByText(Object.values(report.report)[0])
-          .closest(".hiddenContent"),
+          .closest(".hiddenContent")
       ).toBeTruthy();
     });
 
@@ -416,65 +412,68 @@ describe("===== RECORDING AUDIO =====", () => {
       // TODO: Add alert message here that he needs to confirm or will lose the audio
       expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
     });
-    it.todo("URL changes fires the not saved audio warning");
 
     it("Update the editor also updates the preview", async () => {
       const user = userEvent.setup();
 
       const { container } = render(<Report />);
-      act(() => getEditButton().click());
+      const [title, content] = Object.entries(report.report)[0];
+      const div = (await screen.findByText(title)).closest(
+        ".editable-wrapper"
+      ) as HTMLElement;
 
+      expect(getByText(div, content)).toBeInTheDocument();
+
+      act(() => getByTestId(div, "editable.edit").click());
       await waitFor(() => container.querySelector(".ql-editor"));
-      const qlEditor = container.querySelector(".ql-editor") as Element;
-      // Get first title
-      const firstTitle = qlEditor.querySelector("h3") as Element;
-      console.log(firstTitle.innerHTML);
+      const qlEditor = container.querySelector(".ql-editor") as HTMLElement;
+      // Get first content
+      const firstTitle = qlEditor.querySelector("p") as Element;
       expect(firstTitle).toBeTruthy();
 
-      // act(() => (firstTitle.innerHTML = "My new title"));
-      // await act(() => fireEvent.change(qlEditor, qlEditor.innerHTML));
-
       await act(async () => {
-        await user.type(firstTitle, " My new title");
+        await user.type(firstTitle, "My new text");
       });
-
-      console.log(firstTitle.innerHTML);
 
       act(() => {
-        getSaveButton().click();
+        getByTestId(div, "editable.save").click();
       });
 
-      await waitFor(() => screen.getByText(/My new title/i).tagName === "H2");
-      expect(screen.getByText(/My new title/i).tagName).toEqual("H2");
+      await waitFor(() => screen.getByText(/My new text/i).tagName === "p");
+      expect(screen.getByText(/My new text/i).tagName).toEqual("P");
 
-      expect(getSaveButton()).not.toBeInTheDocument();
-      expect(getEditButton()).toBeInTheDocument();
+      expect(queryByTestId(div, "editable.save")).not.toBeInTheDocument();
+      expect(queryByTestId(div, "editable.edit")).toBeInTheDocument();
     });
 
     it("Cancel the editor don't update the preview", async () => {
       const { container } = render(<Report />);
-      act(() => getEditButton().click());
+      const [title, content] = Object.entries(report.report)[0];
+      const div = (await screen.findByText(title)).closest(
+        ".editable-wrapper"
+      ) as HTMLElement;
+
+      act(() => getByTestId(div, "editable.edit").click());
 
       await waitFor(() => container.querySelector(".ql-editor"));
 
-      expect(getCancelButton()).toBeInTheDocument();
+      expect(getByTestId(div, "editable.cancel")).toBeInTheDocument();
 
       const qlEditor = container.querySelector(".ql-editor") as Element;
-      // Get first title
-      const firstTitle = qlEditor.querySelector("h3") as Element;
-      expect(firstTitle).toBeTruthy();
-
-      firstTitle.innerHTML = "My new title";
+      // Get first content
+      const editorContent = qlEditor.querySelector("p") as Element;
+      expect(editorContent).toBeTruthy();
+      editorContent.innerHTML = "My new Content";
       await act(() => fireEvent.change(qlEditor, qlEditor.innerHTML));
-
       act(() => {
-        getCancelButton().click();
+        getByTestId(div, "editable.cancel").click();
       });
-      // await waitForElementToBeRemoved(() => screen.getByText("My new title"));
-      expect(screen.queryByText("My new title")).not.toBeInTheDocument();
 
-      expect(getSaveButton()).not.toBeInTheDocument();
-      expect(getEditButton()).toBeInTheDocument();
+      await waitFor(() => getByTestId(div, "editable.edit"));
+      expect(screen.queryByText(content)).toBeInTheDocument();
+
+      expect(queryByTestId(div, "editable.save")).not.toBeInTheDocument();
+      expect(queryByTestId(div, "editable.edit")).toBeInTheDocument();
     });
 
     it("Download Audio", async () => {
@@ -507,7 +506,7 @@ describe("===== RECORDING AUDIO =====", () => {
       getDownloadButton().click();
 
       const button = await screen.findByText(
-        "recording.download-transcription",
+        "recording.download-transcription"
       );
 
       act(() => button.click());
@@ -520,7 +519,7 @@ describe("===== RECORDING AUDIO =====", () => {
       getDownloadButton().click();
 
       const button = await screen.findByText(
-        "recording.download-transcription",
+        "recording.download-transcription"
       );
 
       act(() => button.click());
@@ -538,7 +537,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
       const bar = screen.getByTestId("time-bar");
       const segments = bar.querySelectorAll(
-        ".progressSegment",
+        ".progressSegment"
       ) as unknown as HTMLDivElement[];
 
       expect(segments[0].style.width).toEqual(transcriptionWidth + "%");
@@ -546,8 +545,29 @@ describe("===== RECORDING AUDIO =====", () => {
 
       const totalTime = screen.getByText("recording.total-time");
       expect(totalTime.parentElement?.textContent).toContain(
-        (total / 1000).toString(),
+        (total / 1000).toString()
       );
+    });
+
+    it("Copy the report content block", async () => {
+      const MockClipBoard = {
+        writeText: jest.fn(),
+      };
+      Object.defineProperty(global.navigator, "clipboard", {
+        value: MockClipBoard,
+      });
+      render(<Report />);
+      const [title, content] = Object.entries(report.report)[0];
+      const div = (await screen.findByText(title)).closest(
+        ".editable-wrapper"
+      ) as HTMLElement;
+
+      expect(getByText(div, content)).toBeInTheDocument();
+
+      act(() => getByTestId(div, "editable.copy").click());
+      expect(MockClipBoard.writeText).toHaveBeenCalledWith(content);
+
+      MockClipBoard.writeText.mockRestore();
     });
   });
 });

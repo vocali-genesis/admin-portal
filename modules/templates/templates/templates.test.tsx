@@ -29,7 +29,6 @@ describe("===== TEMPLATES =====", () => {
       expect(screen.getByTestId("templates.title")).toBeInTheDocument();
       expect(screen.getByTestId("templates.new-template")).toBeInTheDocument();
       expect(screen.queryByText("templates.table")).not.toBeInTheDocument();
-      screen.debug();
     });
 
     it("Checks table is populated", async () => {
@@ -249,7 +248,6 @@ describe("===== TEMPLATES =====", () => {
       expect(
         screen.queryByText("template-detail.table")
       ).not.toBeInTheDocument();
-      screen.debug();
     });
 
     it("Checks table is populated", async () => {
