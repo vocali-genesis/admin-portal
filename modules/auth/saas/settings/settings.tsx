@@ -11,6 +11,7 @@ import { SettingsInputField } from "@/resources/inputs/settings-input-field";
 import styled from "styled-components";
 import SubmitButton from "@/resources/containers/submit.button";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
+import OAuthButton from "@/resources/containers/oauth.button";
 
 const messageHandler = MessageHandler.get();
 
@@ -25,6 +26,24 @@ const Settings = () => {
   } = useForm({
     resolver: yupResolver(settings_schema(t)),
   });
+
+  const revokeGoogleAccess = async () => {
+    try {
+      // const response = await fetch('/api/revoke-google-access', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error('Failed to revoke access');
+      // }
+      console.log('Google access revoked successfully');
+    } catch (error) {
+      console.error('Error revoking Google access:', error);
+    }
+  }
 
   const onSubmit = async (data: { email: string; password: string }) => {
     const updatedUser = await authService.updateUser(data.email, data.password);
@@ -89,11 +108,11 @@ const Settings = () => {
             <OAuthButton
               provider="google"
               label={t("settings.revoke")}
-              onClick={() => 1}
+              onClick={() => revokeGoogleAccess()}
             />
-          </SocialLoginWrapper>
+          </SocialLoginWrapper> */}
 
-          <Divider /> */}
+          <Divider />
 
           <SettingsInputField name="language" label={t("settings.language")}>
             <BasicSelect
