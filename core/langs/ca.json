@@ -40,5 +40,9 @@
     "total-page": "Pàgines totals",
     "of": "de",
     "here": "aquí"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio.",
+    "one-field-required": "Se requiere al menos un campo"
   }
 }

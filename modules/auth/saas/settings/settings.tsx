@@ -32,11 +32,11 @@ const Settings = () => {
   });
 
   const handleRevokeOAuth = async () => {
-    const response: any = await Service.require("oauth").revokeOAuth();
+    const response = await Service.require("oauth").revokeOAuth();
     if (response) {
       return Service.require("oauth").logout();
     }
-    return
+    return response
   };
   const onSubmit = async (data: { email: string; password: string }) => {
     const updatedUser = await authService.updateUser(data.email, data.password);

@@ -40,5 +40,9 @@
     "total-page": "Total Pages",
     "of": "of",
     "here": "here"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "one-field-required": "At least one field is required"
   }
 }
