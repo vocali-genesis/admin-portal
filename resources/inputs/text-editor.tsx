@@ -39,7 +39,7 @@ const Editor: React.FC<EditorProps> = ({
     "list",
     "bullet",
     "link",
-    "image",
+    // "image",
   ];
 
   const handleChange = (value: string, delta: unknown, source: string) => {
@@ -49,6 +49,11 @@ const Editor: React.FC<EditorProps> = ({
 
     onContentChange(value);
   };
+
+  // Patch, the numbers are not display as a string
+  if (!Number.isNaN(+content)) {
+    content = `<p>${content}</p>`;
+  }
 
   return (
     <div className={quill_styles.editor} style={{ height }}>
