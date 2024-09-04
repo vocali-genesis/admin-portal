@@ -79,7 +79,6 @@ const Report = () => {
           ]}
         />
         <div style={{ height: "24px" }} />
-
         <ProgressBar
           displayLabelMinPercentage={10}
           testId="time-bar"
@@ -100,7 +99,7 @@ const Report = () => {
             },
           ]}
         />
-        <div className={report_styles.totalTime}>
+        <div className="flex justify-start bg-red-800 w-[220px]">
           <span>{t("recording.total-time")}</span>:{" "}
           <span>{totalTime / 1000}</span> {"s"}
           <span>{t("recording.seconds")}</span>
@@ -234,9 +233,13 @@ const Report = () => {
   }
   return (
     <div className={report_styles.reportContainer}>
-      <div className={report_styles.topContainer}>
-        {renderProgressBar()}
-        {renderDownloadButton()}
+      <div className={`${report_styles.topContainer} bg-red-700`}>
+        <div>
+          {renderProgressBar()}
+        </div>
+        <div>
+          {renderDownloadButton()}
+        </div>
       </div>
       {renderTabs()}
       {renderContent()}
@@ -259,7 +262,7 @@ const Report = () => {
               <Button
                 onClick={openEditor}
                 variant={"secondary"}
-                className={report_styles.editButton}
+                className={`${report_styles.editButton} ml-[9px]`}
               >
                 {t("common.edit")}
               </Button>
@@ -268,14 +271,15 @@ const Report = () => {
                 <Button
                   onClick={saveEditor}
                   variant={"secondary"}
-                  className={report_styles.saveButton}
+                  className={`${report_styles.saveButton} ml-[9px]`}
+
                 >
                   {t("common.save")}
                 </Button>
                 <Button
                   onClick={closeEditor}
                   variant={"secondary"}
-                  className={report_styles.saveButton}
+                  className={`${report_styles.saveButton} ml-[9px]`}
                 >
                   {t("common.cancel")}
                 </Button>

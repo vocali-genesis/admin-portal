@@ -31,12 +31,11 @@ const Settings = () => {
     resolver: yupResolver(settings_schema(t)),
   });
 
-  const handleRevokeOAuth = async () => {
+  const handleRevokeOAuth = async (): Promise<void> => {
     const response = await Service.require("oauth").revokeOAuth();
     if (response) {
-      return Service.require("oauth").logout();
+      await Service.require("oauth").logout();
     }
-    return response
   };
   const onSubmit = async (data: { email: string; password: string }) => {
     const updatedUser = await authService.updateUser(data.email, data.password);
