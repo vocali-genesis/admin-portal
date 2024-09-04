@@ -1,6 +1,5 @@
 import "@testing-library/jest-dom";
 import {
-  findByText,
   fireEvent,
   getByTestId,
   getByText,
@@ -22,7 +21,6 @@ import { faker } from "@faker-js/faker";
 import {
   FetchMock,
   MediaDevicesMock,
-  MockClipBoard,
   RouterMock,
   ToastMock,
 } from "@/jest-setup";
@@ -71,11 +69,10 @@ describe("===== RECORDING AUDIO =====", () => {
       await waitFor(() => {
         expect(screen.queryByText("recording.stop")).not.toBeInTheDocument();
       });
-      screen.debug();
     });
 
     it("Can't record without permissions", async () => {
-      mediaSpy.mockReturnValueOnce([]);
+      mediaSpy.mockReturnValue([]);
       await act(() => render(<Dashboard />));
 
       const recordButton = await screen.findByTestId("record-button");
@@ -84,6 +81,7 @@ describe("===== RECORDING AUDIO =====", () => {
       expect(ToastMock.error).toHaveBeenCalledWith(
         "recording.permission-required"
       );
+      mediaSpy.mockReturnValue([SampleMicrophone]);
     });
 
     it("I can start and pause the recording", async () => {
@@ -415,19 +413,6 @@ describe("===== RECORDING AUDIO =====", () => {
       expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
     });
 
-    it("Copy the report content block", async () => {
-      render(<Report />);
-      const [title, content] = Object.entries(report.report)[0];
-      const div = (await screen.findByText(title)).closest(
-        ".editable-wrapper"
-      ) as HTMLElement;
-
-      expect(getByText(div, content)).toBeInTheDocument();
-
-      act(() => getByTestId(div, "editable.copy").click());
-      expect(MockClipBoard.writeText).toHaveBeenCalledWith(content);
-    });
-
     it("Update the editor also updates the preview", async () => {
       const user = userEvent.setup();
 
@@ -562,6 +547,27 @@ describe("===== RECORDING AUDIO =====", () => {
       expect(totalTime.parentElement?.textContent).toContain(
         (total / 1000).toString()
       );
+    });
+
+    it("Copy the report content block", async () => {
+      const MockClipBoard = {
+        writeText: jest.fn(),
+      };
+      Object.defineProperty(global.navigator, "clipboard", {
+        value: MockClipBoard,
+      });
+      render(<Report />);
+      const [title, content] = Object.entries(report.report)[0];
+      const div = (await screen.findByText(title)).closest(
+        ".editable-wrapper"
+      ) as HTMLElement;
+
+      expect(getByText(div, content)).toBeInTheDocument();
+
+      act(() => getByTestId(div, "editable.copy").click());
+      expect(MockClipBoard.writeText).toHaveBeenCalledWith(content);
+
+      MockClipBoard.writeText.mockRestore();
     });
   });
 });

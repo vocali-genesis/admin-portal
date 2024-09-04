@@ -68,7 +68,7 @@ describe("===== SAAS LOGIN =====", () => {
     it("Login Fields are required", async () => {
       render(<Login />);
 
-      screen.getByTestId("submitLogin").click();
+      act(() => screen.getByTestId("submitLogin").click());
 
       await waitFor(() => {
         expect(screen.getByText("auth.email-required")).toBeInTheDocument();
@@ -86,7 +86,7 @@ describe("===== SAAS LOGIN =====", () => {
 
       // Makes the form dirty
 
-      screen.getByTestId("submitLogin").click();
+      act(() => screen.getByTestId("submitLogin").click());
       await userEvent.type(emailInput, "wrong-email");
       await userEvent.type(passwordInput, "123");
 
@@ -114,7 +114,7 @@ describe("===== SAAS LOGIN =====", () => {
         faker.internet.password({ length: 10 })
       );
 
-      screen.getByTestId("submitLogin").click();
+      act(() => screen.getByTestId("submitLogin").click());
 
       await waitFor(() => expect(spy).toHaveBeenCalledWith("/app/dashboard"));
     });
@@ -136,7 +136,7 @@ describe("===== SAAS LOGIN =====", () => {
         faker.internet.password({ length: 10 })
       );
 
-      screen.getByTestId("submitLogin").click();
+      act(() => screen.getByTestId("submitLogin").click());
 
       await waitFor(() =>
         expect(ToastMock.error).toHaveBeenCalledWith("User Don`t exists")
@@ -167,7 +167,7 @@ describe("===== SAAS LOGIN =====", () => {
     it("Reset Password Fields are required", async () => {
       render(<ResetPassword />);
 
-      screen.getByTestId("resetPassword").click();
+      act(() => screen.getByTestId("resetPassword").click());
 
       await waitFor(() => {
         expect(screen.getByText("auth.email-required")).toBeInTheDocument();
@@ -182,7 +182,7 @@ describe("===== SAAS LOGIN =====", () => {
       ) as Element;
 
       // Makes the form dirty
-      screen.getByTestId("resetPassword").click();
+      act(() => screen.getByTestId("resetPassword").click());
 
       await userEvent.type(emailInput, "wrong-email");
 
@@ -204,7 +204,7 @@ describe("===== SAAS LOGIN =====", () => {
 
       await userEvent.type(emailInput, faker.internet.email());
 
-      screen.getByTestId("resetPassword").click();
+      act(() => screen.getByTestId("resetPassword").click());
 
       await waitFor(() => {
         expect(spy).toHaveBeenCalledWith("/auth/login");
@@ -225,7 +225,7 @@ describe("===== SAAS LOGIN =====", () => {
 
       await userEvent.type(emailInput, faker.internet.email());
 
-      screen.getByTestId("resetPassword").click();
+      act(() => screen.getByTestId("resetPassword").click());
       await waitFor(() =>
         expect(ToastMock.error).toHaveBeenCalledWith("Email Not Found")
       );
@@ -277,7 +277,7 @@ describe("===== SAAS LOGIN =====", () => {
     it("Register Fields are required", async () => {
       render(<Register />);
 
-      screen.getByTestId("submitRegistration").click();
+      act(() => screen.getByTestId("submitRegistration").click());
 
       await waitFor(() => screen.getByText("auth.email-required"));
 
@@ -295,7 +295,7 @@ describe("===== SAAS LOGIN =====", () => {
       const confirmPassword = getInput(container, "confirm_password");
 
       // Makes the form dirty
-      screen.getByTestId("submitRegistration").click();
+      act(() => screen.getByTestId("submitRegistration").click());
 
       await userEvent.type(emailInput, "wrong-email");
       await userEvent.type(passwordInput, "123");
@@ -321,7 +321,7 @@ describe("===== SAAS LOGIN =====", () => {
       await userEvent.type(passwordInput, password);
       await userEvent.type(confirmPassword, password);
 
-      screen.getByTestId("submitRegistration").click();
+      act(() => screen.getByTestId("submitRegistration").click());
 
       await waitFor(() => expect(spy).toHaveBeenCalledWith("/auth/login"));
     });
@@ -342,7 +342,7 @@ describe("===== SAAS LOGIN =====", () => {
       await userEvent.type(passwordInput, password);
       await userEvent.type(confirmPassword, password);
 
-      screen.getByTestId("submitRegistration").click();
+      act(() => screen.getByTestId("submitRegistration").click());
       await waitFor(() =>
         expect(ToastMock.error).toHaveBeenCalledWith("User already registered")
       );
@@ -383,7 +383,7 @@ describe("===== SAAS LOGIN =====", () => {
     it("Update Settings Fields are required", async () => {
       render(<Settings />);
 
-      screen.getByTestId("updateSettings").click();
+      act(() => screen.getByTestId("updateSettings").click());
 
       await waitFor(() => screen.getByText("auth.email-required"));
 
@@ -401,7 +401,7 @@ describe("===== SAAS LOGIN =====", () => {
       const confirmPassword = getInput(container, "confirm_password");
 
       // Makes the form dirty
-      screen.getByTestId("updateSettings").click();
+      act(() => screen.getByTestId("updateSettings").click());
 
       await userEvent.type(emailInput, "wrong-email");
       await userEvent.type(passwordInput, "123");
@@ -426,7 +426,7 @@ describe("===== SAAS LOGIN =====", () => {
       await userEvent.type(passwordInput, password);
       await userEvent.type(confirmPassword, password);
 
-      screen.getByTestId("updateSettings").click();
+      act(() => screen.getByTestId("updateSettings").click());
       await waitFor(() => expect(ToastMock.success).toHaveBeenCalledTimes(1));
     });
 

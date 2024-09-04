@@ -89,7 +89,7 @@ const Dashboard = () => {
       messageHandler.info(t("recording.stopped"));
       setRecordingState("inactive");
       stopVisualization();
-      router.push({
+      void router.push({
         pathname: "/app/recording",
         query: { audioUrl: audioUrl },
       });
@@ -190,14 +190,14 @@ const Dashboard = () => {
             <RecordButton
               recordingState={recordingState}
               audioLevel={audioLevel}
-              onClick={toggleRecording}
+              onClick={() => void toggleRecording()}
               statusMessage={getStatusMessage()}
               disabled={!hasTemplates}
             />
             {recordingState !== "inactive" && (
               <button
                 className={dash_styles.stopButton}
-                onClick={stopRecording}
+                onClick={() => void stopRecording()}
               >
                 <FaStop size={20} style={{ marginRight: "10px" }} />
                 {t("recording.stop")}
