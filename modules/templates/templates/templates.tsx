@@ -23,7 +23,7 @@ import Pagination from "@/resources/table/pagination";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
-import NewTemplateModal from "@/resources/containers/new-template-modal";
+import NewTemplateModal from "@/modules/templates/templates/components/new-template-modal";
 
 const messageHandler = MessageHandler.get();
 
@@ -265,11 +265,14 @@ const Templates = () => {
           {t("templates.all_templates")}
         </h1>
         <Button
-          onClick={handleAddTemplate}
+          onClick={
+            editingTemplate
+              ? () => messageHandler.handleError(t("templates.finish-editing"))
+              : handleAddTemplate
+          }
           variant="primary"
           className={styles.addButton}
           testId="templates.new-template"
-          disabled={editingTemplate ? true : false}
         >
           <FaPlus /> {t("templates.create")}
         </Button>

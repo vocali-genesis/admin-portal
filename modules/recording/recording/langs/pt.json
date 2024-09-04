@@ -23,6 +23,22 @@
     "download-transcription": "Baixar transcrição",
     "statistics": "Estatísticas",
     "new-recording": "Nova gravação",
-    "download-report": "Baixar relatório"
+    "download-report": "Baixar relatório",
+    "upload": "Enviar",
+    "upload-files": "Enviar arquivo",
+    "pause-audio": "Pausar áudio",
+    "replay-audio": "Reproduzir áudio",
+    "back": "Voltar",
+    "add_field": "Adicionar campo",
+    "api-error": "Falha ao gerar relatório",
+    "error-no-audio-file": "Arquivo de áudio expirado",
+    "total": "Total",
+    "total-time": "Tempo total",
+    "seconds": "segundos",
+    "audio-time": "Duração do áudio: {{seconds}} segundos",
+    "transcription-time": "Transcrição: {{seconds}} segundos",
+    "report-time": "Relatório: {{seconds}} segundos",
+    "download_success": "Download bem-sucedido",
+    "error-no-templates": "Você não tem modelos configurados. Configure um antes de gravar"
   }
 }

@@ -20,7 +20,7 @@ import MessageHandler from "@/core/message-handler";
 import DeleteConfirmation from "@/resources/containers/delete-confirmation";
 import Table from "@/resources/table/table";
 import UnsavedChanges from "@/resources/containers/unsaved-changes-warning";
-import FieldModal from "@/resources/containers/field-modal";
+import FieldModal from "@/modules/templates/templates/components/field-modal";
 import Service from "@/core/module/service.factory";
 import { SupabaseTemplateService } from "@/core/module/services.types";
 import BasicInput from "@/resources/inputs/basic-input";
@@ -382,7 +382,7 @@ const TemplateDetail = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <Button
-          onClick={() => router.push("/app/templates")}
+          onClick={() => void router.push("/app/templates")}
           variant="secondary"
           className={styles.backButton}
           testId="template-detail.back-button"
@@ -390,10 +390,13 @@ const TemplateDetail = () => {
           <FaArrowLeft /> {t("templates.back")}
         </Button>
         <Button
-          onClick={handleAddField}
+          onClick={
+            editingField
+              ? () => messageHandler.handleError(t("templates.finish-editing"))
+              : handleAddField
+          }
           variant="primary"
           className={styles.addFieldButton}
-          disabled={editingField ? true : false}
           testId="template-detail.add-field"
         >
           <FaPlus /> {t("templates.addField")}

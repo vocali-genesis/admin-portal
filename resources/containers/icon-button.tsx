@@ -2,7 +2,7 @@ import React from "react";
 import icon_btn_styles from "./styles/icon-button.module.css";
 
 interface IconButtonProps {
-  onClick: () => void;
+  onClick: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   children: React.ReactNode;
   size?: "small" | "medium" | "large";

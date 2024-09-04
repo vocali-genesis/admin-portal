@@ -7,7 +7,6 @@
     "action": "Action",
     "field": "Field",
     "type": "Type",
-    "description": "Description",
     "create": "Add Template",
     "newTemplate": "New Template",
     "back": "Back",
@@ -42,6 +41,7 @@
     "unsavedChangesMessage": "You have some unsaved changes you may loose. Do you want to continue?",
     "discardChanges": "Discard Changes",
     "fieldUpdateSuccess": "Field updated successfully",
-    "fieldUpdateError": "Error updating field"
+    "fieldUpdateError": "Error updating field",
+    "finish-editing": "Please finish editing the the current template before creating a new one"
   }
 }

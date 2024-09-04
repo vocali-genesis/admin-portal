@@ -4,6 +4,20 @@
   margin-top: 5vh;
 }
 
+.warning {
+  background-color: #FDFD96;
+  padding: 1vh 3vh;
+  color: black;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2vh;
+  border-radius: 3px;
+}
+
+.warning a {
+  text-decoration: underline;
+}
+
 .recordSection,
 .uploadSection {
   flex: 1;

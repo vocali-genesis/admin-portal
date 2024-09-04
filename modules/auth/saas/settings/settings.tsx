@@ -1,4 +1,4 @@
-import React, { FormEventHandler } from "react";
+import React, { FormEventHandler, useState } from "react";
 import { useForm } from "react-hook-form";
 import { GlobalCore } from "@/core/module/module.types";
 import { settings_schema } from "./settings.schema";
@@ -11,6 +11,7 @@ import { SettingsInputField } from "@/resources/inputs/settings-input-field";
 import styled from "styled-components";
 import SubmitButton from "@/resources/containers/submit.button";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const messageHandler = MessageHandler.get();
 
@@ -25,6 +26,9 @@ const Settings = () => {
   } = useForm({
     resolver: yupResolver(settings_schema(t)),
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (data: { email: string; password: string }) => {
     const updatedUser = await authService.updateUser(data.email, data.password);
@@ -56,22 +60,50 @@ const Settings = () => {
                 label={t("settings.new-password")}
                 error={errors["password"]}
               >
-                <input
-                  type="password"
-                  id="password"
-                  {...register("password")}
-                />
+                <PasswordInputWrapper>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    {...register("password")}
+                  />
+                  <VisibilityButton
+                    onClick={(event: React.MouseEvent) => {
+                      event.preventDefault();
+                      setShowPassword(!showPassword);
+                    }}
+                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible />
+                    ) : (
+                      <AiOutlineEye />
+                    )}
+                  </VisibilityButton>
+                </PasswordInputWrapper>
               </SettingsInputField>
               <SettingsInputField
                 name="confirm_password"
                 label={t("settings.confirm-password")}
                 error={errors["confirm_password"]}
               >
-                <input
-                  type="password"
-                  id="confirm-password"
-                  {...register("confirm_password")}
-                />
+                <PasswordInputWrapper>
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    id="confirm-password"
+                    {...register("confirm_password")}
+                  />
+                  <VisibilityButton
+                    onClick={(event: React.MouseEvent) => {
+                      event.preventDefault();
+                      setShowConfirmPassword(!showConfirmPassword);
+                    }}
+                  >
+                    {showConfirmPassword ? (
+                      <AiOutlineEyeInvisible />
+                    ) : (
+                      <AiOutlineEye />
+                    )}
+                  </VisibilityButton>
+                </PasswordInputWrapper>
               </SettingsInputField>
 
               <div className="flex justify-center">
@@ -85,16 +117,6 @@ const Settings = () => {
 
           <Divider />
 
-          {/* <SocialLoginWrapper>
-            <OAuthButton
-              provider="google"
-              label={t("settings.revoke")}
-              onClick={() => 1}
-            />
-          </SocialLoginWrapper>
-
-          <Divider /> */}
-
           <SettingsInputField name="language" label={t("settings.language")}>
             <BasicSelect
               name="language"
@@ -106,11 +128,6 @@ const Settings = () => {
               }))}
             />
           </SettingsInputField>
-
-          {/*
-          // UPCOMMING FEATURE
-          <DeleteButton label={t("settings.delete-account")} /> 
-          */}
         </MainContent>
       </ContentWrapper>
     </Container>
@@ -164,4 +181,31 @@ const MainContent = styled.main`
 
 const SocialLoginWrapper = styled.div`
   padding: 3vh 12.5vh 1vh 12.5vh;
+`;
+
+const PasswordInputWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const VisibilityButton = styled.button`
+  position: absolute;
+  right: 0;
+  top: 0.75vh;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  color: #888;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:focus {
+    outline: none;
+  }
 `;
