@@ -22,11 +22,11 @@ const Settings = () => {
     if (!router.isReady) return;
 
     // Ensure this logic only runs on the client
-    (async () => {
+    void (async () => {
       setIsLoading(true);
       const user = await Service.require("oauth").getLoggedUser();
       if (!user) {
-        await router.push("/auth/login");
+        void router.push("/auth/login");
         return;
       }
       setIsLoading(false);
