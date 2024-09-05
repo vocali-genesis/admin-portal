@@ -39,7 +39,9 @@
     "total-records": "Registros Totais",
     "total-page": "Páginas Totais",
     "of": "de",
-    "here": "aqui"
+    "here": "aqui",
+    "copy": "Copiar",
+    "copy-success": "Copiado!"
   },
   "validation": {
     "required": "Este campo es obligatorio.",
