@@ -31,28 +31,33 @@ const VisibilityButton = styled.button`
   }
 `;
 
-const BasicPasswordInput: React.FC<BasicInputProps> = forwardRef(
-  function BasicPasswordInput(props: BasicInputProps, ref) {
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const BasicPasswordInput = forwardRef<
+  React.RefObject<HTMLInputElement>,
+  BasicInputProps
+>(function BasicPasswordInput(props: BasicInputProps, ref) {
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    return (
-      <PasswordInputWrapper>
-        <BasicInput
-          {...props}
-          ref={ref}
-          type={showConfirmPassword ? "text" : "password"}
-        />
-        <VisibilityButton
-          onClick={(event: React.MouseEvent) => {
-            event.preventDefault();
-            setShowConfirmPassword(!showConfirmPassword);
-          }}
-        >
-          {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-        </VisibilityButton>
-      </PasswordInputWrapper>
-    );
-  }
-);
+  /**
+   * Here we have a ref pass a a prop to a sub-component. I had to put any, spend 30 min figuring out how to make it build and pass the test at the same time
+   */
+  return (
+    <PasswordInputWrapper>
+      <BasicInput
+        {...props}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        ref={ref as any}
+        type={showConfirmPassword ? "text" : "password"}
+      />
+      <VisibilityButton
+        onClick={(event: React.MouseEvent) => {
+          event.preventDefault();
+          setShowConfirmPassword(!showConfirmPassword);
+        }}
+      >
+        {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+      </VisibilityButton>
+    </PasswordInputWrapper>
+  );
+});
 
 export default BasicPasswordInput;

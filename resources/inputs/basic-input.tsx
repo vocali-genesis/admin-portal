@@ -3,7 +3,8 @@ import styled from "styled-components";
 
 export interface BasicInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  id: string;
+  id?: string;
+  type?: string;
   value?: string;
   testId?: string;
 }
@@ -26,16 +27,16 @@ const StyledInput = styled.input`
   }
 `;
 
-const BasicInput: React.FC<BasicInputProps> = forwardRef(function BasicInput(
-  { value, testId, ...props }: BasicInputProps,
-  ref
-) {
+const BasicInput = forwardRef<
+  React.RefObject<HTMLInputElement>,
+  BasicInputProps
+>(function BasicInput({ value, testId, ...props }: BasicInputProps, ref) {
   return (
     <StyledInput
       value={value}
       {...props}
       data-testid={testId}
-      ref={ref}
+      ref={ref as React.RefObject<HTMLInputElement>}
       name={props.id}
     />
   );
