@@ -21,9 +21,11 @@ const messageHandler = MessageHandler.get();
 const Recording = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [template, setTemplate] = useState<GenesisTemplate | null>(null);
-  const { audioUrl } = router.query as { audioUrl: string };
   const { templates, isLoading, setIsLoading } = useTemplates();
+  const [template, setTemplate] = useState<GenesisTemplate | null>(
+    templates[0],
+  );
+  const { audioUrl } = router.query as { audioUrl: string };
 
   const handleSubmit = async () => {
     if (!audioUrl) {
@@ -31,6 +33,8 @@ const Recording = () => {
       await router.replace("/app/dashboard");
       return;
     }
+
+    setIsLoading(true);
 
     let file;
     try {
@@ -42,13 +46,14 @@ const Recording = () => {
       return;
     }
     const api_response = await Service.require(
-      "medical-api"
+      "medical-api",
     ).processAudioAndGenerateReport(file, template as GenesisTemplate, "en");
 
-    console.log(api_response);
     if (!api_response) {
       return;
     }
+    setIsLoading(false);
+
     // TODO: Find a better way than the query parameter
     void router.push({
       pathname: "/app/report",

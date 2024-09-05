@@ -67,6 +67,11 @@
   flex-wrap: nowrap;
 }
 
+.actionButtons {
+  display: flex;
+  gap: 3vh;
+}
+
 .errorMessage {
   color: red;
   font-size: 1.8vh;
