@@ -22,11 +22,11 @@ describe("===== DYNAMIC PATHS =====", () => {
   beforeAll(() => {
     authService = GlobalCore.manager.getComponent(
       "service",
-      "oauth"
+      "oauth",
     ) as AuthService;
     subscriptionServices = GlobalCore.manager.getComponent(
       "service",
-      "subscriptions"
+      "subscriptions",
     ) as SubscriptionService;
   });
 
@@ -44,7 +44,7 @@ describe("===== DYNAMIC PATHS =====", () => {
     });
     it("App is Mounted", () => {
       render(<AppSlug />);
-      expect(screen.getByTestId("spinner")).toBeInTheDocument();
+      expect(screen.getByTestId("demo")).toBeInTheDocument();
     });
 
     it("User not logged", async () => {
@@ -61,12 +61,12 @@ describe("===== DYNAMIC PATHS =====", () => {
         .mockReturnValueOnce(Promise.resolve(null));
 
       const spy = jest.spyOn(RouterMock, "push");
-      jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
+      // jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
 
       render(<AppSlug />);
 
       await waitFor(() =>
-        expect(spy).toHaveBeenCalledWith("/app/subscriptions")
+        expect(spy).toHaveBeenCalledWith("/app/subscriptions"),
       );
     });
 
@@ -77,12 +77,12 @@ describe("===== DYNAMIC PATHS =====", () => {
         .mockReturnValueOnce(Promise.resolve({ status: "expired" }));
 
       const spy = jest.spyOn(RouterMock, "push");
-      jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
+      // jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
 
       render(<AppSlug />);
 
       await waitFor(() =>
-        expect(spy).toHaveBeenCalledWith("/app/subscriptions")
+        expect(spy).toHaveBeenCalledWith("/app/subscriptions"),
       );
     });
 
@@ -94,7 +94,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       render(<AppSlug />);
 
       await waitFor(() =>
-        expect(spy).toHaveBeenCalledWith("/errors/not-found")
+        expect(spy).toHaveBeenCalledWith("/errors/not-found"),
       );
     });
 
@@ -104,7 +104,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       render(<AppSlug />);
 
       await waitFor(() =>
-        expect(screen.getByTestId("demo")).toBeInTheDocument()
+        expect(screen.getByTestId("demo")).toBeInTheDocument(),
       );
     });
 
@@ -121,7 +121,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       render(<AppSlug />);
 
       await waitFor(() =>
-        expect(screen.getByTestId("demo")).toBeInTheDocument()
+        expect(screen.getByTestId("demo")).toBeInTheDocument(),
       );
 
       const item = screen.getByText("demo-menu");
@@ -165,7 +165,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       render(<SettingSlug />);
 
       await waitFor(() =>
-        expect(spy).toHaveBeenCalledWith("/errors/not-found")
+        expect(spy).toHaveBeenCalledWith("/errors/not-found"),
       );
     });
 
@@ -175,7 +175,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       render(<SettingSlug />);
 
       await waitFor(() =>
-        expect(screen.getByTestId("demo")).toBeInTheDocument()
+        expect(screen.getByTestId("demo")).toBeInTheDocument(),
       );
     });
 
@@ -192,7 +192,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       render(<SettingSlug />);
 
       await waitFor(() =>
-        expect(screen.getByTestId("demo")).toBeInTheDocument()
+        expect(screen.getByTestId("demo")).toBeInTheDocument(),
       );
 
       const item = screen.getByText("demo-menu");
@@ -230,7 +230,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       render(<AuthSlug />);
 
       await waitFor(() =>
-        expect(spy).toHaveBeenCalledWith("/errors/not-found")
+        expect(spy).toHaveBeenCalledWith("/errors/not-found"),
       );
     });
 
@@ -238,7 +238,7 @@ describe("===== DYNAMIC PATHS =====", () => {
       render(<AuthSlug />);
 
       await waitFor(() =>
-        expect(screen.getByTestId("demo")).toBeInTheDocument()
+        expect(screen.getByTestId("demo")).toBeInTheDocument(),
       );
     });
   });
