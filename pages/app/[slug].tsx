@@ -20,8 +20,8 @@ const AppSlug = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true)
-  }, [router.asPath])
+    setIsLoading(true);
+  }, [router.asPath]);
 
   const isSpinner = !router.isReady || isLoading;
 
@@ -29,7 +29,7 @@ const AppSlug = () => {
   if (isSpinner) {
     return (
       <>
-        <ValidateUser onReady={() => setIsLoading(false)}/>
+        <ValidateUser onReady={() => setIsLoading(false)} />
         <Spinner maxHeight="100hv" />
       </>
     );
@@ -42,7 +42,7 @@ const AppSlug = () => {
   const menu = ModuleManager.get().components.menus;
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col h-screen bg-white w-full">
       <Navbar toggleSidebar={toggleSidebar} />
       <div className="flex flex-grow overflow-hidden">
         <SideBar

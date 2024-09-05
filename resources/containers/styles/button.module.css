@@ -3,9 +3,12 @@
   border-radius: 5px;
   cursor: pointer;
   font-family: "Montserrat", sans-serif;
-  font-size: 1.8vh;
-  padding: 7.5px 20px;
+  font-size: 0.75rem;
+  padding: 7.5px 15px;
   transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .primary {

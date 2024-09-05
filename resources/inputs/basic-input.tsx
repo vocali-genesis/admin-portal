@@ -1,21 +1,24 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
 
-interface BasicInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+export interface BasicInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  id?: string;
+  type?: string;
+  value?: string;
   testId?: string;
-  ref?: React.Ref<HTMLInputElement>;
 }
 
 const StyledInput = styled.input`
   width: 100%;
   padding: 8px 12px;
   font-size: 2vh;
+  color: black;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   background-color: #f8fafc;
-  height: 6vh;
+  height: 52px;
+  flex: 1;
 
   &:focus {
     outline: none;
@@ -24,22 +27,19 @@ const StyledInput = styled.input`
   }
 `;
 
-const BasicInput: React.FC<BasicInputProps> = ({
-  value,
-  onChange,
-  testId,
-  ref,
-  ...props
-}) => {
+const BasicInput = forwardRef<
+  React.RefObject<HTMLInputElement>,
+  BasicInputProps
+>(function BasicInput({ value, testId, ...props }: BasicInputProps, ref) {
   return (
     <StyledInput
       value={value}
-      onChange={(e) => onChange(e)}
       {...props}
       data-testid={testId}
-      ref={ref}
+      ref={ref as React.RefObject<HTMLInputElement>}
+      name={props.id}
     />
   );
-};
+});
 
 export default BasicInput;

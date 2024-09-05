@@ -11,9 +11,7 @@ import {
   FaEdit,
   FaPlus,
   FaSave,
-  FaRegFolderOpen,
   FaEye,
-  FaRegEye,
   FaTimes,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
@@ -81,7 +79,7 @@ const Templates = () => {
     if (!resp) return;
 
     setTemplates(
-      templates.filter((template) => template.id !== templateToDelete),
+      templates.filter((template) => template.id !== templateToDelete)
     );
     messageHandler.handleSuccess(t("templates.deleteSuccess"));
 
@@ -111,7 +109,7 @@ const Templates = () => {
     try {
       const savedTemplate = await templateService.updateTemplate(
         editingTemplate.id,
-        editingTemplate,
+        editingTemplate
       );
 
       if (!savedTemplate) {
@@ -120,7 +118,7 @@ const Templates = () => {
       }
 
       setTemplates(
-        templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t)),
+        templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t))
       );
       setEditingTemplate(null);
       messageHandler.handleSuccess(t("templates.updateSuccess"));
@@ -131,7 +129,7 @@ const Templates = () => {
   };
 
   const handleNewTemplateSubmit = async (
-    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">,
+    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">
   ) => {
     setIsNewTemplateModalOpen(false);
 
@@ -156,7 +154,7 @@ const Templates = () => {
 
   const formatPreview = (
     fields: { [key: string]: GenesisTemplateField },
-    maxLength: number = 25,
+    maxLength: number = 25
   ) => {
     const previewString = Object.entries(fields)
       .map(([key, value]) => `${key}: ${value.type}`)
@@ -176,6 +174,7 @@ const Templates = () => {
       render: (template: GenesisTemplate) =>
         editingTemplate?.id === template.id ? (
           <BasicInput
+            id="template-name"
             value={editingTemplate.name}
             onChange={(value) =>
               setEditingTemplate({
@@ -218,7 +217,7 @@ const Templates = () => {
           {editingTemplate && editingTemplate.id === template.id ? (
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
-                onClick={handleSave}
+                onClick={() => void handleSave()}
                 size="small"
                 testId="templates.save-template"
               >
@@ -235,6 +234,15 @@ const Templates = () => {
           ) : (
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
+                onClick={() =>
+                  void router.push(`/app/template-detail?id=${template.id}`)
+                }
+                size="small"
+                testId="templates.view"
+              >
+                <FaEye style={{ color: "var(--primary)" }} />
+              </IconButton>
+              <IconButton
                 onClick={() => handleEdit(template)}
                 size="small"
                 testId="templates.edit"
@@ -247,14 +255,6 @@ const Templates = () => {
                 testId="templates.delete"
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
-              </IconButton>
-              <IconButton
-                onClick={() =>
-                  router.push(`/app/template-detail?id=${template.id}`)
-                }
-                size="small"
-              >
-                <FaEye style={{ color: "var(--primary)" }} />
               </IconButton>
             </div>
           )}
@@ -297,12 +297,12 @@ const Templates = () => {
       <NewTemplateModal
         isOpen={isNewTemplateModalOpen}
         onClose={() => setIsNewTemplateModalOpen(false)}
-        onSubmit={handleNewTemplateSubmit}
+        onSubmit={(template) => void handleNewTemplateSubmit(template)}
       />
       <DeleteConfirmation
         isOpen={templateToDelete ? true : isModalOpen}
         onRequestClose={() => setTemplateToDelete(null)}
-        onConfirm={confirmDelete}
+        onConfirm={() => void confirmDelete()}
         testId="templates.delete-confirmation"
       />
     </div>
