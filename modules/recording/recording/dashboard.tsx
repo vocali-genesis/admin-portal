@@ -182,9 +182,9 @@ const Dashboard = () => {
       )}
       <div className="p-5">
         <h2 className={dash_styles.h2}>{t("recording.record-title")}</h2>
-        <p className={dash_styles.p}>{t("recording.activate-audio")}</p>
+        <p className={dash_styles.h2}>{t("recording.activate-audio")}</p>
 
-        <div className={dash_styles.contentColumns}>
+        <div className={`${dash_styles.contentColumns} w-[21px]`}>
           <div className={dash_styles.recordSection}>
             <MicrophoneSelect value={microphone} onChange={setMicrophone} />
             <RecordButton

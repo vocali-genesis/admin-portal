@@ -42,5 +42,9 @@
     "here": "aquí",
     "copy": "Copiar",
     "copy-success": "¡Copiado!"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio.",
+    "one-field-required": "Se requiere al menos un campo"
   }
 }

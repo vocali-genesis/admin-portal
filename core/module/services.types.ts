@@ -48,6 +48,7 @@ export interface AuthService {
     password: string,
   ): Promise<{ user: GenesisUser | null; token: string | undefined } | null>;
   oauth(provider: GenesisOauthProvider): Promise<string | null>;
+  revokeOauth(): Promise<boolean>;
   getLoggedUser(): Promise<GenesisUser | null>;
   logout(): Promise<null | undefined>;
   resetPassword(email: string): Promise<boolean>;

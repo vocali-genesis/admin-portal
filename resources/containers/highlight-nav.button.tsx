@@ -14,16 +14,17 @@ const HighlightNavButton: React.FC<highlightNavButtonProps> = ({
   const { t } = useTranslation();
 
   return (
-    <button className={settings_btn_styles.settingsButton} onClick={onClick}>
-      <div className={settings_btn_styles.buttonContent}>
-        <Image
-          src="/settings.svg"
-          alt="Settings"
-          width={16}
-          height={16}
-        />
-        <span>{t(label)}</span>
-      </div>
+    <button
+      className={settings_btn_styles.settingsButton}
+      onClick={onClick}
+    >
+      <Image
+        src="/settings.svg"
+        alt="Settings"
+        width={21}
+        height={21}
+      />
+      <span className="ml-2">{t(label)}</span>
     </button>
   );
 };

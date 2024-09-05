@@ -163,7 +163,7 @@
 
 .downloadDropdown {
   position: absolute;
-  top: 25%;
+  top: 39%;
   right: 0;
   background-color: white;
   border: 1px solid var(--gray-200);
@@ -232,5 +232,4 @@
 .topContainer {
   display: flex;
   gap: 1rem;
-  padding: 0 1.25rem;
 }

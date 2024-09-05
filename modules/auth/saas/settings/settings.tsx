@@ -11,14 +11,18 @@ import { SettingsInputField } from "@/resources/inputs/settings-input-field";
 import styled from "styled-components";
 import SubmitButton from "@/resources/containers/submit.button";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
+import OAuthButton from "@/resources/containers/oauth.button";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Service from "@/core/module/service.factory";
+import { GenesisOauthProvider } from "@/core/module/core.types";
 
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
   const authService = useService("oauth");
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -27,9 +31,12 @@ const Settings = () => {
     resolver: yupResolver(settings_schema(t)),
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const handleRevokeOAuth = async (): Promise<void> => {
+    const response = await Service.require("oauth").revokeOauth();
+    if (response) {
+      await Service.require("oauth").logout();
+    }
+  };
   const onSubmit = async (data: { email: string; password: string }) => {
     const updatedUser = await authService.updateUser(data.email, data.password);
 
@@ -114,6 +121,16 @@ const Settings = () => {
               </div>
             </div>
           </Form>
+
+          <Divider />
+
+          <SocialLoginWrapper>
+            <OAuthButton
+              provider="google"
+              label={t("settings.revoke")}
+              onClick={handleRevokeOAuth}
+            />
+          </SocialLoginWrapper>
 
           <Divider />
 
