@@ -33,17 +33,7 @@ const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-
-  & input {
-    flex: 0 0 60%;
-    padding: 8px;
-    border: 1px solid var(--gray-200);
-    border-radius: 4px;
-    height: 6vh;
-    color: black;
-    font-size: 2vh;
-    font-family: "Montserrat", sans-serif;
-  }
+ 
 `;
 
 const FieldLabel = styled.label`

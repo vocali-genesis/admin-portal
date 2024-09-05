@@ -25,7 +25,7 @@ interface NewTemplateModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (
-    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">,
+    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">
   ) => void;
 }
 
@@ -47,10 +47,10 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
   const { t } = useTranslation();
   const [isFieldModalOpen, setIsFieldModalOpen] = useState(false);
   const [currentFieldIndex, setCurrentFieldIndex] = useState<number | null>(
-    null,
+    null
   );
   const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
-    null,
+    null
   );
   const schema = yup.object().shape({
     name: yup.string().required(t("validation.required")),
@@ -96,17 +96,14 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
     const template = {
       name: data.name,
       preview: `Fields: ${data.fields.map((f) => f.name).join(", ")}`,
-      fields: data.fields.reduce(
-        (acc, field) => {
-          acc[field.name] = {
-            type: field.type,
-            description: field.description,
-            config: field.config,
-          };
-          return acc;
-        },
-        {} as Record<string, GenesisTemplateField>,
-      ),
+      fields: data.fields.reduce((acc, field) => {
+        acc[field.name] = {
+          type: field.type,
+          description: field.description,
+          config: field.config,
+        };
+        return acc;
+      }, {} as Record<string, GenesisTemplateField>),
     };
     onSubmit(template);
     onClose();
@@ -143,6 +140,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
           render={({ field }) => (
             <div className={"flex flex-col h-[10px] mb-2"} style={{ marginBottom: "12px" }}>
               <BasicInput
+                id="template-name"
                 {...field}
                 placeholder={t("templates.namePlaceholder")}
                 testId="templates.new-template-name-input"
@@ -168,6 +166,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
                   render={({ field }) => (
                     <div className={"flex flex-col"}>
                       <BasicInput
+                        id="input-name"
                         {...field}
                         placeholder={t("templates.fieldNamePlaceholder")}
                         className={styles.input}
@@ -200,6 +199,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
                   render={({ field }) => (
                     <div>
                       <BasicInput
+                        id="input-description"
                         {...field}
                         placeholder={t("templates.descriptionPlaceholder")}
                         className={styles.input}

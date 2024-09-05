@@ -9,14 +9,16 @@ import { useTranslation } from "react-i18next";
 import Button from "@/resources/containers/button";
 import Download from "./libs/download";
 import { ProgressBar } from "@/resources/containers/progress-bar";
+import ViewContentEditable from "@/resources/containers/view-content-editable";
 
 const Report = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const { audioUrl } = router.query;
   const [activeTab, setActiveTab] = useState("report");
-  const [reportContent, setReportContent] = useState({});
-  const [editedReportContent, setEditedReportContent] = useState({});
+  const [reportContent, setReportContent] = useState(
+    {} as Record<string, string>
+  );
   const [transcriptionContent, setTranscriptionContent] = useState<string[]>(
     []
   );
@@ -44,20 +46,7 @@ const Report = () => {
   }, [router]);
 
   const handleTabChange = (tab: string) => {
-    console.log({ tab });
     setActiveTab(tab);
-  };
-
-  const openEditor = () => {
-    setEditedReportContent(reportContent);
-    setIsEditing(true);
-  };
-  const closeEditor = () => {
-    setIsEditing(false);
-  };
-  const saveEditor = () => {
-    setIsEditing(false);
-    setReportContent(editedReportContent);
   };
 
   // TODO: Refactor as a resource
@@ -118,13 +107,19 @@ const Report = () => {
               : report_styles.hiddenContent
           }
         >
-          {isEditing ? (
-            <Editor
-              content={reportContent}
-              onContentChange={(content) => setEditedReportContent(content)}
-            />
-          ) : (
-            <ViewContent content={reportContent} />
+          {Object.entries(reportContent).map(
+            ([title, content], index: number) => {
+              return (
+                <ViewContentEditable
+                  key={index}
+                  title={title}
+                  content={content}
+                  onEdit={(title, content) =>
+                    setReportContent({ ...reportContent, [title]: content })
+                  }
+                />
+              );
+            }
           )}
         </div>
         <div
@@ -140,18 +135,18 @@ const Report = () => {
     );
   };
 
-  const handleDownload = (type: string) => {
+  const handleDownload = async (type: string) => {
     switch (type) {
       case "audio":
         if (audioUrl) {
-          Download.downloadAudio(audioUrl as string);
+          await Download.downloadAudio(audioUrl as string);
         }
         break;
       case "report":
-        Download.downloadReport(reportContent);
+        await Download.downloadReport(reportContent);
         break;
       case "transcription":
-        Download.downloadTranscription(transcriptionContent);
+        await Download.downloadTranscription(transcriptionContent);
         break;
     }
   };
@@ -175,13 +170,13 @@ const Report = () => {
         </button>
         {isDownloadOpen && (
           <div className={report_styles.downloadDropdown}>
-            <button onClick={() => handleDownload("audio")}>
+            <button onClick={() => void handleDownload("audio")}>
               {t("recording.download-audio")}
             </button>
-            <button onClick={() => handleDownload("report")}>
+            <button onClick={() => void handleDownload("report")}>
               {t("recording.download-report")}
             </button>
-            <button onClick={() => handleDownload("transcription")}>
+            <button onClick={() => void handleDownload("transcription")}>
               {t("recording.download-transcription")}
             </button>
           </div>
@@ -233,13 +228,9 @@ const Report = () => {
   }
   return (
     <div className={report_styles.reportContainer}>
-      <div className={`${report_styles.topContainer} bg-red-700`}>
-        <div>
-          {renderProgressBar()}
-        </div>
-        <div>
-          {renderDownloadButton()}
-        </div>
+      <div className={`${report_styles.topContainer}`}>
+        <div>{renderProgressBar()}</div>
+        <div>{renderDownloadButton()}</div>
       </div>
       {renderTabs()}
       {renderContent()}
@@ -257,35 +248,6 @@ const Report = () => {
             : t("recording.replay-audio")}
         </Button>
         <div className="flex" style={{ gap: "8px" }}>
-          {activeTab === "report" &&
-            (!isEditing ? (
-              <Button
-                onClick={openEditor}
-                variant={"secondary"}
-                className={`${report_styles.editButton} ml-[9px]`}
-              >
-                {t("common.edit")}
-              </Button>
-            ) : (
-              <>
-                <Button
-                  onClick={saveEditor}
-                  variant={"secondary"}
-                  className={`${report_styles.saveButton} ml-[9px]`}
-
-                >
-                  {t("common.save")}
-                </Button>
-                <Button
-                  onClick={closeEditor}
-                  variant={"secondary"}
-                  className={`${report_styles.saveButton} ml-[9px]`}
-                >
-                  {t("common.cancel")}
-                </Button>
-              </>
-            ))}
-
           <Button
             onClick={() => void router.push("/app/dashboard")}
             variant="primary"

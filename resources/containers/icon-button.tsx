@@ -8,6 +8,7 @@ interface IconButtonProps {
   size?: "small" | "medium" | "large";
   name?: string;
   testId?: string;
+  title?: string,
 }
 
 const IconButton: React.FC<IconButtonProps> = ({
@@ -16,12 +17,14 @@ const IconButton: React.FC<IconButtonProps> = ({
   children,
   name,
   testId,
+  title,
   size = "medium",
 }) => {
   return (
     <button
       onClick={onClick}
       name={name}
+      title={title}
       data-testid={testId}
       className={`${icon_btn_styles.iconButton} ${icon_btn_styles[size]} ${className}`}
     >

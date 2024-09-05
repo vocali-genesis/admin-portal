@@ -98,8 +98,8 @@
 
 .passwordToggle {
   position: absolute;
-  right: 3vh;
-  top: 3.5vh;
+  right: 20px;
+  top: 22px;
   background: none;
   border: none;
   cursor: pointer;
