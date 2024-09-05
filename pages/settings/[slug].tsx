@@ -10,38 +10,38 @@ const Settings = () => {
   const router = useRouter();
   const { slug } = router.query as { slug: string };
   const Component = ModuleManager.get().components.settings(slug);
-  const [isLoading, setIsLoading] = useState(true);
 
-  // --- This logic needs to be refactor
-  // This shall go in the reducer
+  const [isLoading, setIsLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
   useEffect(() => {
-    void (async () => {
+    if (!router.isReady) return;
+
+    // Ensure this logic only runs on the client
+    (async () => {
       setIsLoading(true);
       const user = await Service.require("oauth").getLoggedUser();
       if (!user) {
         return router.push("/auth/login");
       }
-
       setIsLoading(false);
     })();
-  }, [router]);
+  }, [router.isReady]);
 
   useEffect(() => {
-    if (!router.isReady) {
-      return;
-    }
-    if (!Component) {
+    if (router.isReady && !Component) {
       void router.replace("/errors/not-found");
     }
-  }, [Component, router]);
+  }, [router.isReady, Component]);
 
   if (!router.isReady || isLoading) {
     return <Spinner />;
   }
+
   if (!Component) {
     return null;
   }
@@ -59,7 +59,7 @@ const Settings = () => {
           showHome={true}
         />
         <main className="flex-grow p-5 overflow-y-auto">
-          <Component />
+          {!router.isReady || isLoading ? <Spinner /> : <Component />}
         </main>
       </div>
     </div>

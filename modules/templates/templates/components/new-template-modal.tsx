@@ -218,7 +218,12 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
               <div className={styles.actionButtons}>
                 {fieldType !== TYPE_OPTIONS.TEXT && (
                   <IconButton
-                    onClick={() => openFieldConfigModal(index)}
+                    onClick={(
+                      event: React.MouseEvent<HTMLButtonElement> | undefined,
+                    ) => {
+                      event?.preventDefault();
+                      openFieldConfigModal(index);
+                    }}
                     size="small"
                     testId="template-detail.edit-field-config"
                   >

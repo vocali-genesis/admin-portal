@@ -201,7 +201,7 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Recording page mounts", () => {
       render(<Recording />);
       expect(screen.findByTestId("audio-player"));
-      expect(screen.findByRole("button", { name: "recording.submit" }));
+      expect(screen.findByTestId("submit-button"));
     });
 
     it("Click next we call the transcription api", async () => {

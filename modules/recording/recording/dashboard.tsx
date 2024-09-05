@@ -6,18 +6,19 @@ import { AudioRecorder } from "./libs/audio-recorder";
 import { FaStop } from "react-icons/fa6";
 import dash_styles from "./styles/dashboard.module.css";
 import { useTranslation } from "react-i18next";
-import { MicrophoneSelect } from "../../../resources/inputs/microphones.select";
+import { MicrophoneSelect } from "@/resources/inputs/microphones.select";
 import { UploadFile } from "@/resources/inputs/upload-file.input";
 import RecordButton from "@/resources/containers/record-button";
 import Spinner from "@/resources/containers/spinner";
-import Service from "@/core/module/service.factory";
+import { Provider } from "react-redux";
+import store from "@/core/store";
+import { useTemplates } from "@/core/components/use-templates";
 
 const messageHandler = MessageHandler.get();
 
 const Dashboard = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const templateService = Service.require("templates");
   const [recordingState, setRecordingState] = useState<
     "inactive" | "recording" | "paused"
   >("inactive");
@@ -26,21 +27,7 @@ const Dashboard = () => {
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasTemplates, setHasTemplates] = useState(true);
-
-  useEffect(() => {
-    void fetchTemplates();
-  }, []);
-
-  const fetchTemplates = async () => {
-    setIsLoading(true);
-    const response = await templateService.getTemplates(1);
-    if (!response) return;
-
-    response.data.length > 0 ? setHasTemplates(true) : setHasTemplates(false);
-    setIsLoading(false);
-  };
+  const { templates, isLoading } = useTemplates();
 
   const toggleRecording = async () => {
     if (!microphone) {
@@ -172,7 +159,7 @@ const Dashboard = () => {
   if (isLoading) return <Spinner />;
   return (
     <>
-      {!hasTemplates && (
+      {templates.length === 0 && (
         <div className={dash_styles.warning}>
           <h2>
             {t("recording.error-no-templates")}{" "}
@@ -192,7 +179,7 @@ const Dashboard = () => {
               audioLevel={audioLevel}
               onClick={toggleRecording}
               statusMessage={getStatusMessage()}
-              disabled={!hasTemplates}
+              disabled={templates.length > 0 ? false : true}
             />
             {recordingState !== "inactive" && (
               <button
@@ -215,7 +202,7 @@ const Dashboard = () => {
               onFile={(file) => handleUpload(file)}
               testId="upload-recording"
               maxSizeMB={30}
-              disabled={!hasTemplates}
+              disabled={templates.length > 0 ? false : true}
             />
           </div>
         </div>
@@ -224,7 +211,17 @@ const Dashboard = () => {
   );
 };
 
-GlobalCore.manager.app("dashboard", Dashboard, { default: true });
+GlobalCore.manager.app(
+  "dashboard",
+  () => {
+    return (
+      <Provider store={store}>
+        <Dashboard />
+      </Provider>
+    );
+  },
+  { default: true },
+);
 GlobalCore.manager.menu({
   label: "recording.menu",
   icon: "/recordings.svg",

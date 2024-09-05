@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
 import Spinner from "@/resources/containers/spinner";
@@ -11,33 +11,19 @@ import { AudioPlayer } from "@/resources/media/audio-player";
 import MessageHandler from "@/core/message-handler";
 import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
-import { SupabaseTemplateService } from "@/core/module/services.types";
 import { GenesisTemplate } from "@/core/module/core.types";
+import store from "@/core/store";
+import { Provider } from "react-redux";
+import { useTemplates } from "@/core/components/use-templates";
 
 const messageHandler = MessageHandler.get();
 
 const Recording = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const templateService: SupabaseTemplateService = Service.require("templates");
   const [template, setTemplate] = useState<GenesisTemplate | null>(null);
-  const [templateOptions, setTemplateOptions] = useState<GenesisTemplate[]>([]);
   const { audioUrl } = router.query as { audioUrl: string };
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    void fetchTemplates();
-  }, []);
-
-  const fetchTemplates = async () => {
-    setIsLoading(true);
-    const response = await templateService.getTemplates(1);
-    if (!response) return;
-
-    setTemplateOptions(response.data);
-    setTemplate(response.data[0]);
-    setIsLoading(false);
-  };
+  const { templates, isLoading, setIsLoading } = useTemplates();
 
   const handleSubmit = async () => {
     if (!audioUrl) {
@@ -55,6 +41,7 @@ const Recording = () => {
       "medical-api",
     ).processAudioAndGenerateReport(file, template as GenesisTemplate, "en");
 
+    console.log(api_response);
     if (!api_response) {
       setIsLoading(false);
 
@@ -91,7 +78,7 @@ const Recording = () => {
             name="template-select"
             value={template?.id.toString() as string}
             onChange={(value) => {
-              const selectedTemplate = templateOptions.find(
+              const selectedTemplate = templates.find(
                 (option) => option.id.toString() === value,
               );
               if (!selectedTemplate) {
@@ -100,7 +87,7 @@ const Recording = () => {
               }
               setTemplate(selectedTemplate);
             }}
-            options={templateOptions.map((template) => {
+            options={templates.map((template) => {
               return { value: template.id.toString(), label: template.name };
             })}
           />
@@ -121,4 +108,10 @@ const Recording = () => {
   );
 };
 
-GlobalCore.manager.app("recording", Recording);
+GlobalCore.manager.app("recording", () => {
+  return (
+    <Provider store={store}>
+      <Recording />
+    </Provider>
+  );
+});
