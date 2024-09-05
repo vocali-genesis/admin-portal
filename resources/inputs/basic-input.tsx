@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-interface BasicInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+export interface BasicInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  id: string;
+  value?: string;
   testId?: string;
   ref?: React.Ref<HTMLInputElement>;
 }
@@ -15,7 +16,8 @@ const StyledInput = styled.input`
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   background-color: #f8fafc;
-  height: 6vh;
+  height: 52px;
+  flex: 1;
 
   &:focus {
     outline: none;
@@ -26,19 +28,12 @@ const StyledInput = styled.input`
 
 const BasicInput: React.FC<BasicInputProps> = ({
   value,
-  onChange,
   testId,
   ref,
   ...props
 }) => {
   return (
-    <StyledInput
-      value={value}
-      onChange={(e) => onChange(e)}
-      {...props}
-      data-testid={testId}
-      ref={ref}
-    />
+    <StyledInput value={value} {...props} data-testid={testId} ref={ref} />
   );
 };
 

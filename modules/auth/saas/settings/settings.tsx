@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useState } from "react";
+import React, { FormEventHandler } from "react";
 import { useForm } from "react-hook-form";
 import { GlobalCore } from "@/core/module/module.types";
 import { settings_schema } from "./settings.schema";
@@ -12,17 +12,15 @@ import styled from "styled-components";
 import SubmitButton from "@/resources/containers/submit.button";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import OAuthButton from "@/resources/containers/oauth.button";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Service from "@/core/module/service.factory";
-import { GenesisOauthProvider } from "@/core/module/core.types";
+import BasicInput from "@/resources/inputs/basic-input";
+import BasicPasswordInput from "@/resources/inputs/basic-password.input";
 
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
   const authService = useService("oauth");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -60,57 +58,21 @@ const Settings = () => {
                 label={t("settings.email")}
                 error={errors["email"]}
               >
-                <input type="email" id="email" {...register("email")} />
+                <BasicInput type="email" id="email" {...register("email")} />
               </SettingsInputField>
               <SettingsInputField
                 name="password"
                 label={t("settings.new-password")}
                 error={errors["password"]}
               >
-                <PasswordInputWrapper>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    {...register("password")}
-                  />
-                  <VisibilityButton
-                    onClick={(event: React.MouseEvent) => {
-                      event.preventDefault();
-                      setShowPassword(!showPassword);
-                    }}
-                  >
-                    {showPassword ? (
-                      <AiOutlineEyeInvisible />
-                    ) : (
-                      <AiOutlineEye />
-                    )}
-                  </VisibilityButton>
-                </PasswordInputWrapper>
+                <BasicPasswordInput id="password" />
               </SettingsInputField>
               <SettingsInputField
                 name="confirm_password"
                 label={t("settings.confirm-password")}
                 error={errors["confirm_password"]}
               >
-                <PasswordInputWrapper>
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    id="confirm-password"
-                    {...register("confirm_password")}
-                  />
-                  <VisibilityButton
-                    onClick={(event: React.MouseEvent) => {
-                      event.preventDefault();
-                      setShowConfirmPassword(!showConfirmPassword);
-                    }}
-                  >
-                    {showConfirmPassword ? (
-                      <AiOutlineEyeInvisible />
-                    ) : (
-                      <AiOutlineEye />
-                    )}
-                  </VisibilityButton>
-                </PasswordInputWrapper>
+                <BasicPasswordInput id="confirm-password" />
               </SettingsInputField>
 
               <div className="flex justify-center">
@@ -198,31 +160,4 @@ const MainContent = styled.main`
 
 const SocialLoginWrapper = styled.div`
   padding: 3vh 12.5vh 1vh 12.5vh;
-`;
-
-const PasswordInputWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-`;
-
-const VisibilityButton = styled.button`
-  position: absolute;
-  right: 0;
-  top: 0.75vh;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  color: #888;
-
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &:focus {
-    outline: none;
-  }
 `;
