@@ -4,26 +4,20 @@ import { useTranslation } from "react-i18next";
 
 interface highlightNavButtonProps {
   label: string;
+  image: React.ReactNode; // Updated type
   onClick: () => void;
 }
 
 const HighlightNavButton: React.FC<highlightNavButtonProps> = ({
   label,
   onClick,
+  image,
 }) => {
   const { t } = useTranslation();
 
   return (
-    <button
-      className={settings_btn_styles.settingsButton}
-      onClick={onClick}
-    >
-      <Image
-        src="/settings.svg"
-        alt="Settings"
-        width={21}
-        height={21}
-      />
+    <button className={settings_btn_styles.settingsButton} onClick={onClick}>
+      {image}
       <span className="ml-2">{t(label)}</span>
     </button>
   );

@@ -12,12 +12,12 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
   const [user, setUser] = useState<GenesisUser | undefined>(undefined);
 
   const logout = () => {
-    Service.require("oauth").logout();
+    void Service.require("oauth").logout();
     void router.push("/auth/login");
   };
 
   useEffect(() => {
-    Service.require("oauth")
+    void Service.require("oauth")
       .getLoggedUser()
       .then((loggedUser) => {
         if (!loggedUser) {
@@ -29,7 +29,12 @@ const Navbar: React.FC<{ toggleSidebar: () => void }> = ({ toggleSidebar }) => {
 
   return (
     <nav className={nav_styles.navbar}>
-      <div className={nav_styles.navbarMobileLeft}>
+      <div
+        className={nav_styles.navbarMobileLeft}
+        onClick={() => {
+          void router.push("/app");
+        }}
+      >
         <Image src="/logo.svg" alt="Genesis" width={100} height={30} />
       </div>
       <div className={nav_styles.navbarLeft}>
