@@ -11,9 +11,7 @@ import {
   FaEdit,
   FaPlus,
   FaSave,
-  FaRegFolderOpen,
   FaEye,
-  FaRegEye,
   FaTimes,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
@@ -176,6 +174,7 @@ const Templates = () => {
       render: (template: GenesisTemplate) =>
         editingTemplate?.id === template.id ? (
           <BasicInput
+            id="template-name"
             value={editingTemplate.name}
             onChange={(value) =>
               setEditingTemplate({
@@ -218,7 +217,7 @@ const Templates = () => {
           {editingTemplate && editingTemplate.id === template.id ? (
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
-                onClick={handleSave}
+                onClick={() => void handleSave()}
                 size="small"
                 testId="templates.save-template"
               >
@@ -236,7 +235,7 @@ const Templates = () => {
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
                 onClick={() =>
-                  router.push(`/app/template-detail?id=${template.id}`)
+                  void router.push(`/app/template-detail?id=${template.id}`)
                 }
                 size="small"
               >
@@ -297,12 +296,12 @@ const Templates = () => {
       <NewTemplateModal
         isOpen={isNewTemplateModalOpen}
         onClose={() => setIsNewTemplateModalOpen(false)}
-        onSubmit={handleNewTemplateSubmit}
+        onSubmit={(template) => void handleNewTemplateSubmit(template)}
       />
       <DeleteConfirmation
         isOpen={templateToDelete ? true : isModalOpen}
         onRequestClose={() => setTemplateToDelete(null)}
-        onConfirm={confirmDelete}
+        onConfirm={() => void confirmDelete()}
         testId="templates.delete-confirmation"
       />
     </div>

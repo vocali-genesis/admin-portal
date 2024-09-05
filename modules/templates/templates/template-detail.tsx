@@ -80,6 +80,7 @@ const TemplateDetail = () => {
           });
         }
       } catch (error) {
+        console.error(error);
         messageHandler.handleError(t("templates.fetchError"));
       } finally {
         setIsLoading(false);
@@ -89,8 +90,8 @@ const TemplateDetail = () => {
   );
 
   useEffect(() => {
-    if (!id) router.push("/app/templates");
-    else fetchTemplate(pagination.currentPage);
+    if (!id) void router.push("/app/templates");
+    else void fetchTemplate(pagination.currentPage);
   }, [id, pagination.currentPage, fetchTemplate, router]);
 
   const handlePageChange = (page: number) =>
@@ -153,6 +154,7 @@ const TemplateDetail = () => {
         messageHandler.handleSuccess(t("templates.editSuccess"));
       }
     } catch (error) {
+      console.error(error);
       messageHandler.handleError(t("templates.editError"));
     }
 
@@ -207,6 +209,7 @@ const TemplateDetail = () => {
         messageHandler.handleSuccess(t("templates.fieldDeleteSuccess"));
       }
     } catch (error) {
+      console.error(error);
       messageHandler.handleError(t("templates.fieldDeleteError"));
     } finally {
       setFieldToDelete(null);
@@ -237,6 +240,7 @@ const TemplateDetail = () => {
       render: (record: TableDataType) =>
         editingField === record.key ? (
           <BasicInput
+            id="input-name"
             value={editedValues[record.key]?.name}
             onChange={(e) =>
               handleInputChange(record.key, "name", e.target.value)
@@ -276,6 +280,7 @@ const TemplateDetail = () => {
       render: (record: TableDataType) =>
         editingField === record.key ? (
           <BasicInput
+            id="input-description"
             value={editedValues[record.key]?.description}
             onChange={(e) =>
               handleInputChange(record.key, "description", e.target.value)

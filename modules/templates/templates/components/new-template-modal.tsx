@@ -143,6 +143,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
               style={{ marginBottom: "12px" }}
             >
               <BasicInput
+                id="template-name"
                 {...field}
                 placeholder={t("templates.namePlaceholder")}
                 testId="templates.new-template-name-input"
@@ -168,6 +169,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
                   render={({ field }) => (
                     <div className={"flex flex-col"}>
                       <BasicInput
+                        id="input-name"
                         {...field}
                         placeholder={t("templates.fieldNamePlaceholder")}
                         className={styles.input}
@@ -200,6 +202,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
                   render={({ field }) => (
                     <div>
                       <BasicInput
+                        id="input-description"
                         {...field}
                         placeholder={t("templates.descriptionPlaceholder")}
                         className={styles.input}

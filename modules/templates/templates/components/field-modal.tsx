@@ -6,6 +6,7 @@ import { TYPE_OPTIONS } from "@/core/module/core.types";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import { FieldData } from "@/core/module/core.types";
+import { useTranslation } from "react-i18next";
 
 Modal.setAppElement("body");
 
@@ -31,6 +32,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
   initialConfig,
   testId,
 }) => {
+  const { t } = useTranslation();
   const { control, handleSubmit, setValue, watch, reset } = useForm<FormData>();
   const [newOption, setNewOption] = useState("");
   const selectedOptions = watch("options") || [];
@@ -47,10 +49,6 @@ const FieldModal: React.FC<FieldModalProps> = ({
       setNewOption("");
     }
   }, [isOpen, initialConfig, setValue, reset]);
-
-  const typeOptions = Object.values(TYPE_OPTIONS).filter(
-    (option) => option !== fieldType
-  );
 
   const handleSave = (data: FormData) => {
     const saveData: FieldData = {
@@ -121,6 +119,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
             )}
             <div>
               <BasicInput
+                id="option"
                 value={newOption}
                 onChange={(e) => setNewOption(e.target.value)}
                 placeholder="Add new option"
@@ -146,6 +145,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
         control={control}
         render={({ field }) => (
           <BasicInput
+            id="max-value"
             type="number"
             {...field}
             placeholder="Enter max value"
@@ -166,15 +166,17 @@ const FieldModal: React.FC<FieldModalProps> = ({
       overlayClassName={styles.modalOverlay}
     >
       <div className={styles.title}>
-        <h2>Edit {fieldType} Config</h2>
+        <h2>
+          {t("common.edit")} {fieldType}
+        </h2>
       </div>
       <form onSubmit={handleSubmit(handleSave)} data-testid={testId}>
         {renderMap[fieldType as keyof typeof renderMap]}
         <div className={styles.modalButtons}>
           <Button onClick={onClose} variant="action">
-            Cancel
+            {t("common.cancel")}
           </Button>
-          <Button onClick={handleSubmit(handleSave)}>Save</Button>
+          <Button onClick={handleSubmit(handleSave)}>{t("common.save")}</Button>
         </div>
       </form>
     </Modal>
