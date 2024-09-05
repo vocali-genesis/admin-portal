@@ -4,7 +4,7 @@ import btn_styles from "./styles/button.module.css";
 
 interface ButtonProps {
   onClick: (
-    event?: React.MouseEvent<HTMLButtonElement>,
+    event?: React.MouseEvent<HTMLButtonElement>
   ) => void | Promise<void>;
   className?: string;
   children: React.ReactNode;
@@ -55,7 +55,6 @@ const Spinner = styled.span`
   height: 20px;
   animation: spin 1s linear infinite;
   display: inline-block;
-  margin-right: 10px;
   vertical-align: middle;
 `;
 

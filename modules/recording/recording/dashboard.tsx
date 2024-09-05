@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import MessageHandler from "@/core/message-handler";
 import { AudioRecorder } from "./libs/audio-recorder";
 import { FaStop } from "react-icons/fa6";
-import dash_styles from "./styles/dashboard.module.css";
+import dash_styles from "./dashboard.module.css";
 import { useTranslation } from "react-i18next";
 import { MicrophoneSelect } from "../../../resources/inputs/microphones.select";
 import { UploadFile } from "@/resources/inputs/upload-file.input";

@@ -1,4 +1,4 @@
-import React, { FormEventHandler } from "react";
+import React, { FormEventHandler, useState } from "react";
 import { useRouter } from "next/router";
 import { useForm, UseFormRegister } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -14,7 +14,7 @@ import Link from "next/link";
 const LoginForm: React.FC = ({}) => {
   const { t } = useTranslation();
   const authService = useService("oauth");
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const {
     register,
@@ -25,12 +25,17 @@ const LoginForm: React.FC = ({}) => {
   });
 
   const onSubmit = async (data: { email: string; password: string }) => {
-    const response = await authService.loginUser(data.email, data.password);
-    if (!response) {
-      return;
+    try {
+      setIsSubmitting(true);
+      const response = await authService.loginUser(data.email, data.password);
+      if (!response) {
+        return;
+      }
+      MessageHandler.get().handleSuccess(t("auth.login-successful"));
+      void router.push("/app/dashboard");
+    } finally {
+      setIsSubmitting(false);
     }
-    MessageHandler.get().handleSuccess(t("auth.login-successful"));
-    void router.push("/app/dashboard");
   };
 
   return (
@@ -62,7 +67,11 @@ const LoginForm: React.FC = ({}) => {
       >
         {t("auth.forgot-password")}
       </Link>
-      <SubmitButton label={t("auth.login")} testId="submitLogin" />
+      <SubmitButton
+        isSubmitting={isSubmitting}
+        label={t("auth.login")}
+        testId="submitLogin"
+      />
     </form>
   );
 };

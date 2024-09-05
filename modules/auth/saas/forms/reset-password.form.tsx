@@ -1,4 +1,4 @@
-import React, { FormEventHandler } from "react";
+import React, { FormEventHandler, useState } from "react";
 import { useRouter } from "next/router";
 import { useForm, UseFormRegister } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,6 +12,8 @@ import Service from "@/core/module/service.factory";
 
 const ResetPasswordForm = () => {
   const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const router = useRouter();
   const {
     register,
@@ -22,11 +24,17 @@ const ResetPasswordForm = () => {
   });
 
   const onSubmit = async (data: { email: string }) => {
-    const response = await Service.require("oauth").resetPassword(data.email);
-    if (!response) return;
+    try {
+      setIsSubmitting(true);
 
-    MessageHandler.get().handleSuccess(t("auth.reset-email-sent"));
-    void router.push("/auth/login");
+      const response = await Service.require("oauth").resetPassword(data.email);
+      if (!response) return;
+
+      MessageHandler.get().handleSuccess(t("auth.reset-email-sent"));
+      void router.push("/auth/login");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -47,7 +55,11 @@ const ResetPasswordForm = () => {
         errors={errors}
         action="reset-password"
       />
-      <SubmitButton testId="resetPassword" label={t("auth.reset")} />
+      <SubmitButton
+        testId="resetPassword"
+        label={t("auth.reset")}
+        isSubmitting={isSubmitting}
+      />
     </form>
   );
 };

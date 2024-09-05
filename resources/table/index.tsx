@@ -3,8 +3,6 @@ import InternalTable from "./table";
 import Pagination from "./pagination";
 import { PaginationProps } from "./pagination";
 
-import { useTranslation } from "react-i18next";
-
 interface Props<T> {
   columns: ColumnConfig<T>[];
   data: T[];
