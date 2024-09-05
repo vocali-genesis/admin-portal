@@ -26,7 +26,8 @@ const Settings = () => {
       setIsLoading(true);
       const user = await Service.require("oauth").getLoggedUser();
       if (!user) {
-        return router.push("/auth/login");
+        await router.push("/auth/login");
+        return;
       }
       setIsLoading(false);
     })();
