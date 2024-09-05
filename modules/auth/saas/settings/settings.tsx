@@ -15,10 +15,12 @@ import OAuthButton from "@/resources/containers/oauth.button";
 import Service from "@/core/module/service.factory";
 import BasicInput from "@/resources/inputs/basic-input";
 import BasicPasswordInput from "@/resources/inputs/basic-password.input";
+import { useRouter } from "next/router";
 
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
+  const router = useRouter();
   const { t, i18n } = useTranslation();
   const authService = useService("oauth");
   const {
@@ -29,10 +31,15 @@ const Settings = () => {
     resolver: yupResolver(settings_schema(t)),
   });
 
+  const logout = () => {
+    Service.require("oauth").logout();
+    void router.push("/auth/login");
+  };
+
   const handleRevokeOAuth = async (): Promise<void> => {
     const response = await Service.require("oauth").revokeOauth();
     if (response) {
-      await Service.require("oauth").logout();
+      return logout()
     }
   };
   const onSubmit = async (data: { email: string; password: string }) => {
@@ -89,13 +96,11 @@ const Settings = () => {
 
           <Divider />
 
-          <SocialLoginWrapper>
-            <OAuthButton
-              provider="google"
-              label={t("settings.revoke")}
-              onClick={handleRevokeOAuth}
-            />
-          </SocialLoginWrapper>
+          <OAuthButton
+            provider="google"
+            label={t("settings.revoke")}
+            onClick={handleRevokeOAuth}
+          />
 
           <Divider />
 
