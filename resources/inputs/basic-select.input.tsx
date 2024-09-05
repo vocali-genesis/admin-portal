@@ -9,6 +9,7 @@ interface Props {
   testId?: string;
   disabled?: boolean;
   width?: string;
+  className?: string;
 }
 
 export const BasicSelect = (props: Props) => {
@@ -20,6 +21,7 @@ export const BasicSelect = (props: Props) => {
       data-testid={props.testId}
       onChange={(e) => props.onChange(e.target.value)}
       style={{ width: props.width }}
+      className={props.className}
     >
       {props.options.map((option, index) => (
         <option key={index} value={option.value}>

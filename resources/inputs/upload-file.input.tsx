@@ -42,14 +42,14 @@ export const UploadFile = ({
       const maxSizeBytes = maxSizeMB * 1024 * 1024;
       if (file.size > maxSizeBytes) {
         messageHandler.handleError(
-          t("resources.file-too-large", { size: maxSizeMB }),
+          t("resources.file-too-large", { size: maxSizeMB })
         );
         return;
       }
 
       const formats = accept.split(",");
       const accepted = formats.find((format) =>
-        file.type.includes(format.replace("/*", "")),
+        file.type.includes(format.replace("/*", ""))
       );
 
       console.log({ accepted });
@@ -59,7 +59,7 @@ export const UploadFile = ({
       }
       setSelectedFile(file);
     },
-    [accept, t],
+    [accept, t]
   );
 
   const handleBrowseClick = () => {
@@ -96,7 +96,7 @@ export const UploadFile = ({
       }
       setIsUploading(false);
     },
-    [handleFileSelection],
+    [handleFileSelection]
   );
 
   return (
@@ -132,15 +132,16 @@ export const UploadFile = ({
           <p className={dash_styles.selectedFile}>{selectedFile.name}</p>
         )}
       </div>
-      <input
-        data-testid={testId}
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileInput}
-        accept={accept}
-        style={{ display: "none" }}
-      />
-
+      <div className="flex justify-center m-4 md:hidden">
+        <input
+          data-testid={testId}
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileInput}
+          accept={accept}
+          className="w-[120px] ml-[20px]"
+        />
+      </div>
       <button
         className={dash_styles.uploadButton}
         onClick={() => selectedFile && onFile(selectedFile)}

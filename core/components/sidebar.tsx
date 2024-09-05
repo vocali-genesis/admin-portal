@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 import Service from "../module/service.factory";
 import { MenuItem } from "../module/module.types";
 import { FaHome } from "react-icons/fa";
-import dynamic from "next/dynamic";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -50,9 +49,9 @@ const SideBar: React.FC<SidebarProps> = ({
     setOrigin(window.location.origin);
   }, []);
 
-  const logout = () => {
-    Service.require("oauth").logout();
-    router.push("/auth/login");
+  const logout = async () => {
+    await Service.require("oauth").logout();
+    await router.push("/auth/login");
   };
 
   const home = {
@@ -74,22 +73,13 @@ const SideBar: React.FC<SidebarProps> = ({
         ×
       </button>
       <ul className={sidebar_styles.sidebarList}>
-        {showHome && (
-          <li
-            className={`${sidebar_styles.sidebarItem}`}
-            onClick={() => router.push(home.url)}
-          >
-            {renderIcon(home)}
-            <span>{t(home.label)}</span>
-          </li>
-        )}
         {menu.map((item, index) => (
           <li
             key={index}
             className={`${sidebar_styles.sidebarItem} ${
               item.url === slug ? sidebar_styles.activeTab : ""
             }`}
-            onClick={() => router.push(item.url)}
+            onClick={() => void router.push(item.url)}
           >
             {renderIcon(item)}
             {t(item.label)}
@@ -97,11 +87,31 @@ const SideBar: React.FC<SidebarProps> = ({
         ))}
       </ul>
       <div className={sidebar_styles.bottomButtons}>
-        <HighlightNavButton
-          label={t("navbar.settings")}
-          onClick={() => router.push("/settings/settings")}
+        {showHome ? (
+          <HighlightNavButton
+            label={t(home.label)}
+            onClick={() => void router.push("/app")}
+            image={renderIcon(home)}
+          />
+        ) : (
+          <HighlightNavButton
+            label={t("navbar.settings")}
+            onClick={() => void router.push("/settings/settings")}
+            image={
+              <Image
+                src="/settings.svg"
+                alt="Settings"
+                width={21}
+                height={21}
+              />
+            }
+          />
+        )}
+
+        <BottomNavButton
+          label={t("navbar.logout")}
+          onClick={() => void logout()}
         />
-        <BottomNavButton label={t("navbar.logout")} onClick={logout} />
       </div>
     </aside>
   );

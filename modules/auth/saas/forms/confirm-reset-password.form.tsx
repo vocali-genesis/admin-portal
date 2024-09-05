@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, UseFormRegister } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import form_style from "./form.module.css";
@@ -17,6 +17,8 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
   onSuccess,
 }) => {
   const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -26,13 +28,18 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
   });
 
   const onSubmit = async (data: { password: string }) => {
-    const response = await Service.require("oauth").updateUser(
-      undefined,
-      data.password as string
-    );
-    if (response) {
-      MessageHandler.get().handleSuccess(t("common.success"));
-      onSuccess();
+    try {
+      setIsSubmitting(true);
+      const response = await Service.require("oauth").updateUser(
+        undefined,
+        data.password
+      );
+      if (response) {
+        MessageHandler.get().handleSuccess(t("common.success"));
+        onSuccess();
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -52,7 +59,7 @@ const ConfirmResetPasswordForm: React.FC<confirmResetPasswordInterface> = ({
         errors={errors}
         action="confirm-reset-password"
       />
-      <SubmitButton label={t("auth.reset")} />
+      <SubmitButton label={t("auth.reset")} isSubmitting={isSubmitting} />
     </form>
   );
 };

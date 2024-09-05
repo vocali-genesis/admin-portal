@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
 import Editor from "@/resources/inputs/text-editor";
-import report_styles from "./styles/report.module.css";
+import report_styles from "./report.module.css";
 import ViewContent from "@/resources/containers/view-content";
 import { FaRegNewspaper, FaRegMessage, FaPlay, FaPause } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";

@@ -1,4 +1,4 @@
-import React, { FormEventHandler } from "react";
+import React, { FormEventHandler, useState } from "react";
 import { useForm } from "react-hook-form";
 import { GlobalCore } from "@/core/module/module.types";
 import { settings_schema } from "./settings.schema";
@@ -21,6 +21,8 @@ const messageHandler = MessageHandler.get();
 const Settings = () => {
   const { t, i18n } = useTranslation();
   const authService = useService("oauth");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -36,10 +38,18 @@ const Settings = () => {
     }
   };
   const onSubmit = async (data: { email: string; password: string }) => {
-    const updatedUser = await authService.updateUser(data.email, data.password);
+    try {
+      setIsSubmitting(true);
+      const updatedUser = await authService.updateUser(
+        data.email,
+        data.password
+      );
 
-    if (updatedUser) {
-      messageHandler.handleSuccess("Profile updated successfully");
+      if (updatedUser) {
+        messageHandler.handleSuccess("Profile updated successfully");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -80,6 +90,7 @@ const Settings = () => {
 
               <div className="flex justify-center">
                 <SubmitButton
+                  isSubmitting={isSubmitting}
                   label={t("settings.save")}
                   testId="updateSettings"
                 />
