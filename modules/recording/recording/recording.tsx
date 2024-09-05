@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
-import Spinner from "@/resources/containers/spinner";
 
 import recording_styles from "./recording.module.css";
 import { useTranslation } from "react-i18next";
@@ -13,6 +12,7 @@ import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import { SupabaseTemplateService } from "@/core/module/services.types";
 import { GenesisTemplate } from "@/core/module/core.types";
+import Spinner from "@/resources/containers/spinner";
 
 const messageHandler = MessageHandler.get();
 
@@ -26,18 +26,17 @@ const Recording = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const fetchTemplates = async () => {
+      setIsLoading(true);
+      const response = await templateService.getTemplates(1);
+      if (!response) return;
+
+      setTemplateOptions(response.data);
+      setTemplate(response.data[0]);
+      setIsLoading(false);
+    };
     void fetchTemplates();
-  }, []);
-
-  const fetchTemplates = async () => {
-    setIsLoading(true);
-    const response = await templateService.getTemplates(1);
-    if (!response) return;
-
-    setTemplateOptions(response.data);
-    setTemplate(response.data[0]);
-    setIsLoading(false);
-  };
+  }, [templateService]);
 
   const handleSubmit = async () => {
     if (!audioUrl) {
@@ -45,38 +44,35 @@ const Recording = () => {
       await router.replace("/app/dashboard");
       return;
     }
-    try {
-      setIsLoading(true);
-      let file;
-      try {
-        const response = await fetch(audioUrl);
-        const blob = await response.blob();
-        file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
-      } catch (error) {
-        MessageHandler.get().handleError((error as Error).toString());
-        return;
-      }
-      const api_response = await Service.require(
-        "medical-api"
-      ).processAudioAndGenerateReport(file, template as GenesisTemplate, "en");
 
-      if (!api_response) {
-        return;
-      }
-      // TODO: Find a better way than the query parameter
-      void router.push({
-        pathname: "/app/report",
-        query: {
-          audioUrl: audioUrl,
-          report: JSON.stringify(api_response.report),
-          transcription: api_response.transcription,
-          time: JSON.stringify(api_response.time),
-        },
-      });
-    } finally {
-      setIsLoading(false);
+    let file;
+    try {
+      const response = await fetch(audioUrl);
+      const blob = await response.blob();
+      file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
+    } catch (error) {
+      MessageHandler.get().handleError((error as Error).toString());
+      return;
     }
+    const api_response = await Service.require(
+      "medical-api"
+    ).processAudioAndGenerateReport(file, template as GenesisTemplate, "en");
+
+    if (!api_response) {
+      return;
+    }
+    // TODO: Find a better way than the query parameter
+    void router.push({
+      pathname: "/app/report",
+      query: {
+        audioUrl: audioUrl,
+        report: JSON.stringify(api_response.report),
+        transcription: api_response.transcription,
+        time: JSON.stringify(api_response.time),
+      },
+    });
   };
+  if (isLoading) return <Spinner />;
 
   return (
     <>
@@ -94,6 +90,7 @@ const Recording = () => {
           <div>
             <BasicSelect
               name="template-select"
+              testId="recording.template"
               value={template?.id.toString() as string}
               onChange={(value) => {
                 const selectedTemplate = templateOptions.find(

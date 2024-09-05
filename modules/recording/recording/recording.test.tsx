@@ -203,7 +203,9 @@ describe("===== RECORDING AUDIO =====", () => {
 
     it("Recording page mounts", () => {
       render(<Recording />);
+      screen.debug();
       expect(screen.findByTestId("audio-player"));
+      expect(screen.findByTestId("recording.template"));
       expect(screen.findByRole("button", { name: "recording.submit" }));
     });
 
