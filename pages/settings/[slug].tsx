@@ -49,7 +49,7 @@ const Settings = () => {
   const menu = ModuleManager.get().components.menuSettings;
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col h-screen bg-white w-full">
       <Navbar toggleSidebar={toggleSidebar} />
       <div className="flex flex-grow overflow-hidden">
         <SideBar

@@ -11,7 +11,7 @@ import {
   FaEdit,
   FaPlus,
   FaSave,
-  FaRegEye,
+  FaEye,
   FaTimes,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
@@ -66,7 +66,7 @@ const Templates = () => {
 
   const formatPreview = (
     fields: { [key: string]: GenesisTemplateField },
-    maxLength: number = 25,
+    maxLength: number = 25
   ) => {
     const previewString = Object.entries(fields)
       .map(([key, value]) => `${key}: ${value.type}`)
@@ -86,6 +86,7 @@ const Templates = () => {
       render: (template: GenesisTemplate) =>
         editingTemplate?.id === template.id ? (
           <BasicInput
+            id="template-name"
             value={editingTemplate.name}
             onChange={(value) =>
               setEditingTemplate({
@@ -153,12 +154,12 @@ const Templates = () => {
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
                 onClick={() =>
-                  router.push(`/app/template-detail?id=${template.id}`)
+                  void router.push(`/app/template-detail?id=${template.id}`)
                 }
                 size="small"
-                testId="templates.view-template"
+                testId="templates.view"
               >
-                <FaRegEye style={{ color: "var(--primary)" }} />
+                <FaEye style={{ color: "var(--primary)" }} />
               </IconButton>
               <IconButton
                 onClick={() => setEditingTemplate(template)}

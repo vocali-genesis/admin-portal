@@ -42,7 +42,7 @@ const AppSlug = () => {
   const menu = ModuleManager.get().components.menus;
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col h-screen bg-white w-full">
       <Navbar toggleSidebar={toggleSidebar} />
       <div className="flex flex-grow overflow-hidden">
         <SideBar

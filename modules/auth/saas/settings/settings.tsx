@@ -11,13 +11,17 @@ import { SettingsInputField } from "@/resources/inputs/settings-input-field";
 import styled from "styled-components";
 import SubmitButton from "@/resources/containers/submit.button";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import OAuthButton from "@/resources/containers/oauth.button";
+import Service from "@/core/module/service.factory";
+import BasicInput from "@/resources/inputs/basic-input";
+import BasicPasswordInput from "@/resources/inputs/basic-password.input";
 
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
   const authService = useService("oauth");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -27,14 +31,25 @@ const Settings = () => {
     resolver: yupResolver(settings_schema(t)),
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const handleRevokeOAuth = async (): Promise<void> => {
+    const response = await Service.require("oauth").revokeOauth();
+    if (response) {
+      await Service.require("oauth").logout();
+    }
+  };
   const onSubmit = async (data: { email: string; password: string }) => {
-    const updatedUser = await authService.updateUser(data.email, data.password);
+    try {
+      setIsSubmitting(true);
+      const updatedUser = await authService.updateUser(
+        data.email,
+        data.password
+      );
 
-    if (updatedUser) {
-      messageHandler.handleSuccess("Profile updated successfully");
+      if (updatedUser) {
+        messageHandler.handleSuccess("Profile updated successfully");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -53,67 +68,45 @@ const Settings = () => {
                 label={t("settings.email")}
                 error={errors["email"]}
               >
-                <input type="email" id="email" {...register("email")} />
+                <BasicInput type="email" id="email" {...register("email")} />
               </SettingsInputField>
               <SettingsInputField
                 name="password"
                 label={t("settings.new-password")}
                 error={errors["password"]}
               >
-                <PasswordInputWrapper>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    {...register("password")}
-                  />
-                  <VisibilityButton
-                    onClick={(event: React.MouseEvent) => {
-                      event.preventDefault();
-                      setShowPassword(!showPassword);
-                    }}
-                  >
-                    {showPassword ? (
-                      <AiOutlineEyeInvisible />
-                    ) : (
-                      <AiOutlineEye />
-                    )}
-                  </VisibilityButton>
-                </PasswordInputWrapper>
+                <BasicPasswordInput id="password" {...register("password")} />
               </SettingsInputField>
               <SettingsInputField
                 name="confirm_password"
                 label={t("settings.confirm-password")}
                 error={errors["confirm_password"]}
               >
-                <PasswordInputWrapper>
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    id="confirm-password"
-                    {...register("confirm_password")}
-                  />
-                  <VisibilityButton
-                    onClick={(event: React.MouseEvent) => {
-                      event.preventDefault();
-                      setShowConfirmPassword(!showConfirmPassword);
-                    }}
-                  >
-                    {showConfirmPassword ? (
-                      <AiOutlineEyeInvisible />
-                    ) : (
-                      <AiOutlineEye />
-                    )}
-                  </VisibilityButton>
-                </PasswordInputWrapper>
+                <BasicPasswordInput
+                  id="confirm_password"
+                  {...register("confirm_password")}
+                />
               </SettingsInputField>
 
               <div className="flex justify-center">
                 <SubmitButton
+                  isSubmitting={isSubmitting}
                   label={t("settings.save")}
                   testId="updateSettings"
                 />
               </div>
             </div>
           </Form>
+
+          <Divider />
+
+          <SocialLoginWrapper>
+            <OAuthButton
+              provider="google"
+              label={t("settings.revoke")}
+              onClick={handleRevokeOAuth}
+            />
+          </SocialLoginWrapper>
 
           <Divider />
 
@@ -181,31 +174,4 @@ const MainContent = styled.main`
 
 const SocialLoginWrapper = styled.div`
   padding: 3vh 12.5vh 1vh 12.5vh;
-`;
-
-const PasswordInputWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-`;
-
-const VisibilityButton = styled.button`
-  position: absolute;
-  right: 0;
-  top: 0.75vh;
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  color: #888;
-
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &:focus {
-    outline: none;
-  }
 `;

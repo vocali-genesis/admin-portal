@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
 interface SubmitButtonProps {
@@ -10,43 +10,11 @@ interface SubmitButtonProps {
 const SubmitButton: React.FC<SubmitButtonProps> = ({
   label,
   testId,
-  isSubmitting: propIsSubmitting,
+  isSubmitting,
 }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    const handleSubmit = () => {
-      setIsSubmitting(true);
-    };
-
-    const handleReset = () => {
-      setIsSubmitting(false);
-    };
-
-    const form = document.querySelector("form");
-    if (form) {
-      form.addEventListener("submit", handleSubmit);
-      form.addEventListener("reset", handleReset);
-    }
-
-    return () => {
-      if (form) {
-        form.removeEventListener("submit", handleSubmit);
-        form.removeEventListener("reset", handleReset);
-      }
-    };
-  }, []);
-
-  const buttonIsSubmitting =
-    propIsSubmitting !== undefined ? propIsSubmitting : isSubmitting;
-
   return (
-    <StyledButton
-      type="submit"
-      data-testid={testId}
-      disabled={buttonIsSubmitting}
-    >
-      {buttonIsSubmitting ? <Spinner /> : label}
+    <StyledButton type="submit" data-testid={testId} disabled={isSubmitting}>
+      {isSubmitting ? <Spinner /> : label}
     </StyledButton>
   );
 };
@@ -84,6 +52,5 @@ const Spinner = styled.span`
   height: 20px;
   animation: spin 1s linear infinite;
   display: inline-block;
-  margin-right: 10px;
   vertical-align: middle;
 `;

@@ -29,7 +29,6 @@ describe("===== TEMPLATES =====", () => {
       expect(screen.getByTestId("templates.title")).toBeInTheDocument();
       expect(screen.getByTestId("templates.new-template")).toBeInTheDocument();
       expect(screen.queryByText("templates.table")).not.toBeInTheDocument();
-      screen.debug();
     });
 
     it("Checks table is populated", async () => {
@@ -218,8 +217,8 @@ describe("===== TEMPLATES =====", () => {
         expect(screen.getByTestId("table-row-0"));
       });
 
-      const headers = screen.getAllByTestId("templates.view-template");
-      act(() => headers[1].click());
+      const eyeIcon = screen.getAllByTestId("templates.view");
+      act(() => eyeIcon[1].click());
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(
@@ -249,7 +248,6 @@ describe("===== TEMPLATES =====", () => {
       expect(
         screen.queryByText("template-detail.table")
       ).not.toBeInTheDocument();
-      screen.debug();
     });
 
     it("Checks table is populated", async () => {

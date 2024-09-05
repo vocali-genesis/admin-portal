@@ -1,7 +1,6 @@
 .editor {
   display: flex;
   flex-direction: column;
-  height: 57.3vh;
 }
 
 .quill {

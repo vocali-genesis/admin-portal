@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import MessageHandler from "@/core/message-handler";
 import { AudioRecorder } from "./libs/audio-recorder";
 import { FaStop } from "react-icons/fa6";
-import dash_styles from "./styles/dashboard.module.css";
+import dash_styles from "./dashboard.module.css";
 import { useTranslation } from "react-i18next";
 import { MicrophoneSelect } from "@/resources/inputs/microphones.select";
 import { UploadFile } from "@/resources/inputs/upload-file.input";
@@ -76,7 +76,7 @@ const Dashboard = () => {
       messageHandler.info(t("recording.stopped"));
       setRecordingState("inactive");
       stopVisualization();
-      router.push({
+      void router.push({
         pathname: "/app/recording",
         query: { audioUrl: audioUrl },
       });
@@ -169,22 +169,22 @@ const Dashboard = () => {
       )}
       <div className="p-5">
         <h2 className={dash_styles.h2}>{t("recording.record-title")}</h2>
-        <p className={dash_styles.p}>{t("recording.activate-audio")}</p>
+        <p className={dash_styles.h2}>{t("recording.activate-audio")}</p>
 
-        <div className={dash_styles.contentColumns}>
+        <div className={`${dash_styles.contentColumns} w-[21px]`}>
           <div className={dash_styles.recordSection}>
             <MicrophoneSelect value={microphone} onChange={setMicrophone} />
             <RecordButton
               recordingState={recordingState}
               audioLevel={audioLevel}
-              onClick={toggleRecording}
+              onClick={() => void toggleRecording()}
               statusMessage={getStatusMessage()}
               disabled={templates.length > 0 ? false : true}
             />
             {recordingState !== "inactive" && (
               <button
                 className={dash_styles.stopButton}
-                onClick={stopRecording}
+                onClick={() => void stopRecording()}
               >
                 <FaStop size={20} style={{ marginRight: "10px" }} />
                 {t("recording.stop")}

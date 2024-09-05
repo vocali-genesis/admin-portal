@@ -10,7 +10,6 @@ import {
 import IconButton from "@/resources/containers/icon-button";
 import audioPlayer from "./audio-player.module.css";
 import DeleteConfirmation from "../containers/delete-confirmation";
-import MessageHandler from "@/core/message-handler";
 import Download from "@/modules/recording/recording/libs/download";
 
 interface Props {
@@ -18,6 +17,7 @@ interface Props {
   onDelete?: () => void;
   testId?: string;
 }
+
 export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -29,6 +29,9 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
     if (audioUrl && audioRef.current) {
       audioRef.current.src = audioUrl;
       audioRef.current.load();
+      audioRef.current.onloadedmetadata = () => {
+        setDuration(audioRef.current?.duration || 0);
+      };
     }
   }, [audioUrl]);
 
@@ -47,15 +50,6 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
   const cancelDelete = () => {
     setIsDeleteModalOpen(false);
   };
-
-  // const handleStop = () => {
-  //   if (!audioRef.current) return;
-
-  //   audioRef.current.pause();
-  //   audioRef.current.currentTime = 0;
-  //   setIsPlaying(false);
-  //   updateSeekBarProgress();
-  // };
 
   const handleEnded = () => {
     if (!audioRef.current) return;
@@ -82,7 +76,6 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
     if (!audioRef.current) return;
 
     setCurrentTime(audioRef.current.currentTime);
-    setDuration(audioRef.current.duration);
     updateSeekBarProgress();
   };
 
@@ -96,14 +89,11 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
     updateSeekBarProgress();
   };
 
-  const handleLoadedMetadata = () => {
-    if (!audioRef.current) return;
-
-    setDuration(audioRef.current.duration);
-    setCurrentTime(0);
-  };
-
   const formatTime = (time: number) => {
+    if (isNaN(time) || !isFinite(time)) {
+      return "00:00";
+    }
+
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
@@ -134,7 +124,9 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
         ref={audioRef}
         src={audioUrl}
         onTimeUpdate={handleTimeUpdate}
-        onLoadedData={handleLoadedMetadata}
+        onLoadedData={() => {
+          setDuration(audioRef.current?.duration || 0);
+        }}
         onDurationChange={() => {
           if (audioRef.current) setDuration(audioRef.current.duration);
         }}
@@ -144,16 +136,14 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
       <input
         type="range"
         min={0}
-        max={duration}
+        max={duration || 1}  // To avoid NaN issues
         value={currentTime}
         onChange={handleSeek}
         className={audioPlayer.seekBar}
       />
       <div className={audioPlayer.timeDisplay}>
         <span>{formatTime(currentTime)}</span>
-        <span>
-          {formatTime(duration) !== "Infinity:NaN" ? formatTime(duration) : ""}
-        </span>
+        <span>{formatTime(duration)}</span>
       </div>
       <div className={audioPlayer.controlsContainer}>
         <IconButton

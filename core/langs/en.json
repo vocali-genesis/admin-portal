@@ -38,7 +38,13 @@
     "leave": "Leave",
     "total-records": "Total Records",
     "total-page": "Total Pages",
+    "copy": "Copy",
+    "copy-success": "Copied!",
     "of": "of",
     "here": "here"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "one-field-required": "At least one field is required"
   }
 }
