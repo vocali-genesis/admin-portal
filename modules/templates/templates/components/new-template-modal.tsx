@@ -49,6 +49,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
   const [currentFieldIndex, setCurrentFieldIndex] = useState<number | null>(
     null
   );
+
   const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
     null
   );

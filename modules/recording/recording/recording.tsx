@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
 import Spinner from "@/resources/containers/spinner";
 
-import recording_styles from "./styles/recording.module.css";
+import recording_styles from "./recording.module.css";
 import { useTranslation } from "react-i18next";
 import Service from "@/core/module/service.factory";
 import Button from "@/resources/containers/button";
@@ -45,34 +45,38 @@ const Recording = () => {
       await router.replace("/app/dashboard");
       return;
     }
+    try {
+      setIsLoading(true);
+      let file;
+      try {
+        const response = await fetch(audioUrl);
+        const blob = await response.blob();
+        file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
+      } catch (error) {
+        MessageHandler.get().handleError((error as Error).toString());
+        return;
+      }
+      const api_response = await Service.require(
+        "medical-api"
+      ).processAudioAndGenerateReport(file, template as GenesisTemplate, "en");
 
-    setIsLoading(true);
-    const response = await fetch(audioUrl);
-    const blob = await response.blob();
-    const file = new File([blob], "audio.mp3", { type: "audio/mpeg" });
-
-    const api_response = await Service.require(
-      "medical-api",
-    ).processAudioAndGenerateReport(file, template as GenesisTemplate, "en");
-
-    if (!api_response) {
+      if (!api_response) {
+        return;
+      }
+      // TODO: Find a better way than the query parameter
+      void router.push({
+        pathname: "/app/report",
+        query: {
+          audioUrl: audioUrl,
+          report: JSON.stringify(api_response.report),
+          transcription: api_response.transcription,
+          time: JSON.stringify(api_response.time),
+        },
+      });
+    } finally {
       setIsLoading(false);
-
-      return;
     }
-    // TODO: Find a better way than the query parameter
-    router.push({
-      pathname: "/app/report",
-      query: {
-        audioUrl: audioUrl as string,
-        report: JSON.stringify(api_response.report),
-        transcription: api_response.transcription,
-        time: JSON.stringify(api_response.time),
-      },
-    });
   };
-
-  if (isLoading) return <Spinner />;
 
   return (
     <>
@@ -87,31 +91,34 @@ const Recording = () => {
             audioUrl={audioUrl}
             onDelete={() => void router.push("/app/dashboard")}
           />
-          <BasicSelect
-            name="template-select"
-            value={template?.id.toString() as string}
-            onChange={(value) => {
-              const selectedTemplate = templateOptions.find(
-                (option) => option.id.toString() === value,
-              );
-              if (!selectedTemplate) {
-                messageHandler.handleError(t("error-no-template"));
-                return;
-              }
-              setTemplate(selectedTemplate);
-            }}
-            options={templateOptions.map((template) => {
-              return { value: template.id.toString(), label: template.name };
-            })}
-          />
-          <Button
-            onClick={() => void handleSubmit()}
-            variant="primary"
-            className={recording_styles.submitButton}
-            testId="submit-button"
-          >
-            {t("recording.submit")}
-          </Button>
+          <div>
+            <BasicSelect
+              name="template-select"
+              value={template?.id.toString() as string}
+              onChange={(value) => {
+                const selectedTemplate = templateOptions.find(
+                  (option) => option.id.toString() === value
+                );
+                if (!selectedTemplate) {
+                  messageHandler.handleError(t("error-no-template"));
+                  return;
+                }
+                setTemplate(selectedTemplate);
+              }}
+              options={templateOptions.map((template) => {
+                return { value: template.id.toString(), label: template.name };
+              })}
+            />
+          </div>
+          <div>
+            <Button
+              onClick={() => handleSubmit()}
+              variant="primary"
+              testId="submit-button"
+            >
+              {t("recording.submit")}
+            </Button>
+          </div>
         </div>
       </main>
       <OnLeaveConfirmation
