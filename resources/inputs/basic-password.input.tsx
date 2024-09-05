@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import BasicInput, { BasicInputProps } from "./basic-input";
 import styled from "styled-components";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -31,22 +31,28 @@ const VisibilityButton = styled.button`
   }
 `;
 
-const BasicPasswordInput: React.FC<BasicInputProps> = (props) => {
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const BasicPasswordInput: React.FC<BasicInputProps> = forwardRef(
+  function BasicPasswordInput(props: BasicInputProps, ref) {
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  return (
-    <PasswordInputWrapper>
-      <BasicInput {...props} type={showConfirmPassword ? "text" : "password"} />
-      <VisibilityButton
-        onClick={(event: React.MouseEvent) => {
-          event.preventDefault();
-          setShowConfirmPassword(!showConfirmPassword);
-        }}
-      >
-        {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-      </VisibilityButton>
-    </PasswordInputWrapper>
-  );
-};
+    return (
+      <PasswordInputWrapper>
+        <BasicInput
+          {...props}
+          ref={ref}
+          type={showConfirmPassword ? "text" : "password"}
+        />
+        <VisibilityButton
+          onClick={(event: React.MouseEvent) => {
+            event.preventDefault();
+            setShowConfirmPassword(!showConfirmPassword);
+          }}
+        >
+          {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+        </VisibilityButton>
+      </PasswordInputWrapper>
+    );
+  }
+);
 
 export default BasicPasswordInput;

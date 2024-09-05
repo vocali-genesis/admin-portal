@@ -65,14 +65,17 @@ const Settings = () => {
                 label={t("settings.new-password")}
                 error={errors["password"]}
               >
-                <BasicPasswordInput id="password" />
+                <BasicPasswordInput id="password" {...register("password")} />
               </SettingsInputField>
               <SettingsInputField
                 name="confirm_password"
                 label={t("settings.confirm-password")}
                 error={errors["confirm_password"]}
               >
-                <BasicPasswordInput id="confirm-password" />
+                <BasicPasswordInput
+                  id="confirm_password"
+                  {...register("confirm_password")}
+                />
               </SettingsInputField>
 
               <div className="flex justify-center">

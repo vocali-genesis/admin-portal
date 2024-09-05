@@ -238,6 +238,7 @@ const Templates = () => {
                   void router.push(`/app/template-detail?id=${template.id}`)
                 }
                 size="small"
+                testId="templates.view"
               >
                 <FaEye style={{ color: "var(--primary)" }} />
               </IconButton>

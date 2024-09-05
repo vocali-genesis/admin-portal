@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
 
 export interface BasicInputProps
@@ -6,13 +6,13 @@ export interface BasicInputProps
   id: string;
   value?: string;
   testId?: string;
-  ref?: React.Ref<HTMLInputElement>;
 }
 
 const StyledInput = styled.input`
   width: 100%;
   padding: 8px 12px;
   font-size: 2vh;
+  color: black;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
   background-color: #f8fafc;
@@ -26,15 +26,19 @@ const StyledInput = styled.input`
   }
 `;
 
-const BasicInput: React.FC<BasicInputProps> = ({
-  value,
-  testId,
-  ref,
-  ...props
-}) => {
+const BasicInput: React.FC<BasicInputProps> = forwardRef(function BasicInput(
+  { value, testId, ...props }: BasicInputProps,
+  ref
+) {
   return (
-    <StyledInput value={value} {...props} data-testid={testId} ref={ref} />
+    <StyledInput
+      value={value}
+      {...props}
+      data-testid={testId}
+      ref={ref}
+      name={props.id}
+    />
   );
-};
+});
 
 export default BasicInput;
