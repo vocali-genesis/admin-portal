@@ -174,6 +174,7 @@ const Dashboard = () => {
         <div className={`${dash_styles.contentColumns} w-[21px]`}>
           <div className={dash_styles.recordSection}>
             <MicrophoneSelect value={microphone} onChange={setMicrophone} />
+
             <RecordButton
               recordingState={recordingState}
               audioLevel={audioLevel}
@@ -220,7 +221,7 @@ GlobalCore.manager.app(
       </Provider>
     );
   },
-  { default: true },
+  { default: true }
 );
 GlobalCore.manager.menu({
   label: "recording.menu",

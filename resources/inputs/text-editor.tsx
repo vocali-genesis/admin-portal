@@ -12,7 +12,6 @@ interface EditorProps {
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
-  loading: () => <Spinner />,
 });
 
 const Editor: React.FC<EditorProps> = ({

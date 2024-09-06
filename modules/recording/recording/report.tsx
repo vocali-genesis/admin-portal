@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
-import Editor from "@/resources/inputs/text-editor";
 import report_styles from "./report.module.css";
 import ViewContent from "@/resources/containers/view-content";
 import { FaRegNewspaper, FaRegMessage, FaPlay, FaPause } from "react-icons/fa6";
@@ -23,7 +22,6 @@ const Report = () => {
     []
   );
 
-  const [isEditing, setIsEditing] = useState(false);
   const [time, setTime] = useState({ transcription: 0, report: 0 });
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -190,14 +188,16 @@ const Report = () => {
     return (
       <div className={report_styles.tabs}>
         <div
-          className={`${activeTab === "report" ? report_styles.activeTab : ""
-            } ${report_styles.tabContainer}`}
+          className={`${
+            activeTab === "report" ? report_styles.activeTab : ""
+          } ${report_styles.tabContainer}`}
         >
           <FaRegNewspaper
             size={25}
             style={{ paddingTop: "1.15vh" }}
-            className={`${activeTab === "report" ? report_styles.activeTabIcon : ""
-              }`}
+            className={`${
+              activeTab === "report" ? report_styles.activeTabIcon : ""
+            }`}
           />
           <button
             className={`${report_styles.tabButton}`}
@@ -207,14 +207,16 @@ const Report = () => {
           </button>
         </div>
         <div
-          className={`${activeTab === "transcription" ? report_styles.activeTab : ""
-            } ${report_styles.tabContainer}`}
+          className={`${
+            activeTab === "transcription" ? report_styles.activeTab : ""
+          } ${report_styles.tabContainer}`}
         >
           <FaRegMessage
             size={25}
             style={{ paddingTop: "1.5vh" }}
-            className={`${activeTab === "transcription" ? report_styles.activeTabIcon : ""
-              }`}
+            className={`${
+              activeTab === "transcription" ? report_styles.activeTabIcon : ""
+            }`}
           />
           <button
             className={`${report_styles.tabButton}`}
@@ -229,8 +231,8 @@ const Report = () => {
   return (
     <div className={report_styles.reportContainer}>
       <div className={`${report_styles.topContainer}`}>
-        <div>{renderProgressBar()}</div>
-        <div>{renderDownloadButton()}</div>
+        {renderProgressBar()}
+        {renderDownloadButton()}
       </div>
       {renderTabs()}
       {renderContent()}
@@ -239,8 +241,9 @@ const Report = () => {
           testId="replay-audio"
           onClick={handleReplayAudio}
           variant="primary"
-          className={`${report_styles.replayButton} ${isAudioPlaying ? report_styles.playing : ""
-            }`}
+          className={`${report_styles.replayButton} ${
+            isAudioPlaying ? report_styles.playing : ""
+          }`}
         >
           {isAudioPlaying ? <FaPause /> : <FaPlay />}
           {isAudioPlaying
