@@ -163,7 +163,6 @@
 
 .downloadDropdown {
   position: absolute;
-  top: 39%;
   right: 0;
   background-color: white;
   border: 1px solid var(--gray-200);

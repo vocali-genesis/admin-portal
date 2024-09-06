@@ -15,10 +15,12 @@ import OAuthButton from "@/resources/containers/oauth.button";
 import Service from "@/core/module/service.factory";
 import BasicInput from "@/resources/inputs/basic-input";
 import BasicPasswordInput from "@/resources/inputs/basic-password.input";
+import { useRouter } from "next/router";
 
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
+  const router = useRouter();
   const { t, i18n } = useTranslation();
   const authService = useService("oauth");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,10 +33,15 @@ const Settings = () => {
     resolver: yupResolver(settings_schema(t)),
   });
 
+  const logout = () => {
+    Service.require("oauth").logout();
+    void router.push("/auth/login");
+  };
+
   const handleRevokeOAuth = async (): Promise<void> => {
     const response = await Service.require("oauth").revokeOauth();
     if (response) {
-      await Service.require("oauth").logout();
+      return logout();
     }
   };
   const onSubmit = async (data: { email: string; password: string }) => {
@@ -98,15 +105,21 @@ const Settings = () => {
             </div>
           </Form>
 
+          {/*
+          The logic is not right:
+           - If we have login, we can revoke
+           - If we have not, we can connect
+           - If we revoke we can reconnect
+           - If we have only google connection, it shall not allow us to revoke it
+
+           Will be done in another task
           <Divider />
 
-          <SocialLoginWrapper>
-            <OAuthButton
-              provider="google"
-              label={t("settings.revoke")}
-              onClick={handleRevokeOAuth}
-            />
-          </SocialLoginWrapper>
+          <OAuthButton
+            provider="google"
+            label={t("settings.revoke")}
+            onClick={handleRevokeOAuth}
+          /> */}
 
           <Divider />
 

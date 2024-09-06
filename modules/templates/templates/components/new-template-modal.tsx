@@ -141,10 +141,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
           name="name"
           control={control}
           render={({ field }) => (
-            <div
-              className={"flex flex-col h-[10px] mb-2"}
-              style={{ marginBottom: "12px" }}
-            >
+            <div className={"flex flex-col h-[10px] mb-2"} style={{ marginBottom: "12px" }}>
               <BasicInput
                 id="template-name"
                 {...field}
@@ -247,12 +244,17 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
           );
         })}
         <div className="flex sm:flex-col md:flex-row justify-between w-full">
-          <Button onClick={addField} testId="add-field-button">
+          <Button
+            onClick={addField}
+            testId="add-field-button"
+            className={`${styles.button} w-full md:w-auto`}
+          >
             {t("templates.addField")}
           </Button>
           <Button
             testId="templates.submit-new-template"
-            onClick={() => {}}
+            className={`${styles.button} w-full md:w-auto ml-2`}
+            onClick={() => { }}
             type="submit"
           >
             {t("templates.create")}
