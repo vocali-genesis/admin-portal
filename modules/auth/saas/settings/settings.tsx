@@ -41,7 +41,7 @@ const Settings = () => {
   const handleRevokeOAuth = async (): Promise<void> => {
     const response = await Service.require("oauth").revokeOauth();
     if (response) {
-      return logout()
+      return logout();
     }
   };
   const onSubmit = async (data: { email: string; password: string }) => {

@@ -175,14 +175,6 @@ const Templates = () => {
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
               </IconButton>
-              <IconButton
-                onClick={() =>
-                  router.push(`/app/template-detail?id=${template.id}`)
-                }
-                size="small"
-              >
-                <FaEye style={{ color: "var(--primary)" }} />
-              </IconButton>
             </div>
           )}
         </>
