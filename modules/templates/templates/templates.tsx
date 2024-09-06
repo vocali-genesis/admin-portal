@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import { useRouter } from "next/router";
 import Table from "@/resources/table/table";
-import Service from "@/core/module/service.factory";
 import Pagination from "@/resources/table/pagination";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
@@ -30,7 +29,7 @@ import {
   setPagination,
   setTemplates,
 } from "@/resources/utils/templates-store/actions";
-import { useTemplates } from "@/core/components/use-templates";
+import { useTemplates } from "@/services/templates/hooks/use-templates";
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
@@ -41,6 +40,7 @@ const Templates = () => {
   const {
     templates,
     isLoading,
+    hasFetchedTemplates,
     createTemplate,
     deleteTemplate,
     updateTemplate,
@@ -66,7 +66,7 @@ const Templates = () => {
 
   const formatPreview = (
     fields: { [key: string]: GenesisTemplateField },
-    maxLength: number = 25
+    maxLength: number = 25,
   ) => {
     const previewString = Object.entries(fields)
       .map(([key, value]) => `${key}: ${value.type}`)
@@ -207,7 +207,7 @@ const Templates = () => {
           pagination.currentPage * 7,
         )}
         columns={columns}
-        isLoading={isLoading}
+        isLoading={isLoading || !hasFetchedTemplates}
         testId="templates.table"
       />
       <Pagination

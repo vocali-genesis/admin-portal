@@ -1,4 +1,5 @@
-import React, { FormEventHandler, useState } from "react";
+import React, { FormEventHandler, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { GlobalCore } from "@/core/module/module.types";
 import { settings_schema } from "./settings.schema";
@@ -15,13 +16,25 @@ import OAuthButton from "@/resources/containers/oauth.button";
 import Service from "@/core/module/service.factory";
 import BasicInput from "@/resources/inputs/basic-input";
 import BasicPasswordInput from "@/resources/inputs/basic-password.input";
+import { GenesisUser } from "@/core/module/core.types";
 
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
   const authService = useService("oauth");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [user, setUser] = useState<GenesisUser>();
+
+  useEffect(() => {
+    (async () => {
+      const data = await Service.require("oauth").getLoggedUser();
+      if (!data) return router.push("auth/login");
+
+      setUser(data);
+    })();
+  });
 
   const {
     register,
@@ -42,7 +55,7 @@ const Settings = () => {
       setIsSubmitting(true);
       const updatedUser = await authService.updateUser(
         data.email,
-        data.password
+        data.password,
       );
 
       if (updatedUser) {
@@ -68,7 +81,12 @@ const Settings = () => {
                 label={t("settings.email")}
                 error={errors["email"]}
               >
-                <BasicInput type="email" id="email" {...register("email")} />
+                <BasicInput
+                  type="email"
+                  id="email"
+                  {...register("email")}
+                  defaultValue={user?.email}
+                />
               </SettingsInputField>
               <SettingsInputField
                 name="password"

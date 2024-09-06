@@ -12,7 +12,7 @@ import RecordButton from "@/resources/containers/record-button";
 import Spinner from "@/resources/containers/spinner";
 import { Provider } from "react-redux";
 import store from "@/core/store";
-import { useTemplates } from "@/core/components/use-templates";
+import { useTemplates } from "@/services/templates/hooks/use-templates";
 
 const messageHandler = MessageHandler.get();
 
@@ -27,7 +27,7 @@ const Dashboard = () => {
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
-  const { templates, isLoading } = useTemplates();
+  const { templates, isLoading, hasFetchedTemplates } = useTemplates();
 
   const toggleRecording = async () => {
     if (!microphone) {
@@ -156,7 +156,7 @@ const Dashboard = () => {
     return message[recordingState];
   };
 
-  if (isLoading) return <Spinner />;
+  if (isLoading || !hasFetchedTemplates) return <Spinner />;
   return (
     <>
       {templates.length === 0 && (

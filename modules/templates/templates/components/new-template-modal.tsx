@@ -115,7 +115,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
 
   const addField = () => {
     append({
-      name: `field${fields.length + 1}`,
+      name: "",
       type: TYPE_OPTIONS.TEXT,
       description: "",
     });

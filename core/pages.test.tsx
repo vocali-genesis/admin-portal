@@ -61,7 +61,6 @@ describe("===== DYNAMIC PATHS =====", () => {
         .mockReturnValueOnce(Promise.resolve(null));
 
       const spy = jest.spyOn(RouterMock, "push");
-      // jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
 
       render(<AppSlug />);
 
@@ -77,7 +76,6 @@ describe("===== DYNAMIC PATHS =====", () => {
         .mockReturnValueOnce(Promise.resolve({ status: "expired" }));
 
       const spy = jest.spyOn(RouterMock, "push");
-      // jest.replaceProperty(RouterMock, "query", { slug: "wrong-name" });
 
       render(<AppSlug />);
 

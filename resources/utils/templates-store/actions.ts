@@ -24,14 +24,7 @@ export const fetchTemplates = async (
   const response = await Service.require("templates").getTemplates();
   if (!response) return;
 
-  dispatch(
-    setTemplates(
-      response.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      ),
-    ),
-  );
+  dispatch(setTemplates(response));
   dispatch(
     setPagination({
       currentPage: currentPage || 1,

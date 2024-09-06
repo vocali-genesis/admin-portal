@@ -94,6 +94,7 @@ export const useTemplates = (limit?: number) => {
     templates,
     pagination,
     isLoading,
+    hasFetchedTemplates,
     setIsLoading,
     createTemplate,
     deleteTemplate,

@@ -23,7 +23,7 @@ const AppSlug = () => {
     if (router.isReady) {
       setIsLoading(false);
     }
-  }, [router.isReady]);
+  }, [router.isReady ]);
 
   if (!router.isReady) {
     return (

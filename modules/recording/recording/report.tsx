@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
-import Editor from "@/resources/inputs/text-editor";
 import report_styles from "./report.module.css";
 import ViewContent from "@/resources/containers/view-content";
 import { FaRegNewspaper, FaRegMessage, FaPlay, FaPause } from "react-icons/fa6";
@@ -17,10 +16,10 @@ const Report = () => {
   const { audioUrl } = router.query;
   const [activeTab, setActiveTab] = useState("report");
   const [reportContent, setReportContent] = useState(
-    {} as Record<string, string>
+    {} as Record<string, string>,
   );
   const [transcriptionContent, setTranscriptionContent] = useState<string[]>(
-    []
+    [],
   );
 
   const [isEditing, setIsEditing] = useState(false);
@@ -119,7 +118,7 @@ const Report = () => {
                   }
                 />
               );
-            }
+            },
           )}
         </div>
         <div

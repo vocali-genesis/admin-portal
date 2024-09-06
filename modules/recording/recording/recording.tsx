@@ -14,7 +14,7 @@ import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import { GenesisTemplate } from "@/core/module/core.types";
 import store from "@/core/store";
 import { Provider } from "react-redux";
-import { useTemplates } from "@/core/components/use-templates";
+import { useTemplates } from "@/services/templates/hooks/use-templates";
 
 const messageHandler = MessageHandler.get();
 
