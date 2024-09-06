@@ -67,10 +67,7 @@ export interface SubscriptionService {
 }
 
 export interface SupabaseTemplateService {
-  getTemplates(
-    page: number,
-    pageSize?: number,
-  ): Promise<GenesisPagination<GenesisTemplate> | null>;
+  getTemplates(): Promise<GenesisTemplate[] | null>;
   getTemplate(
     id: string,
     page: number,

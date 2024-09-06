@@ -25,7 +25,7 @@ interface NewTemplateModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (
-    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">
+    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">,
   ) => void;
 }
 
@@ -47,10 +47,10 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
   const { t } = useTranslation();
   const [isFieldModalOpen, setIsFieldModalOpen] = useState(false);
   const [currentFieldIndex, setCurrentFieldIndex] = useState<number | null>(
-    null
+    null,
   );
   const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
-    null
+    null,
   );
   const schema = yup.object().shape({
     name: yup.string().required(t("validation.required")),
@@ -65,7 +65,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
             .required(t("validation.required")),
           description: yup.string().required(t("validation.required")),
           config: yup.mixed<FieldConfig>().optional(),
-        })
+        }),
       )
       .min(1, t("validation.one-field-required"))
       .required(),
@@ -96,14 +96,17 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
     const template = {
       name: data.name,
       preview: `Fields: ${data.fields.map((f) => f.name).join(", ")}`,
-      fields: data.fields.reduce((acc, field) => {
-        acc[field.name] = {
-          type: field.type,
-          description: field.description,
-          config: field.config,
-        };
-        return acc;
-      }, {} as Record<string, GenesisTemplateField>),
+      fields: data.fields.reduce(
+        (acc, field) => {
+          acc[field.name] = {
+            type: field.type,
+            description: field.description,
+            config: field.config,
+          };
+          return acc;
+        },
+        {} as Record<string, GenesisTemplateField>,
+      ),
     };
     onSubmit(template);
     onClose();
@@ -220,7 +223,12 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
               <div className={styles.actionButtons}>
                 {fieldType !== TYPE_OPTIONS.TEXT && (
                   <IconButton
-                    onClick={() => openFieldConfigModal(index)}
+                    onClick={(
+                      event: React.MouseEvent<HTMLButtonElement> | undefined,
+                    ) => {
+                      event?.preventDefault();
+                      openFieldConfigModal(index);
+                    }}
                     size="small"
                     testId="template-detail.edit-field-config"
                   >

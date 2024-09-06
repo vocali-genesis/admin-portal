@@ -11,29 +11,29 @@ const AppSlug = () => {
   const loader = ModuleManager.get().components;
   const { slug } = router.query as { slug: string };
   const Component = loader.app(slug);
+
   const [isLoading, setIsLoading] = useState(true);
-  // --- This logic needs to be refactor
-  // This shall go in the reducer
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
   useEffect(() => {
-    setIsLoading(true);
-  }, [router.asPath]);
+    if (router.isReady) {
+      setIsLoading(false);
+    }
+  }, [router.isReady]);
 
-  const isSpinner = !router.isReady || isLoading;
-
-  // remove this line after the i18n fix
-  if (isSpinner) {
+  if (!router.isReady) {
     return (
       <>
         <ValidateUser onReady={() => setIsLoading(false)} />
-        <Spinner maxHeight="100hv" />
+        <Spinner />
       </>
     );
   }
+
   if (router.isReady && !Component) {
     void router.replace("/errors/not-found");
     return null;
@@ -51,10 +51,14 @@ const AppSlug = () => {
           menu={menu}
         />
         <main className="flex-grow p-5 overflow-y-scroll">
-          {/* uncomment below line after the i18n issue fix*/}
-          {/* { isSpinner ? <Spinner /> : <Component /> } */}
-          {/* Remove below line after the i18n issue fix*/}
-          {<Component />}
+          {isLoading ? (
+            <>
+              <ValidateUser onReady={() => setIsLoading(false)} />
+              <Spinner />
+            </>
+          ) : (
+            <Component />
+          )}
         </main>
       </div>
     </div>

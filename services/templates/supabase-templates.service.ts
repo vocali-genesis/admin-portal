@@ -22,38 +22,20 @@ class SupabaseTemplateService {
     this.supabase = createClient(supabaseUrl, supabaseAnonKey);
   }
 
-  async getTemplates(
-    page: number = 1,
-    pageSize?: number,
-  ): Promise<PaginatedResponse<GenesisTemplate> | null> {
+  async getTemplates(): Promise<GenesisTemplate[] | null> {
     const userData = await Service.get("oauth")?.getLoggedUser();
 
-    let query = this.supabase
+    const { data, error } = await this.supabase
       .from("templates")
       .select("*", { count: "exact" })
       .eq("owner_id", userData?.id);
-
-    if (pageSize) {
-      const from = (page - 1) * pageSize;
-      const to = from + pageSize - 1;
-      query = query.range(from, to);
-    }
-
-    const { data, error, count } = await query;
 
     if (error) {
       messageHandler.handleError(error.message);
       return null;
     }
-
-    const totalCount = count || 0;
-    const totalPages = pageSize ? Math.ceil(totalCount / pageSize) : 1;
-
-    return {
-      data: data as GenesisTemplate[],
-      totalCount,
-      totalPages,
-    };
+    
+    return data as GenesisTemplate[];
   }
 
   async getTemplate(
