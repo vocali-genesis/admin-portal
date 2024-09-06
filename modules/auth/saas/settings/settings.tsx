@@ -41,7 +41,7 @@ const Settings = () => {
   const handleRevokeOAuth = async (): Promise<void> => {
     const response = await Service.require("oauth").revokeOauth();
     if (response) {
-      return logout()
+      return logout();
     }
   };
   const onSubmit = async (data: { email: string; password: string }) => {
@@ -105,13 +105,21 @@ const Settings = () => {
             </div>
           </Form>
 
+          {/*
+          The logic is not right:
+           - If we have login, we can revoke
+           - If we have not, we can connect
+           - If we revoke we can reconnect
+           - If we have only google connection, it shall not allow us to revoke it
+
+           Will be done in another task
           <Divider />
 
           <OAuthButton
             provider="google"
             label={t("settings.revoke")}
             onClick={handleRevokeOAuth}
-          />
+          /> */}
 
           <Divider />
 
