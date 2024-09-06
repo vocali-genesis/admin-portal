@@ -11,22 +11,8 @@ class MockTemplateService {
     this.templates = Seed.new().template().array(10);
   }
 
-  async getTemplates(
-    page: number = 1,
-    pageSize: number = 8,
-  ): Promise<PaginatedResponse<GenesisTemplate>> {
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize;
-
-    const data = this.templates.slice(from, to);
-    const totalCount = this.templates.length;
-    const totalPages = Math.ceil(totalCount / pageSize);
-
-    return {
-      data,
-      totalCount,
-      totalPages,
-    };
+  async getTemplates(): Promise<GenesisTemplate[]> {
+    return this.templates;
   }
 
   async getTemplate(

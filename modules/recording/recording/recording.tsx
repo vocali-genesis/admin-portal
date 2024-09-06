@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
+import Spinner from "@/resources/containers/spinner";
 
 import recording_styles from "./recording.module.css";
 import { useTranslation } from "react-i18next";
@@ -10,33 +11,21 @@ import { AudioPlayer } from "@/resources/media/audio-player";
 import MessageHandler from "@/core/message-handler";
 import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
-import { SupabaseTemplateService } from "@/core/module/services.types";
 import { GenesisTemplate } from "@/core/module/core.types";
-import Spinner from "@/resources/containers/spinner";
+import store from "@/core/store";
+import { Provider } from "react-redux";
+import { useTemplates } from "@/core/components/use-templates";
 
 const messageHandler = MessageHandler.get();
 
 const Recording = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const templateService: SupabaseTemplateService = Service.require("templates");
-  const [template, setTemplate] = useState<GenesisTemplate | null>(null);
-  const [templateOptions, setTemplateOptions] = useState<GenesisTemplate[]>([]);
+  const { templates, isLoading, setIsLoading } = useTemplates();
+  const [template, setTemplate] = useState<GenesisTemplate | null>(
+    templates[0],
+  );
   const { audioUrl } = router.query as { audioUrl: string };
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchTemplates = async () => {
-      setIsLoading(true);
-      const response = await templateService.getTemplates(1);
-      if (!response) return;
-
-      setTemplateOptions(response.data);
-      setTemplate(response.data[0]);
-      setIsLoading(false);
-    };
-    void fetchTemplates();
-  }, [templateService]);
 
   const handleSubmit = async () => {
     if (!audioUrl) {
@@ -44,6 +33,8 @@ const Recording = () => {
       await router.replace("/app/dashboard");
       return;
     }
+
+    setIsLoading(true);
 
     let file;
     try {
@@ -55,12 +46,14 @@ const Recording = () => {
       return;
     }
     const api_response = await Service.require(
-      "medical-api"
+      "medical-api",
     ).processAudioAndGenerateReport(file, template as GenesisTemplate, "en");
 
     if (!api_response) {
       return;
     }
+    setIsLoading(false);
+
     // TODO: Find a better way than the query parameter
     void router.push({
       pathname: "/app/report",
@@ -87,35 +80,31 @@ const Recording = () => {
             audioUrl={audioUrl}
             onDelete={() => void router.push("/app/dashboard")}
           />
-          <div>
-            <BasicSelect
-              name="template-select"
-              testId="recording.template"
-              value={template?.id.toString() as string}
-              onChange={(value) => {
-                const selectedTemplate = templateOptions.find(
-                  (option) => option.id.toString() === value
-                );
-                if (!selectedTemplate) {
-                  messageHandler.handleError(t("error-no-template"));
-                  return;
-                }
-                setTemplate(selectedTemplate);
-              }}
-              options={templateOptions.map((template) => {
-                return { value: template.id.toString(), label: template.name };
-              })}
-            />
-          </div>
-          <div>
-            <Button
-              onClick={() => handleSubmit()}
-              variant="primary"
-              testId="submit-button"
-            >
-              {t("recording.submit")}
-            </Button>
-          </div>
+          <BasicSelect
+            name="template-select"
+            value={template?.id.toString() as string}
+            onChange={(value) => {
+              const selectedTemplate = templates.find(
+                (option) => option.id.toString() === value,
+              );
+              if (!selectedTemplate) {
+                messageHandler.handleError(t("error-no-template"));
+                return;
+              }
+              setTemplate(selectedTemplate);
+            }}
+            options={templates.map((template) => {
+              return { value: template.id.toString(), label: template.name };
+            })}
+          />
+          <Button
+            onClick={() => void handleSubmit()}
+            variant="primary"
+            className={recording_styles.submitButton}
+            testId="submit-button"
+          >
+            {t("recording.submit")}
+          </Button>
         </div>
       </main>
       <OnLeaveConfirmation
@@ -125,4 +114,10 @@ const Recording = () => {
   );
 };
 
-GlobalCore.manager.app("recording", Recording);
+GlobalCore.manager.app("recording", () => {
+  return (
+    <Provider store={store}>
+      <Recording />
+    </Provider>
+  );
+});

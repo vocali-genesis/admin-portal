@@ -229,6 +229,7 @@
   margin-left: 2.5vh;
 }
 .topContainer {
+  width: 100%;
   display: flex;
   gap: 1rem;
 }

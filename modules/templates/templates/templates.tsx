@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { GlobalCore } from "@/core/module/module.types";
 import {
   GenesisTemplate,
@@ -24,129 +24,41 @@ import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
 import NewTemplateModal from "@/modules/templates/templates/components/new-template-modal";
-
+import store, { RootState } from "@/core/store";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import {
+  setPagination,
+  setTemplates,
+} from "@/resources/utils/templates-store/actions";
+import { useTemplates } from "@/core/components/use-templates";
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const templateService = Service.require("templates");
-  const [templates, setTemplates] = useState<GenesisTemplate[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { pagination } = useSelector((state: RootState) => state.templates);
+  const {
+    templates,
+    isLoading,
+    createTemplate,
+    deleteTemplate,
+    updateTemplate,
+  } = useTemplates(7);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewTemplateModalOpen, setIsNewTemplateModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
   const [newTemplate, setNewTemplate] = useState<GenesisTemplate | null>(null);
   const [editingTemplate, setEditingTemplate] =
     useState<GenesisTemplate | null>(null);
-  const [pagination, setPagination] = useState<{
-    currentPage: number;
-    totalPages: number;
-    totalRecords: number;
-  }>({ currentPage: 1, totalPages: 1, totalRecords: 0 });
-
-  useEffect(() => {
-    void fetchTemplates(pagination.currentPage);
-  }, [pagination.currentPage]);
-
-  const fetchTemplates = async (page: number) => {
-    setIsLoading(true);
-    const response = await templateService.getTemplates(page, 7);
-    if (!response) return;
-
-    setTemplates(response.data);
-    setPagination({
-      ...pagination,
-      totalPages: response.totalPages,
-      totalRecords: response.totalCount,
-    });
-
-    setIsLoading(false);
-  };
 
   const handlePageChange = (page: number) => {
-    setPagination({ ...pagination, currentPage: page });
-  };
-
-  const handleDelete = (id: string) => {
-    setTemplateToDelete(id);
-  };
-
-  const confirmDelete = async () => {
-    if (!templateToDelete) return;
-
-    const resp = await templateService.deleteTemplate(templateToDelete);
-    if (!resp) return;
-
-    setTemplates(
-      templates.filter((template) => template.id !== templateToDelete)
-    );
-    messageHandler.handleSuccess(t("templates.deleteSuccess"));
-
-    setPagination({
-      ...pagination,
-      totalRecords: pagination.totalRecords - 1,
-    });
-    setIsModalOpen(false);
-    setTemplateToDelete(null);
-    setPagination((prevPagination) => ({
-      ...prevPagination,
-      totalRecords: prevPagination.totalRecords - 1,
-    }));
-  };
-
-  const handleAddTemplate = () => {
-    setIsNewTemplateModalOpen(true);
-  };
-
-  const handleEdit = (template: GenesisTemplate) => {
-    setEditingTemplate(template);
-  };
-
-  const handleSave = async () => {
-    if (!editingTemplate) return;
-
-    try {
-      const savedTemplate = await templateService.updateTemplate(
-        editingTemplate.id,
-        editingTemplate
-      );
-
-      if (!savedTemplate) {
-        messageHandler.handleError(t("templates.updateError"));
-        return;
-      }
-
-      setTemplates(
-        templates.map((t) => (t.id === savedTemplate.id ? savedTemplate : t))
-      );
-      setEditingTemplate(null);
-      messageHandler.handleSuccess(t("templates.updateSuccess"));
-    } catch (error) {
-      console.error("Error updating template:", error);
-      messageHandler.handleError(t("templates.updateError"));
-    }
-  };
-
-  const handleNewTemplateSubmit = async (
-    template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">
-  ) => {
-    setIsNewTemplateModalOpen(false);
-
-    const createdTemplate = await templateService.createTemplate(template);
-    if (!createdTemplate) return;
-
-    setTemplates([...templates, createdTemplate]);
-    setPagination({
-      ...pagination,
-      totalRecords: pagination.totalRecords + 1,
-    });
-    messageHandler.handleSuccess(t("templates.createSuccess"));
+    dispatch(setPagination({ ...pagination, currentPage: page }));
   };
 
   const handleCancel = () => {
     if (newTemplate) {
-      setTemplates(templates.filter((t) => t.id !== newTemplate.id));
+      dispatch(setTemplates(templates.filter((t) => t.id !== newTemplate.id)));
       setNewTemplate(null);
     }
     setEditingTemplate(null);
@@ -217,7 +129,14 @@ const Templates = () => {
           {editingTemplate && editingTemplate.id === template.id ? (
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
-                onClick={() => void handleSave()}
+                onClick={() => {
+                  if (!editingTemplate) return;
+
+                  updateTemplate(editingTemplate);
+
+                  setEditingTemplate(null);
+                  messageHandler.handleSuccess(t("templates.updateSuccess"));
+                }}
                 size="small"
                 testId="templates.save-template"
               >
@@ -234,14 +153,23 @@ const Templates = () => {
           ) : (
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
-                onClick={() => handleEdit(template)}
+                onClick={() =>
+                  void router.push(`/app/template-detail?id=${template.id}`)
+                }
+                size="small"
+                testId="templates.view"
+              >
+                <FaEye style={{ color: "var(--primary)" }} />
+              </IconButton>
+              <IconButton
+                onClick={() => setEditingTemplate(template)}
                 size="small"
                 testId="templates.edit"
               >
                 <FaEdit style={{ color: "var(--primary)" }} />
               </IconButton>
               <IconButton
-                onClick={() => handleDelete(template.id)}
+                onClick={() => setTemplateToDelete(template.id)}
                 size="small"
                 testId="templates.delete"
               >
@@ -269,11 +197,11 @@ const Templates = () => {
           {t("templates.all_templates")}
         </h1>
         <Button
-          onClick={
+          onClick={() => {
             editingTemplate
               ? () => messageHandler.handleError(t("templates.finish-editing"))
-              : handleAddTemplate
-          }
+              : setIsNewTemplateModalOpen(true);
+          }}
           variant="primary"
           className={styles.addButton}
           testId="templates.new-template"
@@ -282,7 +210,10 @@ const Templates = () => {
         </Button>
       </div>
       <Table
-        data={templates}
+        data={templates.slice(
+          (pagination.currentPage - 1) * 7,
+          pagination.currentPage * 7,
+        )}
         columns={columns}
         isLoading={isLoading}
         testId="templates.table"
@@ -296,19 +227,39 @@ const Templates = () => {
       <NewTemplateModal
         isOpen={isNewTemplateModalOpen}
         onClose={() => setIsNewTemplateModalOpen(false)}
-        onSubmit={(template) => void handleNewTemplateSubmit(template)}
+        onSubmit={(
+          template: Omit<GenesisTemplate, "id" | "owner_id" | "created_at">,
+        ) => {
+          setIsNewTemplateModalOpen(false);
+          createTemplate(template);
+          messageHandler.handleSuccess(t("templates.createSuccess"));
+        }}
       />
       <DeleteConfirmation
         isOpen={templateToDelete ? true : isModalOpen}
         onRequestClose={() => setTemplateToDelete(null)}
-        onConfirm={() => void confirmDelete()}
+        onConfirm={() => {
+          if (!templateToDelete) return;
+
+          deleteTemplate(templateToDelete);
+
+          messageHandler.handleSuccess(t("templates.deleteSuccess"));
+          setIsModalOpen(false);
+          setTemplateToDelete(null);
+        }}
         testId="templates.delete-confirmation"
       />
     </div>
   );
 };
 
-GlobalCore.manager.app("templates", Templates);
+GlobalCore.manager.app("templates", () => {
+  return (
+    <Provider store={store}>
+      <Templates />
+    </Provider>
+  );
+});
 GlobalCore.manager.menu({
   label: "templates.menu",
   icon: "/templates.svg",
