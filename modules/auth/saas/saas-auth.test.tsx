@@ -323,7 +323,7 @@ describe("===== SAAS LOGIN =====", () => {
 
       act(() => screen.getByTestId("submitRegistration").click());
 
-      await waitFor(() => expect(spy).toHaveBeenCalledWith("/auth/login"));
+      await waitFor(() => expect(spy).toHaveBeenCalledWith("/auth/confirm-email"));
     });
 
     it("Register User already registered", async () => {
