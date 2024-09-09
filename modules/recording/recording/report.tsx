@@ -22,7 +22,6 @@ const Report = () => {
     [],
   );
 
-  const [isEditing, setIsEditing] = useState(false);
   const [time, setTime] = useState({ transcription: 0, report: 0 });
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -231,9 +230,9 @@ const Report = () => {
   }
   return (
     <div className={report_styles.reportContainer}>
-      <div className={`${report_styles.topContainer} bg-red-700`}>
-        <div>{renderProgressBar()}</div>
-        <div>{renderDownloadButton()}</div>
+      <div className={`${report_styles.topContainer}`}>
+        {renderProgressBar()}
+        {renderDownloadButton()}
       </div>
       {renderTabs()}
       {renderContent()}

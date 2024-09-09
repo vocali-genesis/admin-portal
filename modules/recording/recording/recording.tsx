@@ -114,4 +114,10 @@ const Recording = () => {
   );
 };
 
-GlobalCore.manager.app("recording", Recording);
+GlobalCore.manager.app("recording", () => {
+  return (
+    <Provider store={store}>
+      <Recording />
+    </Provider>
+  );
+});

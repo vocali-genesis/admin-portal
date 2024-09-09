@@ -29,7 +29,7 @@ const Auth = () => {
     return null;
   }
   return (
-    <div className="flex flex-col h-screen bg-white w-full">
+    <div className="flex flex-col h-screen bg-white w-fit md:w-full">
       <nav className="custom:flex hidden justify-center items-center bg-[var(--secondary)] h-20">
         <div className="flex items-center">
           <Image src="/logo.svg" alt="Logo" width={120} height={40} />
@@ -51,6 +51,7 @@ const Auth = () => {
         </div>
       </div>
     </div>
+
   );
 };
 

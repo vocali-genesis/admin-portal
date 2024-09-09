@@ -245,7 +245,13 @@ const Templates = () => {
   );
 };
 
-GlobalCore.manager.app("templates", Templates);
+GlobalCore.manager.app("templates", () => {
+  return (
+    <Provider store={store}>
+      <Templates />
+    </Provider>
+  );
+});
 GlobalCore.manager.menu({
   label: "templates.menu",
   icon: "/templates.svg",

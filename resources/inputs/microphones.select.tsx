@@ -3,6 +3,7 @@ import MessageHandler from "@/core/message-handler";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { BasicSelect } from "./basic-select.input";
+import { truncateLabel } from "../utils/utils";
 
 const messageHandler = MessageHandler.get();
 
@@ -21,7 +22,7 @@ export const MicrophoneSelect = ({
   const setUpDevices = useCallback(async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const audioInputDevices = devices.filter(
-      (device) => device.kind === "audioinput",
+      (device) => device.kind === "audioinput"
     );
     // If no granted is undefined
     const defaultDevice = !!audioInputDevices[0]?.deviceId;
@@ -64,7 +65,7 @@ export const MicrophoneSelect = ({
     return () => {
       navigator.mediaDevices.removeEventListener(
         "devicechange",
-        requestPermissions,
+        requestPermissions
       );
     };
   }, [permissionGranted, requestPermissions]);
@@ -88,9 +89,10 @@ export const MicrophoneSelect = ({
       onChange={onChange}
       options={devices.map((device) => ({
         value: device.deviceId,
-        label: device.label || `Microphone ${device.deviceId.slice(0, 5)}`,
+        label:
+          truncateLabel(device.label, 30) ||
+          `Microphone ${device.deviceId.slice(0, 5)}`,
       }))}
-      width="55vh"
     ></BasicSelect>
   );
 };
