@@ -52,6 +52,8 @@ describe("===== RECORDING AUDIO =====", () => {
       label: "Jest Microphone",
       kind: "audioinput",
     };
+    const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
+    let getUserMediaMock: jest.Mock;
 
     let Dashboard: CoreComponent;
     let mediaSpy: jest.SpyInstance<typeof MediaDevicesMock>;
@@ -59,10 +61,18 @@ describe("===== RECORDING AUDIO =====", () => {
       Dashboard = getComponent("app", "dashboard");
       mediaSpy = jest.spyOn(MediaDevicesMock, "enumerateDevices");
       mediaSpy.mockReturnValue([SampleMicrophone]);
+
+      getUserMediaMock = jest.fn();
+      navigator.mediaDevices.getUserMedia = getUserMediaMock;
     });
 
-    beforeEach(() => {});
-    afterEach(() => {});
+    beforeEach(() => {
+      getUserMediaMock.mockReset();
+    });
+
+    afterAll(() => {
+      navigator.mediaDevices.getUserMedia = originalGetUserMedia;
+    });
 
     const renderWithStore = () => {
       return render(
@@ -82,17 +92,56 @@ describe("===== RECORDING AUDIO =====", () => {
       });
     });
 
-    it("Can't record without permissions", async () => {
-      mediaSpy.mockReturnValue([]);
-      await act(() => renderWithStore());
-
+    it("Requests permissions when trying to record", async () => {
+      getUserMediaMock.mockResolvedValueOnce({} as MediaStream);
+  
+      await act(async () => {
+        await renderWithStore();
+      });
+  
       const recordButton = await screen.findByTestId("record-button");
-      act(() => recordButton.click());
+      
+      await act(async () => {
+        recordButton.click();
+      });
+  
+      expect(getUserMediaMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          audio: expect.objectContaining({
+            deviceId: expect.objectContaining({
+              exact: expect.any(String),
+            }),
+          }),
+        })
+      );
+    });
+  
+    it("Can't record without permissions", async () => {
+      getUserMediaMock.mockRejectedValueOnce(new Error("Permission denied"));
+  
+      await act(async () => {
+        await renderWithStore();
+      });
+  
+      const recordButton = await screen.findByTestId("record-button");
+      
+      await act(async () => {
+        recordButton.click();
+      });
+  
+      expect(getUserMediaMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          audio: expect.objectContaining({
+            deviceId: expect.objectContaining({
+              exact: expect.any(String),
+            }),
+          }),
+        })
+      );
 
       expect(ToastMock.error).toHaveBeenCalledWith(
-        "recording.permission-required"
+        "Error starting recording: Permission denied"
       );
-      mediaSpy.mockReturnValue([SampleMicrophone]);
     });
 
     it("I can start and pause the recording", async () => {
