@@ -23,13 +23,13 @@ import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
 import NewTemplateModal from "@/modules/templates/templates/components/new-template-modal";
-import store, { RootState } from "@/core/store";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/core/store";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setPagination,
   setTemplates,
-} from "@/resources/utils/templates-store/actions";
-import { useTemplates } from "@/services/templates/hooks/use-templates";
+} from "@/resources/redux/templates/actions";
+import { useTemplates } from "@/core/components/use-templates";
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
@@ -245,13 +245,7 @@ const Templates = () => {
   );
 };
 
-GlobalCore.manager.app("templates", () => {
-  return (
-    <Provider store={store}>
-      <Templates />
-    </Provider>
-  );
-});
+GlobalCore.manager.app("templates", Templates);
 GlobalCore.manager.menu({
   label: "templates.menu",
   icon: "/templates.svg",

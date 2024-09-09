@@ -10,9 +10,7 @@ import { MicrophoneSelect } from "@/resources/inputs/microphones.select";
 import { UploadFile } from "@/resources/inputs/upload-file.input";
 import RecordButton from "@/resources/containers/record-button";
 import Spinner from "@/resources/containers/spinner";
-import { Provider } from "react-redux";
-import store from "@/core/store";
-import { useTemplates } from "@/services/templates/hooks/use-templates";
+import { useTemplates } from "@/core/components/use-templates";
 
 const messageHandler = MessageHandler.get();
 
@@ -211,17 +209,7 @@ const Dashboard = () => {
   );
 };
 
-GlobalCore.manager.app(
-  "dashboard",
-  () => {
-    return (
-      <Provider store={store}>
-        <Dashboard />
-      </Provider>
-    );
-  },
-  { default: true },
-);
+GlobalCore.manager.app("dashboard", Dashboard, { default: true });
 GlobalCore.manager.menu({
   label: "recording.menu",
   icon: "/recordings.svg",

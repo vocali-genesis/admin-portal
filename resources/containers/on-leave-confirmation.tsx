@@ -1,45 +1,71 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import ConfirmationModal from "./confirm-modal";
 import { useRouter } from "next/router";
 
 interface Props {
-  allowedRoutes: string[];
   testId?: string;
 }
 
-const OnLeaveConfirmation: React.FC<Props> = ({ allowedRoutes, testId }) => {
+const OnLeaveConfirmation: React.FC<Props> = ({ testId }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const [isLeavingPage, setIsLeavingPage] = useState(false);
+  const [nextUrl, setNextUrl] = useState<string | null>(null);
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
-  const handleLeavePage = (event: BeforeUnloadEvent | PopStateEvent) => {
-    if (event.type === "beforeunload") {
-      event.preventDefault();
-      event.returnValue = "";
-    }
-    setIsLeavingPage(true);
-  };
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", handleLeavePage);
-    window.addEventListener("popstate", handleLeavePage);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleLeavePage);
-      window.removeEventListener("popstate", handleLeavePage);
-    };
+  const handleLeavePage = useCallback((event: BeforeUnloadEvent) => {
+    event.preventDefault();
+    event.returnValue = "";
   }, []);
 
   useEffect(() => {
-    // TODO: If is allow url don't give the error
-    router.beforePopState(() => {
-      setIsLeavingPage(true);
-      return false;
-    });
+    window.addEventListener("beforeunload", handleLeavePage);
 
     return () => {
-      router.beforePopState(() => true);
+      window.removeEventListener("beforeunload", handleLeavePage);
+    };
+  }, [handleLeavePage]);
+
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      if (url !== router.asPath && !isConfirmed) {
+        router.events?.emit("routeChangeError");
+        setNextUrl(url);
+        setIsLeavingPage(true);
+        throw "Route change aborted";
+      }
+    };
+
+    router.events?.on("routeChangeStart", handleRouteChange);
+
+    return () => {
+      router.events?.off("routeChangeStart", handleRouteChange);
+    };
+  }, [router, isConfirmed]);
+
+  const handleConfirm = useCallback(() => {
+    setIsConfirmed(true);
+    setIsLeavingPage(false);
+    if (nextUrl) {
+      router.push(nextUrl);
+    }
+  }, [nextUrl, router]);
+
+  const handleRequestClose = useCallback(() => {
+    setIsLeavingPage(false);
+    setNextUrl(null);
+  }, []);
+
+  useEffect(() => {
+    const handleRouteChangeComplete = () => {
+      setIsConfirmed(false);
+    };
+
+    router.events?.on("routeChangeComplete", handleRouteChangeComplete);
+
+    return () => {
+      router.events?.off("routeChangeComplete", handleRouteChangeComplete);
     };
   }, [router]);
 
@@ -50,10 +76,8 @@ const OnLeaveConfirmation: React.FC<Props> = ({ allowedRoutes, testId }) => {
       message={t("resources.leave-page-confirm")}
       confirmButtonText={t("common.leave")}
       isOpen={isLeavingPage}
-      onRequestClose={() => setIsLeavingPage(false)}
-      onConfirm={() => {
-        router.push("/app/dashboard");
-      }}
+      onRequestClose={handleRequestClose}
+      onConfirm={handleConfirm}
     />
   );
 };

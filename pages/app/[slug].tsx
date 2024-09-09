@@ -4,7 +4,9 @@ import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
-import { ValidateUser } from "@/core/components/validate-user";
+import { userValidation } from "@/core/components/user-validation";
+import { Provider } from "react-redux";
+import store from "@/core/store";
 
 const AppSlug = () => {
   const router = useRouter();
@@ -19,19 +21,16 @@ const AppSlug = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  userValidation(() => setIsLoading(false));
+
   useEffect(() => {
     if (router.isReady) {
       setIsLoading(false);
     }
-  }, [router.isReady ]);
+  }, [router.isReady]);
 
   if (!router.isReady) {
-    return (
-      <>
-        <ValidateUser onReady={() => setIsLoading(false)} />
-        <Spinner />
-      </>
-    );
+    return <Spinner />;
   }
 
   if (router.isReady && !Component) {
@@ -51,18 +50,17 @@ const AppSlug = () => {
           menu={menu}
         />
         <main className="flex-grow p-5 overflow-y-scroll">
-          {isLoading ? (
-            <>
-              <ValidateUser onReady={() => setIsLoading(false)} />
-              <Spinner />
-            </>
-          ) : (
-            <Component />
-          )}
+          {isLoading ? <Spinner /> : <Component />}
         </main>
       </div>
     </div>
   );
 };
 
-export default AppSlug;
+export default () => {
+  return (
+    <Provider store={store}>
+      <AppSlug />
+    </Provider>
+  );
+}

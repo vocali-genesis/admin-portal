@@ -30,6 +30,8 @@ import { getComponent, setRouteQuery } from "@/resources/tests/test.utils";
 import { Seed } from "@/resources/tests/seed";
 import { GenesisReport } from "@/core/module/core.types";
 import Download from "./libs/download";
+import { Provider } from "react-redux";
+import store from "@/core/store";
 
 describe("===== RECORDING AUDIO =====", () => {
   let genesisService: MedicalTranscription;
@@ -61,8 +63,17 @@ describe("===== RECORDING AUDIO =====", () => {
 
     beforeEach(() => {});
     afterEach(() => {});
+
+    const renderWithStore = () => {
+      return render(
+        <Provider store={store}>
+          <Dashboard />
+        </Provider>
+      );
+    };
+
     it("Dashboard is Mounted", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
 
       expect(await screen.findByTestId("record-button")).toBeInTheDocument();
       expect(await screen.findByTestId("upload-recording")).toBeInTheDocument();
@@ -73,7 +84,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
     it("Can't record without permissions", async () => {
       mediaSpy.mockReturnValue([]);
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
 
       const recordButton = await screen.findByTestId("record-button");
       act(() => recordButton.click());
@@ -85,7 +96,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("I can start and pause the recording", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
 
       await waitFor(() => screen.getByText("recording.click-to-start"));
 
@@ -104,7 +115,7 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Stop recording takes me to the preview page", async () => {
       const spy = jest.spyOn(RouterMock, "push");
 
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
 
       await waitFor(() => screen.getByText("recording.click-to-start"));
 
@@ -125,7 +136,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Upload an audio file", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
       const input = await screen.findByTestId("upload-recording");
 
       await userEvent.upload(
@@ -137,7 +148,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("File error: Wrong format file", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
       const input = await screen.findByTestId("upload-recording");
 
       await userEvent.upload(
@@ -149,7 +160,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("File error: File too big", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
       const input = await screen.findByTestId("upload-recording");
 
       const file = Seed.new().file({ name: "audio.mp3", type: "audio/mp3" });
@@ -164,7 +175,7 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Select file and click on upload ", async () => {
       const spy = jest.spyOn(RouterMock, "push");
 
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
       const input = await screen.findByTestId("upload-recording");
 
       expect(screen.getByText("recording.upload-files")).toBeDisabled();
@@ -201,8 +212,16 @@ describe("===== RECORDING AUDIO =====", () => {
     });
     afterEach(() => {});
 
+    const renderWithStore = () => {
+      return render(
+        <Provider store={store}>
+          <Recording />
+        </Provider>
+      );
+    };
+
     it("Recording page mounts", () => {
-      render(<Recording />);
+      renderWithStore();
       screen.debug();
       expect(screen.findByTestId("audio-player"));
       expect(screen.findByTestId("submit-button"));
@@ -215,7 +234,7 @@ describe("===== RECORDING AUDIO =====", () => {
         .spyOn(genesisService, "processAudioAndGenerateReport")
         .mockResolvedValue(report);
 
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const submitButton = await screen.findByTestId("submit-button");
 
@@ -238,7 +257,7 @@ describe("===== RECORDING AUDIO =====", () => {
       jest.replaceProperty(RouterMock, "query", {
         audioUrl: "",
       });
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const submitButton = await screen.findByTestId("submit-button");
 
@@ -259,7 +278,7 @@ describe("===== RECORDING AUDIO =====", () => {
           return Promise.resolve(null);
         });
 
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const submitButton = await screen.findByTestId("submit-button");
 
@@ -271,7 +290,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Click Delete Audio", async () => {
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const deleteButton = await screen.findByTestId("recording.audio-delete");
 
@@ -285,7 +304,7 @@ describe("===== RECORDING AUDIO =====", () => {
       expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
     });
     it("Click Save the Audio", async () => {
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const saveButton = await screen.findByTestId("save-audio");
       expect(saveButton).toBeInTheDocument();

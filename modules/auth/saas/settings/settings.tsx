@@ -16,8 +16,8 @@ import OAuthButton from "@/resources/containers/oauth.button";
 import Service from "@/core/module/service.factory";
 import BasicInput from "@/resources/inputs/basic-input";
 import BasicPasswordInput from "@/resources/inputs/basic-password.input";
-import { GenesisUser } from "@/core/module/core.types";
-
+import store, { RootState } from '@/core/store';
+import { Provider, useSelector } from "react-redux";
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
@@ -25,16 +25,7 @@ const Settings = () => {
   const router = useRouter();
   const authService = useService("oauth");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [user, setUser] = useState<GenesisUser>();
-
-  useEffect(() => {
-    (async () => {
-      const data = await Service.require("oauth").getLoggedUser();
-      if (!data) return router.push("auth/login");
-
-      setUser(data);
-    })();
-  });
+  const { user } = useSelector((state: RootState) => state.user);
 
   const {
     register,
@@ -145,7 +136,13 @@ const Settings = () => {
   );
 };
 
-GlobalCore.manager.settings("settings", Settings);
+GlobalCore.manager.settings("settings", () => {
+  return (
+    <Provider store={store}>
+      <Settings />
+    </Provider>
+  );
+});
 GlobalCore.manager.menuSettings({
   label: "settings.menu",
   icon: "/profile-avatar.svg",

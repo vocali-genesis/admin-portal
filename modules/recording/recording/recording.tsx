@@ -12,9 +12,7 @@ import MessageHandler from "@/core/message-handler";
 import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import { GenesisTemplate } from "@/core/module/core.types";
-import store from "@/core/store";
-import { Provider } from "react-redux";
-import { useTemplates } from "@/services/templates/hooks/use-templates";
+import { useTemplates } from "@/core/components/use-templates";
 
 const messageHandler = MessageHandler.get();
 
@@ -26,6 +24,7 @@ const Recording = () => {
     templates[0],
   );
   const { audioUrl } = router.query as { audioUrl: string };
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleSubmit = async () => {
     if (!audioUrl) {
@@ -78,7 +77,10 @@ const Recording = () => {
           <AudioPlayer
             testId="audio-player"
             audioUrl={audioUrl}
-            onDelete={() => void router.push("/app/dashboard")}
+            onDelete={() => {
+              setIsDeleting(true);
+              void router.push("/app/dashboard")
+            }}
           />
           <BasicSelect
             name="template-select"
@@ -107,17 +109,9 @@ const Recording = () => {
           </Button>
         </div>
       </main>
-      <OnLeaveConfirmation
-        allowedRoutes={["/app/report", "/app/dashboard", "settings/settings"]}
-      />
+      {!isDeleting && <OnLeaveConfirmation />}
     </>
   );
 };
 
-GlobalCore.manager.app("recording", () => {
-  return (
-    <Provider store={store}>
-      <Recording />
-    </Provider>
-  );
-});
+GlobalCore.manager.app("recording", Recording);
