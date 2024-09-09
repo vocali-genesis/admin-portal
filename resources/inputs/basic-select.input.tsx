@@ -50,31 +50,31 @@ const SelectWrapper = styled.div<{ width?: string }>`
 `;
 
 const Select = styled.select`
-  appearance: none;
-  width: 100%;
   padding: 8px;
-  padding-right: 30px; /* Space for the custom arrow */
   border: 1px solid var(--gray-200);
   border-radius: 4px;
   height: 6vh;
   color: black;
   font-size: 2vh;
   font-family: "Montserrat", sans-serif;
-  background-color: white;
   cursor: pointer;
 
+  /* Center the text */
   text-align: center;
   text-align-last: center;
 
+  /* Remove default arrow in IE */
   &::-ms-expand {
     display: none;
   }
 
+  /* Style for when the select is open */
   &:focus {
     outline: none;
     border-color: var(--primary-color);
   }
 
+  /* Ensure the text is centered in Firefox */
   option {
     text-align: center;
   }
