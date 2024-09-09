@@ -90,6 +90,9 @@ export const MicrophoneSelect = ({
       options={devices.map((device) => ({
         value: device.deviceId,
         label:
+          device.label ||
+          `Microphone ${device.deviceId.slice(0, 5)}`,
+        selectedLabel:
           truncateLabel(device.label, 30) ||
           `Microphone ${device.deviceId.slice(0, 5)}`,
       }))}

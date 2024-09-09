@@ -5,7 +5,7 @@ interface Props {
   name: string;
   value: string;
   onChange: (value: string) => void;
-  options: Array<{ value: string; label: string }>;
+  options: Array<{ value: string; label: string, selectedLabel?: string }>;
   testId?: string;
   disabled?: boolean;
   width?: string;
@@ -25,7 +25,9 @@ export const BasicSelect = (props: Props) => {
     >
       {props.options.map((option, index) => (
         <option key={index} value={option.value}>
-          {option.label}
+          {option.value === props.value
+            ? option.selectedLabel || option.label
+            : option.label}
         </option>
       ))}
     </Select>
