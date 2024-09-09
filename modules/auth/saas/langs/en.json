@@ -31,6 +31,9 @@
     "password-min-length": "Password must be at least {{times}} characters",
     "password-required": "Password is required",
     "password-dont-match": "Passwords must match",
-    "confirm-password-required": "Confirm Password is required"
+    "confirm-password-required": "Confirm Password is required",
+    "confirm-email": "Confirm Email",
+    "email-confirmed": "Email confirmed?",
+    "confirm-email-text": "Your email requires validation, check your mail box for the confirmation link"
   }
 }

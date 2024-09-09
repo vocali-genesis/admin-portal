@@ -29,8 +29,11 @@ const Dashboard = () => {
 
   const toggleRecording = async () => {
     if (!microphone) {
-      messageHandler.handleError(t("recording.permission-required"));
-      return;
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (error) {
+        messageHandler.handleError("resources.microphone-error");
+      }
     }
 
     if (!audioRecorderRef.current) {
