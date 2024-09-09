@@ -30,12 +30,13 @@
     "cancel-sub-btn": "Cancel subscription",
     "payment-history": "Payment History",
     "confirm-title": "Cancel subscription",
-    "confirm-message": "Are you sure you want to cancel your subscription?",
+   "confirm-message": "Are you sure you want to cancel your subscription? Your subscription will be valid until {{validUntil}}.",
     "success-message": "Subscription cancelled successflly!",
     "cancel-btn": "Cancel",
     "confirm-btn": "Confirm",
     "inactive-label": "Inactive",
-    "subscribe-btn": "Subscribe now"
+    "subscribe-btn": "Subscribe now",
+    "canceled-but-valid-warning": "canceled but valid"
   },
   "invoice-history": {
     "invoice-id-th": "Invoice Id",
