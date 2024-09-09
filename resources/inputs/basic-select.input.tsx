@@ -36,17 +36,7 @@ export const BasicSelect = (props: Props) => {
 
 const SelectWrapper = styled.div<{ width?: string }>`
   position: relative;
-  width: ${props => props.width || '100%'};
-
-  &::after {
-    content: '▼';
-    font-size: 1vh;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    position: absolute;
-    pointer-events: none;
-  }
+  width: ${props => props.width};
 `;
 
 const Select = styled.select`
