@@ -96,6 +96,7 @@ export const MicrophoneSelect = ({
           truncateLabel(device.label, 30) ||
           `Microphone ${device.deviceId.slice(0, 5)}`,
       }))}
+      width="50vh"
     ></BasicSelect>
   );
 };
