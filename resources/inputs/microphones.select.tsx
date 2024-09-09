@@ -97,7 +97,7 @@ export const MicrophoneSelect = ({
           `Microphone ${device.deviceId.slice(0, 5)}`,
       }))}
       width="50vh"
-    ></BasicSelect>
+    />
   );
 };
 
