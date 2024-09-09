@@ -41,26 +41,22 @@ const AppSlug = () => {
   const menu = ModuleManager.get().components.menus;
 
   return (
-    <div className="flex flex-col h-screen bg-white w-full">
-      <Navbar toggleSidebar={toggleSidebar} />
-      <div className="flex flex-grow overflow-hidden">
-        <SideBar
-          isOpen={sidebarOpen}
-          closeSidebar={() => setSidebarOpen(false)}
-          menu={menu}
-        />
-        <main className="flex-grow p-5 overflow-y-scroll">
-          {isLoading ? <Spinner /> : <Component />}
-        </main>
+    <Provider store={store}>
+      <div className="flex flex-col h-screen bg-white w-full">
+        <Navbar toggleSidebar={toggleSidebar} />
+        <div className="flex flex-grow overflow-hidden">
+          <SideBar
+            isOpen={sidebarOpen}
+            closeSidebar={() => setSidebarOpen(false)}
+            menu={menu}
+          />
+          <main className="flex-grow p-5 overflow-y-scroll">
+            {isLoading ? <Spinner /> : <Component />}
+          </main>
+        </div>
       </div>
-    </div>
+    </Provider>
   );
 };
 
-export default () => {
-  return (
-    <Provider store={store}>
-      <AppSlug />
-    </Provider>
-  );
-}
+export default AppSlug;
