@@ -8,7 +8,7 @@ import { userValidation } from "@/core/components/user-validation";
 import { Provider } from "react-redux";
 import store from "@/core/store";
 
-const AppSlug = () => {
+const ApplicationSlug = () => {
   const router = useRouter();
   const loader = ModuleManager.get().components;
   const { slug } = router.query as { slug: string };
@@ -41,22 +41,28 @@ const AppSlug = () => {
   const menu = ModuleManager.get().components.menus;
 
   return (
-    <Provider store={store}>
-      <div className="flex flex-col h-screen bg-white w-full">
-        <Navbar toggleSidebar={toggleSidebar} />
-        <div className="flex flex-grow overflow-hidden">
-          <SideBar
-            isOpen={sidebarOpen}
-            closeSidebar={() => setSidebarOpen(false)}
-            menu={menu}
-          />
-          <main className="flex-grow p-5 overflow-y-scroll">
-            {isLoading ? <Spinner /> : <Component />}
-          </main>
-        </div>
+    <div className="flex flex-col h-screen bg-white w-full">
+      <Navbar toggleSidebar={toggleSidebar} />
+      <div className="flex flex-grow overflow-hidden">
+        <SideBar
+          isOpen={sidebarOpen}
+          closeSidebar={() => setSidebarOpen(false)}
+          menu={menu}
+        />
+        <main className="flex-grow p-5 overflow-y-scroll">
+          {isLoading ? <Spinner /> : <Component />}
+        </main>
       </div>
-    </Provider>
+    </div>
   );
 };
+
+const AppSlug = () => {
+  return (
+    <Provider store={store}>
+      <ApplicationSlug />
+    </Provider>
+  );
+}
 
 export default AppSlug;

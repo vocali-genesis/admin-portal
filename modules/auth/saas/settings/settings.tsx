@@ -23,7 +23,6 @@ const messageHandler = MessageHandler.get();
 const Settings = () => {
   const router = useRouter();
   const { t, i18n } = useTranslation();
-  const router = useRouter();
   const authService = useService("oauth");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useSelector((state: RootState) => state.user);
