@@ -14,13 +14,14 @@ interface Props {
 
 export const BasicSelect = (props: Props) => {
   return (
-    <SelectWrapper width={props.width} className={props.className}>
+    <SelectWrapper className={props.className}>
       <Select
         name={props.name}
         value={props.value}
         disabled={props.disabled}
         data-testid={props.testId}
         onChange={(e) => props.onChange(e.target.value)}
+        style={{ width: props.width }}
       >
         {props.options.map((option, index) => (
           <option key={index} value={option.value}>
@@ -34,9 +35,8 @@ export const BasicSelect = (props: Props) => {
   );
 };
 
-const SelectWrapper = styled.div<{ width?: string }>`
+const SelectWrapper = styled.div`
   position: relative;
-  width: ${props => props.width};
 `;
 
 const Select = styled.select`
