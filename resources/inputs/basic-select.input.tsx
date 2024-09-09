@@ -14,30 +14,23 @@ interface Props {
 
 export const BasicSelect = (props: Props) => {
   return (
-    <div style={{
-        position: "relative",
-        display: "inline-block",
-        width: "fit-content"
-      }}
+    <Select
+      name={props.name}
+      value={props.value}
+      disabled={props.disabled}
+      data-testid={props.testId}
+      onChange={(e) => props.onChange(e.target.value)}
+      style={{ width: props.width }}
+      className={props.className}
     >
-      <Select
-        name={props.name}
-        value={props.value}
-        disabled={props.disabled}
-        data-testid={props.testId}
-        onChange={(e) => props.onChange(e.target.value)}
-        style={{ width: props.width }}
-        className={props.className}
-      >
-        {props.options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.value === props.value
-              ? option.selectedLabel || option.label
-              : option.label}
-          </option>
-        ))}
-      </Select>
-    </div>
+      {props.options.map((option, index) => (
+        <option key={index} value={option.value}>
+          {option.value === props.value
+            ? option.selectedLabel || option.label
+            : option.label}
+        </option>
+      ))}
+    </Select>
   );
 };
 
