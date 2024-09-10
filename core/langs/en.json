@@ -43,6 +43,12 @@
     "of": "of",
     "here": "here"
   },
+  "fields": {
+    "text": "text",
+    "number": "number",
+    "select": "select",
+    "multiselect": "multiselect"
+  },
   "validation": {
     "required": "This field is required.",
     "one-field-required": "At least one field is required"

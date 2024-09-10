@@ -139,7 +139,7 @@ const Templates = () => {
                 }}
                 size="small"
                 testId="templates.save-template"
-                title={t("button.btn-save")}
+                title={t("button.save")}
               >
                 <FaSave style={{ color: "#59DBBC" }} />
               </IconButton>
@@ -147,7 +147,7 @@ const Templates = () => {
                 onClick={handleCancel}
                 size="small"
                 testId="templates.cancel-edit"
-                title={t("button.btn-cancel")}
+                title={t("button.cancel")}
               >
                 <FaTimes style={{ color: "var(--danger)" }} />
               </IconButton>
@@ -160,7 +160,7 @@ const Templates = () => {
                 }
                 size="small"
                 testId="templates.view"
-                title={t("button.btn-view-title")}
+                title={t("button.view")}
               >
                 <FaEye style={{ color: "var(--primary)" }} />
               </IconButton>
@@ -168,7 +168,7 @@ const Templates = () => {
                 onClick={() => setTemplateToDelete(template.id)}
                 size="small"
                 testId="templates.delete"
-                title={t("button.btn-delete-title")}
+                title={t("button.delete")}
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
               </IconButton>
@@ -179,6 +179,16 @@ const Templates = () => {
     },
   ];
 
+  const createtemplate = async () => {
+    const numberOfTemplates = templates.length;
+    const template: any = {
+      name: `Template ${numberOfTemplates + 1}`,
+      preview: "",
+      fields: [],
+    };
+    createTemplate(template);
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -186,9 +196,8 @@ const Templates = () => {
           {t("templates.all_templates")}
         </h1>
         <Button
-
           onClick={() =>
-            void router.push(`/app/create-template`)
+            createtemplate()
           }
           variant="primary"
           className={styles.addButton}

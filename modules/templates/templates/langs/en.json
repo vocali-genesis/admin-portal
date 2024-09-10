@@ -42,16 +42,17 @@
     "discardChanges": "Discard Changes",
     "fieldUpdateSuccess": "Field updated successfully",
     "fieldUpdateError": "Error updating field",
-    "finish-editing": "Please finish editing the the current template before creating a new one"
+    "finish-editing": "Please finish editing the the current template before creating a new one",
+    "duplicateFieldError": "A field with this name already exists. Please choose a different name."
   },
   "button": {
-    "btn-delete-title": "Delete",
-    "btn-edit-title": "Edit",
-    "btn-view-title": "View",
-    "btn-cancel": "Cancel",
-    "btn-save": "Save",
-    "btn-backward": "Back",
-    "btn-skip": "Skip",
-    "btn-play": "Play"
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "cancel": "Cancel",
+    "save": "Save",
+    "backward": "Back",
+    "skip": "Skip",
+    "play": "Play"
   }
 }

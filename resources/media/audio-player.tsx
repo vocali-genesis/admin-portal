@@ -154,7 +154,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
           size="small"
           name="delete"
           testId="recording.audio-delete"
-          title={t("button.btn-delete-title")}
+          title={t("button.delete")}
         >
           <FaTrash size={16} style={{ color: "#DF4949" }} />
         </IconButton>
@@ -164,7 +164,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
           className={audioPlayer.skipButton}
           size="small"
           name="backward"
-          title={t("button.btn-backward")}
+          title={t("button.backward")}
         >
           <FaBackwardStep size={16} style={{ color: "black" }} />
         </IconButton>
@@ -174,7 +174,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
           className={audioPlayer.playPauseButton}
           size="medium"
           name={isPlaying ? "pause" : "play"}
-          title={t("button.btn-play")}
+          title={t("button.play")}
         >
           {isPlaying ? (
             <FaCirclePause
@@ -205,7 +205,7 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
           size="small"
           name="save"
           testId="save-audio"
-          title={t("button.btn-save")}
+          title={t("button.save")}
         >
           <FaFloppyDisk size={16} style={{ color: "blue" }} />
         </IconButton>
