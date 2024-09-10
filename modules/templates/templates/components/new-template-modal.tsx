@@ -244,14 +244,11 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
           <Button
             onClick={addField}
             testId="add-field-button"
-            className={`${styles.button} w-full md:w-auto`}
           >
             {t("templates.addField")}
           </Button>
           <Button
             testId="templates.submit-new-template"
-            className={`${styles.button} w-full md:w-auto ml-2`}
-            onClick={() => { }}
             type="submit"
           >
             {t("templates.create")}

@@ -30,22 +30,26 @@
     "cancel-sub-btn": "Cancel subscription",
     "payment-history": "Payment History",
     "confirm-title": "Cancel subscription",
-   "confirm-message": "Are you sure you want to cancel your subscription? Your subscription will be valid until {{validUntil}}.",
+    "confirm-message": "Are you sure you want to cancel your subscription? Your subscription will be valid until {{validUntil}}.",
     "success-message": "Subscription cancelled successflly!",
     "cancel-btn": "Cancel",
     "confirm-btn": "Confirm",
     "inactive-label": "Inactive",
     "subscribe-btn": "Subscribe now",
+<<<<<<< HEAD
     "canceled-but-valid-warning": "Subscription is already canceled"
+=======
+    "canceled-but-valid-warning": "Already Cancel"
+>>>>>>> 60ca488a911961c02737ce03ba1477936ce9f479
   },
   "invoice-history": {
     "invoice-id-th": "Invoice Id",
-    "date-th" : "Date",
-    "validity-th" : "Valid until",
-    "amount-th" : "Amount",
-    "action-th" : "Actions",
-    "total-label" : "Total Records:",
-    "page-label" : "Page",
+    "date-th": "Date",
+    "validity-th": "Valid until",
+    "amount-th": "Amount",
+    "action-th": "Actions",
+    "total-label": "Total Records:",
+    "page-label": "Page",
     "of-label": "of",
     "view-receipt": "View Receipt"
   }

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import btn_styles from "./styles/button.module.css";
 
 interface ButtonProps {
-  onClick: (
+  onClick?: (
     event?: React.MouseEvent<HTMLButtonElement>
   ) => void | Promise<void>;
   className?: string;
@@ -28,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setIsLoading(true);
     try {
-      await onClick(event);
+      await onClick?.(event);
     } finally {
       setIsLoading(false);
     }
