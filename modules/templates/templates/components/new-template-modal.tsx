@@ -65,7 +65,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
             .required(t("validation.required")),
           description: yup.string().required(t("validation.required")),
           config: yup.mixed<FieldConfig>().optional(),
-        })
+        }),
       )
       .min(1, t("validation.one-field-required"))
       .required(),
@@ -138,10 +138,7 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
           name="name"
           control={control}
           render={({ field }) => (
-            <div
-              className={"flex flex-col h-[10px] mb-2"}
-              style={{ marginBottom: "12px" }}
-            >
+            <div className={"flex flex-col h-[10px] mb-2"} style={{ marginBottom: "12px" }}>
               <BasicInput
                 id="template-name"
                 {...field}
@@ -244,12 +241,14 @@ const NewTemplateModal: React.FC<NewTemplateModalProps> = ({
           );
         })}
         <div className="flex sm:flex-col md:flex-row justify-between w-full">
-          <Button onClick={addField} testId="add-field-button">
+          <Button
+            onClick={addField}
+            testId="add-field-button"
+          >
             {t("templates.addField")}
           </Button>
           <Button
             testId="templates.submit-new-template"
-            onClick={() => {}}
             type="submit"
           >
             {t("templates.create")}

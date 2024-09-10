@@ -188,16 +188,14 @@ const Report = () => {
     return (
       <div className={report_styles.tabs}>
         <div
-          className={`${
-            activeTab === "report" ? report_styles.activeTab : ""
-          } ${report_styles.tabContainer}`}
+          className={`${activeTab === "report" ? report_styles.activeTab : ""
+            } ${report_styles.tabContainer}`}
         >
           <FaRegNewspaper
             size={25}
             style={{ paddingTop: "1.15vh" }}
-            className={`${
-              activeTab === "report" ? report_styles.activeTabIcon : ""
-            }`}
+            className={`${activeTab === "report" ? report_styles.activeTabIcon : ""
+              }`}
           />
           <button
             className={`${report_styles.tabButton}`}
@@ -207,16 +205,14 @@ const Report = () => {
           </button>
         </div>
         <div
-          className={`${
-            activeTab === "transcription" ? report_styles.activeTab : ""
-          } ${report_styles.tabContainer}`}
+          className={`${activeTab === "transcription" ? report_styles.activeTab : ""
+            } ${report_styles.tabContainer}`}
         >
           <FaRegMessage
             size={25}
             style={{ paddingTop: "1.5vh" }}
-            className={`${
-              activeTab === "transcription" ? report_styles.activeTabIcon : ""
-            }`}
+            className={`${activeTab === "transcription" ? report_styles.activeTabIcon : ""
+              }`}
           />
           <button
             className={`${report_styles.tabButton}`}
@@ -241,9 +237,8 @@ const Report = () => {
           testId="replay-audio"
           onClick={handleReplayAudio}
           variant="primary"
-          className={`${report_styles.replayButton} ${
-            isAudioPlaying ? report_styles.playing : ""
-          }`}
+          className={`${report_styles.replayButton} ${isAudioPlaying ? report_styles.playing : ""
+            }`}
         >
           {isAudioPlaying ? <FaPause /> : <FaPlay />}
           {isAudioPlaying
