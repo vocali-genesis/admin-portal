@@ -43,5 +43,15 @@
     "fieldUpdateSuccess": "Field updated successfully",
     "fieldUpdateError": "Error updating field",
     "finish-editing": "Please finish editing the the current template before creating a new one"
+  },
+  "button": {
+    "btn-delete-title": "Delete",
+    "btn-edit-title": "Edit",
+    "btn-view-title": "View",
+    "btn-cancel": "Cancel",
+    "btn-save": "Save",
+    "btn-backward": "Back",
+    "btn-skip": "Skip",
+    "btn-play": "Play"
   }
 }

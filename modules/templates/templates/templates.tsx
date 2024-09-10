@@ -139,6 +139,7 @@ const Templates = () => {
                 }}
                 size="small"
                 testId="templates.save-template"
+                title={t("button.btn-save")}
               >
                 <FaSave style={{ color: "#59DBBC" }} />
               </IconButton>
@@ -146,6 +147,7 @@ const Templates = () => {
                 onClick={handleCancel}
                 size="small"
                 testId="templates.cancel-edit"
+                title={t("button.btn-cancel")}
               >
                 <FaTimes style={{ color: "var(--danger)" }} />
               </IconButton>
@@ -158,20 +160,15 @@ const Templates = () => {
                 }
                 size="small"
                 testId="templates.view"
+                title={t("button.btn-view-title")}
               >
                 <FaEye style={{ color: "var(--primary)" }} />
-              </IconButton>
-              <IconButton
-                onClick={() => setEditingTemplate(template)}
-                size="small"
-                testId="templates.edit"
-              >
-                <FaEdit style={{ color: "var(--primary)" }} />
               </IconButton>
               <IconButton
                 onClick={() => setTemplateToDelete(template.id)}
                 size="small"
                 testId="templates.delete"
+                title={t("button.btn-delete-title")}
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
               </IconButton>
@@ -189,11 +186,10 @@ const Templates = () => {
           {t("templates.all_templates")}
         </h1>
         <Button
-          onClick={() => {
-            editingTemplate
-              ? () => messageHandler.handleError(t("templates.finish-editing"))
-              : setIsNewTemplateModalOpen(true);
-          }}
+
+          onClick={() =>
+            void router.push(`/app/create-template`)
+          }
           variant="primary"
           className={styles.addButton}
           testId="templates.new-template"
