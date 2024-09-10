@@ -47,6 +47,26 @@ class SubscriptionSupabase implements SubscriptionService {
     return null;
   }
 
+  public async updateExpiryDate() {
+    const subscription = await this.getActiveSubscription();
+
+    const { data, error } = await this.supabase
+      .from('subscriptions')
+      .update({
+        current_period_end: new Date(
+          new Date().setDate(new Date().getDate() - 1)
+        ).toISOString()
+      })
+      .eq('id', subscription?.id)
+      .select();
+
+    if (error) {
+      messageHandler.handleError(error.message);
+    }
+
+    return null;
+  }
+
   /**
    * Cancels the current active subscription and returns the subscription data
    */
@@ -61,7 +81,8 @@ class SubscriptionSupabase implements SubscriptionService {
       return data?.data as Record<string, string | number>;
     }
     await messageHandler.handleEdgeFunctionError(error);
-    return null;
+
+    return await this.updateExpiryDate();
   }
 
   /**
