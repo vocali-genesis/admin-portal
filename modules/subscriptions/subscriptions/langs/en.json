@@ -36,11 +36,7 @@
     "confirm-btn": "Confirm",
     "inactive-label": "Inactive",
     "subscribe-btn": "Subscribe now",
-<<<<<<< HEAD
-    "canceled-but-valid-warning": "Subscription is already canceled"
-=======
     "canceled-but-valid-warning": "Already Cancel"
->>>>>>> 60ca488a911961c02737ce03ba1477936ce9f479
   },
   "invoice-history": {
     "invoice-id-th": "Invoice Id",
