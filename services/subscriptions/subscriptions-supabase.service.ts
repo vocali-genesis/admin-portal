@@ -64,6 +64,7 @@ class SubscriptionSupabase implements SubscriptionService {
       messageHandler.handleError(error.message);
     }
 
+    console.log(data);
     return null;
   }
 
@@ -78,11 +79,12 @@ class SubscriptionSupabase implements SubscriptionService {
       "cancel-subscription"
     );
     if (!error) {
+      await this.updateExpiryDate();
       return data?.data as Record<string, string | number>;
     }
-    await messageHandler.handleEdgeFunctionError(error);
 
-    return await this.updateExpiryDate();
+    await messageHandler.handleEdgeFunctionError(error);
+    return null;
   }
 
   /**

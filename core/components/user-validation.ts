@@ -33,11 +33,13 @@ export const userValidation = (onReady: () => void) => {
       const subscriptionService = Service.require("subscriptions");
 
       const subscription = await subscriptionService.getActiveSubscription();
+      console.log(subscription);
       dispatch(setSubscription(subscription as SubscriptionResponse));
       const notValid = subscription?.current_period_end
         ? moment(subscription.current_period_end).isBefore()
         : true;
 
+      console.log(notValid);
       if (subscription?.status !== "active" && notValid) {
         if (slug === "subscriptions") return true;
         void router.replace("/app/subscriptions");
