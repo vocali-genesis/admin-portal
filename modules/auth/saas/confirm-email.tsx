@@ -20,9 +20,9 @@ const ConfirmEmail = () => {
         height={45}
       />
       <h1 className={auth_style.title}>{t("auth.confirm-email")}</h1>
-      <P>
+      <Paragraph>
         {t("auth.confirm-email-text")}
-      </P>
+      </Paragraph>
       <p className={auth_style.login_text}>
         {t("auth.email-confirmed")}{" "}
         <strong>
@@ -35,7 +35,7 @@ const ConfirmEmail = () => {
   );
 };
 
-const P = styled.p`
+const Paragraph = styled.p`
   color: rgb(0, 0, 0, 0.5);
   font-family: 'Montserrat', sans-serif;
 

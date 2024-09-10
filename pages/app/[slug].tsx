@@ -23,11 +23,6 @@ const ApplicationSlug = () => {
 
   userValidation(() => setIsLoading(false));
 
-  useEffect(() => {
-    if (router.isReady) {
-      setIsLoading(false);
-    }
-  }, [router.isReady]);
 
   if (!router.isReady) {
     return <Spinner />;
@@ -39,7 +34,6 @@ const ApplicationSlug = () => {
   }
 
   const menu = ModuleManager.get().components.menus;
-
   return (
     <div className="flex flex-col h-screen bg-white w-full">
       <Navbar toggleSidebar={toggleSidebar} />

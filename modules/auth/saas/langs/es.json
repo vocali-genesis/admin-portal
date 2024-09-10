@@ -18,10 +18,9 @@
     "reset": "Restablecer contraseña",
     "with-others": "Con otros",
     "login-successful": "Inicio de sesión exitoso",
-    "reset-email-sent": "El enlace para restablecer la contraseña ha sido enviado a tu correo electrónico",
     "login-with": "Iniciar sesión con",
     "register-with": "Accede con",
-    "reset-email-sent ": "Se ha enviado el enlace de restablecimiento de contraseña a tu correo electrónico",
+    "reset-email-sent": "Se ha enviado el enlace de restablecimiento de contraseña a tu correo electrónico",
     "email": "Correo electrónico",
     "confirm_password": "Confirmar contraseña",
     "password": "Contraseña",
@@ -31,6 +30,9 @@
     "password-min-length": "La contraseña debe tener al menos {{times}} caracteres",
     "password-required": "Se requiere contraseña",
     "password-dont-match": "Las contraseñas deben coincidir",
-    "confirm-password-required": "Se requiere confirmar la contraseña"
+    "confirm-password-required": "Se requiere confirmar la contraseña",
+    "confirm-email": "Confirmar correo electrónico",
+    "email-confirmed": "¿Correo electrónico confirmado?",
+    "confirm-email-text": "Tu correo electrónico requiere validación, revisa tu bandeja de entrada para el enlace de confirmación"
   }
 }
