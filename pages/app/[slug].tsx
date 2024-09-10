@@ -23,7 +23,6 @@ const ApplicationSlug = () => {
 
   userValidation(() => setIsLoading(false));
 
-
   if (!router.isReady) {
     return <Spinner />;
   }

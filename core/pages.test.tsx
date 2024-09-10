@@ -13,7 +13,7 @@ import SettingSlug from "@/pages/settings/[slug]";
 import AuthSlug from "@/pages/auth/[slug]";
 
 import { SubscriptionService } from "@/core/module/services.types";
-import { login } from "@/resources/tests/test.utils";
+import { login, logout } from "@/resources/tests/test.utils";
 
 describe("===== DYNAMIC PATHS =====", () => {
   let authService: AuthService;
@@ -42,9 +42,17 @@ describe("===== DYNAMIC PATHS =====", () => {
     beforeEach(() => {
       jest.replaceProperty(RouterMock, "query", { slug: "demo" });
     });
-    it("App is Mounted", () => {
+
+    it("App is Mounted", async () => {
+      await login(authService);
+
       render(<AppSlug />);
-      expect(screen.getByTestId("demo")).toBeInTheDocument();
+      
+      await waitFor(() => {
+        expect(screen.getByTestId("demo")).toBeInTheDocument()
+      });
+      
+      await logout(authService);
     });
 
     it("User not logged", async () => {
@@ -60,7 +68,7 @@ describe("===== DYNAMIC PATHS =====", () => {
         .spyOn(subscriptionServices, "getActiveSubscription")
         .mockReturnValueOnce(Promise.resolve(null));
 
-      const spy = jest.spyOn(RouterMock, "push");
+      const spy = jest.spyOn(RouterMock, "replace");
 
       render(<AppSlug />);
 
@@ -75,7 +83,7 @@ describe("===== DYNAMIC PATHS =====", () => {
         .spyOn(subscriptionServices, "getActiveSubscription")
         .mockReturnValueOnce(Promise.resolve({ status: "expired" }));
 
-      const spy = jest.spyOn(RouterMock, "push");
+      const spy = jest.spyOn(RouterMock, "replace");
 
       render(<AppSlug />);
 

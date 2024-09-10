@@ -5,6 +5,7 @@ import { MODULE } from "@/core/constants";
 import { GenesisOauthProvider, GenesisUser } from "@/core/module/core.types";
 import { GlobalCore } from "@/core/module/module.types";
 import { AuthService } from "@/core/module/services.types";
+import Router from "next/router";
 
 const messageHandler = MessageHandler.get();
 class SupabaseAuthService implements AuthService {
@@ -41,6 +42,11 @@ class SupabaseAuthService implements AuthService {
       password,
     });
     if (error) {
+      console.log(error.message);
+      if (error.message.includes("Email not confirmed")) {
+        console.log("Inside Email not confirmed");
+        Router.push("/auth/confirm-email");
+      }
       messageHandler.handleError(error.message);
       return null;
     }

@@ -24,6 +24,12 @@ export const login = async (
   return { user: { ...user, ...Seed.new().user(props).create() }, token };
 };
 
+export const logout = async (
+  authService: AuthService,
+) => {
+  await authService.logout();
+};
+
 export const getComponent = (
   module: ModuleComponentsTypes,
   component: string

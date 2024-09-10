@@ -1,14 +1,12 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { GlobalCore } from "@/core/module/module.types";
 import auth_style from "./auth.module.css";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 const ConfirmEmail = () => {
-  const router = useRouter();
   const { t } = useTranslation();
 
   return (
@@ -39,13 +37,13 @@ const Paragraph = styled.p`
   color: rgb(0, 0, 0, 0.5);
   font-family: 'Montserrat', sans-serif;
 
-  background-color: #FDFD96;
-  padding: 1vh 3vh;
+  background-color: var(--primary);
+  padding: 1rem 3rem;
   align-items: center;
-  font-size: 2vh;
+  font-size: 0.75rem;
   border-radius: 3px;
 
-  margin-bottom: 4vh;
+  margin-bottom: 2rem;
 `
 
 GlobalCore.manager.auth("confirm-email", ConfirmEmail);

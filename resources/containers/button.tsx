@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import btn_styles from "./styles/button.module.css";
+import { ButtonSpinner } from "./button-spinner";
 
 interface ButtonProps {
   onClick: (
@@ -42,20 +42,9 @@ const Button: React.FC<ButtonProps> = ({
       disabled={disabled}
       type={type}
     >
-      {isLoading ? <Spinner /> : children}
+      {isLoading ? <ButtonSpinner hidden={false} /> : children}
     </button>
   );
 };
-
-const Spinner = styled.span`
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid var(--primary);
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-  display: inline-block;
-  vertical-align: middle;
-`;
 
 export default Button;

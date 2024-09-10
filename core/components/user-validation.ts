@@ -24,6 +24,7 @@ export const userValidation = (onReady: () => void) => {
         void router.push("/auth/login");
         return false;
       }
+
       dispatch(setUser(user));
       return true;
     }
@@ -33,7 +34,6 @@ export const userValidation = (onReady: () => void) => {
 
       const subscription = await subscriptionService.getActiveSubscription();
       dispatch(setSubscription(subscription as SubscriptionResponse));
-
       const notValid = subscription?.current_period_end
         ? moment(subscription.current_period_end).isBefore()
         : true;
