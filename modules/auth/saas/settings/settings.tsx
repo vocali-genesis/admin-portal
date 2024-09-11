@@ -13,11 +13,13 @@ import MessageHandler from "@/core/message-handler";
 import { useService } from "@/core/module/service.factory";
 import { SettingsInputField } from "@/resources/inputs/settings-input-field";
 import SubmitButton from "@/resources/containers/submit.button";
+import Button from "@/resources/containers/button";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import BasicInput from "@/resources/inputs/basic-input";
 import BasicPasswordInput from "@/resources/inputs/basic-password.input";
 import store, { RootState } from '@/core/store';
 import { emailSchema, passwordSchema } from "./settings.schema";
+import ConfirmModal from "@/resources/containers/confirm-modal";
 
 const messageHandler = MessageHandler.get();
 
@@ -28,14 +30,17 @@ const Settings = () => {
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
   const { user } = useSelector((state: RootState) => state.user);
-  
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
   const {
     register: registerEmail,
     handleSubmit: handleSubmitEmail,
     formState: { errors: errorsEmail },
+    watch,
   } = useForm({
     resolver: yupResolver(emailSchema(t)),
   });
+  const emailValue = watch("email");
 
   const {
     register: registerPassword,
@@ -45,11 +50,12 @@ const Settings = () => {
     resolver: yupResolver(passwordSchema(t)),
   });
 
-  const onSubmitEmail = async (data: { email: string }) => {
+  const handleEmailSubmit = async (data: { email: string }) => {
     try {
       setIsSubmittingEmail(true);
       const updatedUser = await authService.updateUser(data.email);
       if (updatedUser) {
+        await authService.logout();
         router.push("/auth/confirm-email");
         messageHandler.handleSuccess(t("settings.email-update-success"));
       }
@@ -70,11 +76,16 @@ const Settings = () => {
     }
   };
 
+  const confirmEmailUpdate = () => {
+    handleSubmitEmail(handleEmailSubmit)();
+    setIsConfirmModalOpen(false);
+  };
+
   return (
     <Container>
       <ContentWrapper>
         <MainContent>
-          <Form onSubmit={handleSubmitEmail(onSubmitEmail)}>
+          <Form>
             <div className="w-full px-[1rem] py-[2rem]">
               <SettingsInputField
                 name="email"
@@ -93,6 +104,11 @@ const Settings = () => {
                   isSubmitting={isSubmittingEmail}
                   label={t("settings.save-email")}
                   testId="updateEmail"
+                  onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                    event?.preventDefault();
+                    setIsConfirmModalOpen(true);
+                  }}
+                  disabled={emailValue === user?.email}
                 />
               </div>
             </div>
@@ -129,6 +145,19 @@ const Settings = () => {
             </div>
           </Form>
 
+          {/*
+          The logic is not right:
+          - If we have login, we can revoke
+           - If we have not, we can connect
+           - If we revoke we can reconnect
+           - If we have only google connection, it shall not allow us to revoke it
+           Will be done in another task
+          <Divider />
+          <OAuthButton
+            provider="google"
+            label={t("settings.revoke")}
+            onClick={handleRevokeOAuth}
+          /> */}
           <Divider />
 
           <SettingsInputField name="language" label={t("settings.language")}>
@@ -143,6 +172,15 @@ const Settings = () => {
             />
           </SettingsInputField>
         </MainContent>
+        <ConfirmModal
+          testId="settings.confirm-modal"
+          isOpen={isConfirmModalOpen}
+          onRequestClose={() => setIsConfirmModalOpen(false)}
+          title={t("settings.update-email-title")}
+          message={t("settings.update-email-message")}
+          confirmButtonText={t("settings.save-email")}
+          onConfirm={confirmEmailUpdate}
+        />
       </ContentWrapper>
     </Container>
   );

@@ -6,6 +6,7 @@ import { GenesisOauthProvider, GenesisUser } from "@/core/module/core.types";
 import { GlobalCore } from "@/core/module/module.types";
 import { AuthService } from "@/core/module/services.types";
 import Router from "next/router";
+import i18n from 'i18next';
 
 const messageHandler = MessageHandler.get();
 class SupabaseAuthService implements AuthService {
@@ -111,6 +112,10 @@ class SupabaseAuthService implements AuthService {
       password,
     });
     if (error) {
+      if (error.message.includes("New password should be different from the old password")) {
+        messageHandler.handleError(i18n.t("settings.New password should be different from the old password"));
+        return null;
+      }
       messageHandler.handleError(error.message);
       return null;
     }

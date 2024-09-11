@@ -384,12 +384,20 @@ describe("===== SAAS LOGIN =====", () => {
     it.todo("Revoke SSO Google");
 
     it("Update Settings Fields are required", async () => {
-      render(<Settings />);
+      const { container } = render(<Settings />);
+      const emailInput = getInput(container, "email") as HTMLInputElement;
+      
+      await userEvent.type(emailInput, "wrong-email");
+      await userEvent.clear(emailInput);
 
-      act(() => screen.getByTestId("updateEmail").click());
       act(() => screen.getByTestId("updatePassword").click());
+      act(() => screen.getByTestId("updateEmail").click());
+      await waitFor(() => {
+        expect(screen.getByTestId("modal.confirm-button")).toBeInTheDocument();
+      });
+      act(() => screen.getByTestId("modal.confirm-button").click());
 
-      await waitFor(() => screen.getByText("auth.email-required"));
+      await waitFor(() => screen.getByText("auth.password-min-length"));
 
       expect(screen.getByText("auth.email-required")).toBeInTheDocument();
       expect(screen.getByText("auth.password-min-length")).toBeInTheDocument();
@@ -404,13 +412,17 @@ describe("===== SAAS LOGIN =====", () => {
       const passwordInput = getInput(container, "password");
       const confirmPassword = getInput(container, "confirm_password");
 
-      // Makes the form dirty
-      act(() => screen.getByTestId("updateEmail").click());
-      act(() => screen.getByTestId("updatePassword").click());
-
       await userEvent.type(emailInput, "wrong-email");
       await userEvent.type(passwordInput, "123");
       await userEvent.type(confirmPassword, "Different");
+
+      // Makes the form dirty
+      act(() => screen.getByTestId("updatePassword").click());
+      act(() => screen.getByTestId("updateEmail").click());
+      await waitFor(() => {
+        expect(screen.getByTestId("modal.confirm-button")).toBeInTheDocument();
+      });
+      act(() => screen.getByTestId("modal.confirm-button").click());
 
       await waitFor(() => screen.getByText("auth.invalid-email-format"));
 
@@ -431,8 +443,12 @@ describe("===== SAAS LOGIN =====", () => {
       await userEvent.type(passwordInput, password);
       await userEvent.type(confirmPassword, password);
 
-      act(() => screen.getByTestId("updateEmail").click());
       act(() => screen.getByTestId("updatePassword").click());
+      act(() => screen.getByTestId("updateEmail").click());
+      await waitFor(() => {
+        expect(screen.getByTestId("modal.confirm-button")).toBeInTheDocument();
+      });
+      act(() => screen.getByTestId("modal.confirm-button").click());
       await waitFor(() => expect(ToastMock.success).toHaveBeenCalledTimes(2));
     });
 
