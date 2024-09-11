@@ -57,12 +57,12 @@ describe("===== TEMPLATES =====", () => {
       // There are 10 mockups, next one is 11
       await waitFor(() => {
         expect(
-          screen.getByText("Template 11")
+          screen.getByText("templates.template 11")
         ).toBeInTheDocument();
       });
 
 
-      expect(screen.getByText("Template 11"));
+      expect(screen.getByText("templates.template 11"));
     });
 
     it("Checks modal pops up when delete icon clicked", async () => {
