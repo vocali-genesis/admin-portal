@@ -11,19 +11,16 @@ import {
   FaEdit,
   FaPlus,
   FaSave,
-  FaEye,
   FaTimes,
 } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import MessageHandler from "@/core/message-handler";
 import { useRouter } from "next/router";
 import Table from "@/resources/table/table";
-import Service from "@/core/module/service.factory";
 import Pagination from "@/resources/table/pagination";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
-import NewTemplateModal from "@/modules/templates/templates/components/new-template-modal";
 import store, { RootState } from "@/core/store";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
@@ -44,9 +41,8 @@ const Templates = () => {
     createTemplate,
     deleteTemplate,
     updateTemplate,
-  } = useTemplates(7);
+  } = useTemplates(10);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isNewTemplateModalOpen, setIsNewTemplateModalOpen] = useState(false);
   const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
   const [newTemplate, setNewTemplate] = useState<GenesisTemplate | null>(null);
   const [editingTemplate, setEditingTemplate] =
@@ -132,7 +128,7 @@ const Templates = () => {
                 onClick={() => {
                   if (!editingTemplate) return;
 
-                  updateTemplate(editingTemplate);
+                  void updateTemplate(editingTemplate);
 
                   setEditingTemplate(null);
                   messageHandler.handleSuccess(t("templates.updateSuccess"));
@@ -160,9 +156,9 @@ const Templates = () => {
                 }
                 size="small"
                 testId="templates.view"
-                title={t("button.view")}
+                title={t("button.edit")}
               >
-                <FaEye style={{ color: "var(--primary)" }} />
+                <FaEdit style={{ color: "var(--primary)" }} />
               </IconButton>
               <IconButton
                 onClick={() => setTemplateToDelete(template.id)}
@@ -181,12 +177,14 @@ const Templates = () => {
 
   const createtemplate = async () => {
     const numberOfTemplates = templates.length;
-    const template: any = {
-      name: `Template ${numberOfTemplates + 1}`,
+    const template = {
+      name: `${t('templates.template')} ${numberOfTemplates + 1}`,
       preview: "",
-      fields: [],
+      fields: {},
     };
-    createTemplate(template);
+    await createTemplate(template);
+    messageHandler.handleSuccess(t("templates.createSuccess"));
+
   }
 
   return (
@@ -221,6 +219,8 @@ const Templates = () => {
         totalRecords={pagination.totalRecords}
         onPageChange={handlePageChange}
       />
+      {/* 
+      Hidden at the moment as it require improvals
       <NewTemplateModal
         isOpen={isNewTemplateModalOpen}
         onClose={() => setIsNewTemplateModalOpen(false)}
@@ -231,14 +231,14 @@ const Templates = () => {
           createTemplate(template);
           messageHandler.handleSuccess(t("templates.createSuccess"));
         }}
-      />
+      /> */}
       <DeleteConfirmation
         isOpen={templateToDelete ? true : isModalOpen}
         onRequestClose={() => setTemplateToDelete(null)}
-        onConfirm={() => {
+        onConfirm={async () => {
           if (!templateToDelete) return;
 
-          deleteTemplate(templateToDelete);
+          await deleteTemplate(templateToDelete);
 
           messageHandler.handleSuccess(t("templates.deleteSuccess"));
           setIsModalOpen(false);

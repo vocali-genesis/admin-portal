@@ -39,6 +39,8 @@
     "transcription-time": "Transcripción: {{seconds}} segundos",
     "report-time": "Informe: {{seconds}} segundos",
     "download_success": "Descarga exitosa",
-    "error-no-templates": "No tienes plantillas configuradas. Por favor, configura una antes de grabar"
+    "error-no-templates": "No tienes plantillas configuradas. Por favor, configura una antes de grabar",
+    "record": "Grabar",
+    "pause": "Pausa"
   }
 }

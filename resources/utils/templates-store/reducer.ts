@@ -22,7 +22,7 @@ const initialState: TemplatesState = {
 
 const templatesReducer = (
   state = initialState,
-  action: any,
+  action: any
 ): TemplatesState => {
   switch (action.type) {
     case "SET_TEMPLATES":

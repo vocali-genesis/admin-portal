@@ -68,7 +68,7 @@ async function getMissingKeys({
     const langData = await readLangJSON(langFolder, file);
     return Object.keys(enData).reduce((acc, group) => {
       acc[group] = Object.keys(enData[group]).filter(
-        (key) => !(key in langData[group])
+        (key) => !langData[group] || !(key in langData[group])
       );
       return acc;
     }, {} as MissingTranslations);
@@ -171,6 +171,9 @@ async function updateLangFiles({
     const langData = await readLangJSON(langFolder, language);
     for (const group in missingKeys) {
       missingKeys[group].forEach((key) => {
+        if (!langData[group]) {
+          langData[group] = {};
+        }
         // Avoid to replace the values already written
         if (!langData[group][key]) {
           langData[group][key] = translation[group][key];
