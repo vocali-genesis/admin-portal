@@ -375,7 +375,8 @@ describe("===== SAAS LOGIN =====", () => {
       expect(getInput(container, "password")).not.toBeNull();
       expect(getInput(container, "confirm_password")).not.toBeNull();
 
-      expect(screen.getByTestId("updateSettings")).toBeInTheDocument();
+      act(() => screen.getByTestId("updateEmail").click());
+      act(() => screen.getByTestId("updatePassword").click());
 
       expect(container.querySelector('select[name="language"]')).not.toBeNull();
     });
@@ -385,7 +386,8 @@ describe("===== SAAS LOGIN =====", () => {
     it("Update Settings Fields are required", async () => {
       render(<Settings />);
 
-      act(() => screen.getByTestId("updateSettings").click());
+      act(() => screen.getByTestId("updateEmail").click());
+      act(() => screen.getByTestId("updatePassword").click());
 
       await waitFor(() => screen.getByText("auth.email-required"));
 
@@ -403,7 +405,8 @@ describe("===== SAAS LOGIN =====", () => {
       const confirmPassword = getInput(container, "confirm_password");
 
       // Makes the form dirty
-      act(() => screen.getByTestId("updateSettings").click());
+      act(() => screen.getByTestId("updateEmail").click());
+      act(() => screen.getByTestId("updatePassword").click());
 
       await userEvent.type(emailInput, "wrong-email");
       await userEvent.type(passwordInput, "123");
@@ -428,8 +431,9 @@ describe("===== SAAS LOGIN =====", () => {
       await userEvent.type(passwordInput, password);
       await userEvent.type(confirmPassword, password);
 
-      act(() => screen.getByTestId("updateSettings").click());
-      await waitFor(() => expect(ToastMock.success).toHaveBeenCalledTimes(1));
+      act(() => screen.getByTestId("updateEmail").click());
+      act(() => screen.getByTestId("updatePassword").click());
+      await waitFor(() => expect(ToastMock.success).toHaveBeenCalledTimes(2));
     });
 
     it("Update Settings Api Error", async () => {
@@ -449,7 +453,8 @@ describe("===== SAAS LOGIN =====", () => {
       await userEvent.type(passwordInput, password);
       await userEvent.type(confirmPassword, password);
 
-      act(() => screen.getByTestId("updateSettings").click());
+      act(() => screen.getByTestId("updateEmail").click());
+      act(() => screen.getByTestId("updatePassword").click());
 
       await waitFor(() =>
         expect(ToastMock.error).toHaveBeenCalledWith("Error Updating the user")

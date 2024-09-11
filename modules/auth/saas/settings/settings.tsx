@@ -17,6 +17,7 @@ import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import BasicInput from "@/resources/inputs/basic-input";
 import BasicPasswordInput from "@/resources/inputs/basic-password.input";
 import store, { RootState } from '@/core/store';
+import { emailSchema, passwordSchema } from "./settings.schema";
 
 const messageHandler = MessageHandler.get();
 
@@ -27,33 +28,13 @@ const Settings = () => {
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
   const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
   const { user } = useSelector((state: RootState) => state.user);
-
-  const emailSchema = () =>
-    yup.object().shape({
-      email: yup
-        .string()
-        .email(t("auth.invalid-email-format"))
-        .required(t("auth.email-required")),
-    });
-  
-  const passwordSchema = () =>
-    yup.object().shape({
-      password: yup
-        .string()
-        .min(8, t("auth.password-min-length", { times: 8 }))
-        .required(t("auth.password-required")),
-      confirm_password: yup
-        .string()
-        .oneOf([yup.ref("password"), undefined], t("auth.password-dont-match"))
-        .required(t("auth.confirm-password-required")),
-    });
   
   const {
     register: registerEmail,
     handleSubmit: handleSubmitEmail,
     formState: { errors: errorsEmail },
   } = useForm({
-    resolver: yupResolver(emailSchema()),
+    resolver: yupResolver(emailSchema(t)),
   });
 
   const {
@@ -61,7 +42,7 @@ const Settings = () => {
     handleSubmit: handleSubmitPassword,
     formState: { errors: errorsPassword },
   } = useForm({
-    resolver: yupResolver(passwordSchema()),
+    resolver: yupResolver(passwordSchema(t)),
   });
 
   const onSubmitEmail = async (data: { email: string }) => {
