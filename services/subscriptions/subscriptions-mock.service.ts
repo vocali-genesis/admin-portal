@@ -42,6 +42,10 @@ class SubscriptionsMock implements SubscriptionService {
     return Promise.resolve({
       status: "active",
       date: moment().add(1, "week").format(),
+      current_period_end: moment().add(-1, "week").format(),
+      current_period_start: moment().add(1, "week").format(),
+      id: faker.string.uuid(),
+      subscription_id: faker.string.uuid(),
     });
   }
 

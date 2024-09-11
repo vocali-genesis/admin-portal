@@ -141,7 +141,10 @@ const CancelSubscriptonBtn = () => {
         "subscriptions"
       ).getActiveSubscription();
       setIsLoading(false);
-      setSubscription(data || {});
+
+      if (!data) { return }
+
+      setSubscription(data);
     })();
   }, []);
   return (
@@ -177,8 +180,10 @@ const Subscriptions = () => {
   useEffect(() => {
     void (async () => {
       const data = await Service.require("subscriptions").getActiveSubscription();
+      if (!data) { return }
+
       setIsLoading(false);
-      setSubscription(data || {});
+      setSubscription(data);
     })();
   }, []);
 
