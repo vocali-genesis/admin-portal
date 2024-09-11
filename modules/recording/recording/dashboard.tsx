@@ -33,7 +33,8 @@ const Dashboard = () => {
       try {
         await navigator.mediaDevices.getUserMedia({ audio: true });
       } catch (error) {
-        messageHandler.handleError("resources.microphone-error");
+        console.error(error)
+        messageHandler.handleError(t("resources.microphone-error"));
       }
     }
 
