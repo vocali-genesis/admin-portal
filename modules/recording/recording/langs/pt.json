@@ -39,6 +39,8 @@
     "transcription-time": "Transcrição: {{seconds}} segundos",
     "report-time": "Relatório: {{seconds}} segundos",
     "download_success": "Download bem-sucedido",
-    "error-no-templates": "Você não tem modelos configurados. Configure um antes de gravar"
+    "error-no-templates": "Você não tem modelos configurados. Configure um antes de gravar",
+    "record": "Gravar",
+    "pause": "Pausa"
   }
 }

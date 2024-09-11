@@ -2,6 +2,7 @@
   "templates": {
     "menu": "Templates",
     "title": "Templates",
+    "template": "Template",
     "date": "Date",
     "preview": "Preview",
     "action": "Action",
@@ -42,6 +43,9 @@
     "discardChanges": "Discard Changes",
     "fieldUpdateSuccess": "Field updated successfully",
     "fieldUpdateError": "Error updating field",
-    "finish-editing": "Please finish editing the the current template before creating a new one"
+    "finish-editing": "Please finish editing the the current template before creating a new one",
+    "duplicateFieldError": "A field with this name already exists. Please choose a different name.",
+    "nameEmptyError": "The name can not be empty.",
+    "templateName": "Template Name"
   }
 }

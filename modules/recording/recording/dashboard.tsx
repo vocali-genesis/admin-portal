@@ -141,7 +141,7 @@ const Dashboard = () => {
     }
 
     const audioUrl = URL.createObjectURL(selectedFile);
-    router.push({
+    void router.push({
       pathname: "/app/recording",
       query: { audioUrl },
     });

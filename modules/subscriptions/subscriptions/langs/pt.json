@@ -35,7 +35,8 @@
     "confirm-btn": "Confirmar",
     "inactive-label": "Inativo",
     "subscribe-btn": "Assine agora",
-    "success-message": "Assinatura cancelada com sucesso!"
+    "success-message": "Assinatura cancelada com sucesso!",
+    "canceled-but-valid-warning": "Já cancelado"
   },
   "invoice-history": {
     "invoice-id-th": "ID da Fatura",

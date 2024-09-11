@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import btn_styles from "./styles/button.module.css";
-import { ButtonSpinner } from "./button-spinner";
+import { SmallSpinner } from "./small-spinner";
 
 interface ButtonProps {
-  onClick: (
+  onClick?: (
     event?: React.MouseEvent<HTMLButtonElement>
   ) => void | Promise<void>;
   className?: string;
@@ -28,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setIsLoading(true);
     try {
-      await onClick(event);
+      await onClick?.(event);
     } finally {
       setIsLoading(false);
     }
@@ -36,13 +36,13 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      onClick={handleClick}
+      onClick={(event) => void handleClick(event)}
       data-testid={testId}
       className={`${btn_styles.button} ${btn_styles[variant]} ${className}`}
       disabled={disabled}
       type={type}
     >
-      {isLoading ? <ButtonSpinner hidden={false} /> : children}
+      {isLoading ? <SmallSpinner /> : children}
     </button>
   );
 };

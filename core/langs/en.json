@@ -43,8 +43,25 @@
     "of": "of",
     "here": "here"
   },
+  "fields": {
+    "text": "text",
+    "number": "number",
+    "select": "select",
+    "multiselect": "multiselect"
+  },
   "validation": {
     "required": "This field is required.",
     "one-field-required": "At least one field is required"
+  },
+  "button": {
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "cancel": "Cancel",
+    "save": "Save",
+    "backward": "Back",
+    "skip": "Skip",
+    "play": "Play",
+    "config": "Config"
   }
 }

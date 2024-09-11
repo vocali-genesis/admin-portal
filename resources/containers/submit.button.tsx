@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ButtonSpinner } from "./button-spinner";
+import { SmallSpinner } from "./small-spinner";
 
 interface SubmitButtonProps {
   label: string;
@@ -15,7 +15,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 }) => {
   return (
     <StyledButton type="submit" data-testid={testId} disabled={isSubmitting}>
-      {isSubmitting ? <ButtonSpinner hidden={false} /> : label}
+      {isSubmitting ? <SmallSpinner /> : label}
     </StyledButton>
   );
 };
@@ -43,4 +43,3 @@ const StyledButton = styled.button`
   }
 `;
 
-export default SubmitButton;

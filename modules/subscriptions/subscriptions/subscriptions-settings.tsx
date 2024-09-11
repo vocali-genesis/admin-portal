@@ -19,6 +19,7 @@ const messageHandler = MessageHandler.get();
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
+
   const columns: ColumnConfig<GenesisInvoice>[] = [
     {
       title: t("invoice-history.invoice-id-th"),
@@ -37,7 +38,8 @@ const PaymentHistory: React.FC = () => {
     },
     {
       title: t("invoice-history.validity-th"),
-      render: (item) => (
+      render: (item: any) => (
+        console.log(">>>>>>>item", item),
         <>
           {item.metadata.period_end
             ? moment(+item.metadata.period_end * 1000).format("DD MMM, YYYY")
@@ -127,7 +129,21 @@ const CancelSubscriptonBtn = () => {
     setIsOpen(false);
     setIsLoading(false);
   };
+  const [subscription, setSubscription] = useState<SubscriptionResponse>();
 
+  const validUntil = subscription?.id
+    ? moment(subscription?.current_period_end || "").format("DD MMM, YYYY")
+    : t("subscription-settings.inactive-label");
+
+  useEffect(() => {
+    void (async () => {
+      const data = await Service.require(
+        "subscriptions"
+      ).getActiveSubscription();
+      setIsLoading(false);
+      setSubscription(data || {});
+    })();
+  }, []);
   return (
     <>
       <Button
@@ -143,7 +159,7 @@ const CancelSubscriptonBtn = () => {
         onRequestClose={() => setIsOpen(false)}
         onConfirm={() => void onConfirm()}
         title={t("subscription-settings.confirm-title")}
-        message={t("subscription-settings.confirm-message")}
+        message={t("subscription-settings.confirm-message", { validUntil })}
         cancelButtonText={t("subscription-settings.cancel-btn")}
         confirmButtonText={t("subscription-settings.confirm-btn")}
         isLoading={isLoading}
@@ -160,9 +176,7 @@ const Subscriptions = () => {
 
   useEffect(() => {
     void (async () => {
-      const data = await Service.require(
-        "subscriptions"
-      ).getActiveSubscription();
+      const data = await Service.require("subscriptions").getActiveSubscription();
       setIsLoading(false);
       setSubscription(data || {});
     })();
@@ -172,20 +186,29 @@ const Subscriptions = () => {
     return <Spinner />;
   }
 
+  // Calculate the subscription end date
   const validUntil = subscription?.id
     ? moment(subscription?.current_period_end || "").format("DD MMM, YYYY")
     : t("subscription-settings.inactive-label");
+
   const badgeClass = subscription?.id ? "success" : "warning";
+
+  const isCanceledButValid = subscription?.status === "canceled" && moment().isBefore(subscription?.current_period_end);
 
   return (
     <div className={styles.container}>
       <main className={styles.contentWrapper}>
-        <div className={styles.head}>
-          <div className={styles.left}>
+        <div className={`${styles.head} flex  justify-between items-center`}>
+          <div className={`${styles.left} flex justify-between items-center`}>
             <h2>
               {t("subscription-settings.exp-label")}{" "}
               <Badge variant={badgeClass}>{validUntil}</Badge>
             </h2>
+            {isCanceledButValid && (
+              <h2 className="ml-2" >
+                <Badge variant={"warning"}>{t("subscription-settings.canceled-but-valid-warning")}</Badge>
+              </h2>
+            )}
           </div>
           <div className={styles.right}>
             {subscription?.status === "active" ? (

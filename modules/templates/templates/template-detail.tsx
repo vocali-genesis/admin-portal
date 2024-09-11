@@ -39,6 +39,81 @@ import { FieldData } from "@/core/module/core.types";
 const messageHandler = MessageHandler.get();
 type TableDataType = GenesisTemplateField & { key: string; name: string };
 
+const EditTitle = ({ template, setTemplate }: { template: GenesisTemplate, setTemplate: (template: GenesisTemplate) => void }) => {
+  const [editingTemplateName, setEditingTemplateName] = useState(false);
+  const [templateName, setTemplateName] = useState<string>(template.name || '');
+  const { t } = useTranslation()
+  const templateService: SupabaseTemplateService = Service.require("templates");
+
+
+  const handleCancelEditTemplateName = () => {
+    setTemplateName(template?.name || "");
+    setEditingTemplateName(false);
+  };
+
+  const handleEditTemplateName = () => {
+    setEditingTemplateName(true);
+  };
+
+  const handleSaveTemplateName = async () => {
+    if (!templateName) {
+      messageHandler.handleError(t("templates.nameEmptyError"));
+      return
+    }
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const updatedTemplate = await templateService.updateTemplate(template.id, {
+        name: templateName,
+      });
+      if (!updatedTemplate) {
+        return
+      }
+      setTemplate(updatedTemplate);
+      setEditingTemplateName(false);
+      messageHandler.handleSuccess(t("templates.editSuccess"));
+
+    } catch (error) {
+      console.error(error);
+      messageHandler.handleError(t("templates.editError"));
+    }
+  };
+  if (editingTemplateName) {
+    return (<div className="flex items-center" style={{ marginBottom: "12px" }} >
+      <div className="w-30 mr-4">
+        <BasicInput
+          value={templateName || ""}
+          onChange={(e) => setTemplateName(e.target.value)}
+          placeholder={t("templates.templateNamePlaceholder")}
+          testId="template-detail.template-name-input"
+        />
+      </div>
+      <div className="mr-4">
+        <IconButton onClick={() => handleSaveTemplateName()} size="small" testId="template-detail.save-title">
+          <FaSave style={{ color: "var(--primary)" }} />
+        </IconButton>
+      </div>
+      <div>
+        <IconButton onClick={handleCancelEditTemplateName} size="small" testId="template-detail.cancel-title" >
+          <FaTimes style={{ color: "var(--danger)" }} />
+        </IconButton>
+      </div>
+    </div >)
+  }
+  return (
+    <div className="flex items-center">
+      <h1 className={`${styles.title} mr-4`} data-testid="template-detail.title" >
+        {template?.name}
+      </h1 >
+      <IconButton onClick={handleEditTemplateName} size="small" title={t("button.edit")} testId="template-detail.edit-title"
+      >
+        <FaEdit style={{ color: "var(--primary)" }} />
+      </IconButton>
+    </div >
+
+  )
+}
+
 const TemplateDetail = () => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -64,7 +139,6 @@ const TemplateDetail = () => {
   const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
     null
   );
-
   const fetchTemplate = useCallback(
     async (page: number) => {
       if (typeof id !== "string") return;
@@ -133,6 +207,13 @@ const TemplateDetail = () => {
   const handleSave = async (fieldKey: string) => {
     if (!template) return;
     const { name, ...fieldData } = editedValues[fieldKey];
+
+    // Prevent saving if a field with the same name already exists
+    if (name !== fieldKey && Object.keys(template.fields).includes(name)) {
+      messageHandler.handleError(t("templates.duplicateFieldError"));
+      return;
+    }
+
     const updatedFields = { ...template.fields };
 
     if (name !== fieldKey) {
@@ -165,6 +246,7 @@ const TemplateDetail = () => {
     setIsFieldModalOpen(false);
   };
 
+
   const handleInputChange = (
     fieldKey: string,
     property: string,
@@ -178,15 +260,25 @@ const TemplateDetail = () => {
 
   const handleAddField = () => {
     if (!template) return;
+
     const newFieldKey = `newField${Object.keys(template.fields).length + 1}`;
+
+    // Check if the field name already exists
+    if (Object.keys(template.fields).includes(newFieldKey)) {
+      messageHandler.handleError(t("templates.duplicateFieldError"));
+      return;
+    }
+
     const newField: GenesisTemplateField = {
       type: "text" as TYPE_OPTIONS,
       description: "New field description",
     };
+
     setTemplate((prev) => ({
       ...prev!,
       fields: { ...prev!.fields, [newFieldKey]: newField },
     }));
+
     setEditingField(newFieldKey);
     setEditedValues((prev) => ({
       ...prev,
@@ -271,7 +363,7 @@ const TemplateDetail = () => {
             testId="template-detail.field-type-select"
           />
         ) : (
-          <span>{record.type}</span>
+          <span>{t(`templates.type-${record.type}`)}</span>
         ),
     },
     {
@@ -300,57 +392,63 @@ const TemplateDetail = () => {
           {editingField === record.key ? (
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
-                onClick={() => void handleSave(record.key)}
+                onClick={() => handleSave(record.key)}
                 size="small"
                 testId="template-detail.save-field"
+                title={t("button.save")}
+
               >
                 <FaSave style={{ color: "var(--primary)" }} />
-              </IconButton>
-              <IconButton
-                onClick={() => handleCancel(record.key)}
-                size="small"
-                testId="template-detail.cancel-edit"
-              >
-                <FaTimes style={{ color: "var(--danger)" }} />
               </IconButton>
               {["number", "select", "multiselect"].includes(
                 editedValues[record.key]?.type
               ) && (
-                <IconButton
-                  onClick={() => {
-                    const fieldConfig = editedValues[record.key]?.config;
-                    let configToUse: FieldConfig;
+                  <IconButton
+                    title={t("button.config")}
+                    onClick={() => {
+                      const fieldConfig = editedValues[record.key]?.config;
+                      let configToUse: FieldConfig;
 
-                    if (
-                      editedValues[record.key]?.type === TYPE_OPTIONS.NUMBER &&
-                      fieldConfig &&
-                      isNumberFieldConfig(fieldConfig)
-                    ) {
-                      configToUse = { maxValue: fieldConfig.maxValue };
-                    } else if (
-                      [TYPE_OPTIONS.SELECT, TYPE_OPTIONS.MULTISELECT].includes(
-                        editedValues[record.key]?.type
-                      ) &&
-                      fieldConfig &&
-                      isSelectFieldConfig(fieldConfig)
-                    ) {
-                      configToUse = { options: fieldConfig.options };
-                    } else {
-                      configToUse =
-                        editedValues[record.key]?.type === TYPE_OPTIONS.NUMBER
-                          ? { maxValue: 0 }
-                          : { options: [] };
-                    }
+                      if (
+                        editedValues[record.key]?.type === TYPE_OPTIONS.NUMBER &&
+                        fieldConfig &&
+                        isNumberFieldConfig(fieldConfig)
+                      ) {
+                        configToUse = { maxValue: fieldConfig.maxValue };
+                      } else if (
+                        [TYPE_OPTIONS.SELECT, TYPE_OPTIONS.MULTISELECT].includes(
+                          editedValues[record.key]?.type
+                        ) &&
+                        fieldConfig &&
+                        isSelectFieldConfig(fieldConfig)
+                      ) {
+                        configToUse = { options: fieldConfig.options };
+                      } else {
+                        configToUse =
+                          editedValues[record.key]?.type === TYPE_OPTIONS.NUMBER
+                            ? { maxValue: 0 }
+                            : { options: [] };
+                      }
 
-                    setFieldModalConfig(configToUse);
-                    setIsFieldModalOpen(true);
-                  }}
-                  size="small"
-                  testId="template-detail.edit-field-config"
-                >
-                  <FaCog style={{ color: "var(--primary)" }} />
-                </IconButton>
-              )}
+                      setFieldModalConfig(configToUse);
+                      setIsFieldModalOpen(true);
+                    }}
+                    size="small"
+                    testId="template-detail.edit-field-config"
+                  >
+                    <FaCog style={{ color: "var(--primary)" }} />
+                  </IconButton>
+                )}
+              <IconButton
+                onClick={() => handleCancel(record.key)}
+                size="small"
+                testId="template-detail.cancel-edit"
+                title={t("button.cancel")}
+
+              >
+                <FaTimes style={{ color: "var(--danger)" }} />
+              </IconButton>
+
             </div>
           ) : (
             <div style={{ display: "flex", gap: "3vh" }}>
@@ -358,6 +456,7 @@ const TemplateDetail = () => {
                 onClick={() => handleEdit(record.key)}
                 size="small"
                 testId="template-detail.edit"
+                title={t("button.edit")}
               >
                 <FaEdit style={{ color: "var(--primary)" }} />
               </IconButton>
@@ -365,6 +464,7 @@ const TemplateDetail = () => {
                 onClick={() => setFieldToDelete(record.key)}
                 size="small"
                 testId="template-detail.delete"
+                title={t("button.delete")}
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
               </IconButton>
@@ -375,12 +475,14 @@ const TemplateDetail = () => {
     },
   ];
 
+
+
   const tableData: TableDataType[] = template
     ? Object.entries(template.fields).map(([key, field]) => ({
-        key,
-        name: key,
-        ...field,
-      }))
+      key,
+      name: key,
+      ...field,
+    }))
     : [];
 
   return (
@@ -407,10 +509,9 @@ const TemplateDetail = () => {
           <FaPlus /> {t("templates.addField")}
         </Button>
       </div>
-      <h1 className={styles.title} data-testid="template-detail.title">
-        {template?.name}
-      </h1>
-
+      <div className={styles.templateNameContainer}>
+        {template && <EditTitle template={template} setTemplate={setTemplate} />}
+      </div>
       <Table
         data={tableData}
         columns={columns}
@@ -453,7 +554,7 @@ const TemplateDetail = () => {
       <FieldModal
         isOpen={isFieldModalOpen}
         onClose={() => setIsFieldModalOpen(false)}
-        onSave={async (data) => {
+        onSave={(data) => {
           if (editingField && template) {
             const updatedField = {
               ...editedValues[editingField],
@@ -471,7 +572,7 @@ const TemplateDetail = () => {
         }}
         fieldType={
           (editingField &&
-            (editedValues[editingField]?.type as TYPE_OPTIONS)) ||
+            (editedValues[editingField]?.type)) ||
           TYPE_OPTIONS.TEXT
         }
         initialConfig={fieldModalConfig}
