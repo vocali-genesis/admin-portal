@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Spinner from "@/resources/containers/spinner";
 import Image from "next/image";
+import AppFooter from "@/core/components/footer";
 
 const Auth = () => {
   const router = useRouter();
@@ -46,10 +47,12 @@ const Auth = () => {
             />
           </div>
         </div>
-        <div className="flex flex-1 justify-center items-center p-8">
+        <div className="flex flex-col flex-1 justify-center items-center p-8">
           <Component />
+          <AppFooter />
         </div>
       </div>
+
     </div>
 
   );

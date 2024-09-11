@@ -40,7 +40,7 @@ export const MicrophoneSelect = ({
         void setUpDevices();
       } catch (error) {
         console.error("Error getting audio devices:", error);
-        messageHandler.handleError("resources.microphone-error");
+        messageHandler.handleError(t("resources.microphone-error"));
       }
     }
     void request();

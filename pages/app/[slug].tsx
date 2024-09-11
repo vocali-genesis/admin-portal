@@ -7,6 +7,7 @@ import Spinner from "@/resources/containers/spinner";
 import { userValidation } from "@/core/components/user-validation";
 import { Provider } from "react-redux";
 import store from "@/core/store";
+import AppFooter from "@/core/components/footer";
 
 const ApplicationSlug = () => {
   const router = useRouter();
@@ -43,7 +44,7 @@ const ApplicationSlug = () => {
           menu={menu}
         />
         <main className="flex-grow p-5 overflow-y-scroll">
-          {isLoading ? <Spinner /> : <Component />}
+          {isLoading ? <Spinner /> : <><Component />  <AppFooter /></>}
         </main>
       </div>
     </div>
