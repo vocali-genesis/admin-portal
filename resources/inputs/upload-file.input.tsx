@@ -2,8 +2,8 @@ import React, { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import MessageHandler from "@/core/message-handler";
 import { useTranslation } from "react-i18next";
-import { ButtonSpinner } from "../containers/button-spinner";
 import dash_styles from "./upload-file.module.css";
+import { SmallSpinner } from "../containers/small-spinner";
 
 const messageHandler = MessageHandler.get();
 interface Props {
@@ -104,11 +104,11 @@ export const UploadFile = ({
       <div
         className={`
           ${dash_styles.uploadArea} ${isDragging ? dash_styles.dragging : ""}`}
-        onDragEnter={disabled ? () => {} : handleDragEnter}
-        onDragOver={disabled ? () => {} : handleDragOver}
-        onDragLeave={disabled ? () => {} : handleDragLeave}
-        onDrop={disabled ? () => {} : handleDrop}
-        onClick={disabled ? () => {} : handleBrowseClick}
+        onDragEnter={disabled ? () => { } : handleDragEnter}
+        onDragOver={disabled ? () => { } : handleDragOver}
+        onDragLeave={disabled ? () => { } : handleDragLeave}
+        onDrop={disabled ? () => { } : handleDrop}
+        onClick={disabled ? () => { } : handleBrowseClick}
       >
         <Image
           src="/cloud-avatar.svg"
@@ -147,7 +147,7 @@ export const UploadFile = ({
         onClick={() => selectedFile && onFile(selectedFile)}
         disabled={!selectedFile || isUploading}
       >
-        <ButtonSpinner hidden={!isUploading} />
+        {isUploading && <SmallSpinner />}
         {t(isUploading ? "recording.uploading" : "recording.upload-files")}
       </button>
     </div>

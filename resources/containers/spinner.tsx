@@ -1,5 +1,8 @@
 import React from "react";
 
+/**
+ * Full Page Spinner
+ */
 export default function Spinner({ maxHeight }: { maxHeight?: string }) {
   return (
     <div

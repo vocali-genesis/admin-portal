@@ -46,5 +46,22 @@
   "validation": {
     "required": "Este campo es obligatorio.",
     "one-field-required": "Se requiere al menos un campo"
+  },
+  "button": {
+    "delete": "Apagar",
+    "edit": "Editar",
+    "view": "Ver",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "backward": "Voltar",
+    "skip": "Pular",
+    "play": "Reproduzir",
+    "config": "Configurar"
+  },
+  "fields": {
+    "text": "texto",
+    "number": "número",
+    "select": "selecionar",
+    "multiselect": "multisseleção"
   }
 }

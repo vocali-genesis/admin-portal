@@ -6,7 +6,7 @@ import Spinner from "@/resources/containers/spinner";
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   isLeavingPage?: boolean;
   title?: string;
   message?: string;

@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import Modal from "react-modal";
 import modal_styles from "./styles/confirmation.module.css";
 import { useTranslation } from "react-i18next";
 import Spinner from "./spinner";
+import { SmallSpinner } from "./small-spinner";
 
 Modal.setAppElement("body");
 
 interface ConfirmationModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   title: string;
   message: string;
   confirmButtonText: string;
@@ -28,6 +29,15 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isLoading,
 }) => {
   const { t } = useTranslation();
+
+  const [confirming, setConfirming] = useState(false)
+
+  const onConfirmation = useCallback(async () => {
+    setConfirming(true)
+    await onConfirm?.()
+    setConfirming(false)
+  }, [onConfirm, setConfirming])
+
   return (
     <Modal
       isOpen={isOpen}
@@ -44,11 +54,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       <p>{message}</p>
       <div className={modal_styles.modalButtons} data-testid={testId}>
         <button
-          onClick={onConfirm}
+          onClick={() => void onConfirmation()}
           className={modal_styles.confirmButton}
           data-testid="modal.confirm-button"
         >
-          {confirmButtonText}
+          {confirming ? <SmallSpinner /> : confirmButtonText}
         </button>
         <button onClick={onRequestClose} className={modal_styles.cancelButton}>
           {t("common.cancel")}

@@ -42,6 +42,9 @@
     "discardChanges": "Descartar cambios",
     "fieldUpdateSuccess": "Campo actualizado correctamente",
     "fieldUpdateError": "Error al actualizar el campo",
-    "finish-editing": "Por favor, termina de editar la plantilla actual antes de crear una nueva"
+    "finish-editing": "Por favor, termina de editar la plantilla actual antes de crear una nueva",
+    "duplicateFieldError": "Ya existe un campo con este nombre. Por favor, elija un nombre diferente.",
+    "nameEmptyError": "El nombre no puede estar vacío.",
+    "templateName": "Nombre de la plantilla"
   }
 }

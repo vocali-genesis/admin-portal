@@ -39,6 +39,81 @@ import { FieldData } from "@/core/module/core.types";
 const messageHandler = MessageHandler.get();
 type TableDataType = GenesisTemplateField & { key: string; name: string };
 
+const EditTitle = ({ template, setTemplate }: { template: GenesisTemplate, setTemplate: (template: GenesisTemplate) => void }) => {
+  const [editingTemplateName, setEditingTemplateName] = useState(false);
+  const [templateName, setTemplateName] = useState<string>(template.name || '');
+  const { t } = useTranslation()
+  const templateService: SupabaseTemplateService = Service.require("templates");
+
+
+  const handleCancelEditTemplateName = () => {
+    setTemplateName(template?.name || "");
+    setEditingTemplateName(false);
+  };
+
+  const handleEditTemplateName = () => {
+    setEditingTemplateName(true);
+  };
+
+  const handleSaveTemplateName = async () => {
+    if (!templateName) {
+      messageHandler.handleError(t("templates.nameEmptyError"));
+      return
+    }
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const updatedTemplate = await templateService.updateTemplate(template.id, {
+        name: templateName,
+      });
+      if (updatedTemplate) {
+        setTemplate(updatedTemplate);
+        setEditingTemplateName(false);
+        messageHandler.handleSuccess(t("templates.editSuccess"));
+      }
+    } catch (error) {
+      console.error(error);
+      messageHandler.handleError(t("templates.editError"));
+    }
+  };
+  if (editingTemplateName) {
+    return (<div className="flex items-center" style={{ marginBottom: "12px" }} >
+      <div className="w-30 mr-4">
+        <BasicInput
+          value={templateName || ""}
+          onChange={(e) => setTemplateName(e.target.value)}
+          placeholder={t("templates.templateNamePlaceholder")}
+          testId="template-detail.template-name-input"
+        />
+      </div>
+      <div className="mr-4">
+        <IconButton onClick={() => handleSaveTemplateName()} size="small">
+          <FaSave style={{ color: "var(--primary)" }} />
+        </IconButton>
+      </div>
+      <div>
+        <IconButton onClick={handleCancelEditTemplateName} size="small">
+          <FaTimes style={{ color: "var(--danger)" }} />
+        </IconButton>
+      </div>
+    </div >)
+  }
+  return (
+
+
+    <div className="flex items-center">
+      <h1 className={`${styles.title} mr-4`} data-testid="template-detail.title" >
+        {template?.name}
+      </h1 >
+      <IconButton onClick={handleEditTemplateName} size="small" title={t("button.edit")}
+      >
+        <FaEdit style={{ color: "var(--primary)" }} />
+      </IconButton>
+    </div >
+
+  )
+}
+
 const TemplateDetail = () => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -64,8 +139,6 @@ const TemplateDetail = () => {
   const [fieldModalConfig, setFieldModalConfig] = useState<FieldData | null>(
     null
   );
-  const [editingTemplateName, setEditingTemplateName] = useState(false);
-  const [templateName, setTemplateName] = useState<string | null>(null);
   const fetchTemplate = useCallback(
     async (page: number) => {
       if (typeof id !== "string") return;
@@ -290,7 +363,7 @@ const TemplateDetail = () => {
             testId="template-detail.field-type-select"
           />
         ) : (
-          <span>{record.type}</span>
+          <span>{t(`templates.type-${record.type}`)}</span>
         ),
     },
     {
@@ -319,23 +392,19 @@ const TemplateDetail = () => {
           {editingField === record.key ? (
             <div style={{ display: "flex", gap: "3vh" }}>
               <IconButton
-                onClick={() => void handleSave(record.key)}
+                onClick={() => handleSave(record.key)}
                 size="small"
                 testId="template-detail.save-field"
+                title={t("button.save")}
+
               >
                 <FaSave style={{ color: "var(--primary)" }} />
-              </IconButton>
-              <IconButton
-                onClick={() => handleCancel(record.key)}
-                size="small"
-                testId="template-detail.cancel-edit"
-              >
-                <FaTimes style={{ color: "var(--danger)" }} />
               </IconButton>
               {["number", "select", "multiselect"].includes(
                 editedValues[record.key]?.type
               ) && (
                   <IconButton
+                    title={t("button.config")}
                     onClick={() => {
                       const fieldConfig = editedValues[record.key]?.config;
                       let configToUse: FieldConfig;
@@ -370,6 +439,16 @@ const TemplateDetail = () => {
                     <FaCog style={{ color: "var(--primary)" }} />
                   </IconButton>
                 )}
+              <IconButton
+                onClick={() => handleCancel(record.key)}
+                size="small"
+                testId="template-detail.cancel-edit"
+                title={t("button.cancel")}
+
+              >
+                <FaTimes style={{ color: "var(--danger)" }} />
+              </IconButton>
+
             </div>
           ) : (
             <div style={{ display: "flex", gap: "3vh" }}>
@@ -377,6 +456,7 @@ const TemplateDetail = () => {
                 onClick={() => handleEdit(record.key)}
                 size="small"
                 testId="template-detail.edit"
+                title={t("button.edit")}
               >
                 <FaEdit style={{ color: "var(--primary)" }} />
               </IconButton>
@@ -384,6 +464,7 @@ const TemplateDetail = () => {
                 onClick={() => setFieldToDelete(record.key)}
                 size="small"
                 testId="template-detail.delete"
+                title={t("button.delete")}
               >
                 <FaTrash style={{ color: "var(--danger)" }} />
               </IconButton>
@@ -393,31 +474,8 @@ const TemplateDetail = () => {
       ),
     },
   ];
-  const handleSaveTemplateName = async () => {
-    if (!template || !templateName) return;
-    try {
-      const updatedTemplate = await templateService.updateTemplate(template.id, {
-        name: templateName,
-      });
-      if (updatedTemplate) {
-        setTemplate(updatedTemplate);
-        setEditingTemplateName(false);
-        messageHandler.handleSuccess(t("templates.editSuccess"));
-      }
-    } catch (error) {
-      console.error(error);
-      messageHandler.handleError(t("templates.editError"));
-    }
-  };
 
-  const handleCancelEditTemplateName = () => {
-    setTemplateName(template?.name || "");
-    setEditingTemplateName(false);
-  };
 
-  const handleEditTemplateName = () => {
-    setEditingTemplateName(true);
-  };
 
   const tableData: TableDataType[] = template
     ? Object.entries(template.fields).map(([key, field]) => ({
@@ -452,37 +510,7 @@ const TemplateDetail = () => {
         </Button>
       </div>
       <div className={styles.templateNameContainer}>
-        {editingTemplateName ? (
-          <div className="flex items-center" style={{ marginBottom: "12px" }}>
-            <div className="w-30 mr-4">
-              <BasicInput
-                value={templateName || ""}
-                onChange={(e) => setTemplateName(e.target.value)}
-                placeholder={t("templates.templateNamePlaceholder")}
-                testId="template-detail.template-name-input"
-              />
-            </div>
-            <div className="mr-4">
-              <IconButton onClick={handleSaveTemplateName} size="small">
-                <FaSave style={{ color: "var(--primary)" }} />
-              </IconButton>
-            </div>
-            <div>
-              <IconButton onClick={handleCancelEditTemplateName} size="small">
-                <FaTimes style={{ color: "var(--danger)" }} />
-              </IconButton>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center">
-            <h1 className={`${styles.title} mr-4`} data-testid="template-detail.title">
-              {template?.name}
-            </h1>
-            <IconButton onClick={handleEditTemplateName} size="small">
-              <FaEdit style={{ color: "var(--primary)" }} />
-            </IconButton>
-          </div>
-        )}
+        {template && <EditTitle template={template} setTemplate={setTemplate} />}
       </div>
       <Table
         data={tableData}
@@ -526,7 +554,7 @@ const TemplateDetail = () => {
       <FieldModal
         isOpen={isFieldModalOpen}
         onClose={() => setIsFieldModalOpen(false)}
-        onSave={async (data) => {
+        onSave={(data) => {
           if (editingField && template) {
             const updatedField = {
               ...editedValues[editingField],
@@ -544,7 +572,7 @@ const TemplateDetail = () => {
         }}
         fieldType={
           (editingField &&
-            (editedValues[editingField]?.type as TYPE_OPTIONS)) ||
+            (editedValues[editingField]?.type)) ||
           TYPE_OPTIONS.TEXT
         }
         initialConfig={fieldModalConfig}
