@@ -45,6 +45,7 @@
     "finish-editing": "Si us plau, acaba d'editar la plantilla actual abans de crear una de nova",
     "duplicateFieldError": "A field with this name already exists. Please choose a different name.",
     "nameEmptyError": "El nom no pot estar buit.",
-    "templateName": "Nom de la plantilla"
+    "templateName": "Nom de la plantilla",
+    "template": "Plantilla"
   }
 }

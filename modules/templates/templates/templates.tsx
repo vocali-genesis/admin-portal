@@ -65,7 +65,7 @@ const Templates = () => {
     maxLength: number = 25
   ) => {
     const previewString = Object.entries(fields)
-      .map(([key, value]) => `${key}: ${value.type}`)
+      .map(([key, value]) => `${key}: ${t(`templates.type-${value.type}`)}`)
       .join(", ");
 
     if (previewString.length > maxLength) {
@@ -178,7 +178,7 @@ const Templates = () => {
   const createtemplate = async () => {
     const numberOfTemplates = templates.length;
     const template = {
-      name: `Template ${numberOfTemplates + 1}`,
+      name: `${t('templates.template')} ${numberOfTemplates + 1}`,
       preview: "",
       fields: {},
     };

@@ -45,6 +45,7 @@
     "finish-editing": "Por favor, termine de editar o modelo atual antes de criar um novo",
     "duplicateFieldError": "Já existe um campo com este nome. Por favor, escolha um nome diferente.",
     "nameEmptyError": "O nome não pode estar vazio.",
-    "templateName": "Nome do modelo"
+    "templateName": "Nome do modelo",
+    "template": "Modelo"
   }
 }

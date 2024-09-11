@@ -2,6 +2,7 @@
   "templates": {
     "menu": "Templates",
     "title": "Templates",
+    "template": "Template",
     "date": "Date",
     "preview": "Preview",
     "action": "Action",

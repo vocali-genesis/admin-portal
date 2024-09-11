@@ -45,6 +45,7 @@
     "finish-editing": "Por favor, termina de editar la plantilla actual antes de crear una nueva",
     "duplicateFieldError": "Ya existe un campo con este nombre. Por favor, elija un nombre diferente.",
     "nameEmptyError": "El nombre no puede estar vacío.",
-    "templateName": "Nombre de la plantilla"
+    "templateName": "Nombre de la plantilla",
+    "template": "Plantilla"
   }
 }
