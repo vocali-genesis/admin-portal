@@ -69,7 +69,7 @@ const Templates = () => {
     maxLength: number = 25
   ) => {
     const previewString = Object.entries(fields)
-      .map(([key, value]) => `${key}: ${value.type}`)
+      .map(([key, value]) => `${key}: ${t(`fields.${value.type}`)}`)
       .join(", ");
 
     if (previewString.length > maxLength) {

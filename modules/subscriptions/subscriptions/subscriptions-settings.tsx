@@ -19,7 +19,13 @@ const messageHandler = MessageHandler.get();
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
-
+  const getEndSubscription = async () => {
+    const data: any = await Service.require("subscriptions").getActiveSubscription();
+    if (!data) {
+      return
+    }
+    return moment(data?.current_period_end || "").format("DD MMM, YYYY")
+  }
   const columns: ColumnConfig<GenesisInvoice>[] = [
     {
       title: t("invoice-history.invoice-id-th"),
@@ -39,7 +45,6 @@ const PaymentHistory: React.FC = () => {
     {
       title: t("invoice-history.validity-th"),
       render: (item: any) => (
-        console.log(">>>>>>>item", item),
         <>
           {item.metadata.period_end
             ? moment(+item.metadata.period_end * 1000).format("DD MMM, YYYY")
