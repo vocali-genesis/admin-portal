@@ -1,9 +1,6 @@
-import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
+import { GenesisInvoice, GenesisSubscription } from "@/core/module/core.types";
 import { SubscriptionService } from "@/core/module/services.types";
-import {
-  createClient,
-  SupabaseClient,
-} from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
 import { GlobalCore } from "@/core/module/module.types";
@@ -47,6 +44,27 @@ class SubscriptionSupabase implements SubscriptionService {
     return null;
   }
 
+  public async updateExpiryDate() {
+    const subscription = await this.getActiveSubscription();
+
+    const { data, error } = await this.supabase
+      .from("subscriptions")
+      .update({
+        current_period_end: new Date(
+          new Date().setDate(new Date().getDate() - 1)
+        ).toISOString(),
+      })
+      .eq("id", subscription?.id)
+      .select();
+
+    if (error) {
+      messageHandler.handleError(error.message);
+    }
+
+    console.log(data);
+    return null;
+  }
+
   /**
    * Cancels the current active subscription and returns the subscription data
    */
@@ -58,8 +76,10 @@ class SubscriptionSupabase implements SubscriptionService {
       "cancel-subscription"
     );
     if (!error) {
+      await this.updateExpiryDate();
       return data?.data as Record<string, string | number>;
     }
+
     await messageHandler.handleEdgeFunctionError(error);
     return null;
   }
@@ -67,7 +87,7 @@ class SubscriptionSupabase implements SubscriptionService {
   /**
    * Retruns the currently active user subscription, so that the users can subscribe to a plan
    */
-  public async getActiveSubscription(): Promise<SubscriptionResponse | null> {
+  public async getActiveSubscription(): Promise<GenesisSubscription | null> {
     const { data, error } = await this.supabase
       .from("subscriptions")
       .select(

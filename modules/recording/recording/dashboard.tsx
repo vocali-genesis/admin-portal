@@ -10,9 +10,8 @@ import { MicrophoneSelect } from "@/resources/inputs/microphones.select";
 import { UploadFile } from "@/resources/inputs/upload-file.input";
 import RecordButton from "@/resources/containers/record-button";
 import Spinner from "@/resources/containers/spinner";
-import { Provider } from "react-redux";
-import store from "@/core/store";
 import { useTemplates } from "@/core/components/use-templates";
+import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 
 const messageHandler = MessageHandler.get();
 
@@ -27,12 +26,15 @@ const Dashboard = () => {
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
-  const { templates, isLoading } = useTemplates();
+  const { templates, isLoading, hasFetchedTemplates } = useTemplates();
 
   const toggleRecording = async () => {
     if (!microphone) {
-      messageHandler.handleError(t("recording.permission-required"));
-      return;
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (error) {
+        messageHandler.handleError("resources.microphone-error");
+      }
     }
 
     if (!audioRecorderRef.current) {
@@ -156,7 +158,7 @@ const Dashboard = () => {
     return message[recordingState];
   };
 
-  if (isLoading) return <Spinner />;
+  if (isLoading || !hasFetchedTemplates) return <Spinner />;
   return (
     <>
       {templates.length === 0 && (
@@ -212,17 +214,7 @@ const Dashboard = () => {
   );
 };
 
-GlobalCore.manager.app(
-  "dashboard",
-  () => {
-    return (
-      <Provider store={store}>
-        <Dashboard />
-      </Provider>
-    );
-  },
-  { default: true }
-);
+GlobalCore.manager.app("dashboard", () => <SubscriptionGuard> <Dashboard /> </SubscriptionGuard>, { default: true });
 GlobalCore.manager.menu({
   label: "recording.menu",
   icon: "/recordings.svg",

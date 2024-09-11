@@ -10,6 +10,7 @@ import { RouterMock, ToastMock, TranslationMock } from "@/jest-setup";
 import MessageHandler from "@/core/message-handler";
 import React, { act } from "react";
 import { login } from "@/resources/tests/test.utils";
+import { renderWithStore } from "@/resources/tests/test-render.utils";
 
 const getInput = (container: HTMLElement, inputName: string) => {
   return container.querySelector(`input[name="${inputName}"]`) as Element;
@@ -234,6 +235,7 @@ describe("===== SAAS LOGIN =====", () => {
 
   describe("Registration Page", () => {
     let Register: CoreComponent;
+
     beforeAll(() => {
       const RegisterComponent = GlobalCore.manager.getComponent(
         "auth",
@@ -244,7 +246,7 @@ describe("===== SAAS LOGIN =====", () => {
     });
 
     it("Register is Mounted", () => {
-      const { container } = render(<Register />);
+      const { container } = renderWithStore(<Register />);
 
       expect(getInput(container, "email")).not.toBeNull();
       expect(getInput(container, "password")).not.toBeNull();
@@ -263,7 +265,7 @@ describe("===== SAAS LOGIN =====", () => {
         .spyOn(authService, "oauth")
         .mockReturnValueOnce(Promise.resolve(url));
       jest.spyOn(window, "open");
-      render(<Register />);
+      renderWithStore(<Register />);
 
       const googleButton = screen.getByTestId("google");
       googleButton.click();
@@ -275,7 +277,7 @@ describe("===== SAAS LOGIN =====", () => {
     });
 
     it("Register Fields are required", async () => {
-      render(<Register />);
+      renderWithStore(<Register />);
 
       act(() => screen.getByTestId("submitRegistration").click());
 
@@ -289,7 +291,7 @@ describe("===== SAAS LOGIN =====", () => {
     });
 
     it("Register Fields are invalid", async () => {
-      const { container } = render(<Register />);
+      const { container } = renderWithStore(<Register />);
       const emailInput = getInput(container, "email");
       const passwordInput = getInput(container, "password");
       const confirmPassword = getInput(container, "confirm_password");
@@ -311,7 +313,7 @@ describe("===== SAAS LOGIN =====", () => {
     it("Register Successful", async () => {
       const spy = jest.spyOn(RouterMock, "push");
 
-      const { container } = render(<Register />);
+      const { container } = renderWithStore(<Register />);
       const emailInput = getInput(container, "email");
       const passwordInput = getInput(container, "password");
       const confirmPassword = getInput(container, "confirm_password");
@@ -323,7 +325,7 @@ describe("===== SAAS LOGIN =====", () => {
 
       act(() => screen.getByTestId("submitRegistration").click());
 
-      await waitFor(() => expect(spy).toHaveBeenCalledWith("/auth/login"));
+      await waitFor(() => expect(spy).toHaveBeenCalledWith("/auth/confirm-email"));
     });
 
     it("Register User already registered", async () => {
@@ -332,7 +334,7 @@ describe("===== SAAS LOGIN =====", () => {
         return Promise.resolve(null);
       });
 
-      const { container } = render(<Register />);
+      const { container } = renderWithStore(<Register />);
       const emailInput = getInput(container, "email");
       const passwordInput = getInput(container, "password");
       const confirmPassword = getInput(container, "confirm_password");

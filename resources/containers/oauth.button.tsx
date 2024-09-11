@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import oauth_style from "./styles/oauth-button.module.css";
 import { GenesisOauthProvider } from "@/core/module/core.types";
+import { SmallSpinner } from "./small-spinner";
 
 interface OAuthButtonProps {
   provider: GenesisOauthProvider;
@@ -13,18 +14,31 @@ const OAuthButton: React.FC<OAuthButtonProps> = ({
   onClick,
   label,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = async (provider: GenesisOauthProvider) => {
+    setIsLoading(true);
+    try {
+      await onClick(provider);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <button
       data-testid={provider}
       type="button"
-      onClick={() => void onClick(provider)}
-      className={`${oauth_style.oauthButton} ${
-        oauth_style[`${provider}OAuthButton`]
-      }`}
+      onClick={() => void handleClick(provider)}
+      className={`${oauth_style.oauthButton} ${!isLoading ? oauth_style[`${provider}OAuthButton`] : ""
+        }`}
     >
-      <p>
-        {label} <strong>{provider}</strong>
-      </p>
+      {isLoading ? (
+        <SmallSpinner />
+      ) : (
+        <p>
+          {label} <strong>{provider}</strong>
+        </p>
+      )}
     </button>
   );
 };

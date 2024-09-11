@@ -59,7 +59,14 @@ export interface GenesisTemplate {
   fields: { [key: string]: GenesisTemplateField };
 }
 
-export type SubscriptionResponse = Record<string, string | number>;
+export type GenesisSubscription = {
+  current_period_end: string;
+  current_period_start: string;
+  id: string;
+  status: string;
+  subscription_id: string;
+};
+
 export type GenesisReport = {
   report: Record<string, string>;
   transcription: string[];

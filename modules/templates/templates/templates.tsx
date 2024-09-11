@@ -21,13 +21,14 @@ import Pagination from "@/resources/table/pagination";
 import BasicInput from "@/resources/inputs/basic-input";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
-import store, { RootState } from "@/core/store";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/core/store";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setPagination,
   setTemplates,
-} from "@/resources/utils/templates-store/actions";
+} from "@/resources/redux/templates/actions";
 import { useTemplates } from "@/core/components/use-templates";
+import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
@@ -38,6 +39,7 @@ const Templates = () => {
   const {
     templates,
     isLoading,
+    hasFetchedTemplates,
     createTemplate,
     deleteTemplate,
     updateTemplate,
@@ -62,7 +64,7 @@ const Templates = () => {
 
   const formatPreview = (
     fields: { [key: string]: GenesisTemplateField },
-    maxLength: number = 25
+    maxLength: number = 25,
   ) => {
     const previewString = Object.entries(fields)
       .map(([key, value]) => `${key}: ${t(`templates.type-${value.type}`)}`)
@@ -210,7 +212,7 @@ const Templates = () => {
           pagination.currentPage * 7,
         )}
         columns={columns}
-        isLoading={isLoading}
+        isLoading={isLoading || !hasFetchedTemplates}
         testId="templates.table"
       />
       <Pagination
@@ -250,16 +252,12 @@ const Templates = () => {
   );
 };
 
-GlobalCore.manager.app("templates", () => {
-  return (
-    <Provider store={store}>
-      <Templates />
-    </Provider>
-  );
-});
+
 GlobalCore.manager.menu({
   label: "templates.menu",
   icon: "/templates.svg",
   url: "templates",
   order: 0,
 });
+
+GlobalCore.manager.app("templates", () => <SubscriptionGuard> <Templates /> </SubscriptionGuard>);

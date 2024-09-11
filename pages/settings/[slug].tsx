@@ -31,13 +31,13 @@ const Settings = () => {
       }
       setIsLoading(false);
     })();
-  }, [router.isReady]);
+  }, [router, router.isReady]);
 
   useEffect(() => {
     if (router.isReady && !Component) {
       void router.replace("/errors/not-found");
     }
-  }, [router.isReady, Component]);
+  }, [router, router.isReady, Component]);
 
   if (!router.isReady || isLoading) {
     return <Spinner />;

@@ -9,6 +9,7 @@ import Button from "@/resources/containers/button";
 import Download from "./libs/download";
 import { ProgressBar } from "@/resources/containers/progress-bar";
 import ViewContentEditable from "@/resources/containers/view-content-editable";
+import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 
 const Report = () => {
   const router = useRouter();
@@ -16,10 +17,10 @@ const Report = () => {
   const { audioUrl } = router.query;
   const [activeTab, setActiveTab] = useState("report");
   const [reportContent, setReportContent] = useState(
-    {} as Record<string, string>
+    {} as Record<string, string>,
   );
   const [transcriptionContent, setTranscriptionContent] = useState<string[]>(
-    []
+    [],
   );
 
   const [time, setTime] = useState({ transcription: 0, report: 0 });
@@ -117,7 +118,7 @@ const Report = () => {
                   }
                 />
               );
-            }
+            },
           )}
         </div>
         <div
@@ -271,4 +272,4 @@ const Report = () => {
   );
 };
 
-GlobalCore.manager.app("report", Report);
+GlobalCore.manager.app("report", () => <SubscriptionGuard> <Report /> </SubscriptionGuard>);

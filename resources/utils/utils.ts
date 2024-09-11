@@ -1,4 +1,7 @@
-export const truncateLabel = (label: string, maxLength: number) => {
+export const truncateLabel = (label: string, maxLength: number | undefined) => {
+  if (!maxLength) {
+    return label;
+  }
   if (!label) {
     return "";
   }
