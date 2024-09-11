@@ -24,8 +24,6 @@ describe("===== TEMPLATES =====", () => {
     beforeEach(() => { });
     afterEach(() => { });
 
-
-
     it("Templates is Mounted", async () => {
       await act(() => renderWithStore(<Templates />));
 
@@ -148,7 +146,10 @@ describe("===== TEMPLATES =====", () => {
     it("Templates Detail is Mounted", async () => {
       await act(() => renderWithStore(<TemplateDetail />));
 
-      expect(screen.getByTestId("template-detail.title")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByTestId("template-detail.title")).toBeInTheDocument();
+      });
+      
       expect(
         screen.getByTestId("template-detail.add-field")
       ).toBeInTheDocument();
@@ -156,10 +157,7 @@ describe("===== TEMPLATES =====", () => {
         screen.queryByText("template-detail.table")
       ).not.toBeInTheDocument();
 
-
     });
-
-
 
     it("Checks template is loaded", async () => {
       renderWithStore(<TemplateDetail />);

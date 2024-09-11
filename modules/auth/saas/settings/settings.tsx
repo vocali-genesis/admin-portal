@@ -1,64 +1,91 @@
-import React, { FormEventHandler, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { GlobalCore } from "@/core/module/module.types";
-import { settings_schema } from "./settings.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LANGUAGES } from "@/core/constants";
+import * as yup from "yup";
 import { useTranslation } from "react-i18next";
+import { Provider, useSelector } from "react-redux";
+import styled from "styled-components";
+
+import { GlobalCore } from "@/core/module/module.types";
+import { LANGUAGES } from "@/core/constants";
 import MessageHandler from "@/core/message-handler";
 import { useService } from "@/core/module/service.factory";
 import { SettingsInputField } from "@/resources/inputs/settings-input-field";
-import styled from "styled-components";
 import SubmitButton from "@/resources/containers/submit.button";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
-import OAuthButton from "@/resources/containers/oauth.button";
-import Service from "@/core/module/service.factory";
 import BasicInput from "@/resources/inputs/basic-input";
 import BasicPasswordInput from "@/resources/inputs/basic-password.input";
 import store, { RootState } from '@/core/store';
-import { Provider, useSelector } from "react-redux";
+
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const authService = useService("oauth");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+  const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
   const { user } = useSelector((state: RootState) => state.user);
 
+  const emailSchema = () =>
+    yup.object().shape({
+      email: yup
+        .string()
+        .email(t("auth.invalid-email-format"))
+        .required(t("auth.email-required")),
+    });
+  
+  const passwordSchema = () =>
+    yup.object().shape({
+      password: yup
+        .string()
+        .min(8, t("auth.password-min-length", { times: 8 }))
+        .required(t("auth.password-required")),
+      confirm_password: yup
+        .string()
+        .oneOf([yup.ref("password"), undefined], t("auth.password-dont-match"))
+        .required(t("auth.confirm-password-required")),
+    });
+  
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    register: registerEmail,
+    handleSubmit: handleSubmitEmail,
+    formState: { errors: errorsEmail },
   } = useForm({
-    resolver: yupResolver(settings_schema(t)),
+    resolver: yupResolver(emailSchema()),
   });
 
-  const logout = () => {
-    Service.require("oauth").logout();
-    void router.push("/auth/login");
-  };
+  const {
+    register: registerPassword,
+    handleSubmit: handleSubmitPassword,
+    formState: { errors: errorsPassword },
+  } = useForm({
+    resolver: yupResolver(passwordSchema()),
+  });
 
-  const handleRevokeOAuth = async (): Promise<void> => {
-    const response = await Service.require("oauth").revokeOauth();
-    if (response) {
-      return logout();
-    }
-  };
-  const onSubmit = async (data: { email: string; password: string }) => {
+  const onSubmitEmail = async (data: { email: string }) => {
     try {
-      setIsSubmitting(true);
-      const updatedUser = await authService.updateUser(
-        data.email,
-        data.password,
-      );
-
+      setIsSubmittingEmail(true);
+      const updatedUser = await authService.updateUser(data.email);
       if (updatedUser) {
-        messageHandler.handleSuccess("Profile updated successfully");
+        router.push("/auth/confirm-email");
+        messageHandler.handleSuccess(t("settings.email-update-success"));
       }
     } finally {
-      setIsSubmitting(false);
+      setIsSubmittingEmail(false);
+    }
+  };
+
+  const onSubmitPassword = async (data: { password: string }) => {
+    try {
+      setIsSubmittingPassword(true);
+      const updatedUser = await authService.updateUser(undefined, data.password);
+      if (updatedUser) {
+        messageHandler.handleSuccess(t("settings.password-update-success"));
+      }
+    } finally {
+      setIsSubmittingPassword(false);
     }
   };
 
@@ -66,67 +93,60 @@ const Settings = () => {
     <Container>
       <ContentWrapper>
         <MainContent>
-          <Form
-            onSubmit={
-              handleSubmit(onSubmit) as unknown as FormEventHandler<HTMLElement>
-            }
-          >
-            <div className="w-full px-[1rem] py-[5rem]">
+          <Form onSubmit={handleSubmitEmail(onSubmitEmail)}>
+            <div className="w-full px-[1rem] py-[2rem]">
               <SettingsInputField
                 name="email"
                 label={t("settings.email")}
-                error={errors["email"]}
+                error={errorsEmail["email"]}
               >
                 <BasicInput
                   type="email"
                   id="email"
-                  {...register("email")}
+                  {...registerEmail("email")}
                   defaultValue={user?.email}
                 />
               </SettingsInputField>
-              <SettingsInputField
-                name="password"
-                label={t("settings.new-password")}
-                error={errors["password"]}
-              >
-                <BasicPasswordInput id="password" {...register("password")} />
-              </SettingsInputField>
-              <SettingsInputField
-                name="confirm_password"
-                label={t("settings.confirm-password")}
-                error={errors["confirm_password"]}
-              >
-                <BasicPasswordInput
-                  id="confirm_password"
-                  {...register("confirm_password")}
-                />
-              </SettingsInputField>
-
               <div className="flex justify-center">
                 <SubmitButton
-                  isSubmitting={isSubmitting}
-                  label={t("settings.save")}
-                  testId="updateSettings"
+                  isSubmitting={isSubmittingEmail}
+                  label={t("settings.save-email")}
+                  testId="updateEmail"
                 />
               </div>
             </div>
           </Form>
 
-          {/*
-          The logic is not right:
-           - If we have login, we can revoke
-           - If we have not, we can connect
-           - If we revoke we can reconnect
-           - If we have only google connection, it shall not allow us to revoke it
-
-           Will be done in another task
           <Divider />
 
-          <OAuthButton
-            provider="google"
-            label={t("settings.revoke")}
-            onClick={handleRevokeOAuth}
-          /> */}
+          <Form onSubmit={handleSubmitPassword(onSubmitPassword)}>
+            <div className="w-full px-[1rem] py-[2rem]">
+              <SettingsInputField
+                name="password"
+                label={t("settings.new-password")}
+                error={errorsPassword["password"]}
+              >
+                <BasicPasswordInput id="password" {...registerPassword("password")} />
+              </SettingsInputField>
+              <SettingsInputField
+                name="confirm_password"
+                label={t("settings.confirm-password")}
+                error={errorsPassword["confirm_password"]}
+              >
+                <BasicPasswordInput
+                  id="confirm_password"
+                  {...registerPassword("confirm_password")}
+                />
+              </SettingsInputField>
+              <div className="flex justify-center">
+                <SubmitButton
+                  isSubmitting={isSubmittingPassword}
+                  label={t("settings.save-password")}
+                  testId="updatePassword"
+                />
+              </div>
+            </div>
+          </Form>
 
           <Divider />
 
@@ -154,6 +174,7 @@ GlobalCore.manager.settings("settings", () => {
     </Provider>
   );
 });
+
 GlobalCore.manager.menuSettings({
   label: "settings.menu",
   icon: "/profile-avatar.svg",
@@ -161,6 +182,7 @@ GlobalCore.manager.menuSettings({
   order: 0,
 });
 
+// Styled components remain the same
 const Form = styled.form`
   width: 100%;
   max-width: 600px;
