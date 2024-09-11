@@ -7,7 +7,11 @@
     "save": "GUARDAR",
     "delete-account": "ELIMINAR MI CUENTA",
     "menu": "Ajustes",
-    "revoke": "Revocar"
+    "revoke": "Revocar",
+    "save-email": "Cambiar correo electrónico",
+    "save-password": "Cambiar contraseña",
+    "email-update-success": "Correo electrónico actualizado correctamente",
+    "password-update-success": "Contraseña actualizada correctamente"
   },
   "auth": {
     "login": "Iniciar sesión",
