@@ -8,6 +8,7 @@ import {
   ModuleComponentsTypes,
 } from "@/core/module/module.types";
 import { RouterMock } from "@/jest-setup";
+import { Provider, ReactNode } from "react";
 
 /**
  * Some useful test utils to make the testing view simple
@@ -24,9 +25,7 @@ export const login = async (
   return { user: { ...user, ...Seed.new().user(props).create() }, token };
 };
 
-export const logout = async (
-  authService: AuthService,
-) => {
+export const logout = async (authService: AuthService) => {
   await authService.logout();
 };
 

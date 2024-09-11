@@ -11,7 +11,7 @@ import ConfirmDialog from "@/resources/containers/delete-confirmation";
 import Badge from "@/resources/badge";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
+import { GenesisInvoice, GenesisSubscription } from "@/core/module/core.types";
 import MessageHandler from "@/core/message-handler";
 import Button from "@/resources/containers/button";
 
@@ -129,7 +129,7 @@ const CancelSubscriptonBtn = () => {
     setIsOpen(false);
     setIsLoading(false);
   };
-  const [subscription, setSubscription] = useState<SubscriptionResponse>();
+  const [subscription, setSubscription] = useState<GenesisSubscription>();
 
   const validUntil = subscription?.id
     ? moment(subscription?.current_period_end || "").format("DD MMM, YYYY")
@@ -172,7 +172,7 @@ const Subscriptions = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
-  const [subscription, setSubscription] = useState<SubscriptionResponse>();
+  const [subscription, setSubscription] = useState<GenesisSubscription>();
 
   useEffect(() => {
     void (async () => {

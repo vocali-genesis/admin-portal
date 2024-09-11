@@ -8,7 +8,7 @@ import {
   setSubscription,
   clearUser,
 } from "@/resources/redux/users/actions";
-import { SubscriptionResponse } from "@/core/module/core.types";
+import { GenesisSubscription } from "@/core/module/core.types";
 
 export const userValidation = (onReady: () => void) => {
   const router = useRouter();
@@ -34,7 +34,7 @@ export const userValidation = (onReady: () => void) => {
 
       const subscription = await subscriptionService.getActiveSubscription();
       console.log(subscription);
-      dispatch(setSubscription(subscription as SubscriptionResponse));
+      dispatch(setSubscription(subscription as GenesisSubscription));
       const notValid = subscription?.current_period_end
         ? moment(subscription.current_period_end).isBefore()
         : true;

@@ -20,6 +20,9 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   );
 };
 
+export default SubmitButton;
+
+
 const StyledButton = styled.button`
   background: var(--secondary);
   color: white;
@@ -42,4 +45,5 @@ const StyledButton = styled.button`
     cursor: not-allowed;
   }
 `;
+
 

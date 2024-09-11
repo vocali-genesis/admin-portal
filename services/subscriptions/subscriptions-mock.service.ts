@@ -2,7 +2,7 @@ import { GlobalCore } from "@/core/module/module.types";
 import { faker } from "@faker-js/faker";
 import {
   GenesisInvoice,
-  SubscriptionResponse,
+  GenesisSubscription,
 } from "../../core/module/core.types";
 import moment from "moment";
 import { Seed } from "@/resources/tests/seed";
@@ -38,7 +38,7 @@ class SubscriptionsMock implements SubscriptionService {
   /**
    * Retruns the currently active user subscription, so that the users can subscribe to a plan
    */
-  public async getActiveSubscription(): Promise<SubscriptionResponse | null> {
+  public async getActiveSubscription(): Promise<GenesisSubscription | null> {
     return Promise.resolve({
       status: "active",
       date: moment().add(1, "week").format(),

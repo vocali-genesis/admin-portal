@@ -1,11 +1,11 @@
-import { GenesisUser, SubscriptionResponse } from '@/core/module/core.types';
+import { GenesisUser, GenesisSubscription } from "@/core/module/core.types";
 
 export const setUser = (user: GenesisUser) => ({
   type: "SET_USER",
   payload: user,
 });
 
-export const setSubscription = (subscription: SubscriptionResponse) => ({
+export const setSubscription = (subscription: GenesisSubscription) => ({
   type: "SET_SUBSCRIPTION",
   payload: subscription,
 });

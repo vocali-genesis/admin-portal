@@ -28,6 +28,7 @@ import {
   setTemplates,
 } from "@/resources/redux/templates/actions";
 import { useTemplates } from "@/core/components/use-templates";
+import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 const messageHandler = MessageHandler.get();
 
 const Templates = () => {
@@ -251,10 +252,12 @@ const Templates = () => {
   );
 };
 
-GlobalCore.manager.app("templates", Templates);
+
 GlobalCore.manager.menu({
   label: "templates.menu",
   icon: "/templates.svg",
   url: "templates",
   order: 0,
 });
+
+GlobalCore.manager.app("templates", () => <SubscriptionGuard> <Templates /> </SubscriptionGuard>);

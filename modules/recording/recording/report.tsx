@@ -9,6 +9,7 @@ import Button from "@/resources/containers/button";
 import Download from "./libs/download";
 import { ProgressBar } from "@/resources/containers/progress-bar";
 import ViewContentEditable from "@/resources/containers/view-content-editable";
+import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 
 const Report = () => {
   const router = useRouter();
@@ -271,4 +272,4 @@ const Report = () => {
   );
 };
 
-GlobalCore.manager.app("report", Report);
+GlobalCore.manager.app("report", () => <SubscriptionGuard> <Report /> </SubscriptionGuard>);

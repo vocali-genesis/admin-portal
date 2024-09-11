@@ -32,6 +32,7 @@ import { GenesisReport } from "@/core/module/core.types";
 import Download from "./libs/download";
 import { Provider } from "react-redux";
 import store from "@/core/store";
+import { renderWithStore } from "@/resources/tests/test-render.utils";
 
 describe("===== RECORDING AUDIO =====", () => {
   let genesisService: MedicalTranscription;
@@ -94,17 +95,17 @@ describe("===== RECORDING AUDIO =====", () => {
 
     it("Requests permissions when trying to record", async () => {
       getUserMediaMock.mockResolvedValueOnce({} as MediaStream);
-  
+
       await act(async () => {
         await renderWithStore();
       });
-  
+
       const recordButton = await screen.findByTestId("record-button");
-      
+
       await act(async () => {
         recordButton.click();
       });
-  
+
       expect(getUserMediaMock).toHaveBeenCalledWith(
         expect.objectContaining({
           audio: expect.objectContaining({
@@ -115,20 +116,20 @@ describe("===== RECORDING AUDIO =====", () => {
         })
       );
     });
-  
+
     it("Can't record without permissions", async () => {
       getUserMediaMock.mockRejectedValueOnce(new Error("Permission denied"));
-  
+
       await act(async () => {
         await renderWithStore();
       });
-  
+
       const recordButton = await screen.findByTestId("record-button");
-      
+
       await act(async () => {
         recordButton.click();
       });
-  
+
       expect(getUserMediaMock).toHaveBeenCalledWith(
         expect.objectContaining({
           audio: expect.objectContaining({
@@ -259,7 +260,7 @@ describe("===== RECORDING AUDIO =====", () => {
       audioUrl = faker.internet.url();
       setRouteQuery({ audioUrl });
     });
-    afterEach(() => {});
+    afterEach(() => { });
 
     const renderWithStore = () => {
       return render(
@@ -398,10 +399,10 @@ describe("===== RECORDING AUDIO =====", () => {
         audioUrl,
       });
     });
-    afterEach(() => {});
+    afterEach(() => { });
 
     it("Report page mounts", () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       expect(getProgressBar()).toBeInTheDocument();
       expect(getRecordingTab()).toBeInTheDocument();
       expect(getTranscriptionTab()).toBeInTheDocument();
@@ -413,12 +414,12 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Scenario: Query Data missing", async () => {
       setRouteQuery({ audioUrl });
 
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
 
       expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
     });
     it("Report tab contains report result", async () => {
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
       const entries = Object.entries(report.report);
       console.log({ Title: entries[0] });
       // Wait for it to be ready
@@ -435,7 +436,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Transcription tab contains report result", async () => {
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
       act(() => getTranscriptionTab().click());
 
       await waitFor(() => screen.getByText(report.transcription[0]));
@@ -456,7 +457,7 @@ describe("===== RECORDING AUDIO =====", () => {
       const playSpy = jest.spyOn(HTMLAudioElement.prototype, "play");
       const pauseSpy = jest.spyOn(HTMLAudioElement.prototype, "pause");
 
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
 
       screen.getByText("recording.replay-audio");
 
@@ -474,7 +475,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Click on New Recording", async () => {
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
 
       getNewRecordingButton().click();
 
@@ -485,7 +486,7 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Update the editor also updates the preview", async () => {
       const user = userEvent.setup();
 
-      const { container } = render(<Report />);
+      const { container } = renderWithStore(<Report />);
       const [title, content] = Object.entries(report.report)[0];
       const div = (await screen.findByText(title)).closest(
         ".editable-wrapper"
@@ -516,7 +517,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Cancel the editor don't update the preview", async () => {
-      const { container } = render(<Report />);
+      const { container } = renderWithStore(<Report />);
       const [title, content] = Object.entries(report.report)[0];
       const div = (await screen.findByText(title)).closest(
         ".editable-wrapper"
@@ -546,7 +547,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Download Audio", async () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       getDownloadButton().click();
 
       const button = await screen.findByText("recording.download-audio");
@@ -560,7 +561,7 @@ describe("===== RECORDING AUDIO =====", () => {
         .spyOn(Download, "downloadReport")
         .mockImplementation(jest.fn());
 
-      render(<Report />);
+      renderWithStore(<Report />);
       getDownloadButton().click();
 
       const button = await screen.findByText("recording.download-report");
@@ -571,7 +572,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Download Transcription", async () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       getDownloadButton().click();
 
       const button = await screen.findByText(
@@ -584,7 +585,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Check Report generate data", async () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       getDownloadButton().click();
 
       const button = await screen.findByText(
@@ -598,7 +599,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Statistics bar shows right percentages", () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       // getDownloadButton().click();
       const total = report.time.report + report.time.transcription;
       const reportWidth = (report.time.report / total) * 100;
@@ -625,7 +626,7 @@ describe("===== RECORDING AUDIO =====", () => {
       Object.defineProperty(global.navigator, "clipboard", {
         value: MockClipBoard,
       });
-      render(<Report />);
+      renderWithStore(<Report />);
       const [title, content] = Object.entries(report.report)[0];
       const div = (await screen.findByText(title)).closest(
         ".editable-wrapper"

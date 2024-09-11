@@ -13,6 +13,7 @@ import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 import { BasicSelect } from "@/resources/inputs/basic-select.input";
 import { GenesisTemplate } from "@/core/module/core.types";
 import { useTemplates } from "@/core/components/use-templates";
+import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 
 const messageHandler = MessageHandler.get();
 
@@ -114,4 +115,4 @@ const Recording = () => {
   );
 };
 
-GlobalCore.manager.app("recording", Recording);
+GlobalCore.manager.app("recording", () => <SubscriptionGuard> <Recording /> </SubscriptionGuard>);
