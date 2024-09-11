@@ -28,13 +28,14 @@ class SupabaseTemplateService {
     const { data, error } = await this.supabase
       .from("templates")
       .select("*", { count: "exact" })
-      .eq("owner_id", userData?.id);
+      .eq("owner_id", userData?.id)
+      .order("created_at", { ascending: false });
 
     if (error) {
       messageHandler.handleError(error.message);
       return null;
     }
-    
+
     return data as GenesisTemplate[];
   }
 

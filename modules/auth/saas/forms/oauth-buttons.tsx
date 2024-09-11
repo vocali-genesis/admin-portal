@@ -20,7 +20,7 @@ export const OauthButtons = ({ label }: { label: JSX.Element }) => {
       </div>
       <OAuthButton
         provider="google"
-        onClick={handleOAuthClick}
+        onClick={() => handleOAuthClick('google')}
         label={t("auth.register-with")}
       />
       {/* <OAuthButton

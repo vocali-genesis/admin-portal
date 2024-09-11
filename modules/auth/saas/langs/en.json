@@ -22,7 +22,7 @@
     "reset": "Reset Password",
     "with-others": "With Others",
     "login-successful": "Login successful",
-    "reset-email-sent ": "Password reset link has been sent to your email",
+    "reset-email-sent": "Password reset link has been sent to your email",
     "login-with": "Login with",
     "register-with": "Access with",
     "forgot-password": "Forgot password?",
@@ -31,6 +31,9 @@
     "password-min-length": "Password must be at least {{times}} characters",
     "password-required": "Password is required",
     "password-dont-match": "Passwords must match",
-    "confirm-password-required": "Confirm Password is required"
+    "confirm-password-required": "Confirm Password is required",
+    "confirm-email": "Confirm Email",
+    "email-confirmed": "Email confirmed?",
+    "confirm-email-text": "Your email requires validation, check your mail box for the confirmation link"
   }
 }

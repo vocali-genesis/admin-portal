@@ -1,4 +1,5 @@
-import React, { FormEventHandler, useState } from "react";
+import React, { FormEventHandler, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { GlobalCore } from "@/core/module/module.types";
 import { settings_schema } from "./settings.schema";
@@ -15,8 +16,8 @@ import OAuthButton from "@/resources/containers/oauth.button";
 import Service from "@/core/module/service.factory";
 import BasicInput from "@/resources/inputs/basic-input";
 import BasicPasswordInput from "@/resources/inputs/basic-password.input";
-import { useRouter } from "next/router";
-
+import store, { RootState } from '@/core/store';
+import { Provider, useSelector } from "react-redux";
 const messageHandler = MessageHandler.get();
 
 const Settings = () => {
@@ -24,6 +25,7 @@ const Settings = () => {
   const { t, i18n } = useTranslation();
   const authService = useService("oauth");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useSelector((state: RootState) => state.user);
 
   const {
     register,
@@ -49,7 +51,7 @@ const Settings = () => {
       setIsSubmitting(true);
       const updatedUser = await authService.updateUser(
         data.email,
-        data.password
+        data.password,
       );
 
       if (updatedUser) {
@@ -75,7 +77,12 @@ const Settings = () => {
                 label={t("settings.email")}
                 error={errors["email"]}
               >
-                <BasicInput type="email" id="email" {...register("email")} />
+                <BasicInput
+                  type="email"
+                  id="email"
+                  {...register("email")}
+                  defaultValue={user?.email}
+                />
               </SettingsInputField>
               <SettingsInputField
                 name="password"
@@ -140,7 +147,13 @@ const Settings = () => {
   );
 };
 
-GlobalCore.manager.settings("settings", Settings);
+GlobalCore.manager.settings("settings", () => {
+  return (
+    <Provider store={store}>
+      <Settings />
+    </Provider>
+  );
+});
 GlobalCore.manager.menuSettings({
   label: "settings.menu",
   icon: "/profile-avatar.svg",

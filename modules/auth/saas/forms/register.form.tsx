@@ -34,7 +34,7 @@ const RegisterForm: React.FC = ({}) => {
         return;
       }
       MessageHandler.get().handleSuccess(t("common.success"));
-      void router.push("/auth/login");
+      void router.push("/auth/confirm-email");
     } finally {
       setIsSubmitting(false);
     }

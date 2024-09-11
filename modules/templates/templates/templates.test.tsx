@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CoreComponent } from "@/core/module/module.types";
 import "./index";
@@ -10,6 +10,7 @@ import React, { act } from "react";
 import { RouterMock } from "@/jest-setup";
 import { getComponent, setRouteQuery } from "@/resources/tests/test.utils";
 import { GenesisTemplateField, TYPE_OPTIONS } from "@/core/module/core.types";
+import { renderWithStore } from "@/resources/tests/test-render.utils";
 
 describe("===== TEMPLATES =====", () => {
   beforeAll(() => { });
@@ -23,8 +24,10 @@ describe("===== TEMPLATES =====", () => {
     beforeEach(() => { });
     afterEach(() => { });
 
+
+
     it("Templates is Mounted", async () => {
-      await act(() => render(<Templates />));
+      await act(() => renderWithStore(<Templates />));
 
       expect(screen.getByTestId("templates.title")).toBeInTheDocument();
       expect(screen.getByTestId("templates.new-template")).toBeInTheDocument();
@@ -32,7 +35,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks table is populated", async () => {
-      render(<Templates />);
+      renderWithStore(<Templates />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
       await waitFor(() => {
@@ -40,9 +43,8 @@ describe("===== TEMPLATES =====", () => {
       });
     });
 
-
     it("Checks template can be created", async () => {
-      render(<Templates />);
+      renderWithStore(<Templates />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -66,7 +68,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks modal pops up when delete icon clicked", async () => {
-      render(<Templates />);
+      renderWithStore(<Templates />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
       await waitFor(() => {
@@ -85,7 +87,7 @@ describe("===== TEMPLATES =====", () => {
 
 
     it("Checks template delete function", async () => {
-      render(<Templates />);
+      renderWithStore(<Templates />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -116,7 +118,7 @@ describe("===== TEMPLATES =====", () => {
 
     it("Checks template redirect on select", async () => {
       const spy = jest.spyOn(RouterMock, "push");
-      render(<Templates />);
+      renderWithStore(<Templates />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -144,7 +146,7 @@ describe("===== TEMPLATES =====", () => {
     afterEach(() => { });
 
     it("Templates Detail is Mounted", async () => {
-      await act(() => render(<TemplateDetail />));
+      await act(() => renderWithStore(<TemplateDetail />));
 
       expect(screen.getByTestId("template-detail.title")).toBeInTheDocument();
       expect(
@@ -160,8 +162,7 @@ describe("===== TEMPLATES =====", () => {
 
 
     it("Checks template is loaded", async () => {
-      render(<TemplateDetail />);
-
+      renderWithStore(<TemplateDetail />);
       // Wait for the table to be fully rendered (at least one row is filled)
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -170,7 +171,39 @@ describe("===== TEMPLATES =====", () => {
 
     });
     it("Checks Edit title can be edited", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
+
+      await waitFor(() => screen.findByTestId('template-detail.title'))
+
+      const templateEdit = screen.getByTestId("template-detail.edit-title");
+
+      act(() => templateEdit.click());
+
+      await waitFor(() => {
+        screen.getByTestId("template-detail.template-name-input")
+      });
+
+      const inputElement = screen.getByTestId("template-detail.template-name-input");
+      await userEvent.clear(inputElement);
+      await userEvent.type(inputElement, "New Template Name");
+
+      expect(inputElement).toHaveValue("New Template Name");
+
+      const saveButton = screen.getByTestId("template-detail.save-title");
+
+      act(() => saveButton.click());
+
+      await waitFor(() => {
+        screen.getByTestId("template-detail.title")
+      });
+      await waitFor(() => {
+        screen.getByText("New Template Name")
+      });
+
+
+    });
+    it("Checks Edit title can be edited", async () => {
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => screen.findByTestId('template-detail.title'))
 
@@ -203,7 +236,40 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks Edit title can be cancel", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
+
+      await waitFor(() => screen.findByTestId('template-detail.title'))
+
+      const templateEdit = screen.getByTestId("template-detail.edit-title");
+
+      act(() => templateEdit.click());
+
+      await waitFor(() => {
+        screen.getByTestId("template-detail.template-name-input")
+      });
+
+      const inputElement = screen.getByTestId("template-detail.template-name-input");
+      await userEvent.clear(inputElement);
+      await userEvent.type(inputElement, "Template to be Cancel");
+
+      const cancel = screen.getByTestId("template-detail.cancel-title");
+
+      act(() => cancel.click());
+
+      await waitFor(() => {
+        screen.getByTestId("template-detail.title")
+      });
+      expect(
+        screen.queryByText("Template to be Cancel")
+      ).not.toBeInTheDocument()
+
+    });
+
+
+
+
+    it("Checks Edit title can be cancel", async () => {
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => screen.findByTestId('template-detail.title'))
 
@@ -236,7 +302,7 @@ describe("===== TEMPLATES =====", () => {
 
 
     it("Checks new entry is created in edit mode when add template", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -263,7 +329,7 @@ describe("===== TEMPLATES =====", () => {
         type: "text" as TYPE_OPTIONS,
         description: "Test Field Description",
       };
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -313,7 +379,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks input field when edit button is pressed", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
       await waitFor(() => {
@@ -340,7 +406,7 @@ describe("===== TEMPLATES =====", () => {
         type: "number" as TYPE_OPTIONS,
         description: "Altered Test Field Description",
       };
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
       await waitFor(() => {
@@ -385,7 +451,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks config modal button when type != text", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -434,7 +500,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks config modal opens when config button clicked", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -471,7 +537,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks select config modal is populated", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -511,7 +577,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks multiselect config modal is populated", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -551,7 +617,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks multiselect option works", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
@@ -602,7 +668,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks modal pops up when delete icon clicked", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
       await waitFor(() => {
@@ -620,7 +686,7 @@ describe("===== TEMPLATES =====", () => {
     });
 
     it("Checks template delete function", async () => {
-      render(<TemplateDetail />);
+      renderWithStore(<TemplateDetail />);
 
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));

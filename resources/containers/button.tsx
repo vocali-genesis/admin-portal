@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import btn_styles from "./styles/button.module.css";
 import { SmallSpinner } from "./small-spinner";
 
@@ -47,6 +46,5 @@ const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
-
 
 export default Button;

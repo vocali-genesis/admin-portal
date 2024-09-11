@@ -5,7 +5,7 @@ import {
   GenesisUser,
   GenesisTemplate,
   GenesisPagination,
-  SubscriptionResponse,
+  GenesisSubscription,
 } from "./core.types";
 
 export type ComponentName =
@@ -22,30 +22,30 @@ export type ServiceName =
 export type ServiceInterface<T extends ServiceName> = T extends "oauth"
   ? AuthService
   : T extends "medical-api"
-    ? MedicalTranscription
-    : T extends "templates"
-      ? SupabaseTemplateService
-      : T extends "subscriptions"
-        ? SubscriptionService
-        : never;
+  ? MedicalTranscription
+  : T extends "templates"
+  ? SupabaseTemplateService
+  : T extends "subscriptions"
+  ? SubscriptionService
+  : never;
 
 export interface MedicalTranscription {
   transcribeAudio(audioFile: File): Promise<GenesisReport["transcription"]>;
   processAudioAndGenerateReport(
     audioFile: File,
     template?: GenesisTemplate,
-    language?: string,
+    language?: string
   ): Promise<GenesisReport | null>;
 }
 
 export interface AuthService {
   registerUser(
     email: string,
-    password: string,
+    password: string
   ): Promise<{ user: GenesisUser | null; token: string | undefined } | null>;
   loginUser(
     email: string,
-    password: string,
+    password: string
   ): Promise<{ user: GenesisUser | null; token: string | undefined } | null>;
   oauth(provider: GenesisOauthProvider): Promise<string | null>;
   revokeOauth(): Promise<boolean>;
@@ -58,10 +58,10 @@ export interface AuthService {
 export interface SubscriptionService {
   getSubscriptionLink(): Promise<{ url: string } | null>;
   getManageSubscriptionLink(): Promise<{ url: string } | null>;
-  getActiveSubscription(): Promise<SubscriptionResponse | null>;
+  getActiveSubscription(): Promise<GenesisSubscription | null>;
   getInvoices(
     from: number,
-    to: number,
+    to: number
   ): Promise<{ invoices: GenesisInvoice[]; count: number }>;
   cancelSubscription(): Promise<Record<string, string | number> | null>;
 }
@@ -71,14 +71,14 @@ export interface SupabaseTemplateService {
   getTemplate(
     id: string,
     page: number,
-    pageSize: number,
+    pageSize: number
   ): Promise<GenesisPagination<GenesisTemplate> | null>;
   createTemplate(
-    template: Omit<GenesisTemplate, "id" | "created_at" | "owner_id">,
+    template: Omit<GenesisTemplate, "id" | "created_at" | "owner_id">
   ): Promise<GenesisTemplate | null>;
   updateTemplate(
     id: string,
-    updates: Partial<GenesisTemplate>,
+    updates: Partial<GenesisTemplate>
   ): Promise<GenesisTemplate | null>;
   deleteTemplate(id: string): Promise<boolean>;
 }

@@ -3,7 +3,6 @@ import MessageHandler from "@/core/message-handler";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { BasicSelect } from "./basic-select.input";
-import { truncateLabel } from "../utils/utils";
 
 const messageHandler = MessageHandler.get();
 
@@ -41,7 +40,7 @@ export const MicrophoneSelect = ({
         void setUpDevices();
       } catch (error) {
         console.error("Error getting audio devices:", error);
-        messageHandler.handleError("resources.microphone-error");
+        messageHandler.handleError(t("resources.microphone-error"));
       }
     }
     void request();
@@ -87,13 +86,14 @@ export const MicrophoneSelect = ({
       name="microphone-select"
       value={value}
       onChange={onChange}
+      className="max-w-[300px]"
       options={devices.map((device) => ({
         value: device.deviceId,
         label:
-          truncateLabel(device.label, 30) ||
+          device.label ||
           `Microphone ${device.deviceId.slice(0, 5)}`,
       }))}
-    ></BasicSelect>
+    />
   );
 };
 

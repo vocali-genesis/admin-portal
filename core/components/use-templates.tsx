@@ -6,7 +6,7 @@ import {
   fetchTemplates,
   setPagination,
   setTemplates,
-} from "@/resources/utils/templates-store/actions";
+} from "@/resources/redux/templates/actions";
 import Service from "@/core/module/service.factory";
 import MessageHandler from "@/core/message-handler";
 import { useTranslation } from "react-i18next";
@@ -97,6 +97,7 @@ export const useTemplates = (limit?: number) => {
     templates,
     pagination,
     isLoading,
+    hasFetchedTemplates,
     setIsLoading,
     createTemplate,
     deleteTemplate,

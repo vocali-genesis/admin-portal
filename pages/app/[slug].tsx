@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { ModuleManager } from "@/core/module/module.manager";
 import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
-import { ValidateUser } from "@/core/components/validate-user";
+import { userValidation } from "@/core/components/user-validation";
+import { Provider } from "react-redux";
+import store from "@/core/store";
+import AppFooter from "@/core/components/footer";
 
-const AppSlug = () => {
+const ApplicationSlug = () => {
   const router = useRouter();
   const loader = ModuleManager.get().components;
   const { slug } = router.query as { slug: string };
@@ -19,19 +22,10 @@ const AppSlug = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  useEffect(() => {
-    if (router.isReady) {
-      setIsLoading(false);
-    }
-  }, [router.isReady]);
+  userValidation(() => setIsLoading(false));
 
   if (!router.isReady) {
-    return (
-      <>
-        <ValidateUser onReady={() => setIsLoading(false)} />
-        <Spinner />
-      </>
-    );
+    return <Spinner />;
   }
 
   if (router.isReady && !Component) {
@@ -40,7 +34,6 @@ const AppSlug = () => {
   }
 
   const menu = ModuleManager.get().components.menus;
-
   return (
     <div className="flex flex-col h-screen bg-white w-full">
       <Navbar toggleSidebar={toggleSidebar} />
@@ -51,18 +44,20 @@ const AppSlug = () => {
           menu={menu}
         />
         <main className="flex-grow p-5 overflow-y-scroll">
-          {isLoading ? (
-            <>
-              <ValidateUser onReady={() => setIsLoading(false)} />
-              <Spinner />
-            </>
-          ) : (
-            <Component />
-          )}
+          {isLoading ? <Spinner /> : <><Component />  <AppFooter /></>}
+
         </main>
       </div>
     </div>
   );
 };
+
+const AppSlug = () => {
+  return (
+    <Provider store={store}>
+      <ApplicationSlug />
+    </Provider>
+  );
+}
 
 export default AppSlug;

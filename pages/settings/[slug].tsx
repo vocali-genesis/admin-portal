@@ -5,6 +5,7 @@ import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
 import Service from "@/core/module/service.factory";
+import AppFooter from "@/core/components/footer";
 
 const Settings = () => {
   const router = useRouter();
@@ -31,13 +32,13 @@ const Settings = () => {
       }
       setIsLoading(false);
     })();
-  }, [router.isReady]);
+  }, [router, router.isReady]);
 
   useEffect(() => {
     if (router.isReady && !Component) {
       void router.replace("/errors/not-found");
     }
-  }, [router.isReady, Component]);
+  }, [router, router.isReady, Component]);
 
   if (!router.isReady || isLoading) {
     return <Spinner />;
@@ -60,7 +61,8 @@ const Settings = () => {
           showHome={true}
         />
         <main className="flex-grow p-5 overflow-y-auto">
-          {!router.isReady || isLoading ? <Spinner /> : <Component />}
+          {!router.isReady || isLoading ? <Spinner /> : <><Component />    <AppFooter /></>}
+
         </main>
       </div>
     </div>

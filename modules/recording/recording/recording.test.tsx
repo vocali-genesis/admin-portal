@@ -30,6 +30,9 @@ import { getComponent, setRouteQuery } from "@/resources/tests/test.utils";
 import { Seed } from "@/resources/tests/seed";
 import { GenesisReport } from "@/core/module/core.types";
 import Download from "./libs/download";
+import { Provider } from "react-redux";
+import store from "@/core/store";
+import { renderWithStore } from "@/resources/tests/test-render.utils";
 
 describe("===== RECORDING AUDIO =====", () => {
   let genesisService: MedicalTranscription;
@@ -50,6 +53,8 @@ describe("===== RECORDING AUDIO =====", () => {
       label: "Jest Microphone",
       kind: "audioinput",
     };
+    const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
+    let getUserMediaMock: jest.Mock;
 
     let Dashboard: CoreComponent;
     let mediaSpy: jest.SpyInstance<typeof MediaDevicesMock>;
@@ -57,12 +62,29 @@ describe("===== RECORDING AUDIO =====", () => {
       Dashboard = getComponent("app", "dashboard");
       mediaSpy = jest.spyOn(MediaDevicesMock, "enumerateDevices");
       mediaSpy.mockReturnValue([SampleMicrophone]);
+
+      getUserMediaMock = jest.fn();
+      navigator.mediaDevices.getUserMedia = getUserMediaMock;
     });
 
-    beforeEach(() => {});
-    afterEach(() => {});
+    beforeEach(() => {
+      getUserMediaMock.mockReset();
+    });
+
+    afterAll(() => {
+      navigator.mediaDevices.getUserMedia = originalGetUserMedia;
+    });
+
+    const renderWithStore = () => {
+      return render(
+        <Provider store={store}>
+          <Dashboard />
+        </Provider>
+      );
+    };
+
     it("Dashboard is Mounted", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
 
       expect(await screen.findByTestId("record-button")).toBeInTheDocument();
       expect(await screen.findByTestId("upload-recording")).toBeInTheDocument();
@@ -71,21 +93,60 @@ describe("===== RECORDING AUDIO =====", () => {
       });
     });
 
-    it("Can't record without permissions", async () => {
-      mediaSpy.mockReturnValue([]);
-      await act(() => render(<Dashboard />));
+    it("Requests permissions when trying to record", async () => {
+      getUserMediaMock.mockResolvedValueOnce({} as MediaStream);
+
+      await act(async () => {
+        await renderWithStore();
+      });
 
       const recordButton = await screen.findByTestId("record-button");
-      act(() => recordButton.click());
+
+      await act(async () => {
+        recordButton.click();
+      });
+
+      expect(getUserMediaMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          audio: expect.objectContaining({
+            deviceId: expect.objectContaining({
+              exact: expect.any(String),
+            }),
+          }),
+        })
+      );
+    });
+
+    it("Can't record without permissions", async () => {
+      getUserMediaMock.mockRejectedValueOnce(new Error("Permission denied"));
+
+      await act(async () => {
+        await renderWithStore();
+      });
+
+      const recordButton = await screen.findByTestId("record-button");
+
+      await act(async () => {
+        recordButton.click();
+      });
+
+      expect(getUserMediaMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          audio: expect.objectContaining({
+            deviceId: expect.objectContaining({
+              exact: expect.any(String),
+            }),
+          }),
+        })
+      );
 
       expect(ToastMock.error).toHaveBeenCalledWith(
-        "recording.permission-required"
+        "Error starting recording: Permission denied"
       );
-      mediaSpy.mockReturnValue([SampleMicrophone]);
     });
 
     it("I can start and pause the recording", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
 
       await waitFor(() => screen.getByText("recording.click-to-start"));
 
@@ -104,7 +165,7 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Stop recording takes me to the preview page", async () => {
       const spy = jest.spyOn(RouterMock, "push");
 
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
 
       await waitFor(() => screen.getByText("recording.click-to-start"));
 
@@ -125,7 +186,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Upload an audio file", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
       const input = await screen.findByTestId("upload-recording");
 
       await userEvent.upload(
@@ -137,7 +198,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("File error: Wrong format file", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
       const input = await screen.findByTestId("upload-recording");
 
       await userEvent.upload(
@@ -149,7 +210,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("File error: File too big", async () => {
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
       const input = await screen.findByTestId("upload-recording");
 
       const file = Seed.new().file({ name: "audio.mp3", type: "audio/mp3" });
@@ -164,7 +225,7 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Select file and click on upload ", async () => {
       const spy = jest.spyOn(RouterMock, "push");
 
-      await act(() => render(<Dashboard />));
+      await act(() => renderWithStore());
       const input = await screen.findByTestId("upload-recording");
 
       expect(screen.getByText("recording.upload-files")).toBeDisabled();
@@ -199,10 +260,18 @@ describe("===== RECORDING AUDIO =====", () => {
       audioUrl = faker.internet.url();
       setRouteQuery({ audioUrl });
     });
-    afterEach(() => {});
+    afterEach(() => { });
+
+    const renderWithStore = () => {
+      return render(
+        <Provider store={store}>
+          <Recording />
+        </Provider>
+      );
+    };
 
     it("Recording page mounts", () => {
-      render(<Recording />);
+      renderWithStore();
       screen.debug();
       expect(screen.findByTestId("audio-player"));
       expect(screen.findByTestId("submit-button"));
@@ -215,7 +284,7 @@ describe("===== RECORDING AUDIO =====", () => {
         .spyOn(genesisService, "processAudioAndGenerateReport")
         .mockResolvedValue(report);
 
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const submitButton = await screen.findByTestId("submit-button");
 
@@ -238,7 +307,7 @@ describe("===== RECORDING AUDIO =====", () => {
       jest.replaceProperty(RouterMock, "query", {
         audioUrl: "",
       });
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const submitButton = await screen.findByTestId("submit-button");
 
@@ -259,7 +328,7 @@ describe("===== RECORDING AUDIO =====", () => {
           return Promise.resolve(null);
         });
 
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const submitButton = await screen.findByTestId("submit-button");
 
@@ -271,7 +340,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Click Delete Audio", async () => {
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const deleteButton = await screen.findByTestId("recording.audio-delete");
 
@@ -285,7 +354,7 @@ describe("===== RECORDING AUDIO =====", () => {
       expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
     });
     it("Click Save the Audio", async () => {
-      await act(() => render(<Recording />));
+      await act(() => renderWithStore());
 
       const saveButton = await screen.findByTestId("save-audio");
       expect(saveButton).toBeInTheDocument();
@@ -330,10 +399,10 @@ describe("===== RECORDING AUDIO =====", () => {
         audioUrl,
       });
     });
-    afterEach(() => {});
+    afterEach(() => { });
 
     it("Report page mounts", () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       expect(getProgressBar()).toBeInTheDocument();
       expect(getRecordingTab()).toBeInTheDocument();
       expect(getTranscriptionTab()).toBeInTheDocument();
@@ -345,12 +414,12 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Scenario: Query Data missing", async () => {
       setRouteQuery({ audioUrl });
 
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
 
       expect(RouterMock.push).toHaveBeenCalledWith("/app/dashboard");
     });
     it("Report tab contains report result", async () => {
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
       const entries = Object.entries(report.report);
       console.log({ Title: entries[0] });
       // Wait for it to be ready
@@ -367,7 +436,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Transcription tab contains report result", async () => {
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
       act(() => getTranscriptionTab().click());
 
       await waitFor(() => screen.getByText(report.transcription[0]));
@@ -388,7 +457,7 @@ describe("===== RECORDING AUDIO =====", () => {
       const playSpy = jest.spyOn(HTMLAudioElement.prototype, "play");
       const pauseSpy = jest.spyOn(HTMLAudioElement.prototype, "pause");
 
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
 
       screen.getByText("recording.replay-audio");
 
@@ -406,7 +475,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Click on New Recording", async () => {
-      await act(() => render(<Report />));
+      await act(() => renderWithStore(<Report />));
 
       getNewRecordingButton().click();
 
@@ -417,7 +486,7 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Update the editor also updates the preview", async () => {
       const user = userEvent.setup();
 
-      const { container } = render(<Report />);
+      const { container } = renderWithStore(<Report />);
       const [title, content] = Object.entries(report.report)[0];
       const div = (await screen.findByText(title)).closest(
         ".editable-wrapper"
@@ -448,7 +517,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Cancel the editor don't update the preview", async () => {
-      const { container } = render(<Report />);
+      const { container } = renderWithStore(<Report />);
       const [title, content] = Object.entries(report.report)[0];
       const div = (await screen.findByText(title)).closest(
         ".editable-wrapper"
@@ -478,7 +547,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Download Audio", async () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       getDownloadButton().click();
 
       const button = await screen.findByText("recording.download-audio");
@@ -492,7 +561,7 @@ describe("===== RECORDING AUDIO =====", () => {
         .spyOn(Download, "downloadReport")
         .mockImplementation(jest.fn());
 
-      render(<Report />);
+      renderWithStore(<Report />);
       getDownloadButton().click();
 
       const button = await screen.findByText("recording.download-report");
@@ -503,7 +572,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Download Transcription", async () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       getDownloadButton().click();
 
       const button = await screen.findByText(
@@ -516,7 +585,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Check Report generate data", async () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       getDownloadButton().click();
 
       const button = await screen.findByText(
@@ -530,7 +599,7 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Statistics bar shows right percentages", () => {
-      render(<Report />);
+      renderWithStore(<Report />);
       // getDownloadButton().click();
       const total = report.time.report + report.time.transcription;
       const reportWidth = (report.time.report / total) * 100;
@@ -557,7 +626,7 @@ describe("===== RECORDING AUDIO =====", () => {
       Object.defineProperty(global.navigator, "clipboard", {
         value: MockClipBoard,
       });
-      render(<Report />);
+      renderWithStore(<Report />);
       const [title, content] = Object.entries(report.report)[0];
       const div = (await screen.findByText(title)).closest(
         ".editable-wrapper"

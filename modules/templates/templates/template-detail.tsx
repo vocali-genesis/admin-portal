@@ -35,6 +35,7 @@ import Pagination from "@/resources/table/pagination";
 import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
 import { FieldData } from "@/core/module/core.types";
+import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 
 const messageHandler = MessageHandler.get();
 type TableDataType = GenesisTemplateField & { key: string; name: string };
@@ -582,4 +583,4 @@ const TemplateDetail = () => {
   );
 };
 
-GlobalCore.manager.app("template-detail", TemplateDetail);
+GlobalCore.manager.app("template-detail", () => <SubscriptionGuard> <TemplateDetail /> </SubscriptionGuard>);

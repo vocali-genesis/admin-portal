@@ -11,7 +11,7 @@ import ConfirmDialog from "@/resources/containers/delete-confirmation";
 import Badge from "@/resources/badge";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-import { GenesisInvoice, SubscriptionResponse } from "@/core/module/core.types";
+import { GenesisInvoice, GenesisSubscription } from "@/core/module/core.types";
 import MessageHandler from "@/core/message-handler";
 import Button from "@/resources/containers/button";
 
@@ -19,13 +19,6 @@ const messageHandler = MessageHandler.get();
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
-  const getEndSubscription = async () => {
-    const data: any = await Service.require("subscriptions").getActiveSubscription();
-    if (!data) {
-      return
-    }
-    return moment(data?.current_period_end || "").format("DD MMM, YYYY")
-  }
   const columns: ColumnConfig<GenesisInvoice>[] = [
     {
       title: t("invoice-history.invoice-id-th"),
@@ -45,6 +38,7 @@ const PaymentHistory: React.FC = () => {
     {
       title: t("invoice-history.validity-th"),
       render: (item: any) => (
+        console.log(">>>>>>>item", item),
         <>
           {item.metadata.period_end
             ? moment(+item.metadata.period_end * 1000).format("DD MMM, YYYY")
@@ -134,7 +128,7 @@ const CancelSubscriptonBtn = () => {
     setIsOpen(false);
     setIsLoading(false);
   };
-  const [subscription, setSubscription] = useState<SubscriptionResponse>();
+  const [subscription, setSubscription] = useState<GenesisSubscription>();
 
   const validUntil = subscription?.id
     ? moment(subscription?.current_period_end || "").format("DD MMM, YYYY")
@@ -146,7 +140,10 @@ const CancelSubscriptonBtn = () => {
         "subscriptions"
       ).getActiveSubscription();
       setIsLoading(false);
-      setSubscription(data || {});
+
+      if (!data) { return }
+
+      setSubscription(data);
     })();
   }, []);
   return (
@@ -177,13 +174,15 @@ const Subscriptions = () => {
   const router = useRouter();
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
-  const [subscription, setSubscription] = useState<SubscriptionResponse>();
+  const [subscription, setSubscription] = useState<GenesisSubscription>();
 
   useEffect(() => {
     void (async () => {
       const data = await Service.require("subscriptions").getActiveSubscription();
+      if (!data) { return }
+
       setIsLoading(false);
-      setSubscription(data || {});
+      setSubscription(data);
     })();
   }, []);
 
