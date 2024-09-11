@@ -9,7 +9,7 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
-        <link rel="icon" href="/glogo.png" />
+        <link rel="icon" href="/gLogo-transparent.png" />
       </Head>
       <body>
         <Main />
