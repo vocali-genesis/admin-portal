@@ -12,7 +12,7 @@ import { getComponent, setRouteQuery } from "@/resources/tests/test.utils";
 import { GenesisTemplateField, TYPE_OPTIONS } from "@/core/module/core.types";
 
 describe("===== TEMPLATES =====", () => {
-  beforeAll(() => {});
+  beforeAll(() => { });
 
   describe("Templates Page", () => {
     let Templates: CoreComponent;
@@ -20,8 +20,8 @@ describe("===== TEMPLATES =====", () => {
       Templates = getComponent("app", "templates");
     });
 
-    beforeEach(() => {});
-    afterEach(() => {});
+    beforeEach(() => { });
+    afterEach(() => { });
 
     it("Templates is Mounted", async () => {
       await act(() => render(<Templates />));
@@ -40,27 +40,6 @@ describe("===== TEMPLATES =====", () => {
       });
     });
 
-    it("Checks new entry is created in edit mode when add template", async () => {
-      render(<Templates />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("table-row-0"));
-      });
-
-      const templateEdit = screen.getByTestId("templates.new-template");
-      act(() => templateEdit.click());
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId("templates.new-template-name-input")
-        ).toBeInTheDocument();
-      });
-
-      const inputElement = screen.getByTestId(
-        "templates.new-template-name-input"
-      );
-      expect(inputElement).toHaveValue("");
-    });
 
     it("Checks template can be created", async () => {
       render(<Templates />);
@@ -69,96 +48,21 @@ describe("===== TEMPLATES =====", () => {
         expect(screen.getByTestId("table-row-0"));
       });
 
+      screen.debug(screen.getByTestId("table-row-0"))
+
       const templateEdit = screen.getByTestId("templates.new-template");
       act(() => templateEdit.click());
 
+
+      // There are 10 mockups, next one is 11
       await waitFor(() => {
         expect(
-          screen.getByTestId("templates.new-template-name-input")
+          screen.getByText("Template 11")
         ).toBeInTheDocument();
       });
 
-      const nameInputElement = screen.getByTestId(
-        "templates.new-template-name-input"
-      );
-      await userEvent.clear(nameInputElement);
-      await userEvent.type(nameInputElement, "Test Template");
 
-      expect(nameInputElement).toHaveValue("Test Template");
-
-      const fieldInputElement = screen.getByTestId(
-        "templates.new-template-field-name-input"
-      );
-      await userEvent.clear(fieldInputElement);
-      await userEvent.type(fieldInputElement, "Test Field");
-
-      const descriptionInputElement = screen.getByTestId(
-        "templates.new-template-field-description-input"
-      );
-      await userEvent.clear(descriptionInputElement);
-      await userEvent.type(descriptionInputElement, "Test Description");
-
-      const saveButton = screen.getByTestId("templates.submit-new-template");
-      expect(saveButton).toBeInTheDocument();
-
-      act(() => saveButton.click());
-
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId("templates.new-template-name-input")
-        ).not.toBeInTheDocument();
-      });
-
-      expect(screen.getByText("Test Template"));
-    });
-
-    it("Checks input field when edit button is pressed", async () => {
-      render(<Templates />);
-
-      // Wait for the table to be fully rendered (at least one row is filled)
-      await waitFor(() => {
-        expect(screen.getByTestId("table-row-0"));
-      });
-
-      const templateEdit = screen.getAllByTestId("templates.edit");
-      act(() => templateEdit[0].click());
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId("templates.name-edit-field")
-        ).toBeInTheDocument();
-      });
-    });
-
-    it("Checks template can be edited", async () => {
-      render(<Templates />);
-
-      // Wait for the table to be fully rendered (at least one row is filled)
-      await waitFor(() => {
-        expect(screen.getByTestId("table-row-0"));
-      });
-
-      const templateEdit = screen.getAllByTestId("templates.edit");
-      act(() => templateEdit[0].click());
-
-      const inputElement = screen.getByTestId("templates.name-edit-field");
-      await userEvent.clear(inputElement);
-      await userEvent.type(inputElement, "New Template Name");
-
-      expect(inputElement).toHaveValue("New Template Name");
-
-      const saveButton = screen.getByTestId("templates.save-template");
-      expect(saveButton).toBeInTheDocument();
-
-      act(() => saveButton.click());
-
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId("templates.name-edit-field")
-        ).not.toBeInTheDocument();
-      });
-
-      expect(screen.getByText("New Template Name"));
+      expect(screen.getByText("Template 11"));
     });
 
     it("Checks modal pops up when delete icon clicked", async () => {
@@ -178,6 +82,7 @@ describe("===== TEMPLATES =====", () => {
         ).toBeInTheDocument();
       });
     });
+
 
     it("Checks template delete function", async () => {
       render(<Templates />);
@@ -236,7 +141,7 @@ describe("===== TEMPLATES =====", () => {
     beforeEach(() => {
       setRouteQuery({ id: "C" });
     });
-    afterEach(() => {});
+    afterEach(() => { });
 
     it("Templates Detail is Mounted", async () => {
       await act(() => render(<TemplateDetail />));
@@ -248,16 +153,87 @@ describe("===== TEMPLATES =====", () => {
       expect(
         screen.queryByText("template-detail.table")
       ).not.toBeInTheDocument();
+
+
     });
 
-    it("Checks table is populated", async () => {
+
+
+    it("Checks template is loaded", async () => {
       render(<TemplateDetail />);
 
       // Wait for the table to be fully rendered (at least one row is filled)
       await waitFor(() => {
         expect(screen.getByTestId("table-row-0"));
       });
+      await waitFor(() => screen.findByTestId('template-detail.title'))
+
     });
+    it("Checks Edit title can be edited", async () => {
+      render(<TemplateDetail />);
+
+      await waitFor(() => screen.findByTestId('template-detail.title'))
+
+      const templateEdit = screen.getByTestId("template-detail.edit-title");
+
+      act(() => templateEdit.click());
+
+      await waitFor(() => {
+        screen.getByTestId("template-detail.template-name-input")
+      });
+
+      const inputElement = screen.getByTestId("template-detail.template-name-input");
+      await userEvent.clear(inputElement);
+      await userEvent.type(inputElement, "New Template Name");
+
+      expect(inputElement).toHaveValue("New Template Name");
+
+      const saveButton = screen.getByTestId("template-detail.save-title");
+
+      act(() => saveButton.click());
+
+      await waitFor(() => {
+        screen.getByTestId("template-detail.title")
+      });
+      await waitFor(() => {
+        screen.getByText("New Template Name")
+      });
+
+
+    });
+
+    it("Checks Edit title can be cancel", async () => {
+      render(<TemplateDetail />);
+
+      await waitFor(() => screen.findByTestId('template-detail.title'))
+
+      const templateEdit = screen.getByTestId("template-detail.edit-title");
+
+      act(() => templateEdit.click());
+
+      await waitFor(() => {
+        screen.getByTestId("template-detail.template-name-input")
+      });
+
+      const inputElement = screen.getByTestId("template-detail.template-name-input");
+      await userEvent.clear(inputElement);
+      await userEvent.type(inputElement, "Template to be Cancel");
+
+      const cancel = screen.getByTestId("template-detail.cancel-title");
+
+      act(() => cancel.click());
+
+      await waitFor(() => {
+        screen.getByTestId("template-detail.title")
+      });
+      expect(
+        screen.queryByText("Template to be Cancel")
+      ).not.toBeInTheDocument()
+
+    });
+
+
+
 
     it("Checks new entry is created in edit mode when add template", async () => {
       render(<TemplateDetail />);

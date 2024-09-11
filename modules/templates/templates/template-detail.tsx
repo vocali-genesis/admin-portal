@@ -66,11 +66,13 @@ const EditTitle = ({ template, setTemplate }: { template: GenesisTemplate, setTe
       const updatedTemplate = await templateService.updateTemplate(template.id, {
         name: templateName,
       });
-      if (updatedTemplate) {
-        setTemplate(updatedTemplate);
-        setEditingTemplateName(false);
-        messageHandler.handleSuccess(t("templates.editSuccess"));
+      if (!updatedTemplate) {
+        return
       }
+      setTemplate(updatedTemplate);
+      setEditingTemplateName(false);
+      messageHandler.handleSuccess(t("templates.editSuccess"));
+
     } catch (error) {
       console.error(error);
       messageHandler.handleError(t("templates.editError"));
@@ -87,25 +89,23 @@ const EditTitle = ({ template, setTemplate }: { template: GenesisTemplate, setTe
         />
       </div>
       <div className="mr-4">
-        <IconButton onClick={() => handleSaveTemplateName()} size="small">
+        <IconButton onClick={() => handleSaveTemplateName()} size="small" testId="template-detail.save-title">
           <FaSave style={{ color: "var(--primary)" }} />
         </IconButton>
       </div>
       <div>
-        <IconButton onClick={handleCancelEditTemplateName} size="small">
+        <IconButton onClick={handleCancelEditTemplateName} size="small" testId="template-detail.cancel-title" >
           <FaTimes style={{ color: "var(--danger)" }} />
         </IconButton>
       </div>
     </div >)
   }
   return (
-
-
     <div className="flex items-center">
       <h1 className={`${styles.title} mr-4`} data-testid="template-detail.title" >
         {template?.name}
       </h1 >
-      <IconButton onClick={handleEditTemplateName} size="small" title={t("button.edit")}
+      <IconButton onClick={handleEditTemplateName} size="small" title={t("button.edit")} testId="template-detail.edit-title"
       >
         <FaEdit style={{ color: "var(--primary)" }} />
       </IconButton>
