@@ -1,6 +1,6 @@
 {
   "name": "genesis-vocali",
-  "version": null,
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",

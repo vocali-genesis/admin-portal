@@ -85,4 +85,13 @@ Important Notes:
 -> Create a Mock for each service that return positive, we can just the mock to return error in a specific action.
 -> Check the TestUtils classes that will save you some time and simplify the test cases
 
+### New Version
 
+We use standard-version
+`npx standard-version --release-as` can add `patch` or `minor` or `mayor` or for simplicity
+`yarn tag (patch|minor|mayor)
+
+Follow this logic 
+Major version: Broken backward compatibility
+Minor Version: New functionality
+Patch: Bug fixing 

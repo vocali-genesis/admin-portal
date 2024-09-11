@@ -5,6 +5,7 @@ import Navbar from "@/core/components/nav";
 import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
 import Service from "@/core/module/service.factory";
+import AppFooter from "@/core/components/footer";
 
 const Settings = () => {
   const router = useRouter();
@@ -60,7 +61,8 @@ const Settings = () => {
           showHome={true}
         />
         <main className="flex-grow p-5 overflow-y-auto">
-          {!router.isReady || isLoading ? <Spinner /> : <Component />}
+          {!router.isReady || isLoading ? <Spinner /> : <><Component />    <AppFooter /></>}
+
         </main>
       </div>
     </div>
