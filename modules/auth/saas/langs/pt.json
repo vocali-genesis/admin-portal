@@ -7,7 +7,11 @@
     "save": "SALVAR",
     "delete-account": "EXCLUIR MINHA CONTA",
     "menu": "Configurações",
-    "revoke": "Revogar"
+    "revoke": "Revogar",
+    "save-email": "Alterar Email",
+    "save-password": "Alterar Senha",
+    "email-update-success": "Email atualizado com sucesso",
+    "password-update-success": "Senha atualizada com sucesso"
   },
   "auth": {
     "login": "Entrar",

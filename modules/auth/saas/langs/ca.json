@@ -7,7 +7,11 @@
     "save": "DESAR",
     "delete-account": "ELIMINAR EL MEU COMPTE",
     "menu": "Configuració",
-    "revoke": "Revocar"
+    "revoke": "Revocar",
+    "save-email": "Canviar correu electrònic",
+    "save-password": "Canviar contrasenya",
+    "email-update-success": "Correu electrònic actualitzat correctament",
+    "password-update-success": "Contrasenya actualitzada correctament"
   },
   "auth": {
     "login": "Iniciar sessió",
