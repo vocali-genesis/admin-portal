@@ -38,7 +38,6 @@ export const userValidation = (onReady: () => void) => {
         ? moment(subscription.current_period_end).isBefore()
         : true;
 
-      console.log(notValid);
       if (subscription?.status !== "active" && notValid) {
         if (slug === "subscriptions") return true;
         void router.replace("/app/subscriptions");

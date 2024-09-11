@@ -64,6 +64,7 @@ export interface SubscriptionService {
     to: number
   ): Promise<{ invoices: GenesisInvoice[]; count: number }>;
   cancelSubscription(): Promise<Record<string, string | number> | null>;
+  getSubscriptionById(subscriptionId: string) : Promise<GenesisSubscription | null>
 }
 
 export interface SupabaseTemplateService {

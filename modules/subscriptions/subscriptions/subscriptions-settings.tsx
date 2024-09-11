@@ -17,8 +17,50 @@ import Button from "@/resources/containers/button";
 
 const messageHandler = MessageHandler.get();
 
+const SubscriptionValidity: React.FC<{ subscriptionId: string }> = ({ subscriptionId }) => {
+  const [validityDate, setValidityDate] = useState<string | null>(null);
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    const fetchSubscriptionData = async () => {
+      try {
+        const data = await Service.require("subscriptions").getSubscriptionById(subscriptionId);
+        if (!data?.current_period_end) {
+          setValidityDate(t("subscription-settings.invalid-date"));
+          return;
+        }
+        const date = typeof data.current_period_end === 'number'
+          ? moment.unix(data.current_period_end)
+          : moment(data.current_period_end);
+        if (date.isValid()) {
+          setValidityDate(date.format("DD MMM, YYYY"));
+        } else {
+          console.error("Invalid date received:", data.current_period_end);
+          setValidityDate(t("subscription-settings.invalid-date"));
+        }
+      } catch (error) {
+        console.error("Error fetching subscription data:", error);
+        setValidityDate(t("subscription-settings.error-fetching"));
+      }
+    };
+    fetchSubscriptionData();
+  }, [subscriptionId, t]);
+
+  return <p>{validityDate}</p>;
+};
+
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
+  const [data, setData] = useState<GenesisInvoice[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const itemsPerPage = 5;
+  const fromRange = currentPage * itemsPerPage - itemsPerPage;
+  const toRange = fromRange + itemsPerPage - 1;
+  const totalPages = Math.ceil(totalRecords / itemsPerPage);
+
   const columns: ColumnConfig<GenesisInvoice>[] = [
     {
       title: t("invoice-history.invoice-id-th"),
@@ -38,12 +80,7 @@ const PaymentHistory: React.FC = () => {
     {
       title: t("invoice-history.validity-th"),
       render: (item: any) => (
-        console.log(">>>>>>>item", item),
-        <>
-          {item.metadata.period_end
-            ? moment(+item.metadata.period_end * 1000).format("DD MMM, YYYY")
-            : ""}
-        </>
+        <SubscriptionValidity subscriptionId={item.subscription_id} />
       ),
     },
     {
@@ -62,31 +99,22 @@ const PaymentHistory: React.FC = () => {
     },
   ];
 
-  const [data, setData] = useState<GenesisInvoice[] | []>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [totalRecords, setTotalRecords] = useState(0);
-
-  const itemsPerPage = 5;
-  const fromRange = currentPage * itemsPerPage - itemsPerPage;
-  const toRange = fromRange + itemsPerPage - 1;
-  const totalPages = Math.ceil(totalRecords / itemsPerPage);
-
-  const loadData = () => {
-    void (async () => {
-      setIsLoading(true);
-      const { invoices, count } = await Service.require(
-        "subscriptions"
-      ).getInvoices(fromRange, toRange);
-      setTotalRecords(count);
-      setData(invoices);
-      setIsLoading(false);
-    })();
-  };
-
   useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const { invoices, count } = await Service.require("subscriptions").getInvoices(fromRange, toRange);
+        setTotalRecords(count);
+        setData(invoices);
+      } catch (error) {
+        console.error("Error loading invoices:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     loadData();
-  }, [currentPage]);
+  }, [currentPage, fromRange, toRange]);
 
   const handleSort = (key: string, column: string) => {
     console.log({ key, column });

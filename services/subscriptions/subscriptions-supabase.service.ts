@@ -85,6 +85,26 @@ class SubscriptionSupabase implements SubscriptionService {
   }
 
   /**
+   * Returns the subscription details by subscription ID.
+   */
+  public async getSubscriptionById(
+    subscriptionId: string
+  ): Promise<GenesisSubscription | null> {
+    const { data, error } = await this.supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("subscription_id", subscriptionId)
+      .single();
+
+    if (error) {
+      messageHandler.handleError(error.message);
+      return null;
+    }
+
+    return data as GenesisSubscription;
+  }
+
+  /**
    * Retruns the currently active user subscription, so that the users can subscribe to a plan
    */
   public async getActiveSubscription(): Promise<GenesisSubscription | null> {
