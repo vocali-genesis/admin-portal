@@ -39,6 +39,8 @@
     "transcription-time": "Transcripció: {{seconds}} segons",
     "report-time": "Informe: {{seconds}} segons",
     "download_success": "Descàrrega realitzada amb èxit",
-    "error-no-templates": "No tens cap plantilla configurada. Si us plau, configura'n una abans d'enregistrar"
+    "error-no-templates": "No tens cap plantilla configurada. Si us plau, configura'n una abans d'enregistrar",
+    "record": "Enregistra",
+    "pause": "Pausa"
   }
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { SmallSpinner } from "./small-spinner";
 
 interface SubmitButtonProps {
   label: string;
@@ -14,7 +15,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 }) => {
   return (
     <StyledButton type="submit" data-testid={testId} disabled={isSubmitting}>
-      {isSubmitting ? <Spinner /> : label}
+      {isSubmitting ? <SmallSpinner /> : label}
     </StyledButton>
   );
 };
@@ -44,13 +45,3 @@ const StyledButton = styled.button`
   }
 `;
 
-const Spinner = styled.span`
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid var(--primary);
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-  display: inline-block;
-  vertical-align: middle;
-`;

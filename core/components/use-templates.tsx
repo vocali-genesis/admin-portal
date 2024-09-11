@@ -18,16 +18,19 @@ export const useTemplates = (limit?: number) => {
   const { templates, hasFetchedTemplates, pagination } = useSelector(
     (state: RootState) => state.templates,
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
+    async function load() {
+      setIsLoading(true);
 
-    if (!hasFetchedTemplates) {
-      fetchTemplates(dispatch, limit, pagination.currentPage);
+      if (!hasFetchedTemplates) {
+        await fetchTemplates(dispatch, limit, pagination.currentPage);
+      }
+
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
+    void load();
   }, [dispatch, hasFetchedTemplates, limit, pagination.currentPage]);
 
   const createTemplate = useCallback(

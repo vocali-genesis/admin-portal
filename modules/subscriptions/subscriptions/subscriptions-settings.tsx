@@ -19,6 +19,7 @@ const messageHandler = MessageHandler.get();
 
 const PaymentHistory: React.FC = () => {
   const { t } = useTranslation();
+
   const columns: ColumnConfig<GenesisInvoice>[] = [
     {
       title: t("invoice-history.invoice-id-th"),
@@ -37,7 +38,8 @@ const PaymentHistory: React.FC = () => {
     },
     {
       title: t("invoice-history.validity-th"),
-      render: (item) => (
+      render: (item: any) => (
+        console.log(">>>>>>>item", item),
         <>
           {item.metadata.period_end
             ? moment(+item.metadata.period_end * 1000).format("DD MMM, YYYY")
@@ -202,7 +204,6 @@ const Subscriptions = () => {
               {t("subscription-settings.exp-label")}{" "}
               <Badge variant={badgeClass}>{validUntil}</Badge>
             </h2>
-
             {isCanceledButValid && (
               <h2 className="ml-2" >
                 <Badge variant={"warning"}>{t("subscription-settings.canceled-but-valid-warning")}</Badge>
