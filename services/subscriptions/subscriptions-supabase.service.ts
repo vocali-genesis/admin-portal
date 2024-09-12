@@ -61,7 +61,6 @@ class SubscriptionSupabase implements SubscriptionService {
       messageHandler.handleError(error.message);
     }
 
-    console.log(data);
     return null;
   }
 

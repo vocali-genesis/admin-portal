@@ -36,7 +36,9 @@
     "inactive-label": "Inactivo",
     "subscribe-btn": "Suscríbete ahora",
     "success-message": "¡Suscripción cancelada correctamente!",
-    "canceled-but-valid-warning": "Subscripción Cancelada"
+    "canceled-but-valid-warning": "Subscripción Cancelada",
+    "invalid-date": "Fecha inválida",
+    "error-fetching": "Error al obtener los detalles de la suscripción"
   },
   "invoice-history": {
     "invoice-id-th": "Id de Factura",

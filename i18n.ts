@@ -221,7 +221,7 @@ async function translateKeys({
   languages: string[];
 }) {
   const inputJSON = JSON.stringify(inputData);
-  const prompt = `I give you a JSON file in the language ${DEFAULT_LANG}, you need to translate them in the languages ${languages}. Return a JSON object where the first key is the language and inside is the translation for each language, don\`t add extra words. The json is \n${inputJSON}`;
+  const prompt = `I give you a JSON file in the language ${DEFAULT_LANG}, you need to translate them in the languages ${languages}. Return a JSON object where the first key is the language the, don\`t add extra words. The json is \n${inputJSON}`;
   console.time("gpt");
 
   // TODO: If the code is too big, we need to do a call per language
@@ -247,7 +247,7 @@ async function translateKeys({
         result[lang] = { [key]: translations } as Translation;
       });
     }
-    console.log({ result, inputJSON });
+    console.log({ result: JSON.stringify(result, null, 4), inputJSON });
     return result;
   } catch (err) {
     console.info({ prompt, response: translation.text });

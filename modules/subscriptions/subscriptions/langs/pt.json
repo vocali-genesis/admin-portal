@@ -36,7 +36,9 @@
     "inactive-label": "Inativo",
     "subscribe-btn": "Assine agora",
     "success-message": "Assinatura cancelada com sucesso!",
-    "canceled-but-valid-warning": "Já cancelado"
+    "canceled-but-valid-warning": "Já cancelado",
+    "invalid-date": "Data inválida",
+    "error-fetching": "Erro ao buscar os detalhes da assinatura"
   },
   "invoice-history": {
     "invoice-id-th": "ID da Fatura",

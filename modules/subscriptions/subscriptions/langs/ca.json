@@ -36,7 +36,9 @@
     "inactive-label": "Inactiu",
     "subscribe-btn": "Subscriu-te ara",
     "success-message": "Subscripció cancel·lada correctament!",
-    "canceled-but-valid-warning": "Ja cancel·lat"
+    "canceled-but-valid-warning": "Ja cancel·lat",
+    "invalid-date": "Data no vàlida",
+    "error-fetching": "Error en recuperar els detalls de la subscripció"
   },
   "invoice-history": {
     "invoice-id-th": "Factura Id",
