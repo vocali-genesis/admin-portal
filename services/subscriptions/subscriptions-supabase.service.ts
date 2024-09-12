@@ -93,7 +93,7 @@ class SubscriptionSupabase implements SubscriptionService {
       .select(
         "id, subscription_id, status, current_period_start, current_period_end"
       )
-      // .gt("current_period_end", new Date().toISOString());
+      .gt("current_period_end", new Date().toISOString());
     if (error) {
       messageHandler.handleError(error.message);
       return null;
