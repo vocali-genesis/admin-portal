@@ -16,6 +16,11 @@ export const setPagination = (pagination: {
   payload: { pagination },
 });
 
+export const setHasFetchedTemplates = (hasFetchedTemplates: boolean) => ({
+  type: "SET_HAS_FETCHED_TEMPLATES" as const,
+  payload: { hasFetchedTemplates },
+})
+
 export const fetchTemplates = async (
   dispatch: Dispatch<TemplateActionTypes>,
   limit?: number,

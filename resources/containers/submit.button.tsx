@@ -6,15 +6,24 @@ interface SubmitButtonProps {
   label: string;
   testId?: string;
   isSubmitting?: boolean;
+  disabled?: boolean;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
   label,
   testId,
   isSubmitting,
+  disabled = false,
+  onClick = () => {},
 }) => {
   return (
-    <StyledButton type="submit" data-testid={testId} disabled={isSubmitting}>
+    <StyledButton
+      type="submit"
+      data-testid={testId}
+      disabled={isSubmitting || disabled}
+      onClick={onClick}
+    >
       {isSubmitting ? <SmallSpinner /> : label}
     </StyledButton>
   );

@@ -7,7 +7,14 @@
     "language": "Language",
     "save": "SAVE",
     "delete-account": "DELETE MY ACCOUNT",
-    "revoke": "Revoke"
+    "revoke": "Revoke",
+    "save-email": "Change Email",
+    "save-password": "Change Password",
+    "email-update-success": "Email updated successfully",
+    "password-update-success": "Password updated successfully",
+    "update-email-title": "Change Email",
+    "update-email-message": "Once you change the email you will be logged out and you will need to verify the email before logging in using the new email.",
+    "New password should be different from the old password": "New password should be different from the old password."
   },
 
   "auth": {

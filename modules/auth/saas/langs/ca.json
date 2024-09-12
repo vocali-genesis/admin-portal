@@ -7,7 +7,14 @@
     "save": "DESAR",
     "delete-account": "ELIMINAR EL MEU COMPTE",
     "menu": "Configuració",
-    "revoke": "Revocar"
+    "revoke": "Revocar",
+    "save-email": "Canviar correu electrònic",
+    "save-password": "Canviar contrasenya",
+    "email-update-success": "Correu electrònic actualitzat correctament",
+    "password-update-success": "Contrasenya actualitzada correctament",
+    "update-email-title": "Canvia l'email",
+    "update-email-message": "Un cop canviïs l'email, t'aniran tancant la sessió i hauràs de verificar l'email abans d'iniciar la sessió amb el nou email.",
+    "New password should be different from the old password": "La nova contrasenya ha de ser diferent de l'antiga contrasenya."
   },
   "auth": {
     "login": "Iniciar sessió",

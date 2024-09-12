@@ -45,7 +45,6 @@ const ApplicationSlug = () => {
         />
         <main className="flex-grow p-5 overflow-y-scroll">
           {isLoading ? <Spinner /> : <><Component />  <AppFooter /></>}
-
         </main>
       </div>
     </div>

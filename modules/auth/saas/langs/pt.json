@@ -7,7 +7,14 @@
     "save": "SALVAR",
     "delete-account": "EXCLUIR MINHA CONTA",
     "menu": "Configurações",
-    "revoke": "Revogar"
+    "revoke": "Revogar",
+    "save-email": "Alterar Email",
+    "save-password": "Alterar Senha",
+    "email-update-success": "Email atualizado com sucesso",
+    "password-update-success": "Senha atualizada com sucesso",
+    "update-email-title": "Alterar e-mail",
+    "update-email-message": "Depois de alterar o e-mail, a sua sessão será fechada e você precisará verificar o e-mail antes de fazer login com o novo e-mail.",
+    "New password should be different from the old password": "A nova senha deve ser diferente da antiga senha."
   },
   "auth": {
     "login": "Entrar",

@@ -36,6 +36,11 @@ const templatesReducer = (
         ...state,
         pagination: action.payload.pagination,
       };
+    case "SET_HAS_FETCHED_TEMPLATES":
+      return {
+        ...state,
+        hasFetchedTemplates: action.payload.hasFetchedTemplates,
+      }
     default:
       return state;
   }

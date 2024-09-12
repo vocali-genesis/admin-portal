@@ -8,6 +8,10 @@ class MessageHandler {
   }
   private constructor() {}
   handleError(error: string) {
+    if (error.includes("Failed to fetch")) {
+      toast.error("Connection error");
+      return;
+    }
     toast.error(error || "An unexpected error occurred");
   }
 

@@ -45,6 +45,7 @@ export const useTemplates = (limit?: number) => {
         setPagination({
           ...pagination,
           totalRecords: pagination.totalRecords + 1,
+          totalPages: pagination.totalPages === 0 ? 1 : pagination.totalPages,
         }),
       );
     },
@@ -66,6 +67,10 @@ export const useTemplates = (limit?: number) => {
         setPagination({
           ...pagination,
           totalRecords: pagination.totalRecords - 1,
+          totalPages:
+            pagination.totalPages === 1 && pagination.totalRecords === 1 
+            ? 0
+            : pagination.totalPages,
         }),
       );
     },

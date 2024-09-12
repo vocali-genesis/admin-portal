@@ -6,8 +6,11 @@ import SideBar from "@/core/components/sidebar";
 import Spinner from "@/resources/containers/spinner";
 import Service from "@/core/module/service.factory";
 import AppFooter from "@/core/components/footer";
+import { userValidation } from "@/core/components/user-validation";
+import store from "@/core/store";
+import { Provider } from "react-redux";
 
-const Settings = () => {
+const SettingsSlug = () => {
   const router = useRouter();
   const { slug } = router.query as { slug: string };
   const Component = ModuleManager.get().components.settings(slug);
@@ -18,6 +21,8 @@ const Settings = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  userValidation(() => setIsLoading(false));
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -39,10 +44,6 @@ const Settings = () => {
       void router.replace("/errors/not-found");
     }
   }, [router, router.isReady, Component]);
-
-  if (!router.isReady || isLoading) {
-    return <Spinner />;
-  }
 
   if (!Component) {
     return null;
@@ -68,5 +69,13 @@ const Settings = () => {
     </div>
   );
 };
+
+const Settings = () => {
+  return (
+    <Provider store={store}>
+      <SettingsSlug />
+    </Provider>
+  );
+}
 
 export default Settings;

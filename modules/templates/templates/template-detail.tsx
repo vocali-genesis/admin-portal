@@ -36,6 +36,8 @@ import Button from "@/resources/containers/button";
 import IconButton from "@/resources/containers/icon-button";
 import { FieldData } from "@/core/module/core.types";
 import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
+import { setHasFetchedTemplates } from "@/resources/redux/templates/actions";
+import { useDispatch } from "react-redux";
 
 const messageHandler = MessageHandler.get();
 type TableDataType = GenesisTemplateField & { key: string; name: string };
@@ -118,6 +120,7 @@ const EditTitle = ({ template, setTemplate }: { template: GenesisTemplate, setTe
 const TemplateDetail = () => {
   const router = useRouter();
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const templateService: SupabaseTemplateService = Service.require("templates");
   const { id } = router.query;
 
@@ -231,6 +234,7 @@ const TemplateDetail = () => {
       );
       if (updatedTemplate) {
         setTemplate(updatedTemplate);
+        dispatch(setHasFetchedTemplates(false));
         setEditingField(null);
         setEditedValues({});
         messageHandler.handleSuccess(t("templates.editSuccess"));
@@ -243,6 +247,7 @@ const TemplateDetail = () => {
     setPagination({
       ...pagination,
       totalRecords: pagination.totalRecords + 1,
+      totalPages: pagination.totalPages === 0 ? 1 : pagination.totalPages,
     });
     setIsFieldModalOpen(false);
   };
@@ -311,6 +316,10 @@ const TemplateDetail = () => {
     setPagination({
       ...pagination,
       totalRecords: pagination.totalRecords - 1,
+      totalPages:
+        pagination.totalPages === 1 && pagination.totalRecords === 1 
+        ? 0
+        : pagination.totalPages,
     });
   };
 
