@@ -11,7 +11,10 @@
     "save-email": "Cambiar correo electrónico",
     "save-password": "Cambiar contraseña",
     "email-update-success": "Correo electrónico actualizado correctamente",
-    "password-update-success": "Contraseña actualizada correctamente"
+    "password-update-success": "Contraseña actualizada correctamente",
+    "update-email-title": "Cambiar correo electrónico",
+    "update-email-message": "Una vez cambies el correo electrónico, se cerrará tu sesión y deberás verificar el correo electrónico antes de iniciar sesión con el nuevo correo electrónico.",
+    "New password should be different from the old password": "La nueva contraseña debe ser diferente de la antigua contraseña."
   },
   "auth": {
     "login": "Iniciar sesión",
