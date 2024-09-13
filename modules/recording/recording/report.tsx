@@ -28,6 +28,7 @@ const Report = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [audioDuration, setAudioDuration] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (
@@ -58,6 +59,7 @@ const Report = () => {
   });
 
   const handleDownloadPdf = () => {
+    if (isEditing) return;
     setHideIcons(true);
     setTimeout(() => {
       downloadPdf();
@@ -112,6 +114,10 @@ const Report = () => {
   };
 
   const renderContent = () => {
+    const handleEditStateChange = (editingState: boolean) => {
+      setIsEditing(editingState);
+    };
+
     return (
       <div className={report_styles.viewContainer}>
         <div ref={componentRef}
@@ -129,9 +135,11 @@ const Report = () => {
                   key={index}
                   title={title}
                   content={content}
-                  onEdit={(title, content) =>
-                    setReportContent({ ...reportContent, [title]: content })
-                  }
+                  onEdit={(title, content) => {
+                    setIsEditing(false)
+                    setReportContent({ ...reportContent, [title]: content });
+                  }}
+                  onEditStateChange={handleEditStateChange}
                 />
               );
             },
@@ -158,7 +166,8 @@ const Report = () => {
         }
         break;
       case "report":
-        handleDownloadPdf();  // Triggers the report download
+        if (isEditing) return;
+        handleDownloadPdf();
         break;
       case "transcription":
         await Download.downloadTranscription(transcriptionContent);
@@ -188,7 +197,7 @@ const Report = () => {
             <button onClick={() => void handleDownload("audio")}>
               {t("recording.download-audio")}
             </button>
-            <button onClick={() => handleDownload("report")}>
+            <button disabled={isEditing} onClick={() => handleDownload("report")}>
               {t("recording.download-report")}
             </button>
             <button onClick={() => void handleDownload("transcription")}>
