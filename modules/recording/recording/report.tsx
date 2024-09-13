@@ -197,7 +197,7 @@ const Report = () => {
             <button onClick={() => void handleDownload("audio")}>
               {t("recording.download-audio")}
             </button>
-            <button disabled={isEditing} onClick={() => handleDownload("report")}>
+            <button disabled={isEditing} onClick={() => handleDownload("report")} style={{ color: isEditing ? "gray" : "" }}>
               {t("recording.download-report")}
             </button>
             <button onClick={() => void handleDownload("transcription")}>
