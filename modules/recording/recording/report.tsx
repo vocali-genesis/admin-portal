@@ -10,6 +10,7 @@ import Download from "./libs/download";
 import { ProgressBar } from "@/resources/containers/progress-bar";
 import ViewContentEditable from "@/resources/containers/view-content-editable";
 import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
+import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 
 const Report = () => {
   const router = useRouter();
@@ -268,6 +269,7 @@ const Report = () => {
         onPause={() => setIsAudioPlaying(false)}
         onPlay={() => setIsAudioPlaying(true)}
       />
+      <OnLeaveConfirmation />
     </div>
   );
 };
