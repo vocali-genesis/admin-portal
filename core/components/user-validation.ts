@@ -39,6 +39,7 @@ export const userValidation = (onReady: () => void) => {
         : true;
 
       if (subscription?.status !== "active" && notValid) {
+        if (slug === "settings") return true;
         if (slug === "subscriptions") return true;
         void router.replace("/app/subscriptions");
         return false;
