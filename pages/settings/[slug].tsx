@@ -22,7 +22,7 @@ const SettingsSlug = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  userValidation(() => setIsLoading(false));
+  userValidation({ onReady: () => setIsLoading(false), withSubscription: false });
 
   useEffect(() => {
     if (!router.isReady) return;

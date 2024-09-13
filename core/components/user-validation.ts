@@ -10,7 +10,13 @@ import {
 } from "@/resources/redux/users/actions";
 import { GenesisSubscription } from "@/core/module/core.types";
 
-export const userValidation = (onReady: () => void) => {
+export const userValidation = ({
+  onReady,
+  withSubscription,
+}: {
+  onReady: () => void;
+  withSubscription: boolean;
+}) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { slug } = router.query as { slug: string };
@@ -39,7 +45,6 @@ export const userValidation = (onReady: () => void) => {
         ? moment(subscription.current_period_end).isBefore()
         : true;
 
-      console.log(notValid);
       if (subscription?.status !== "active" && notValid) {
         if (slug === "subscriptions") return true;
         void router.replace("/app/subscriptions");
@@ -52,6 +57,9 @@ export const userValidation = (onReady: () => void) => {
       .then((result) => {
         if (!result) {
           return Promise.resolve(false);
+        }
+        if(!withSubscription) {
+          return Promise.resolve(true)
         }
         return checkSubscription();
       })

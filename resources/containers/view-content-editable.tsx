@@ -10,12 +10,14 @@ interface ViewContentProps {
   title: string;
   content: string;
   onEdit: (title: string, content: string) => void;
+  hideIcons: boolean
 }
 
 const ViewContentEditable: React.FC<ViewContentProps> = ({
   title,
   content,
   onEdit,
+  hideIcons
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingContent, setEditingContent] = useState(content);
@@ -79,9 +81,13 @@ const ViewContentEditable: React.FC<ViewContentProps> = ({
   return (
     <div className={styles.viewContent}>
       <div className="editable-wrapper">
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center" >
           <h2 className="mr-4">{title}</h2>
-          {isEditing ? renderEditButtons() : renderViewButtons()}
+          {isEditing ? (
+            renderEditButtons()
+          ) : (
+            !hideIcons && renderViewButtons()
+          )}
         </div>
         {!isEditing ? (
           <p

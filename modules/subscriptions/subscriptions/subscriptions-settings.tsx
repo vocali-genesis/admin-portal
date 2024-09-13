@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { GlobalCore } from "@/core/module/module.types";
 import styles from "./styles/subscriptions-settings.module.css";
 import { useTranslation } from "react-i18next";
-import Spinner from "@/resources/containers/spinner";
 import Service from "@/core/module/service.factory";
 import { useRouter } from "next/router";
 import moment from "moment";
@@ -14,6 +13,7 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { GenesisInvoice, GenesisSubscription } from "@/core/module/core.types";
 import MessageHandler from "@/core/message-handler";
 import Button from "@/resources/containers/button";
+import { SmallSpinner } from "@/resources/containers/small-spinner";
 
 const messageHandler = MessageHandler.get();
 
@@ -37,24 +37,13 @@ const PaymentHistory: React.FC = () => {
       ),
     },
     {
-      title: t("invoice-history.validity-th"),
-      render: (item: any) => (
-        console.log(">>>>>>>item", item),
-        <>
-          {item.metadata.period_end
-            ? moment(+item.metadata.period_end * 1000).format("DD MMM, YYYY")
-            : ""}
-        </>
-      ),
-    },
-    {
       title: t("invoice-history.amount-th"),
       render: (item) => <span>€ {(item.amount / 100).toFixed(2)}</span>,
     },
     {
       title: t("invoice-history.action-th"),
       render: (item) => (
-        <div style={{ display: "flex", justifyContent: "end" }}>
+        <div style={{ display: "flex", justifyContent: "start" }}>
           <a href={item.invoice_url} className="text-blue-500" target="__blank">
             {t("invoice-history.view-receipt")}
           </a>
@@ -89,16 +78,13 @@ const PaymentHistory: React.FC = () => {
     loadData();
   }, [currentPage]);
 
-  const handleSort = (key: string, column: string) => {
-    console.log({ key, column });
-  };
+
 
   return (
     <div className="container mx-auto">
       <Table<GenesisInvoice>
         data={data}
         columns={columns}
-        onSort={handleSort}
         isLoading={isLoading}
         pagination={{
           currentPage: totalPages ? currentPage : 0,
@@ -180,16 +166,14 @@ const Subscriptions = () => {
   useEffect(() => {
     void (async () => {
       const data = await Service.require("subscriptions").getActiveSubscription();
+      setIsLoading(false);
+
       if (!data) { return }
 
-      setIsLoading(false);
       setSubscription(data);
     })();
   }, []);
 
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   // Calculate the subscription end date
   const validUntil = subscription?.id
@@ -205,9 +189,9 @@ const Subscriptions = () => {
       <main className={styles.contentWrapper}>
         <div className={`${styles.head} flex  justify-between items-center`}>
           <div className={`${styles.left} flex justify-between items-center`}>
-            <h2>
+            <h2  >
               {t("subscription-settings.exp-label")}{" "}
-              <Badge variant={badgeClass}>{validUntil}</Badge>
+              {isLoading ? <span style={{ paddingLeft: '0.25rem' }}> <SmallSpinner />  </span> : <Badge variant={badgeClass}>{validUntil}</Badge>}
             </h2>
             {isCanceledButValid && (
               <h2 className="ml-2" >
