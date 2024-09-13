@@ -25,7 +25,6 @@ export type GenesisInvoice = {
   created_at: string;
   amount: CENTS;
   invoice_url: string;
-  metadata: { period_end: string };
 };
 
 export enum TYPE_OPTIONS {

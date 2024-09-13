@@ -37,23 +37,13 @@ const PaymentHistory: React.FC = () => {
       ),
     },
     {
-      title: t("invoice-history.validity-th"),
-      render: (item: GenesisInvoice) => (
-        <>
-          {item.metadata.period_end
-            ? moment(+item.metadata.period_end * 1000).format("DD MMM, YYYY")
-            : ""}
-        </>
-      ),
-    },
-    {
       title: t("invoice-history.amount-th"),
       render: (item) => <span>€ {(item.amount / 100).toFixed(2)}</span>,
     },
     {
       title: t("invoice-history.action-th"),
       render: (item) => (
-        <div style={{ display: "flex", justifyContent: "end" }}>
+        <div style={{ display: "flex", justifyContent: "start" }}>
           <a href={item.invoice_url} className="text-blue-500" target="__blank">
             {t("invoice-history.view-receipt")}
           </a>
