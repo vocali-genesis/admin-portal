@@ -41,7 +41,8 @@
     "copy": "Copy",
     "copy-success": "Copied!",
     "of": "of",
-    "here": "here"
+    "here": "here",
+    "Connection error": "Connection error"
   },
   "fields": {
     "text": "text",
