@@ -33,6 +33,7 @@ import Download from "./libs/download";
 import { Provider } from "react-redux";
 import store from "@/core/store";
 import { renderWithStore } from "@/resources/tests/test-render.utils";
+import ReactToPrint from 'react-to-print'
 
 describe("===== RECORDING AUDIO =====", () => {
   let genesisService: MedicalTranscription;
@@ -557,9 +558,11 @@ describe("===== RECORDING AUDIO =====", () => {
     });
 
     it("Download Report", async () => {
-      const downloadReportSpy = jest
-        .spyOn(Download, "downloadReport")
-        .mockImplementation(jest.fn());
+
+      const printSpy = jest.fn()
+      jest.mock("react-to-print", () => ({
+        useReactToPrint: () => printSpy,
+      }))
 
       renderWithStore(<Report />);
       getDownloadButton().click();
@@ -568,7 +571,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
       act(() => button.click());
 
-      expect(downloadReportSpy).toHaveBeenCalledTimes(1);
+      waitFor(() => expect(printSpy).toHaveBeenCalledTimes(1));
     });
 
     it("Download Transcription", async () => {

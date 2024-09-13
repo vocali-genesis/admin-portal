@@ -9,6 +9,7 @@ import Button from "@/resources/containers/button";
 import Download from "./libs/download";
 import { ProgressBar } from "@/resources/containers/progress-bar";
 import ViewContentEditable from "@/resources/containers/view-content-editable";
+import { useReactToPrint } from 'react-to-print';
 import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 
@@ -23,7 +24,6 @@ const Report = () => {
   const [transcriptionContent, setTranscriptionContent] = useState<string[]>(
     [],
   );
-
   const [time, setTime] = useState({ transcription: 0, report: 0 });
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -49,7 +49,22 @@ const Report = () => {
     setActiveTab(tab);
   };
 
-  // TODO: Refactor as a resource
+  const componentRef = useRef<HTMLDivElement>(null);
+  const [hideIcons, setHideIcons] = useState(false)
+  const downloadPdf = useReactToPrint({
+    pageStyle: 'margin: 2em',
+    content: () => componentRef.current,
+    documentTitle: 'Report',
+    onAfterPrint: () => setHideIcons(false),
+  });
+
+  const handleDownloadPdf = () => {
+    setHideIcons(true);
+    setTimeout(() => {
+      downloadPdf();
+    }, 300);
+  };
+
   const renderProgressBar = () => {
     const totalTime = time.transcription + time.report;
     const transcriptionWidth = (time.transcription / totalTime) * 100;
@@ -100,7 +115,7 @@ const Report = () => {
   const renderContent = () => {
     return (
       <div className={report_styles.viewContainer}>
-        <div
+        <div ref={componentRef}
           className={
             activeTab === "report"
               ? report_styles.visibleContent
@@ -111,6 +126,7 @@ const Report = () => {
             ([title, content], index: number) => {
               return (
                 <ViewContentEditable
+                  hideIcons={hideIcons}
                   key={index}
                   title={title}
                   content={content}
@@ -143,7 +159,7 @@ const Report = () => {
         }
         break;
       case "report":
-        await Download.downloadReport(reportContent);
+        handleDownloadPdf();  // Triggers the report download
         break;
       case "transcription":
         await Download.downloadTranscription(transcriptionContent);
@@ -173,7 +189,7 @@ const Report = () => {
             <button onClick={() => void handleDownload("audio")}>
               {t("recording.download-audio")}
             </button>
-            <button onClick={() => void handleDownload("report")}>
+            <button onClick={() => handleDownload("report")}>
               {t("recording.download-report")}
             </button>
             <button onClick={() => void handleDownload("transcription")}>
@@ -185,7 +201,6 @@ const Report = () => {
     );
   }
 
-  // TODO: We shall have a generic tab resource (including the visualization)
   function renderTabs() {
     return (
       <div className={report_styles.tabs}>
@@ -226,6 +241,7 @@ const Report = () => {
       </div>
     );
   }
+
   return (
     <div className={report_styles.reportContainer}>
       <div className={`${report_styles.topContainer}`}>
@@ -256,19 +272,19 @@ const Report = () => {
             {t("recording.new-recording")}
           </Button>
         </div>
+        <audio
+          ref={audioRef}
+          src={audioUrl as string}
+          onLoadedMetadata={() => {
+            console.log({ duration: audioRef.current?.duration });
+            setAudioDuration(audioRef.current?.duration || 0);
+          }}
+          style={{ display: "none" }}
+          onEnded={() => setIsAudioPlaying(false)}
+          onPause={() => setIsAudioPlaying(false)}
+          onPlay={() => setIsAudioPlaying(true)}
+        />
       </div>
-      <audio
-        ref={audioRef}
-        src={audioUrl as string}
-        onLoadedMetadata={() => {
-          console.log({ duration: audioRef.current?.duration });
-          setAudioDuration(audioRef.current?.duration || 0);
-        }}
-        style={{ display: "none" }}
-        onEnded={() => setIsAudioPlaying(false)}
-        onPause={() => setIsAudioPlaying(false)}
-        onPlay={() => setIsAudioPlaying(true)}
-      />
       <OnLeaveConfirmation />
     </div>
   );

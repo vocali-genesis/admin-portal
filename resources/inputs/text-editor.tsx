@@ -24,7 +24,7 @@ const Editor: React.FC<EditorProps> = ({
       [{ header: [2, 3 /* 1 */, false] }],
       ["bold", "italic", "underline", "strike"],
       [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
+      ["link", /*"image"*/],
       ["clean"],
     ],
   };

@@ -20,3 +20,23 @@
   margin-bottom: 1rem;
   padding-left: 2rem;
 }
+.viewContent ul {
+  list-style-type: disc;
+  list-style-position: inside;
+}
+.viewContent ol {
+  list-style-type: decimal;
+  list-style-position: inside;
+}
+.viewContent ul ul,
+.viewContent ol ul {
+  list-style-type: circle;
+  list-style-position: inside;
+  margin-left: 15px;
+}
+.viewContent ol ol,
+.viewContent ul ol {
+  list-style-type: lower-latin;
+  list-style-position: inside;
+  margin-left: 15px;
+}
