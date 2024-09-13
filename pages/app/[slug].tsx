@@ -22,7 +22,7 @@ const ApplicationSlug = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  userValidation(() => setIsLoading(false));
+  userValidation({ onReady: () => setIsLoading(false), withSubscription: true });
 
   if (!router.isReady) {
     return <Spinner />;

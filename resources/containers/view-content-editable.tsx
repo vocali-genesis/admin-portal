@@ -80,7 +80,7 @@ const ViewContentEditable: React.FC<ViewContentProps> = ({
   }
   return (
     <div className={styles.viewContent}>
-      <div className="editable-wrapper" style={{ marginLeft: hideIcons ? "1rem" : "" }}>
+      <div className="editable-wrapper">
         <div className="flex gap-4 items-center" >
           <h2 className="mr-4">{title}</h2>
           {isEditing ? (

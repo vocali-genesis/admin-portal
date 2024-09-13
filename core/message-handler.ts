@@ -1,5 +1,11 @@
 import toast from "react-hot-toast";
-import { FunctionsError, FunctionsFetchError, FunctionsHttpError, FunctionsRelayError } from "@supabase/supabase-js";
+import {
+  FunctionsError,
+  FunctionsFetchError,
+  FunctionsHttpError,
+  FunctionsRelayError,
+} from "@supabase/supabase-js";
+import i18n from "./i18n";
 
 class MessageHandler {
   private static instance: MessageHandler = new MessageHandler();
@@ -9,7 +15,7 @@ class MessageHandler {
   private constructor() {}
   handleError(error: string) {
     if (error.includes("Failed to fetch")) {
-      toast.error("Connection error");
+      toast.error(i18n.t("errors.connection-error"));
       return;
     }
     toast.error(error || "An unexpected error occurred");
@@ -39,7 +45,6 @@ class MessageHandler {
       this.handleError(err.message || String(err));
     }
   }
-
 }
 
 export default MessageHandler;

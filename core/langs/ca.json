@@ -25,6 +25,7 @@
     "logout": "Tancar sessió",
     "settings": "Configuració"
   },
+  "errors": { "connection-error": "Error de connexió" },
   "common": {
     "submit": "Enviar",
     "success": "Èxit",

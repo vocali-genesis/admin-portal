@@ -58,6 +58,9 @@
     "play": "Reproducir",
     "config": "Configurar"
   },
+  "errors": {
+    "connection-error": "Error de conexión"
+  },
   "fields": {
     "text": "texto",
     "number": "número",

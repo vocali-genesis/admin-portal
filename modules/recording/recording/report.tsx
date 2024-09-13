@@ -51,6 +51,7 @@ const Report = () => {
   const componentRef = useRef<HTMLDivElement>(null);
   const [hideIcons, setHideIcons] = useState(false)
   const downloadPdf = useReactToPrint({
+    pageStyle: 'margin: 2em',
     content: () => componentRef.current,
     documentTitle: 'Report',
     onAfterPrint: () => setHideIcons(false),
@@ -261,6 +262,27 @@ const Report = () => {
             ? t("recording.pause-audio")
             : t("recording.replay-audio")}
         </Button>
+        <div className="flex" style={{ gap: "8px" }}>
+          <Button
+            onClick={() => void router.push("/app/dashboard")}
+            variant="primary"
+            className={report_styles.newRecordingButton}
+          >
+            {t("recording.new-recording")}
+          </Button>
+        </div>
+        <audio
+          ref={audioRef}
+          src={audioUrl as string}
+          onLoadedMetadata={() => {
+            console.log({ duration: audioRef.current?.duration });
+            setAudioDuration(audioRef.current?.duration || 0);
+          }}
+          style={{ display: "none" }}
+          onEnded={() => setIsAudioPlaying(false)}
+          onPause={() => setIsAudioPlaying(false)}
+          onPlay={() => setIsAudioPlaying(true)}
+        />
       </div>
     </div>
   );
