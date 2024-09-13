@@ -9,7 +9,7 @@ import {
 
 class MessageHandler {
   private static instance: MessageHandler = new MessageHandler();
-  private t: (key: string) => void = (str) => str;
+  private t: (key: string) => string = (str) => str;
   public static get() {
     return this.instance;
   }
