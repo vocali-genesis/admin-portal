@@ -31,8 +31,6 @@ const resources = Object.keys(finalLangs).reduce(
   {}
 );
 
-console.log(ModuleManager.get().components.langs);
-
 void i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .use(LanguageDetector)
