@@ -247,7 +247,6 @@ async function translateKeys({
         result[lang] = { [key]: translations } as Translation;
       });
     }
-    console.log({ result, inputJSON });
     return result;
   } catch (err) {
     console.info({ prompt, response: translation.text });

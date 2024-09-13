@@ -43,6 +43,9 @@
     "of": "of",
     "here": "here"
   },
+  "errors": {
+    "connection-error": "Connection error"
+  },
   "fields": {
     "text": "text",
     "number": "number",
