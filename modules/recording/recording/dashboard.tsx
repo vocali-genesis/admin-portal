@@ -70,7 +70,6 @@ const Dashboard = () => {
   };
 
   const stopRecording = async () => {
-    console.log({ recordingState });
     if (!(audioRecorderRef.current && recordingState !== "inactive")) return;
 
     try {

@@ -6,7 +6,7 @@ import { GenesisOauthProvider, GenesisUser } from "@/core/module/core.types";
 import { GlobalCore } from "@/core/module/module.types";
 import { AuthService } from "@/core/module/services.types";
 import Router from "next/router";
-import i18n from 'i18next';
+import i18n from "i18next";
 
 const messageHandler = MessageHandler.get();
 class SupabaseAuthService implements AuthService {
@@ -43,10 +43,8 @@ class SupabaseAuthService implements AuthService {
       password,
     });
     if (error) {
-      console.log(error.message);
       if (error.message.includes("Email not confirmed")) {
-        console.log("Inside Email not confirmed");
-        Router.push("/auth/confirm-email");
+        void Router.push("/auth/confirm-email");
       }
       messageHandler.handleError(error.message);
       return null;
@@ -76,10 +74,10 @@ class SupabaseAuthService implements AuthService {
       messageHandler.handleError(error.message);
       return false;
     }
-  
+
     return true;
   }
-  
+
   async getLoggedUser(): Promise<GenesisUser | null> {
     const { data } = await this.supabase.auth.getUser();
     return data.user;
@@ -112,8 +110,16 @@ class SupabaseAuthService implements AuthService {
       password,
     });
     if (error) {
-      if (error.message.includes("New password should be different from the old password")) {
-        messageHandler.handleError(i18n.t("settings.New password should be different from the old password"));
+      if (
+        error.message.includes(
+          "New password should be different from the old password"
+        )
+      ) {
+        messageHandler.handleError(
+          i18n.t(
+            "settings.New password should be different from the old password"
+          )
+        );
         return null;
       }
       messageHandler.handleError(error.message);

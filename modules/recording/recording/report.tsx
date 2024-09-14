@@ -11,6 +11,7 @@ import { ProgressBar } from "@/resources/containers/progress-bar";
 import ViewContentEditable from "@/resources/containers/view-content-editable";
 import { useReactToPrint } from 'react-to-print';
 import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
+import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 
 const Report = () => {
   const router = useRouter();
@@ -275,7 +276,6 @@ const Report = () => {
           ref={audioRef}
           src={audioUrl as string}
           onLoadedMetadata={() => {
-            console.log({ duration: audioRef.current?.duration });
             setAudioDuration(audioRef.current?.duration || 0);
           }}
           style={{ display: "none" }}
@@ -284,6 +284,7 @@ const Report = () => {
           onPlay={() => setIsAudioPlaying(true)}
         />
       </div>
+      <OnLeaveConfirmation />
     </div>
   );
 };

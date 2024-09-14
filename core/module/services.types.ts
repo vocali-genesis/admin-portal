@@ -6,6 +6,7 @@ import {
   GenesisTemplate,
   GenesisPagination,
   GenesisSubscription,
+  SubscriptionPriceData,
 } from "./core.types";
 
 export type ComponentName =
@@ -58,6 +59,7 @@ export interface AuthService {
 export interface SubscriptionService {
   getSubscriptionLink(): Promise<{ url: string } | null>;
   getManageSubscriptionLink(): Promise<{ url: string } | null>;
+  getPrice(): Promise<SubscriptionPriceData | null>
   getActiveSubscription(): Promise<GenesisSubscription | null>;
   getInvoices(
     from: number,
