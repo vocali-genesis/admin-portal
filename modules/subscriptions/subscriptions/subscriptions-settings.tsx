@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import Table from "@/resources/table";
 import ConfirmDialog from "@/resources/containers/delete-confirmation";
-import Badge from "@/resources/badge";
+import Badge from "@/resources/containers/badge";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { GenesisInvoice, GenesisSubscription } from "@/core/module/core.types";
