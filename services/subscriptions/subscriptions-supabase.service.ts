@@ -46,13 +46,16 @@ class SubscriptionSupabase implements SubscriptionService {
   }
 
   public async getPrice(): Promise<SubscriptionPriceData | null> {
-    const { data, error } = await this.supabase.functions.invoke<SubscriptionPriceData>('get-subscription-price')
+    const { data, error } =
+      await this.supabase.functions.invoke<SubscriptionPriceData>(
+        "get-subscription-price"
+      );
     if (error) {
       messageHandler.handleEdgeFunctionError(error.message);
       return null;
     }
 
-    return data
+    return data;
   }
 
   public async updateExpiryDate() {
@@ -72,7 +75,6 @@ class SubscriptionSupabase implements SubscriptionService {
       messageHandler.handleError(error.message);
     }
 
-    console.log(data);
     return null;
   }
 

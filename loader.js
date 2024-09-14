@@ -45,7 +45,7 @@ async function generateImport(jsonData) {
       importServices.join("\n"),
     ];
     await fs.writeFile("import.ts", importStatements.join("\n"));
-    console.log("Import file generated successfully!");
+    console.info("Import file generated successfully!");
   } catch (err) {
     console.error(err);
   }

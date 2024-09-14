@@ -33,7 +33,6 @@ class MedicalTranscriptionAPI implements MedicalTranscription {
       return null;
     }
     const text = await response.text();
-    console.log(text);
     try {
       return JSON.parse(text) as T;
     } catch (error) {

@@ -52,7 +52,6 @@ export const UploadFile = ({
         file.type.includes(format.replace("/*", ""))
       );
 
-      console.log({ accepted });
       if (!accepted) {
         messageHandler.handleError(errorLabel);
         return;

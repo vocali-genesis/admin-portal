@@ -39,7 +39,6 @@ export const userValidation = ({
       const subscriptionService = Service.require("subscriptions");
 
       const subscription = await subscriptionService.getActiveSubscription();
-      console.log(subscription);
       dispatch(setSubscription(subscription as GenesisSubscription));
       const notValid = subscription?.current_period_end
         ? moment(subscription.current_period_end).isBefore()
@@ -58,8 +57,8 @@ export const userValidation = ({
         if (!result) {
           return Promise.resolve(false);
         }
-        if(!withSubscription) {
-          return Promise.resolve(true)
+        if (!withSubscription) {
+          return Promise.resolve(true);
         }
         return checkSubscription();
       })

@@ -21,7 +21,7 @@ const PriceCard = (props: { item: Price; index: number }) => {
     buttonText,
     buttonAction,
   } = props.item;
-  const [priceData, setPriceData] = useState<SubscriptionPriceData>();
+  const [priceData, setPriceData] = useState<SubscriptionPriceData | null>(null);
 
   useEffect(() => {
     const getSubscriptionPrice = async () => {
@@ -31,7 +31,7 @@ const PriceCard = (props: { item: Price; index: number }) => {
       }
     }
 
-    getSubscriptionPrice();
+    void getSubscriptionPrice();
   }, [props.index]);
 
   const handleSubscribe = async () => {

@@ -422,7 +422,6 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Report tab contains report result", async () => {
       await act(() => renderWithStore(<Report />));
       const entries = Object.entries(report.report);
-      console.log({ Title: entries[0] });
       // Wait for it to be ready
       await waitFor(() => screen.getByText(entries[0][0]));
 

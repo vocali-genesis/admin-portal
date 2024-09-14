@@ -276,7 +276,6 @@ const Report = () => {
           ref={audioRef}
           src={audioUrl as string}
           onLoadedMetadata={() => {
-            console.log({ duration: audioRef.current?.duration });
             setAudioDuration(audioRef.current?.duration || 0);
           }}
           style={{ display: "none" }}

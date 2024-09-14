@@ -45,7 +45,6 @@ const OnLeaveConfirmation: React.FC<Props> = ({ testId }) => {
   }, [router, isConfirmed]);
 
   const handleConfirm = useCallback(() => {
-    console.log("Clicked");
     setIsConfirmed(true);
     setIsLeavingPage(false);
     if (nextUrl) {

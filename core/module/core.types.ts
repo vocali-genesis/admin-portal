@@ -78,7 +78,7 @@ export type GenesisReport = {
 export type SubscriptionPriceData = {
   price: number | null;
   currency: string;
-}
+};
 
 // Refactor, we only need the count, not the page
 export type GenesisPagination<T> = {
