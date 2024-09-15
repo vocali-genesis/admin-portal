@@ -77,7 +77,7 @@
 .userLabel {
   color: black;
   font-family: "Montserrat", sans-serif;
-  font-size: 2vh;
+  font-size: 1rem;
 }
 @media (max-width: 500px) {
   .navbar {

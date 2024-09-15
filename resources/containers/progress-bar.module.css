@@ -1,7 +1,6 @@
 .progressBarContainer {
   position: relative;
   width: 100%;
-  margin-top: 1.25vh;
 }
 
 .progressBar {
@@ -32,6 +31,17 @@
   color: black;
   white-space: nowrap;
   font-family: "Montserrat", sans-serif;
+}
+.labelPlaceholder {
+  height: 24px;
+}
+@media (max-width: 768px) {
+  .timeLabel {
+    display: none;
+  }
+  .labelPlaceholder {
+    display: none;
+  }
 }
 
 .progressSegment:last-child .timeLabel {

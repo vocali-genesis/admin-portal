@@ -5,7 +5,6 @@ import {
   FunctionsHttpError,
   FunctionsRelayError,
 } from "@supabase/supabase-js";
-// import i18n from "./i18n";
 
 class MessageHandler {
   private static instance: MessageHandler = new MessageHandler();

@@ -11,6 +11,7 @@ import { ProgressBar } from "@/resources/containers/progress-bar";
 import ViewContentEditable from "@/resources/containers/view-content-editable";
 import { useReactToPrint } from 'react-to-print';
 import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
+import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 
 const Report = () => {
   const router = useRouter();
@@ -102,8 +103,9 @@ const Report = () => {
     const totalTime = time.transcription + time.report;
     const transcriptionWidth = (time.transcription / totalTime) * 100;
     const reportWidth = (time.report / totalTime) * 100;
+
     return (
-      <div className="w-full">
+      <div className="w-full flex gap-4 flex-col">
         <ProgressBar
           segments={[
             {
@@ -115,7 +117,6 @@ const Report = () => {
             },
           ]}
         />
-        <div style={{ height: "24px" }} />
         <ProgressBar
           displayLabelMinPercentage={10}
           testId="time-bar"
@@ -136,9 +137,9 @@ const Report = () => {
             },
           ]}
         />
-        <div className="flex justify-start bg-red-800 w-[220px]">
+        <div className={report_styles.totalTime}>
           <span>{t("recording.total-time")}</span>:{" "}
-          <span>{totalTime / 1000}</span> {"s"}
+          <span>{(totalTime / 1000).toFixed(2)}</span>{" "}
           <span>{t("recording.seconds")}</span>
         </div>
       </div>
@@ -277,6 +278,7 @@ const Report = () => {
             {t("recording.transcription")}
           </button>
         </div>
+
       </div>
     );
   }
@@ -284,7 +286,7 @@ const Report = () => {
   return (
     <div className={report_styles.reportContainer}>
       <div className={`${report_styles.topContainer}`}>
-        {renderProgressBar()}
+        <div className={"mobile-hidden flex flex-1"}>{renderProgressBar()}</div>
         {renderDownloadButton()}
       </div>
       {renderTabs()}
@@ -325,6 +327,7 @@ const Report = () => {
         />
 
       </div>
+      <OnLeaveConfirmation />
     </div>
   );
 };

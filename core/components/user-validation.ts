@@ -57,8 +57,8 @@ export const userValidation = ({
         if (!result) {
           return Promise.resolve(false);
         }
-        if(!withSubscription) {
-          return Promise.resolve(true)
+        if (!withSubscription) {
+          return Promise.resolve(true);
         }
         return checkSubscription();
       })

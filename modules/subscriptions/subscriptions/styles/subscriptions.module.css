@@ -75,39 +75,17 @@
   min-height: 7rem;
 }
 .priceFeatList li:before {
-  content: '✓';
+  content: "✓";
   color: var(--primary);
   margin-right: 5px;
   font-size: 1.1rem;
   font-weight: 700;
- }
-
+}
 
 .priceFeatList li {
   font-size: 1rem;
   color: #b5b5b5;
   margin-bottom: 10px;
-}
-
-.priceButton {
-  background-color: var(--primary);
-  color: #fff;
-  padding: 0.8rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  width: 90%;
-  border-radius: 5rem;
-}
-
-.priceButton[disabled], .priceButton[disabled]:hover {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background-color: var(--primary);
-}
-
-.priceButton:hover {
-  background-color: var(--secondary);
 }
 
 @media (max-width: 500px) {

@@ -48,15 +48,23 @@ const BasicPasswordInput = forwardRef<
         ref={ref as any}
         type={showConfirmPassword ? "text" : "password"}
       />
-      <VisibilityButton
-        onClick={(event: React.MouseEvent) => {
-          event.preventDefault();
-          setShowConfirmPassword(!showConfirmPassword);
-        }}
-      >
-        {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-      </VisibilityButton>
-    </PasswordInputWrapper>
+      {showConfirmPassword ?
+        <VisibilityButton
+          onClick={(event: React.MouseEvent) => {
+            event.preventDefault();
+            setShowConfirmPassword(false);
+          }}
+        >
+          <AiOutlineEyeInvisible />
+        </VisibilityButton> :
+        <VisibilityButton
+          onClick={(event: React.MouseEvent) => {
+            event.preventDefault();
+            setShowConfirmPassword(true);
+          }} >
+          <AiOutlineEye />
+        </VisibilityButton>}
+    </PasswordInputWrapper >
   );
 });
 

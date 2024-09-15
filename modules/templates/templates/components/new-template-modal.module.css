@@ -23,14 +23,14 @@
   width: 90%;
   color: black;
   font-family: "Montserrat", sans-serif;
-  font-size: 2.5vh;
+  font-size: 1.25rem;
   max-height: 80vh;
   overflow-y: auto;
 }
 
 .modalTitle {
   margin-bottom: 1rem;
-  font-size: 3vh;
+  font-size: 1.5rem;
 }
 
 .name_input {
@@ -44,7 +44,7 @@
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 2vh;
+  font-size: 1rem;
   max-height: 6vh;
 }
 
@@ -74,7 +74,7 @@
 
 .errorMessage {
   color: red;
-  font-size: 1.8vh;
+  font-size: 1rem;
   margin-bottom: 0.5rem;
 }
 
