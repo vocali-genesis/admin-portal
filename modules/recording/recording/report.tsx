@@ -103,6 +103,11 @@ const Report = () => {
             },
           ]}
         />
+        <div className={report_styles.totalTime}>
+          <span>{t("recording.total-time")}</span>:{" "}
+          <span>{(totalTime / 1000).toFixed(2)}</span>{" "}
+          <span>{t("recording.seconds")}</span>
+        </div>
       </div>
     );
   };
@@ -233,6 +238,7 @@ const Report = () => {
             {t("recording.transcription")}
           </button>
         </div>
+
       </div>
     );
   }
@@ -240,7 +246,7 @@ const Report = () => {
   return (
     <div className={report_styles.reportContainer}>
       <div className={`${report_styles.topContainer}`}>
-        <div className={"mobile-hidden flex-1"}>{renderProgressBar()}</div>
+        <div className={"mobile-hidden flex flex-1"}>{renderProgressBar()}</div>
         {renderDownloadButton()}
       </div>
       {renderTabs()}

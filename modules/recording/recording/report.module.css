@@ -14,13 +14,6 @@
   font-family: "Montserrat", sans-serif;
 }
 
-.totalTime {
-  margin-top: 0.4rem;
-  font-size: 12px;
-  color: black;
-  min-width: 80px;
-}
-
 .tabContainer {
   display: flex;
   gap: 0.25rem;
@@ -189,4 +182,9 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
+}
+.totalTime {
+  color: black;
+  font-size: 12px;
+  font-family: "Montserrat", sans-serif;
 }
