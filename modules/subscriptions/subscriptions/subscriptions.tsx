@@ -22,7 +22,6 @@ const PriceCard = (props: { item: Price; index: number }) => {
     buttonAction,
   } = props.item;
 
-
   const handleSubscribe = async () => {
     const subscriptionLink =
       await Service.require("subscriptions").getSubscriptionLink();
