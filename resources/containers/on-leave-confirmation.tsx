@@ -48,7 +48,7 @@ const OnLeaveConfirmation: React.FC<Props> = ({ testId }) => {
     setIsConfirmed(true);
     setIsLeavingPage(false);
     if (nextUrl) {
-      router.push(nextUrl);
+      void router.push(nextUrl);
     }
   }, [nextUrl, router]);
 

@@ -27,13 +27,13 @@
   max-width: 400px;
   width: 100%;
   color: black;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 2.5vh;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.25rem;
 }
 
 .input {
   @apply w-full rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500;
-  font-size: 2vh;
+  font-size: 1rem;
 }
 
 .modalButtons {
@@ -55,7 +55,7 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 2vh;
+  font-size: 1rem;
 }
 
 .optionTag {

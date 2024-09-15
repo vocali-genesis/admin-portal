@@ -13,7 +13,7 @@
 }
 
 .title {
-  font-size: 3vh;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #333;
   margin-left: 2vh;
@@ -21,7 +21,7 @@
 
 .preview {
   color: #333;
-  font-size: 2vh;
+  font-size: 1rem;
   margin: 0.5vh 0 3vh 2vh;
 }
 

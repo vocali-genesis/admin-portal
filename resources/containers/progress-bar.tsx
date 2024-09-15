@@ -11,22 +11,29 @@ export const ProgressBar = ({
 }: Props) => {
   return (
     <div data-testid={testId} className={styles.progressBarContainer}>
+      <div className={styles.labelPlaceholder} />
+
       <div className={styles.progressBar}>
         {segments.map((segment, index) => {
           return (
-            <div
-              key={index}
-              className={styles.progressSegment}
-              style={{
-                width: `${segment.percentage}%`,
-                backgroundColor: segment.color,
-              }}
-              title={segment.label}
-            >
-              {(displayLabelMinPercentage || 10) < segment.percentage && (
-                <span className={styles.timeLabel}>{segment.label}</span>
-              )}
-            </div>
+            <>
+
+              <div
+                key={index}
+                className={styles.progressSegment}
+                style={{
+                  width: `${segment.percentage}%`,
+                  backgroundColor: segment.color,
+                }}
+                title={segment.label}
+              >
+
+                {(displayLabelMinPercentage || 10) < segment.percentage && (<>
+                  <span className={styles.timeLabel}>{segment.label}</span>
+                </>
+                )}
+              </div>
+            </>
           );
         })}
       </div>

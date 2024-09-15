@@ -11,6 +11,14 @@
   gap: 5px;
 }
 
+.lg {
+  font-size: 1rem;
+  padding: 0.8rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 5rem;
+}
 .primary {
   background-color: var(--primary);
   color: white;

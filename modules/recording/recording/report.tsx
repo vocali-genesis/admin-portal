@@ -69,8 +69,9 @@ const Report = () => {
     const totalTime = time.transcription + time.report;
     const transcriptionWidth = (time.transcription / totalTime) * 100;
     const reportWidth = (time.report / totalTime) * 100;
+
     return (
-      <div className="w-full">
+      <div className="w-full flex gap-4 flex-col">
         <ProgressBar
           segments={[
             {
@@ -82,7 +83,6 @@ const Report = () => {
             },
           ]}
         />
-        <div style={{ height: "24px" }} />
         <ProgressBar
           displayLabelMinPercentage={10}
           testId="time-bar"
@@ -103,11 +103,6 @@ const Report = () => {
             },
           ]}
         />
-        <div className="flex justify-start bg-red-800 w-[220px]">
-          <span>{t("recording.total-time")}</span>:{" "}
-          <span>{totalTime / 1000}</span> {"s"}
-          <span>{t("recording.seconds")}</span>
-        </div>
       </div>
     );
   };
@@ -245,7 +240,7 @@ const Report = () => {
   return (
     <div className={report_styles.reportContainer}>
       <div className={`${report_styles.topContainer}`}>
-        {renderProgressBar()}
+        <div className={"mobile-hidden flex-1"}>{renderProgressBar()}</div>
         {renderDownloadButton()}
       </div>
       {renderTabs()}

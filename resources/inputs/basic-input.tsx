@@ -12,7 +12,7 @@ export interface BasicInputProps
 const StyledInput = styled.input`
   width: 100%;
   padding: 8px 12px;
-  font-size: 2vh;
+  font-size: 1rem;
   color: black;
   border: 1px solid #e2e8f0;
   border-radius: 4px;
