@@ -4,6 +4,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import config from "@/resources/utils/config";
 import MessageHandler from "@/core/message-handler";
 import { GlobalCore } from "@/core/module/module.types";
+import { SubscriptionPriceData } from "@/core/module/core.types";
 
 const messageHandler = MessageHandler.get();
 
@@ -44,6 +45,19 @@ class SubscriptionSupabase implements SubscriptionService {
     return null;
   }
 
+  public async getPrice(): Promise<SubscriptionPriceData | null> {
+    const { data, error } =
+      await this.supabase.functions.invoke<SubscriptionPriceData>(
+        "get-subscription-price"
+      );
+    if (error) {
+      messageHandler.handleEdgeFunctionError(error.message);
+      return null;
+    }
+
+    return data;
+  }
+
   public async updateExpiryDate() {
     const subscription = await this.getActiveSubscription();
 
@@ -61,7 +75,6 @@ class SubscriptionSupabase implements SubscriptionService {
       messageHandler.handleError(error.message);
     }
 
-    console.log(data);
     return null;
   }
 

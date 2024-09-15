@@ -12,23 +12,20 @@ import ViewContentEditable from "@/resources/containers/view-content-editable";
 import { useReactToPrint } from 'react-to-print';
 import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 import MessageHandler from "@/core/message-handler";
+import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
 
 const Report = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const { audioUrl } = router.query;
+  const { audioUrl } = router.query as { audioUrl: string };
   const [activeTab, setActiveTab] = useState("report");
-  const [reportContent, setReportContent] = useState(
-    {} as Record<string, string>,
-  );
-  const [transcriptionContent, setTranscriptionContent] = useState<string[]>(
-    [],
-  );
+  const [reportContent, setReportContent] = useState({} as Record<string, string>);
+  const [transcriptionContent, setTranscriptionContent] = useState<string[]>([]);
   const [time, setTime] = useState({ transcription: 0, report: 0 });
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [audioDuration, setAudioDuration] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [editingKeys, setEditingKeys] = useState<string[]>([]);
 
   useEffect(() => {
@@ -46,12 +43,49 @@ const Report = () => {
     setTime(JSON.parse(router.query.time as string));
   }, [router]);
 
+  useEffect(() => {
+    if (audioUrl && audioRef.current) {
+      const audio = audioRef.current;
+      audio.src = audioUrl;
+      audio.load();
+
+      const setAudioDuration = () => {
+        if (isFinite(audio.duration) && audio.duration > 0) {
+          setDuration(audio.duration);
+        } else {
+          // Fallback for small files
+          audio.currentTime = 1e101;
+          audio.addEventListener('timeupdate', function getDuration() {
+            if (isFinite(audio.duration) && audio.duration > 0) {
+              setDuration(audio.duration);
+              audio.removeEventListener('timeupdate', getDuration);
+              audio.currentTime = 0;
+            }
+          });
+        }
+      };
+
+      audio.addEventListener('loadedmetadata', setAudioDuration);
+      audio.addEventListener('durationchange', setAudioDuration);
+      setTimeout(() => {
+        if (duration === 0) {
+          setAudioDuration();
+        }
+      }, 500);
+
+      return () => {
+        audio.removeEventListener('loadedmetadata', setAudioDuration);
+        audio.removeEventListener('durationchange', setAudioDuration);
+      };
+    }
+  }, [audioUrl]);
+
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
 
   const componentRef = useRef<HTMLDivElement>(null);
-  const [hideIcons, setHideIcons] = useState(false)
+  const [hideIcons, setHideIcons] = useState(false);
   const downloadPdf = useReactToPrint({
     pageStyle: 'margin: 2em',
     content: () => componentRef.current,
@@ -75,20 +109,20 @@ const Report = () => {
     const totalTime = time.transcription + time.report;
     const transcriptionWidth = (time.transcription / totalTime) * 100;
     const reportWidth = (time.report / totalTime) * 100;
+
     return (
-      <div className="w-full">
+      <div className="w-full flex gap-4 flex-col">
         <ProgressBar
           segments={[
             {
               percentage: 100,
               color: "#59DBB",
               label: t("recording.audio-time", {
-                seconds: audioDuration.toFixed(2),
+                seconds: duration.toFixed(2),
               }),
             },
           ]}
         />
-        <div style={{ height: "24px" }} />
         <ProgressBar
           displayLabelMinPercentage={10}
           testId="time-bar"
@@ -109,9 +143,9 @@ const Report = () => {
             },
           ]}
         />
-        <div className="flex justify-start bg-red-800 w-[220px]">
+        <div className={report_styles.totalTime}>
           <span>{t("recording.total-time")}</span>:{" "}
-          <span>{totalTime / 1000}</span> {"s"}
+          <span>{(totalTime / 1000).toFixed(2)}</span>{" "}
           <span>{t("recording.seconds")}</span>
         </div>
       </div>
@@ -165,7 +199,7 @@ const Report = () => {
     const action = {
       'audio': async function () {
         if (audioUrl) {
-          await Download.downloadAudio(audioUrl as string);
+          await Download.downloadAudio(audioUrl);
         }
       },
       'report': () => handleDownloadPdf(),
@@ -181,10 +215,9 @@ const Report = () => {
       return;
     }
 
-    void (isAudioPlaying ? audioRef.current.pause() : audioRef.current.play());
-
     setIsAudioPlaying(!isAudioPlaying);
   };
+
   // TODO: Create a button select for this in resources
   function renderDownloadButton() {
     return (
@@ -206,7 +239,7 @@ const Report = () => {
             </button>
           </div>
         )}
-      </div>
+      </div >
     );
   }
 
@@ -247,6 +280,7 @@ const Report = () => {
             {t("recording.transcription")}
           </button>
         </div>
+
       </div>
     );
   }
@@ -254,7 +288,7 @@ const Report = () => {
   return (
     <div className={report_styles.reportContainer}>
       <div className={`${report_styles.topContainer}`}>
-        {renderProgressBar()}
+        <div className={"mobile-hidden flex flex-1"}>{renderProgressBar()}</div>
         {renderDownloadButton()}
       </div>
       {renderTabs()}
@@ -283,19 +317,21 @@ const Report = () => {
         </div>
         <audio
           ref={audioRef}
-          src={audioUrl as string}
+          src={audioUrl}
           onLoadedMetadata={() => {
             console.log({ duration: audioRef.current?.duration });
-            setAudioDuration(audioRef.current?.duration || 0);
+            setDuration(audioRef.current?.duration || 0);
           }}
           style={{ display: "none" }}
           onEnded={() => setIsAudioPlaying(false)}
           onPause={() => setIsAudioPlaying(false)}
           onPlay={() => setIsAudioPlaying(true)}
         />
+
       </div>
+      <OnLeaveConfirmation />
     </div>
   );
 };
 
-GlobalCore.manager.app("report", () => <SubscriptionGuard> <Report /> </SubscriptionGuard>);
+GlobalCore.manager.app("report", () => <SubscriptionGuard><Report /></SubscriptionGuard>);

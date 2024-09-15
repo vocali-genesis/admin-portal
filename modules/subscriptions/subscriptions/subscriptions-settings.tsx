@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import Table from "@/resources/table";
 import ConfirmDialog from "@/resources/containers/delete-confirmation";
-import Badge from "@/resources/badge";
+import Badge from "@/resources/containers/badge";
 
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { GenesisInvoice, GenesisSubscription } from "@/core/module/core.types";
@@ -100,7 +100,7 @@ const PaymentHistory: React.FC = () => {
   );
 };
 
-const CancelSubscriptonBtn = () => {
+const CancelSubscriptionBtn = () => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -184,34 +184,43 @@ const Subscriptions = () => {
 
   const isCanceledButValid = subscription?.status === "canceled" && moment().isBefore(subscription?.current_period_end);
 
+  function SubscriptionAction() {
+    if (isLoading) {
+      return
+    }
+    if (subscription?.status === "active") {
+      return <CancelSubscriptionBtn />
+    }
+    return (
+      <Button
+        onClick={() => {
+          void router.push("/app/subscriptions");
+        }}
+        variant="primary"
+      >
+        {t("subscription-settings.subscribe-btn")}
+      </Button >
+    )
+
+
+  }
   return (
     <div className={styles.container}>
       <main className={styles.contentWrapper}>
-        <div className={`${styles.head} flex  justify-between items-center`}>
-          <div className={`${styles.left} flex justify-between items-center`}>
-            <h2  >
-              {t("subscription-settings.exp-label")}{" "}
-              {isLoading ? <span style={{ paddingLeft: '0.25rem' }}> <SmallSpinner />  </span> : <Badge variant={badgeClass}>{validUntil}</Badge>}
+        <div className={`${styles.head} flex justify-between items-center`}>
+          <div className={styles.expiration}>
+            <h2 className={styles.left} >
+              {t("subscription-settings.exp-label")}
             </h2>
+            {isLoading ? <SmallSpinner /> : <Badge variant={badgeClass}>{validUntil}</Badge>}
             {isCanceledButValid && (
-              <h2 className="ml-2" >
+              <span>
                 <Badge variant={"warning"}>{t("subscription-settings.canceled-but-valid-warning")}</Badge>
-              </h2>
+              </span>
             )}
           </div>
           <div className={styles.right}>
-            {subscription?.status === "active" ? (
-              <CancelSubscriptonBtn />
-            ) : (
-              <Button
-                onClick={() => {
-                  router.push("/app/subscriptions");
-                }}
-                variant="primary"
-              >
-                {t("subscription-settings.subscribe-btn")}
-              </Button>
-            )}
+            <SubscriptionAction />
           </div>
         </div>
         <div className={styles.content}>

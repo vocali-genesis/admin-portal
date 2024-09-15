@@ -15,7 +15,7 @@
     "price-2": {
       "title": "Pro",
       "currency": "€",
-      "amount": "30",
+      "amount": "...",
       "interval": "/month",
       "features": {
         "feature-1": "Benefit 1",
@@ -31,7 +31,7 @@
     "payment-history": "Payment History",
     "confirm-title": "Cancel subscription",
     "confirm-message": "Are you sure you want to cancel your subscription? Your subscription will be valid until {{validUntil}}.",
-    "success-message": "Subscription cancelled successflly!",
+    "success-message": "Subscription cancelled successfully!",
     "cancel-btn": "Cancel",
     "confirm-btn": "Confirm",
     "inactive-label": "Inactive",

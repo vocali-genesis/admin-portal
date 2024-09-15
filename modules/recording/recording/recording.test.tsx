@@ -33,7 +33,6 @@ import Download from "./libs/download";
 import { Provider } from "react-redux";
 import store from "@/core/store";
 import { renderWithStore } from "@/resources/tests/test-render.utils";
-import ReactToPrint from 'react-to-print'
 
 describe("===== RECORDING AUDIO =====", () => {
   let genesisService: MedicalTranscription;
@@ -422,7 +421,6 @@ describe("===== RECORDING AUDIO =====", () => {
     it("Report tab contains report result", async () => {
       await act(() => renderWithStore(<Report />));
       const entries = Object.entries(report.report);
-      console.log({ Title: entries[0] });
       // Wait for it to be ready
       await waitFor(() => screen.getByText(entries[0][0]));
 
@@ -618,7 +616,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
       const totalTime = screen.getByText("recording.total-time");
       expect(totalTime.parentElement?.textContent).toContain(
-        (total / 1000).toString()
+        (total / 1000).toFixed(2).toString()
       );
     });
 

@@ -35,14 +35,14 @@
   width: 50vh;
 
   font-family: "Montserrat", sans-serif;
-  font-size: 1.9vh;
+  font-size: 1rem;
   opacity: 1;
   transition: opacity 0.3s ease;
 }
 
 .selectedFile {
   margin-top: 10px;
-  font-size: 1.75vh;
+  font-size: 0.85rem;
   color: #666;
 
   font-family: "Montserrat", sans-serif;
@@ -65,29 +65,29 @@
 }
 
 .browseLink:hover {
-  color: #4dbcaa;
+  color: var(--primary);
 }
 
 .h2 {
   color: black;
   font-family: "Montserrat", sans-serif;
-  font-size: 1.9vh;
+  font-size: 1rem;
 }
 
 .p {
   color: #666;
   font-family: "Montserrat", sans-serif;
-  font-size: 1.75vh;
+  font-size: 0.85rem;
 }
 
 .uploadArea .p {
-  font-size: 2vh;
+  font-size: 1rem;
   font-weight: bold;
 }
 
 .h3 {
-  margin-bottom: 2.5vh;
-  font-size: 2.5vh;
+  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
   color: black;
   font-family: "Montserrat", sans-serif;
   font-weight: bold;
@@ -96,9 +96,8 @@
 .small {
   color: #999;
   font-family: "Montserrat", sans-serif;
-  font-size: 1.5vh;
-
-  margin-top: 1.25vh;
+  font-size: 0.75rem;
+  margin-top: 0.75rem;
 }
 
 @media (max-width: 840px) {

@@ -12,7 +12,7 @@ const ConfirmResetPassword = () => {
   const { t } = useTranslation();
 
   const onSuccess = () => {
-    router.push("/auth/login");
+    void router.push("/auth/login");
   };
 
   return (
@@ -23,10 +23,10 @@ const ConfirmResetPassword = () => {
         width={45}
         height={45}
       />
-      <h1 className={auth_style.title}>{t("auth.register")}</h1>
+      <h1 className={auth_style.title}>{t("auth.reset")}</h1>
       <ConfirmResetPasswordForm onSuccess={onSuccess} />
       <p className={auth_style.login_text}>
-        {t("auth.no-account-question")}{" "}
+        {t("auth.no-account-question")}
         <strong>
           <Link href="/auth/register" className={auth_style.register_link}>
             {t("auth.register")}

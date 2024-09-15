@@ -29,10 +29,39 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
 
   useEffect(() => {
     if (audioUrl && audioRef.current) {
-      audioRef.current.src = audioUrl;
-      audioRef.current.load();
-      audioRef.current.onloadedmetadata = () => {
-        setDuration(audioRef.current?.duration || 0);
+      const audio = audioRef.current;
+      audio.src = audioUrl;
+      audio.load();
+
+      const setAudioDuration = () => {
+        if (isFinite(audio.duration) && audio.duration > 0) {
+          setDuration(audio.duration);
+        } else {
+          // Fallback for small files
+          audio.currentTime = 1e101;
+          audio.addEventListener('timeupdate', function getDuration() {
+            if (isFinite(audio.duration) && audio.duration > 0) {
+              setDuration(audio.duration);
+              audio.removeEventListener('timeupdate', getDuration);
+              audio.currentTime = 0;
+            }
+          });
+        }
+      };
+
+      audio.addEventListener('loadedmetadata', setAudioDuration);
+      audio.addEventListener('durationchange', setAudioDuration);
+
+      // Fallback if metadata doesn't load
+      setTimeout(() => {
+        if (duration === 0) {
+          setAudioDuration();
+        }
+      }, 500);
+
+      return () => {
+        audio.removeEventListener('loadedmetadata', setAudioDuration);
+        audio.removeEventListener('durationchange', setAudioDuration);
       };
     }
   }, [audioUrl]);
@@ -92,13 +121,13 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
   };
 
   const formatTime = (time: number) => {
-    if (isNaN(time) || !isFinite(time)) {
+    if (isNaN(time) || !isFinite(time) || time === 0) {
       return "00:00";
     }
 
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
   const handleSkip = (seconds: number) => {
@@ -126,12 +155,6 @@ export const AudioPlayer = ({ audioUrl, onDelete, testId }: Props) => {
         ref={audioRef}
         src={audioUrl}
         onTimeUpdate={handleTimeUpdate}
-        onLoadedData={() => {
-          setDuration(audioRef.current?.duration || 0);
-        }}
-        onDurationChange={() => {
-          if (audioRef.current) setDuration(audioRef.current.duration);
-        }}
         onEnded={handleEnded}
         preload="metadata"
       />

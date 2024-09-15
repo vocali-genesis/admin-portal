@@ -3,6 +3,7 @@ import { faker } from "@faker-js/faker";
 import {
   GenesisInvoice,
   GenesisSubscription,
+  SubscriptionPriceData,
 } from "../../core/module/core.types";
 import moment from "moment";
 import { Seed } from "@/resources/tests/seed";
@@ -16,6 +17,10 @@ class SubscriptionsMock implements SubscriptionService {
    */
   public async getSubscriptionLink(): Promise<{ url: string } | null> {
     return Promise.resolve({ url: faker.internet.url() });
+  }
+
+  public async getPrice(): Promise<SubscriptionPriceData | null> {
+    return { price: 100, currency: "eur"}
   }
 
   /**

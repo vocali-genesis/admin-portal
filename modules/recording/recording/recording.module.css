@@ -22,12 +22,12 @@
 }
 
 .h2 {
-  font-size: 1.9vh;
+  font-size: 1rem;
   font-family: "Montserrat", sans-serif;
 }
 
 .p {
-  font-size: 1.75vh;
+  font-size: 0.85rem;
   font-family: "Montserrat", sans-serif;
 }
 
@@ -48,5 +48,5 @@
   margin-bottom: 40px;
 
   font-family: "Montserrat", sans-serif;
-  font-size: 2vh;
+  font-size: 1rem;
 }
