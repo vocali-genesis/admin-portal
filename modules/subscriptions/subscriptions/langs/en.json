@@ -48,5 +48,8 @@
     "page-label": "Page",
     "of-label": "of",
     "view-receipt": "View Receipt"
+  },
+  "message":{
+    "in-edit-mode": "Can't download report it's in edit mode"
   }
 }

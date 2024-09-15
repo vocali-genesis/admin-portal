@@ -12,6 +12,9 @@ import ViewContentEditable from "@/resources/containers/view-content-editable";
 import { useReactToPrint } from 'react-to-print';
 import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
 import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
+import MessageHandler from "@/core/message-handler";
+
+const messageHandler = MessageHandler.get();
 
 const Report = () => {
   const router = useRouter();
@@ -92,7 +95,10 @@ const Report = () => {
   });
 
   const handleDownloadPdf = () => {
-    if (isEditing) return;
+    if (isEditing) {
+      messageHandler.handleError(t("message.in-edit-mode"));
+      return;
+    }
     setHideIcons(true);
     setTimeout(() => {
       downloadPdf();
@@ -199,7 +205,6 @@ const Report = () => {
         }
         break;
       case "report":
-        if (isEditing) return;
         handleDownloadPdf();
         break;
       case "transcription":
@@ -229,7 +234,7 @@ const Report = () => {
             <button onClick={() => void handleDownload("audio")}>
               {t("recording.download-audio")}
             </button>
-            <button disabled={isEditing} onClick={() => handleDownload("report")} style={{ color: isEditing ? "gray" : "" }}>
+            <button onClick={() => handleDownload("report")} >
               {t("recording.download-report")}
             </button>
             <button onClick={() => void handleDownload("transcription")}>
