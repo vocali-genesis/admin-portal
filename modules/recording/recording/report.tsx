@@ -40,9 +40,9 @@ const Report = () => {
       void router.push("/app/dashboard");
       return;
     }
-    setReportContent(JSON.parse(router.query.report as string));
+    setReportContent(JSON.parse(router.query.report as string) as Record<string, string>);
     setTranscriptionContent(router.query.transcription as string[]);
-    setTime(JSON.parse(router.query.time as string));
+    setTime(JSON.parse(router.query.time as string) as { transcription: number, report: number });
   }, [router]);
 
   useEffect(() => {
@@ -95,12 +95,17 @@ const Report = () => {
     onAfterPrint: () => setHideIcons(false),
   });
 
+  console.log({ downloadPdf, useReactToPrint })
+
   const handleDownloadPdf = () => {
+    console.log({ downloadPdf })
+
     if (editingKeys.length) {
       messageHandler.handleError(t('recording.download-editing-warning'))
       return
     }
     setHideIcons(true);
+    downloadPdf();
     setTimeout(() => {
       downloadPdf();
     }, 300);
@@ -200,7 +205,7 @@ const Report = () => {
     const action = {
       'audio': async function () {
         if (audioUrl) {
-          await Download.downloadAudio(audioUrl as string);
+          await Download.downloadAudio(audioUrl);
         }
       },
       'report': () => handleDownloadPdf(),
@@ -215,6 +220,8 @@ const Report = () => {
     if (!audioRef.current) {
       return;
     }
+
+    void (isAudioPlaying ? audioRef.current.pause() : audioRef.current.play());
 
     setIsAudioPlaying(!isAudioPlaying);
   };
@@ -318,7 +325,7 @@ const Report = () => {
         </div>
         <audio
           ref={audioRef}
-          src={audioUrl as string}
+          src={audioUrl}
           onLoadedMetadata={() => {
             console.log({ duration: audioRef.current?.duration });
             setDuration(audioRef.current?.duration || 0);

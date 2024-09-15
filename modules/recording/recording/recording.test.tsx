@@ -34,6 +34,11 @@ import { Provider } from "react-redux";
 import store from "@/core/store";
 import { renderWithStore } from "@/resources/tests/test-render.utils";
 
+const printSpy = jest.fn()
+jest.mock("react-to-print", () => ({
+  useReactToPrint: () => printSpy,
+}))
+
 describe("===== RECORDING AUDIO =====", () => {
   let genesisService: MedicalTranscription;
 
@@ -458,15 +463,11 @@ describe("===== RECORDING AUDIO =====", () => {
 
       await act(() => renderWithStore(<Report />));
 
-      screen.getByText("recording.replay-audio");
-
-      getReplyButton().click();
+      act(() => screen.getByText("recording.replay-audio").click())
 
       await waitFor(() => expect(playSpy).toHaveBeenCalled());
 
-      screen.getByText("recording.pause-audio");
-
-      getReplyButton().click();
+      screen.getByText("recording.pause-audio").click();
 
       await waitFor(() => expect(pauseSpy).toHaveBeenCalled());
 
@@ -557,10 +558,6 @@ describe("===== RECORDING AUDIO =====", () => {
 
     it("Download Report", async () => {
 
-      const printSpy = jest.fn()
-      jest.mock("react-to-print", () => ({
-        useReactToPrint: () => printSpy,
-      }))
 
       renderWithStore(<Report />);
       getDownloadButton().click();
@@ -569,7 +566,7 @@ describe("===== RECORDING AUDIO =====", () => {
 
       act(() => button.click());
 
-      waitFor(() => expect(printSpy).toHaveBeenCalledTimes(1));
+      await waitFor(() => expect(printSpy).toHaveBeenCalledTimes(1));
     });
 
     it("Download Transcription", async () => {
