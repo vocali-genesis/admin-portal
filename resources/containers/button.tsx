@@ -12,6 +12,7 @@ interface ButtonProps {
   disabled?: boolean;
   testId?: string;
   type?: "button" | "submit" | "reset";
+  size?: 'lg' | "md"
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -21,6 +22,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   disabled = false,
   testId,
+  size = "md",
   type = "button",
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +40,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       onClick={(event) => void handleClick(event)}
       data-testid={testId}
-      className={`${btn_styles.button} ${btn_styles[variant]} ${className}`}
+      className={`${btn_styles.button} ${btn_styles[variant]} ${btn_styles[size]} ${className}`}
       disabled={disabled}
       type={type}
     >

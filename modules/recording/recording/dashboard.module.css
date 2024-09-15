@@ -5,12 +5,12 @@
 }
 
 .warning {
-  background-color: #FDFD96;
+  background-color: #fdfd96;
   padding: 1vh 3vh;
   color: black;
   align-items: center;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 2vh;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
   border-radius: 3px;
 }
 
@@ -39,9 +39,9 @@
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1.9vh;
-  font-family: 'Montserrat', sans-serif;
-  margin-top: 2vh;
+  font-size: 1rem;
+  font-family: "Montserrat", sans-serif;
+  margin-top: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,22 +61,22 @@
 
 .h2 {
   color: black;
-  font-size: 1.9vh;
-  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-family: "Montserrat", sans-serif;
 }
 
 .p {
   color: #666;
-  font-size: 1.75vh;
-  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-family: "Montserrat", sans-serif;
 }
 
 .h3 {
-  margin-bottom: 2.5vh;
-  font-size: 2.5vh;
+  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
   color: black;
   font-weight: bold;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 @media (max-width: 840px) {
