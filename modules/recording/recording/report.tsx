@@ -11,8 +11,10 @@ import { ProgressBar } from "@/resources/containers/progress-bar";
 import ViewContentEditable from "@/resources/containers/view-content-editable";
 import { useReactToPrint } from 'react-to-print';
 import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
-import MessageHandler from "@/core/message-handler";
 import OnLeaveConfirmation from "@/resources/containers/on-leave-confirmation";
+import MessageHandler from "@/core/message-handler";
+
+const messageHandler = MessageHandler.get();
 
 const Report = () => {
   const router = useRouter();
@@ -95,8 +97,7 @@ const Report = () => {
 
   const handleDownloadPdf = () => {
     if (editingKeys.length) {
-      console.log({ editingKeys })
-      MessageHandler.get().handleError(t('recording.download-editing-warning'))
+      messageHandler.handleError(t('recording.download-editing-warning'))
       return
     }
     setHideIcons(true);
@@ -199,7 +200,7 @@ const Report = () => {
     const action = {
       'audio': async function () {
         if (audioUrl) {
-          await Download.downloadAudio(audioUrl);
+          await Download.downloadAudio(audioUrl as string);
         }
       },
       'report': () => handleDownloadPdf(),
@@ -317,7 +318,7 @@ const Report = () => {
         </div>
         <audio
           ref={audioRef}
-          src={audioUrl}
+          src={audioUrl as string}
           onLoadedMetadata={() => {
             console.log({ duration: audioRef.current?.duration });
             setDuration(audioRef.current?.duration || 0);

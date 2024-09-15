@@ -55,7 +55,7 @@ const Editor: React.FC<EditorProps> = ({
   }
 
   return (
-    <div className={quill_styles.editor} style={{ height }}>
+    <div className={quill_styles.c} style={{ height }}>
       <ReactQuill
         theme="snow"
         defaultValue={content}
