@@ -41,6 +41,7 @@
     "download_success": "Descàrrega realitzada amb èxit",
     "error-no-templates": "No tens cap plantilla configurada. Si us plau, configura'n una abans d'enregistrar",
     "record": "Enregistra",
-    "pause": "Pausa"
+    "pause": "Pausa",
+    "download-editing-warning": "Si us plau, acabeu d'editar abans de descarregar l'informe"
   }
 }

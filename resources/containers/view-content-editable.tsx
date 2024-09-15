@@ -11,13 +11,15 @@ interface ViewContentProps {
   content: string;
   onEdit: (title: string, content: string) => void;
   hideIcons: boolean
+  onEditStateChange: (state: boolean) => void;
 }
 
 const ViewContentEditable: React.FC<ViewContentProps> = ({
   title,
   content,
   onEdit,
-  hideIcons
+  hideIcons,
+  onEditStateChange
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingContent, setEditingContent] = useState(content);
@@ -29,6 +31,7 @@ const ViewContentEditable: React.FC<ViewContentProps> = ({
           onClick={() => {
             setEditingContent(content);
             setIsEditing(true);
+            onEditStateChange(true)
           }}
           size="small"
           title={t("common.edit")}
@@ -57,6 +60,7 @@ const ViewContentEditable: React.FC<ViewContentProps> = ({
           onClick={() => {
             onEdit(title, editingContent);
             setIsEditing(false);
+            onEditStateChange(false)
           }}
           size="small"
           title={t("common.save")}
@@ -68,6 +72,7 @@ const ViewContentEditable: React.FC<ViewContentProps> = ({
           onClick={() => {
             setIsEditing(false);
             setEditingContent(content);
+            onEditStateChange(false);
           }}
           size="small"
           title={t("common.cancel")}

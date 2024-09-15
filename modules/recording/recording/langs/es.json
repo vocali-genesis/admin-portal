@@ -41,6 +41,7 @@
     "download_success": "Descarga exitosa",
     "error-no-templates": "No tienes plantillas configuradas. Por favor, configura una antes de grabar",
     "record": "Grabar",
-    "pause": "Pausa"
+    "pause": "Pausa",
+    "download-editing-warning": "Por favor, termine de editar antes de descargar el informe"
   }
 }

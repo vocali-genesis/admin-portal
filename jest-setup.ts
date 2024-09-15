@@ -62,6 +62,7 @@ Object.defineProperty(global.navigator, "mediaDevices", {
 
 // Window
 window.open = jest.fn();
+window.focus = jest.fn();
 const mockResponse = jest.fn();
 Object.defineProperty(window, "location", {
   value: {
