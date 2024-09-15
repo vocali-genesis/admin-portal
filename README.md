@@ -88,8 +88,10 @@ Important Notes:
 ### New Version
 
 We use standard-version
-`npx standard-version --release-as` can add `patch` or `minor` or `mayor` or for simplicity
-`yarn tag (patch|minor|mayor)
+
+`pnpm bump (patch|minor|mayor)`
+
+Under the hook is using`npx standard-version --release-as` can add `patch` or `minor` or `mayor`. And pushing the tags
 
 Follow this logic 
 Major version: Broken backward compatibility

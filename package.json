@@ -12,7 +12,7 @@
     "lint": "next lint",
     "test": "jest --config=jest.config.ts",
     "precommit": "lint-staged",
-    "tag": "npx standard-version --release-as"
+    "bump": "npx standard-version --release-as"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
