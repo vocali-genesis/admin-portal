@@ -41,6 +41,7 @@
     "download_success": "Download Success",
     "error-no-templates": "You have no templates set up. Please set one up before recording",
     "record": "Record",
-    "pause": "Pause"
+    "pause": "Pause",
+    "download-editing-warning": "Please finish editing before downloading the report"
   }
 }

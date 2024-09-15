@@ -11,6 +11,7 @@ import { ProgressBar } from "@/resources/containers/progress-bar";
 import ViewContentEditable from "@/resources/containers/view-content-editable";
 import { useReactToPrint } from 'react-to-print';
 import { SubscriptionGuard } from "@/resources/guards/subscription.guard";
+import MessageHandler from "@/core/message-handler";
 
 const Report = () => {
   const router = useRouter();
@@ -28,7 +29,7 @@ const Report = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [audioDuration, setAudioDuration] = useState(0);
-  const [isEditing, setIsEditing] = useState(false);
+  const [editingKeys, setEditingKeys] = useState<string[]>([]);
 
   useEffect(() => {
     if (
@@ -59,7 +60,11 @@ const Report = () => {
   });
 
   const handleDownloadPdf = () => {
-    if (isEditing) return;
+    if (editingKeys.length) {
+      console.log({ editingKeys })
+      MessageHandler.get().handleError(t('recording.download-editing-warning'))
+      return
+    }
     setHideIcons(true);
     setTimeout(() => {
       downloadPdf();
@@ -114,9 +119,6 @@ const Report = () => {
   };
 
   const renderContent = () => {
-    const handleEditStateChange = (editingState: boolean) => {
-      setIsEditing(editingState);
-    };
 
     return (
       <div className={report_styles.viewContainer}>
@@ -136,10 +138,11 @@ const Report = () => {
                   title={title}
                   content={content}
                   onEdit={(title, content) => {
-                    setIsEditing(false)
                     setReportContent({ ...reportContent, [title]: content });
                   }}
-                  onEditStateChange={handleEditStateChange}
+                  onEditStateChange={(state) => {
+                    setEditingKeys(state ? [...editingKeys, title] : [...editingKeys.filter(key => key !== title)])
+                  }}
                 />
               );
             },
@@ -158,21 +161,19 @@ const Report = () => {
     );
   };
 
-  const handleDownload = async (type: string) => {
-    switch (type) {
-      case "audio":
+  const handleDownload = (type: string): Promise<void> | void => {
+    const action = {
+      'audio': async function () {
         if (audioUrl) {
           await Download.downloadAudio(audioUrl as string);
         }
-        break;
-      case "report":
-        if (isEditing) return;
-        handleDownloadPdf();
-        break;
-      case "transcription":
-        await Download.downloadTranscription(transcriptionContent);
-        break;
+      },
+      'report': () => handleDownloadPdf(),
+      'transcription': () => Download.downloadTranscription(transcriptionContent)
+
     }
+    return action[type as keyof typeof action]?.()
+
   };
 
   const handleReplayAudio = () => {
@@ -197,7 +198,7 @@ const Report = () => {
             <button onClick={() => void handleDownload("audio")}>
               {t("recording.download-audio")}
             </button>
-            <button disabled={isEditing} onClick={() => handleDownload("report")} style={{ color: isEditing ? "gray" : "" }}>
+            <button onClick={() => void handleDownload("report")}>
               {t("recording.download-report")}
             </button>
             <button onClick={() => void handleDownload("transcription")}>
